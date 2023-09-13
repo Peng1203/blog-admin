@@ -1,8 +1,7 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 // 类型别名
 type dateType = number | Date
-
 
 /**
  * 格式化时间的方法 YYYY-MM-DD
@@ -12,7 +11,7 @@ type dateType = number | Date
  * @returns {string}
  */
 export function dateFormat(date?: dateType): string {
-  return moment(date || new Date()).format('YYYY-MM-DD')
+  return dayjs(date || new Date()).format('YYYY-MM-DD')
 }
 
 /**
@@ -23,5 +22,5 @@ export function dateFormat(date?: dateType): string {
  * @returns {string}
  */
 export function dateTimeFormat(date?: dateType): string {
-  return moment(date || new Date()).format('YYYY-MM-DD HH:mm:ss')
+  return dayjs(date || new Date()).format('YYYY-MM-DD HH:mm:ss')
 }

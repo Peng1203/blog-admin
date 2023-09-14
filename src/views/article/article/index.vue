@@ -230,13 +230,25 @@
               </div>
 
               <!-- 标签信息 -->
-              <div class="">
+              <div flex-c-c>
                 <Peng-Icon
+                  mr5
                   size="20"
+                  title="标签"
                   name="icon-biaoqian"
                 />
 
-                <el-tag
+                <template v-for="tag in item.tags">
+                  <Peng-Icon
+                    ml3
+                    :title="tag.tagName"
+                    :name="tag.tagIcon"
+                    v-if="tag.tagIcon"
+                  />
+                  <span v-else>{{ tag.tagName }}</span>
+                </template>
+
+                <!-- <el-tag
                   round
                   class="ml5"
                   size="small"
@@ -254,7 +266,7 @@
                   >
                     {{ tag.tagName }}
                   </span>
-                </el-tag>
+                </el-tag> -->
               </div>
             </div>
             <el-divider style="margin: 15px 0" />

@@ -24,9 +24,7 @@ import { useUserInfo } from '@/stores/userInfo';
 import other from '@/utils/other';
 import { Local, Session } from '@/utils/storage';
 import mittBus from '@/utils/mitt';
-import setIntroduction from '@/utils/setIconfont';
 import handlePromiseError from '@/utils/handlePromiseError';
-// import axios from 'axios'
 import getClientType from './utils/getClientType';
 
 // 引入组件

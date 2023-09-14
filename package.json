@@ -1,7 +1,7 @@
 {
-  "name": "PengBlogAdmin",
+  "name": "blog-admin",
   "version": "0.0.0",
-  "description": "vue3 vite next admin template",
+  "description": "vue3 blog admin",
   "author": "Peng",
   "scripts": {
     "dev": "vite --force",
@@ -56,9 +56,6 @@
     "last 2 versions",
     "not dead"
   ],
-  "bugs": {
-    "url": "https://gitee.com/lyt-top/vue-next-admin/issues"
-  },
   "engines": {
     "node": ">=16.0.0",
     "npm": ">= 7.0.0"
@@ -66,8 +63,6 @@
   "keywords": [
     "vue",
     "vue3",
-    "vuejs/vue-next",
-    "vuejs/vue-next-template",
     "element-ui",
     "element-plus",
     "vue-next-admin",
@@ -75,6 +70,6 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://gitee.com/lyt-top/vue-next-admin.git"
+    "url": "https://github.com/Peng1203/re-blog-admin.git"
   }
 }

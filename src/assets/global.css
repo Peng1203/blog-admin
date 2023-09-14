@@ -14,42 +14,6 @@
   transform: translate(-8px, -1px);
 }
 
-.flex-c-c {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.flex-s-c {
-  display: flex;
-  justify-content: start;
-  align-items: center;
-}
-
-.flex-e-c {
-  display: flex;
-  justify-content: end;
-  align-items: center;
-}
-
-.flex-sa-c {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-
-.flex-sb-c {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.flex-se-c {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-}
-
 .pseudo-link,
 .pseudo-link-hover {
   cursor: pointer;

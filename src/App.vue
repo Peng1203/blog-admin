@@ -14,179 +14,179 @@
 </template>
 
 <script setup lang="ts" name="app">
-import { defineAsyncComponent, computed, ref, onBeforeMount, onMounted, onUnmounted, nextTick, watch, provide } from 'vue'
-import { useRoute } from 'vue-router'
-import zhCn from 'element-plus/es/locale/lang/zh-cn'
-import { storeToRefs } from 'pinia'
-import { useTagsViewRoutes } from '@/stores/tagsViewRoutes'
-import { useThemeConfig } from '@/stores/themeConfig'
-import { useUserInfo } from '@/stores/userInfo'
-import other from '@/utils/other'
-import { Local, Session } from '@/utils/storage'
-import mittBus from '@/utils/mitt'
-import setIntroduction from '@/utils/setIconfont'
-import handlePromiseError from '@/utils/handlePromiseError'
+import { defineAsyncComponent, computed, ref, onBeforeMount, onMounted, onUnmounted, nextTick, watch, provide } from 'vue';
+import { useRoute } from 'vue-router';
+import zhCn from 'element-plus/es/locale/lang/zh-cn';
+import { storeToRefs } from 'pinia';
+import { useTagsViewRoutes } from '@/stores/tagsViewRoutes';
+import { useThemeConfig } from '@/stores/themeConfig';
+import { useUserInfo } from '@/stores/userInfo';
+import other from '@/utils/other';
+import { Local, Session } from '@/utils/storage';
+import mittBus from '@/utils/mitt';
+import setIntroduction from '@/utils/setIconfont';
+import handlePromiseError from '@/utils/handlePromiseError';
 // import axios from 'axios'
-import getClientType from './utils/getClientType'
+import getClientType from './utils/getClientType';
 
 // 引入组件
-const LockScreen = defineAsyncComponent(() => import('@/layout/lockScreen/index.vue'))
-const Setings = defineAsyncComponent(() => import('@/layout/navBars/breadcrumb/setings.vue'))
-const CloseFull = defineAsyncComponent(() => import('@/layout/navBars/breadcrumb/closeFull.vue'))
+const LockScreen = defineAsyncComponent(() => import('@/layout/lockScreen/index.vue'));
+const Setings = defineAsyncComponent(() => import('@/layout/navBars/breadcrumb/setings.vue'));
+const CloseFull = defineAsyncComponent(() => import('@/layout/navBars/breadcrumb/closeFull.vue'));
 
 // 定义变量内容
-const setingsRef = ref()
-const route = useRoute()
-const userInfoStores = useUserInfo()
+const setingsRef = ref();
+const route = useRoute();
+const userInfoStores = useUserInfo();
 
-const stores = useTagsViewRoutes()
-const storesThemeConfig = useThemeConfig()
-const { themeConfig } = storeToRefs(storesThemeConfig)
+const stores = useTagsViewRoutes();
+const storesThemeConfig = useThemeConfig();
+const { themeConfig } = storeToRefs(storesThemeConfig);
 
 // 设置锁屏时组件显示隐藏
 const setLockScreen = computed(() => {
-	// 防止锁屏后，刷新出现不相关界面
-	// https://gitee.com/lyt-top/vue-next-admin/issues/I6AF8P
-	return themeConfig.value.isLockScreen ? themeConfig.value.lockScreenTime > 1 : themeConfig.value.lockScreenTime >= 0
-})
+  // 防止锁屏后，刷新出现不相关界面
+  // https://gitee.com/lyt-top/vue-next-admin/issues/I6AF8P
+  return themeConfig.value.isLockScreen ? themeConfig.value.lockScreenTime > 1 : themeConfig.value.lockScreenTime >= 0;
+});
 // 获取全局组件大小
 const getGlobalComponentSize = computed(() => {
-	return other.globalComponentSize()
-})
+  return other.globalComponentSize();
+});
 
 // 使用 ref 创建响应式的设备类型对象
-const deviceClientType = ref<string>(getClientType())
+const deviceClientType = ref<string>(getClientType());
 // 提供依赖注入
-provide('deviceClientType', deviceClientType)
+provide('deviceClientType', deviceClientType);
 
 // 设置初始化，防止刷新时恢复默认
 onBeforeMount(() => {
-	// console.log(`%c window.performance.navigation.type ----`, 'color: #fff;background-color: black;font-size: 18px', window.performance.navigation.type)
-	// 在关闭访问窗口前 调用退出登录方法
-	// 在 beforeunload 事件中，无法直接判断是刷新窗口还是关闭窗口，因为这两个操作都会触发 beforeunload 事件。不过，可以通过一些技巧来区分它们。
-	// 当用户关闭窗口时，beforeunload 事件会在 unload 事件之前触发，而在刷新窗口时，beforeunload 事件会在 unload 事件之后触发。因此，可以在 beforeunload 事件中记录当前时间戳，然后在 unload 事件中再次记录时间戳，并计算两个时间戳之间的差值。如果差值小于等于某个阈值（例如 100ms），就可以认为是关闭窗口了；否则就是刷新窗口
+  // console.log(`%c window.performance.navigation.type ----`, 'color: #fff;background-color: black;font-size: 18px', window.performance.navigation.type)
+  // 在关闭访问窗口前 调用退出登录方法
+  // 在 beforeunload 事件中，无法直接判断是刷新窗口还是关闭窗口，因为这两个操作都会触发 beforeunload 事件。不过，可以通过一些技巧来区分它们。
+  // 当用户关闭窗口时，beforeunload 事件会在 unload 事件之前触发，而在刷新窗口时，beforeunload 事件会在 unload 事件之后触发。因此，可以在 beforeunload 事件中记录当前时间戳，然后在 unload 事件中再次记录时间戳，并计算两个时间戳之间的差值。如果差值小于等于某个阈值（例如 100ms），就可以认为是关闭窗口了；否则就是刷新窗口
 
-	var beginTime = 0 //执行onbeforeunload的开始时间
-	var differTime = 0 //时间差
-	// window.onunload = async function () {
-	// 	console.log('onunload 执行-----')
-	// 	differTime = new Date().getTime() - beginTime
-	// 	if (differTime <= 5) {
-	// 		// 刷新时有概率执行
-	// 		console.log('浏览器关闭')
-	// 		axios.get('http://127.0.0.1:3000/index?info=关闭')
-	// 		if (Session.get('token')) {
-	// 			Session.clear()
-	// 			await userInfoStores.userLogout()
-	// 		}
-	// 	} else {
-	// 		console.log('浏览器刷新')
-	// 		axios.get('http://127.0.0.1:3000/index?info=刷新')
-	// 	}
-	// }
-	// window.onbeforeunload = function () {
-	// 	beginTime = new Date().getTime()
-	// }
-	// 客户端设备类型
-	// 添加全局属性 返回设备类类型
-	window.clientType = getClientType()
-	window.addEventListener('resize', () => {
-		deviceClientType.value = getClientType()
-	})
+  var beginTime = 0; //执行onbeforeunload的开始时间
+  var differTime = 0; //时间差
+  // window.onunload = async function () {
+  // 	console.log('onunload 执行-----')
+  // 	differTime = new Date().getTime() - beginTime
+  // 	if (differTime <= 5) {
+  // 		// 刷新时有概率执行
+  // 		console.log('浏览器关闭')
+  // 		axios.get('http://127.0.0.1:3000/index?info=关闭')
+  // 		if (Session.get('token')) {
+  // 			Session.clear()
+  // 			await userInfoStores.userLogout()
+  // 		}
+  // 	} else {
+  // 		console.log('浏览器刷新')
+  // 		axios.get('http://127.0.0.1:3000/index?info=刷新')
+  // 	}
+  // }
+  // window.onbeforeunload = function () {
+  // 	beginTime = new Date().getTime()
+  // }
+  // 客户端设备类型
+  // 添加全局属性 返回设备类类型
+  window.clientType = getClientType();
+  window.addEventListener('resize', () => {
+    deviceClientType.value = getClientType();
+  });
 
-	window.addEventListener('unload', async function () {
-		differTime = new Date().getTime() - beginTime
-		if (differTime <= 5) {
-			// 刷新时有概率执行
-			// axios.get('http://127.0.0.1:3000/index?info=关闭')
-			if (Session.get('token')) {
-				Session.clear()
-				await userInfoStores.userLogout()
-			}
-		} else {
-			console.log('浏览器刷新')
-			// axios.get('http://127.0.0.1:3000/index?info=刷新')
-		}
-	})
+  window.addEventListener('unload', async function () {
+    differTime = new Date().getTime() - beginTime;
+    if (differTime <= 5) {
+      // 刷新时有概率执行
+      // axios.get('http://127.0.0.1:3000/index?info=关闭')
+      if (Session.get('token')) {
+        Session.clear();
+        await userInfoStores.userLogout();
+      }
+    } else {
+      console.log('浏览器刷新');
+      // axios.get('http://127.0.0.1:3000/index?info=刷新')
+    }
+  });
 
-	window.addEventListener('beforeunload', function () {
-		beginTime = new Date().getTime()
-	})
+  window.addEventListener('beforeunload', function () {
+    beginTime = new Date().getTime();
+  });
 
-	// let unloadTime: any
-	// window.addEventListener('beforeunload', function (event: any) {
-	// 	// 记录当前时间戳
-	// 	// unloadTime = Date.now()
-	// 	// 如果有未保存的数据，可以提示用户
-	// 	// event.preventDefault()
-	// 	// event.returnValue = ''
+  // let unloadTime: any
+  // window.addEventListener('beforeunload', function (event: any) {
+  // 	// 记录当前时间戳
+  // 	// unloadTime = Date.now()
+  // 	// 如果有未保存的数据，可以提示用户
+  // 	// event.preventDefault()
+  // 	// event.returnValue = ''
 
-	// 	console.log(' -----')
-	// 	window.localStorage.setItem(`${Date.now()}`, `${window.performance.navigation.type}`)
+  // 	console.log(' -----')
+  // 	window.localStorage.setItem(`${Date.now()}`, `${window.performance.navigation.type}`)
 
-	// 	console.log('event.currentTarget.performance.navigation.type -----')
-	// 	if (event.currentTarget.performance.navigation.type === 1) {
-	// 		// 关闭页面操作
-	// 		axios.get('http://127.0.0.1:3000/index?info=关闭')
-	// 	} else if (event.currentTarget.performance.navigation.type === 2) {
-	// 		// 刷新页面操作
-	// 		axios.get('http://127.0.0.1:3000/index?info=刷新')
-	// 	}
-	// })
+  // 	console.log('event.currentTarget.performance.navigation.type -----')
+  // 	if (event.currentTarget.performance.navigation.type === 1) {
+  // 		// 关闭页面操作
+  // 		axios.get('http://127.0.0.1:3000/index?info=关闭')
+  // 	} else if (event.currentTarget.performance.navigation.type === 2) {
+  // 		// 刷新页面操作
+  // 		axios.get('http://127.0.0.1:3000/index?info=刷新')
+  // 	}
+  // })
 
-	// window.addEventListener('unload', async () => {
-	// 	// 计算时间差
-	// 	const diff = Date.now() - unloadTime
-	// 	if (diff <= 100) {
-	// 		console.log('关闭窗口')
-	// 		axios.get('http://127.0.0.1:3000/index')
-	// 		if (Session.get('token')) {
-	// 			Session.remove('token')
-	// 			await userInfoStores.userLogout()
-	// 		}
-	// 	} else {
-	// 		console.log('刷新窗口')
-	// 	}
-	// })
+  // window.addEventListener('unload', async () => {
+  // 	// 计算时间差
+  // 	const diff = Date.now() - unloadTime
+  // 	if (diff <= 100) {
+  // 		console.log('关闭窗口')
+  // 		axios.get('http://127.0.0.1:3000/index')
+  // 		if (Session.get('token')) {
+  // 			Session.remove('token')
+  // 			await userInfoStores.userLogout()
+  // 		}
+  // 	} else {
+  // 		console.log('刷新窗口')
+  // 	}
+  // })
 
-	// 全局捕获Promise错误
-	window.addEventListener('unhandledrejection', handlePromiseError)
-	// 设置批量第三方 icon 图标
-	// setIntroduction.cssCdn()
-	// 设置批量第三方 js
-	// setIntroduction.jsCdn()
-	// throw new Error('主动抛出的错误')
-})
+  // 全局捕获Promise错误
+  window.addEventListener('unhandledrejection', handlePromiseError);
+  // 设置批量第三方 icon 图标
+  // setIntroduction.cssCdn()
+  // 设置批量第三方 js
+  // setIntroduction.jsCdn()
+  // throw new Error('主动抛出的错误')
+});
 // 页面加载时
 onMounted(() => {
-	nextTick(() => {
-		// 监听布局配'置弹窗点击打开
-		mittBus.on('openSetingsDrawer', () => {
-			setingsRef.value.openDrawer()
-		})
-		// 获取缓存中的布局配置
-		if (Local.get('themeConfig')) {
-			storesThemeConfig.setThemeConfig({ themeConfig: Local.get('themeConfig') })
-			document.documentElement.style.cssText = Local.get('themeConfigStyle')
-		}
-		// 获取缓存中的全屏配置
-		if (Session.get('isTagsViewCurrenFull')) {
-			stores.setCurrenFullscreen(Session.get('isTagsViewCurrenFull'))
-		}
-	})
-})
+  nextTick(() => {
+    // 监听布局配'置弹窗点击打开
+    mittBus.on('openSetingsDrawer', () => {
+      setingsRef.value.openDrawer();
+    });
+    // 获取缓存中的布局配置
+    if (Local.get('themeConfig')) {
+      storesThemeConfig.setThemeConfig({ themeConfig: Local.get('themeConfig') });
+      document.documentElement.style.cssText = Local.get('themeConfigStyle');
+    }
+    // 获取缓存中的全屏配置
+    if (Session.get('isTagsViewCurrenFull')) {
+      stores.setCurrenFullscreen(Session.get('isTagsViewCurrenFull'));
+    }
+  });
+});
 // 页面销毁时，关闭监听布局配置/i18n监听
 onUnmounted(() => {
-	mittBus.off('openSetingsDrawer', () => {})
-})
+  mittBus.off('openSetingsDrawer', () => {});
+});
 // 监听路由的变化，设置网站标题
 watch(
-	() => route.path,
-	() => {
-		other.useTitle()
-	},
-	{
-		deep: true,
-	}
-)
+  () => route.path,
+  () => {
+    other.useTitle();
+  },
+  {
+    deep: true,
+  }
+);
 </script>

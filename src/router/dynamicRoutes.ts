@@ -43,7 +43,7 @@ export const allDynamicRoutes: Array<RouteRecordRaw> = [
       {
         path: '/personal',
         name: 'Personal',
-        component: () => import('/@/views/personal/index.vue'),
+        component: () => import('@/views/personal/index.vue'),
         meta: {
           title: '个人中心',
           isLink: '',

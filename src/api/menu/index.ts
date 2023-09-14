@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-// import { RequestListParams } from '/@/types/axios'
 import type { RequestListParams } from 'axios'
 
 export function useMenuApi() {

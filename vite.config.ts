@@ -5,17 +5,17 @@ import vueSetupExtend from 'vite-plugin-vue-setup-extend';
 import viteCompression from 'vite-plugin-compression';
 import UnoCSS from 'unocss/vite';
 
-const alias: Record<string, string> = {
-  '@': resolve(__dirname, '.', 'src'),
-  // '@': './src',
-};
-
 const viteConfig = defineConfig((mode: ConfigEnv) => {
   const env = loadEnv(mode.mode, process.cwd());
   return {
     plugins: [vue(), vueSetupExtend(), viteCompression(), UnoCSS()],
     root: process.cwd(),
-    resolve: { alias },
+    resolve: {
+      alias: {
+        '@': resolve(__dirname, '.', 'src'),
+        // '@': './src',
+      },
+    },
     base: mode.command === 'serve' ? './' : env.VITE_PUBLIC_PATH,
     // base: '/PengBlogAdmin/',
     server: {
@@ -23,14 +23,6 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
       port: env.VITE_PORT as unknown as number,
       open: JSON.parse(env.VITE_OPEN),
       hmr: true,
-      // proxy: {
-      //   '/gitee': {
-      //     target: 'https://gitee.com',
-      //     ws: true,
-      //     changeOrigin: true,
-      //     rewrite: (path) => path.replace(/^\/gitee/, ''),
-      //   },
-      // },
     },
     build: {
       outDir: 'dist',

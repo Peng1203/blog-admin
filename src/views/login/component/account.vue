@@ -6,7 +6,10 @@
     :model="loginState.loginForm"
     :rules="loginState.loginFormRules"
   >
-    <el-form-item prop="userName" class="login-animation1">
+    <el-form-item
+      prop="userName"
+      class="login-animation1"
+    >
       <el-input
         text
         clearable
@@ -19,7 +22,10 @@
         </template>
       </el-input>
     </el-form-item>
-    <el-form-item prop="password" class="login-animation2">
+    <el-form-item
+      prop="password"
+      class="login-animation2"
+    >
       <el-input
         autocomplete="off"
         placeholder="请输入密码"
@@ -32,25 +38,23 @@
         <template #suffix>
           <i
             class="iconfont el-input__icon login-content-password"
-            :class="
-              loginState.isShowPassword
-                ? 'icon-yincangmima'
-                : 'icon-xianshimima'
-            "
+            :class="loginState.isShowPassword ? 'icon-yincangmima' : 'icon-xianshimima'"
             @click="loginState.isShowPassword = !loginState.isShowPassword"
-          >
-          </i>
+          ></i>
         </template>
       </el-input>
     </el-form-item>
-    <el-form-item prop="captcha" class="login-animation3">
+    <el-form-item
+      prop="captcha"
+      class="login-animation3"
+    >
       <el-col :span="15">
         <el-input
           text
           clearable
           maxlength="4"
           autocomplete="off"
-          placeholder="验证码 (注意区分大小写)"
+          placeholder="验证码 (不区分大小写)"
           v-model.trim="loginState.loginForm.captcha"
           @keyup.enter="handleUserLogin"
         >
@@ -61,12 +65,18 @@
       </el-col>
       <el-col :span="1"></el-col>
       <el-col :span="8">
-        <el-button
+        <div
+          h40px
+          pseudo-c-p
+          v-html="captchaCode"
+          @click="handleRefreshCaptcha"
+        />
+        <!-- <el-button
           v-waves
           class="login-content-code"
-          @click="handleRefreshCaptcha"
-          >{{ captchaCode }}</el-button
         >
+          {{ captchaCode }}
+        </el-button> -->
       </el-col>
     </el-form-item>
     <el-form-item class="login-animation4">
@@ -85,32 +95,32 @@
 </template>
 
 <script setup lang="ts" name="loginAccount">
-import { ref, reactive, computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { ElMessage, ElNotification, FormRules } from 'element-plus'
-import { useUserInfo } from '@/stores/userInfo'
-import { handleUserAuthRouters } from '@/router/handleAuthRouter'
-import { Local, Session } from '@/utils/storage'
-import { formatAxis } from '@/utils/formatTime'
-import { NextLoading } from '@/utils/loading'
-import { useLoginApi } from '@/api/login'
+import { ref, reactive, computed, onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { ElMessage, ElNotification, FormRules } from 'element-plus';
+import { useUserInfo } from '@/stores/userInfo';
+import { handleUserAuthRouters } from '@/router/handleAuthRouter';
+import { Local, Session } from '@/utils/storage';
+import { formatAxis } from '@/utils/formatTime';
+import { NextLoading } from '@/utils/loading';
+import { useLoginApi } from '@/api';
+import type { LoginData } from '../';
 
-const { getCaptcha, verifyCaptcha, signIn } = useLoginApi()
+const { getCaptcha, login } = useLoginApi();
 // 定义变量内容
-const useUserInfoStores = useUserInfo()
-const route = useRoute()
-const router = useRouter()
+const useUserInfoStores = useUserInfo();
+const router = useRouter();
 
 const loginState = reactive({
   isShowPassword: false,
   // 登录表单
   loginForm: {
-    userName: '',
-    password: '',
+    // userName: '',
+    // password: '',
     // userName: 'Peng',
     // password: '123mzp',
-    // userName: 'admin',
-    // password: '123456',
+    userName: 'admin',
+    password: '123456',
     captcha: '',
   },
   // 登录表单校验规则
@@ -131,120 +141,89 @@ const loginState = reactive({
   loading: {
     signIn: false,
   },
-})
+});
 
 onMounted(() => {
-  getLoginCaptcha()
-})
+  getLoginCaptcha();
+});
 
 // 刷新 定时器
-const timer = ref<number>(0)
+const timer = ref<number>(0);
 // 刷新验证码
 const handleRefreshCaptcha = () => {
-  clearTimeout(timer.value)
+  clearTimeout(timer.value);
   // 防抖
   timer.value = setTimeout(() => {
-    loginState.loginForm.captcha = ''
-    getLoginCaptcha()
-  }, 500)
-}
+    loginState.loginForm.captcha = '';
+    getLoginCaptcha();
+  }, 500);
+};
 
 // 获取登录验证码
-const captchaCode = ref<string>('')
+const captchaCode = ref<string>('');
 const getLoginCaptcha = async (): Promise<void> => {
   try {
-    const { data: res } = await getCaptcha()
-    const { code, message, data, uuid } = res
-    if (code !== 200 || message !== 'Success') return
-    uuid && Local.set('uuid', uuid)
-    captchaCode.value = data
+    const { data: res } = await getCaptcha<string>();
+    captchaCode.value = res;
   } catch (error) {
-    throw error
+    console.log('------', error);
   }
-}
-
-// 校验验证码
-const postCaptchaCode = async (): Promise<boolean> => {
-  try {
-    const params = {
-      code: loginState.loginForm.captcha,
-      uuid: Local.get('uuid'),
-    }
-    const { data: res } = await verifyCaptcha(params)
-    const { data, code, message } = res
-    if (code === 200 && message === 'Success') return true
-    // 验证码失效 刷新验证码
-    if (message === 'Expire') handleRefreshCaptcha()
-    ElMessage.warning(data)
-    return false
-  } catch (error) {
-    throw error
-  }
-}
+};
 
 // 登录 获取用户信息
-const getLoginUserInfo = async (): Promise<any> => {
+const getLoginUserInfo = async () => {
   try {
-    const params = {
-      ...loginState.loginForm,
-      uuid: Local.get('uuid'),
-    }
-    const { data: res } = await signIn(params)
-    const { code, data, message, token, clientInfo } = res
-    if (code !== 200 || message !== 'Success') return ElMessage.error(data)
-    return { userInfo: data, token, clientInfo }
-  } catch (error) {
-    throw error
-  }
-}
+    const { data: res } = await login<LoginData>(loginState.loginForm);
+    const { code, data, message, success } = res;
 
-const loginFormRef = ref(null) as any
+    if (code !== 20000 || !success) return ElMessage.error(message);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const loginFormRef = ref(null) as any;
 // 处理登录
 const handleUserLogin = async () => {
   try {
-    await loginFormRef.value.validate()
-    loginState.loading.signIn = true
+    await loginFormRef.value.validate();
+    loginState.loading.signIn = true;
     // 调用后端验证码校验接口
-    const captchIsPass = await postCaptchaCode()
-    if (!captchIsPass) return (loginState.loading.signIn = false)
-    const { userInfo, token, clientInfo } = await getLoginUserInfo()
-    if (!userInfo) return (loginState.loading.signIn = false)
-    // 存储 token 到浏览器缓存
-    Session.set('clientInfo', clientInfo)
-    Session.set('userInfo', { ...userInfo, token })
-    Session.set('userName', loginState.loginForm.userName)
-    useUserInfoStores.setUserInfos(userInfo)
+    const { user, tokens } = await getLoginUserInfo();
+
     // 处理登录用户角色的路由表
-    const showPageName = await handleUserAuthRouters()
+    const showPageName = await handleUserAuthRouters();
     if (showPageName === '') {
-      ElMessage.warning(`当前用户角色没有任何菜单, 请联系管理员!`)
-      loginState.loading.signIn = false
-      return
+      ElMessage.warning(`当前用户角色没有任何菜单, 请联系管理员!`);
+      loginState.loading.signIn = false;
+      return;
     }
-    Session.set('token', token)
-    router.push({ name: showPageName })
-    const signInText = '欢迎回来！'
+    router.push({ name: showPageName });
+    const signInText = '欢迎回来！';
     ElNotification.success({
       title: loginState.loginForm.userName,
       message: `${currentTime.value}，${signInText}`,
-    })
-    NextLoading.start()
-    loginState.loading.signIn = false
+    });
+    NextLoading.start();
+    loginState.loading.signIn = false;
   } catch (e) {
-    loginState.loading.signIn = false
-    throw e
+    loginState.loading.signIn = false;
+    throw e;
   }
-}
+};
 // 时间获取
 const currentTime = computed(() => {
-  return formatAxis(new Date())
-})
+  return formatAxis(new Date());
+});
 </script>
 
 <style scoped lang="scss">
 .login-content-form {
   margin-top: 20px;
-
+  :deep(svg) {
+    border-radius: 5px;
+  }
   @for $i from 1 through 4 {
     .login-animation#{$i} {
       opacity: 0;

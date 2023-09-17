@@ -1,32 +1,31 @@
 import request from '@/utils/request';
-import { ApiBaseResponse, AxiosResponse } from 'axios';
-import { CAPTCHA, LOGIN } from './url';
+import { RawResponse, TransformedResponse } from 'Api';
 import { LoginParams } from './params';
 
-/**
- * （不建议写成 request.post(xxx)，因为这样 post 时，无法 params 与 data 同时传参）
- *
- * 登录api接口集合
- * @method getCaptcha 获取用户登录验证码
- * @method verifyCaptcha 校验验证码
- * @method signIn 用户登录
- * @method signOut 用户退出登录
- */
 export function useLoginApi() {
   return {
-    getCaptcha<T>(): Promise<AxiosResponse<T>> {
+    /**
+     * @method 获取验证码
+     */
+    getCaptcha<T>(): RawResponse<T> {
       return request({
-        url: CAPTCHA,
+        url: '/login/captcha',
         method: 'get',
       });
     },
-    login<T = any>(data: LoginParams): Promise<AxiosResponse<ApiBaseResponse<T>>> {
+    /**
+     * @method 登录
+     */
+    login<T>(data: LoginParams): TransformedResponse<T> {
       return request({
-        url: LOGIN,
+        url: '/login',
         method: 'post',
         data,
       });
     },
+    /**
+     * @method 退出登录
+     */
     signOut(data: object) {
       return request({
         url: '/user/logout',
@@ -35,11 +34,4 @@ export function useLoginApi() {
       });
     },
   };
-}
-
-const { getCaptcha } = useLoginApi();
-
-async function name() {
-  const res = await getCaptcha<string>();
-  res.data;
 }

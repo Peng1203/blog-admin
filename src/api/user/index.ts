@@ -1,4 +1,5 @@
-import request from '@/utils/request'
+import request from '@/utils/request';
+import { TransformedResponse } from 'Api';
 
 export function useUserApi() {
   return {
@@ -9,12 +10,12 @@ export function useUserApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    getUserList(params: object) {
+    getUserList<T = any>(params: object): TransformedResponse<T> {
       return request({
-        url: '/user/getUserList',
+        url: '/user',
         method: 'get',
         params,
-      })
+      });
     },
     /**
      * 添加用户
@@ -28,7 +29,7 @@ export function useUserApi() {
         url: '/user/addUser',
         method: 'post',
         data: params,
-      })
+      });
     },
     /**
      * 更新用户信息
@@ -43,7 +44,7 @@ export function useUserApi() {
         url: `/user/updateUserInfoById/${userId}`,
         method: 'put',
         data: params,
-      })
+      });
     },
     /**
      * 通过ID删除用户
@@ -56,7 +57,7 @@ export function useUserApi() {
       return request({
         url: `/user/deleteUserById/${userId}`,
         method: 'delete',
-      })
+      });
     },
     /**
      * 上传用户头像
@@ -75,7 +76,7 @@ export function useUserApi() {
           'Content-Type': 'multipart/form-data',
           'resource-classification': 'user-cover',
         },
-      })
+      });
     },
     /**
      * 获取用户下拉筛选数据
@@ -87,7 +88,7 @@ export function useUserApi() {
       return request({
         url: '/user/getAllUserOptions',
         method: 'get',
-      })
+      });
     },
     /**
      * 修改用户密码
@@ -102,7 +103,7 @@ export function useUserApi() {
         url: `/user/changePasswordById/${userId}`,
         method: 'post',
         data: params,
-      })
+      });
     },
     /**
      * 批量删除用户
@@ -116,7 +117,7 @@ export function useUserApi() {
         url: '/user/deleteUsers',
         method: 'delete',
         data: { ids },
-      })
+      });
     },
-  }
+  };
 }

@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from 'vue-router'
+import { RouteRecordRaw } from 'vue-router';
 
 // 用户管理路由规则
 const routerRules: RouteRecordRaw[] = [
@@ -21,7 +21,7 @@ const routerRules: RouteRecordRaw[] = [
       {
         path: '/user/list',
         name: 'SystemUser',
-        component: () => import('@/views/user/user/index.vue'),
+        component: () => import('@/views/user/user'),
         meta: {
           parentMenuName: 'User',
           title: '用户列表',
@@ -36,6 +36,6 @@ const routerRules: RouteRecordRaw[] = [
       },
     ],
   },
-]
+];
 
-export default routerRules
+export default routerRules;

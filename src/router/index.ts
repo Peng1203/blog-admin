@@ -1,14 +1,14 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
-import pinia from '@/stores/index'
-import { storeToRefs } from 'pinia'
-import { useKeepALiveNames } from '@/stores/keepAliveNames'
-import { useRoutesList } from '@/stores/routesList'
-import { useThemeConfig } from '@/stores/themeConfig'
-import { Session } from '@/utils/storage'
-import { staticRoutes, notFoundAndNoPower } from './route'
-import { handleUserAuthRouters } from './handleAuthRouter'
+import { createRouter, createWebHistory } from 'vue-router';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
+import pinia from '@/stores/index';
+import { storeToRefs } from 'pinia';
+import { useKeepALiveNames } from '@/stores/keepAliveNames';
+import { useRoutesList } from '@/stores/routesList';
+import { useThemeConfig } from '@/stores/themeConfig';
+import { Session } from '@/utils/storage';
+import { staticRoutes, notFoundAndNoPower } from './route';
+import { handleUserAuthRouters } from './handleAuthRouter';
 /**
  * 1、前端控制路由时：isRequestRoutes 为 false，需要写 roles，需要走 setFilterRoute 方法。
  * 2、后端控制路由时：isRequestRoutes 为 true，不需要写 roles，不需要走 setFilterRoute 方法），
@@ -19,9 +19,9 @@ import { handleUserAuthRouters } from './handleAuthRouter'
  */
 
 // 读取 `/src/stores/themeConfig.ts` 是否开启后端控制路由配置
-const storesThemeConfig = useThemeConfig(pinia)
-const { themeConfig } = storeToRefs(storesThemeConfig)
-const { isRequestRoutes } = themeConfig.value
+const storesThemeConfig = useThemeConfig(pinia);
+const { themeConfig } = storeToRefs(storesThemeConfig);
+const { isRequestRoutes } = themeConfig.value;
 /**
  * 创建一个可以被 Vue 应用程序使用的路由实例
  * @method createRouter(options: RouterOptions): Router
@@ -45,7 +45,7 @@ export const router = createRouter({
     ...notFoundAndNoPower,
     ...staticRoutes,
   ],
-})
+});
 
 /**
  * 路由多级嵌套数组处理成一维数组
@@ -53,13 +53,13 @@ export const router = createRouter({
  * @returns 返回处理后的一维路由菜单数组
  */
 export function formatFlatteningRoutes(arr: any) {
-  if (arr.length <= 0) return false
+  if (arr.length <= 0) return false;
   for (let i = 0; i < arr.length; i++) {
     if (arr[i].children) {
-      arr = arr.slice(0, i + 1).concat(arr[i].children, arr.slice(i + 1))
+      arr = arr.slice(0, i + 1).concat(arr[i].children, arr.slice(i + 1));
     }
   }
-  return arr
+  return arr;
 }
 
 /**
@@ -70,9 +70,9 @@ export function formatFlatteningRoutes(arr: any) {
  * @returns 返回将一维数组重新处理成 `定义动态路由（dynamicRoutes）` 的格式
  */
 export function formatTwoStageRoutes(arr: any) {
-  if (arr.length <= 0) return false
-  const newArr: any = []
-  const cacheList: Array<string> = []
+  if (arr.length <= 0) return false;
+  const newArr: any = [];
+  const cacheList: Array<string> = [];
   arr.forEach((v: any) => {
     if (v.path === '/') {
       newArr.push({
@@ -82,74 +82,73 @@ export function formatTwoStageRoutes(arr: any) {
         redirect: v.redirect,
         meta: v.meta,
         children: [],
-      })
+      });
     } else {
       // 判断是否是动态路由（xx/:id/:name），用于 tagsView 等中使用
       // 修复：https://gitee.com/lyt-top/vue-next-admin/issues/I3YX6G
       if (v.path.indexOf('/:') > -1) {
-        v.meta['isDynamic'] = true
-        v.meta['isDynamicPath'] = v.path
+        v.meta['isDynamic'] = true;
+        v.meta['isDynamicPath'] = v.path;
       }
-      newArr[0].children.push({ ...v })
+      newArr[0].children.push({ ...v });
       // 存 name 值，keep-alive 中 include 使用，实现路由的缓存
       // 路径：@/layout/routerView/parent.vue
       if (newArr[0].meta.isKeepAlive && v.meta.isKeepAlive) {
-        cacheList.push(v.name)
-        const stores = useKeepALiveNames(pinia)
-        stores.setCacheKeepAlive(cacheList)
+        cacheList.push(v.name);
+        const stores = useKeepALiveNames(pinia);
+        stores.setCacheKeepAlive(cacheList);
       }
     }
-  })
-  return newArr
+  });
+  return newArr;
 }
 
 // 路由加载前
 router.beforeEach(async (to, from, next) => {
-  NProgress.configure({ showSpinner: false })
-  if (to.meta.title) NProgress.start()
+  NProgress.configure({ showSpinner: false });
+  if (to.meta.title) NProgress.start();
   // 切换页面时取消未响应的请求
   if (!from.meta.isKeepAlive && window.httpRequestList.length > 0) {
-    window.httpRequestList.forEach(c => c())
-    window.httpRequestList = []
+    window.httpRequestList.forEach(c => c());
+    window.httpRequestList = [];
   }
   if (to.path === '/login' && !sessionStorage.getItem('PengBlogAdmin:token')) {
-    next()
-    NProgress.done()
-    return
+    next();
+    NProgress.done();
+    return;
   }
 
-  const token = Session.get('token')
-
+  const token = Session.getACToken();
   if (!token) {
-    next(`/login`)
-    Session.clear()
-    NProgress.done()
+    next(`/login`);
+    Session.clear();
+    NProgress.done();
   } else if (token && to.path === '/login') {
     // next()
-    next('/home')
-    NProgress.done()
+    next('/home');
+    NProgress.done();
   } else {
-    const storesRoutesList = useRoutesList(pinia)
-    const { routesList } = storeToRefs(storesRoutesList)
+    const storesRoutesList = useRoutesList(pinia);
+    const { routesList } = storeToRefs(storesRoutesList);
     // 解决界面刷新路由规则丢失问题
     if (from.name === undefined && !routesList.value.length && token) {
-      handleUserAuthRouters()
-      next({ path: to.path })
+      handleUserAuthRouters();
+      next({ path: to.path });
       // next({: to.name })
       // next(`${to.path}`)
       // return
-      NProgress.done()
+      NProgress.done();
     } else {
-      next()
-      NProgress.done()
+      next();
+      NProgress.done();
     }
   }
-})
+});
 
 // 路由加载后
 router.afterEach(() => {
-  NProgress.done()
-})
+  NProgress.done();
+});
 
 // 导出路由
-export default router
+export default router;

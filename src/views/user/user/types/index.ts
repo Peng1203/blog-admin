@@ -10,3 +10,8 @@ export interface UserData {
   createTime: string | Date;
   updateTime: string | Date;
 }
+
+export interface UserListData {
+  list: UserData[];
+  total: number;
+}

@@ -12,7 +12,12 @@
     @sort-change="handleColumnSort"
     @selection-change="handleSelectionChange"
   >
-    <el-table-column v-if="props.isSelection" type="selection" width="35" :selectable="checkBoxIsEnableCallBack" />
+    <el-table-column
+      v-if="props.isSelection"
+      type="selection"
+      width="45"
+      :selectable="checkBoxIsEnableCallBack"
+    />
     <!-- :selectable="handleCheckboxIsEnable" -->
     <slot name="expand"></slot>
 
@@ -34,14 +39,27 @@
         :align="align || 'left'"
       >
         <template #default="scope">
-          <slot :prop="prop" :name="slotName" :scope="scope" :row="scope.row" />
+          <slot
+            :prop="prop"
+            :name="slotName"
+            :scope="scope"
+            :row="scope.row"
+          />
         </template>
       </el-table-column>
 
       <!-- 二级表头 -->
       <!-- :width="width || 'auto'" -->
-      <el-table-column :label="label" :align="align || 'center'" :class-name="classNname" v-else-if="childrenColumns && childrenColumns.length">
-        <template :key="childrenItem.prop" v-for="childrenItem in childrenColumns">
+      <el-table-column
+        :label="label"
+        :align="align || 'center'"
+        :class-name="classNname"
+        v-else-if="childrenColumns && childrenColumns.length"
+      >
+        <template
+          :key="childrenItem.prop"
+          v-for="childrenItem in childrenColumns"
+        >
           <!-- 自定义内容 -->
           <el-table-column
             v-if="childrenItem.slotName"
@@ -54,7 +72,11 @@
             :width="childrenItem.width || 'auto'"
           >
             <template #defult="scope">
-              <slot :row="scope.row" :name="childrenItem.slotName" :prop="childrenItem.prop"></slot>
+              <slot
+                :row="scope.row"
+                :name="childrenItem.slotName"
+                :prop="childrenItem.prop"
+              ></slot>
             </template>
           </el-table-column>
 
@@ -121,27 +143,28 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch, onMounted, inject } from 'vue'
+import { ref, reactive, watch, onMounted, inject } from 'vue';
 
-const deviceClientType = inject('deviceClientType')
+const deviceClientType = inject('deviceClientType');
 
 interface PengTableAttribute {
-  data: any[]
-  columns: ColumnItem[]
-  border?: boolean
-  isSelection?: boolean
-  checkBoxIsEnableCallBack?: Function
-  loading?: boolean
-  isFilterShowColumn?: boolean
-  isNeedPager?: boolean
-  pagerInfo?: PageInfo
+  data: any[];
+  columns: ColumnItem[];
+  border?: boolean;
+  isSelection?: boolean;
+  checkBoxIsEnableCallBack?: Function;
+  loading?: boolean;
+  isFilterShowColumn?: boolean;
+  isNeedPager?: boolean;
+  pagerInfo?: PageInfo;
 }
 
 const props = withDefaults(defineProps<PengTableAttribute>(), {
   // 表格数据
-  data: () => [],
+  // data: () => [],
+
   // columns 列表
-  columns: () => [],
+  // columns: () => [],
 
   border: false,
 
@@ -161,97 +184,97 @@ const props = withDefaults(defineProps<PengTableAttribute>(), {
 
   // 分页器信息
   pagerInfo: () => ({ page: 1, pageSize: 10, total: 0 }),
-})
+});
 
-const emits = defineEmits(['columnSort', 'pageChange', 'pageSizeChange', 'pageNumOrSizeChange', 'selectionChange'])
+const emits = defineEmits(['columnSort', 'pageChange', 'pageSizeChange', 'pageNumOrSizeChange', 'selectionChange']);
 
 // 表格展示的 columns
-let tableColumns = ref<ColumnItem[]>([])
+let tableColumns = ref<ColumnItem[]>([]);
 
 // 过滤数据
 interface filterItem {
-  text: string
-  value: string
+  text: string;
+  value: string;
 }
-const filterList = reactive<filterItem[]>([])
+const filterList = reactive<filterItem[]>([]);
 watch(
   () => props.isFilterShowColumn,
   val => {
-    if (!val) return
-    props.columns.forEach(({ label, prop }) => prop && filterList.push({ text: label, value: prop }))
+    if (!val) return;
+    props.columns.forEach(({ label, prop }) => prop && filterList.push({ text: label, value: prop }));
   },
   {
     deep: true,
     immediate: true,
   }
-)
+);
 
 // column排序
 type OrderProp = {
-  ascending: string
-  descending: string
-}
+  ascending: string;
+  descending: string;
+};
 const handleColumnSort = ({ prop, order }: { prop: string; order: keyof OrderProp }) => {
   const orderProp: OrderProp = {
     ascending: 'ASC',
     descending: 'DESC',
-  }
+  };
 
   emits('columnSort', {
     column: orderProp[order] ? prop : '',
     order: orderProp[order] || '',
-  })
-}
+  });
+};
 
 /**
  * 分页器
  */
 // 默认可选的page大小列表
-const defaultPageSizeList = [10, 30, 50, 100, 200]
+const defaultPageSizeList = [10, 30, 50, 100, 200];
 const handleFilterTable = (filters: any) => {
-  const { filter } = filters
+  const { filter } = filters;
 
-  if (!filter.length) return (tableColumns.value = props.columns)
-  tableColumns.value = props.columns.filter((column: ColumnItem) => !filter.includes(column.prop))
-}
-const Page = ref<number>(0)
-const PageSize = ref<number>(0)
-const Total = ref<number>(0)
+  if (!filter.length) return (tableColumns.value = props.columns);
+  tableColumns.value = props.columns.filter((column: ColumnItem) => !filter.includes(column.prop));
+};
+const Page = ref<number>(0);
+const PageSize = ref<number>(0);
+const Total = ref<number>(0);
 // 分页器
 watch(
   () => props.pagerInfo,
   val => {
-    if (!val || !props.isNeedPager) return
-    const { page, pageSize, total } = val
-    Page.value = page
-    PageSize.value = pageSize
-    Total.value = total
+    if (!val || !props.isNeedPager) return;
+    const { page, pageSize, total } = val;
+    Page.value = page;
+    PageSize.value = pageSize;
+    Total.value = total;
   },
   {
     deep: true,
     immediate: true,
   }
-)
+);
 const handlePageChange = (val: number) => {
-  Page.value = val
-  emits('pageChange', val)
-  emits('pageNumOrSizeChange', { page: Page.value, pageSize: PageSize.value })
-}
+  Page.value = val;
+  emits('pageChange', val);
+  emits('pageNumOrSizeChange', { page: Page.value, pageSize: PageSize.value });
+};
 
 const handlePageSzieChange = (val: number) => {
-  PageSize.value = val
-  Page.value = 1
-  emits('pageSizeChange', val)
-  emits('pageNumOrSizeChange', { page: Page.value, pageSize: PageSize.value })
-}
+  PageSize.value = val;
+  Page.value = 1;
+  emits('pageSizeChange', val);
+  emits('pageNumOrSizeChange', { page: Page.value, pageSize: PageSize.value });
+};
 
 const handleSelectionChange = (val: any) => {
-  emits('selectionChange', val)
-}
+  emits('selectionChange', val);
+};
 
 onMounted(() => {
-  tableColumns.value = props.columns
-})
+  tableColumns.value = props.columns;
+});
 </script>
 
 <!-- expand 展开column 插槽 -->

@@ -1,7 +1,7 @@
 import { RouteRecordRaw } from 'vue-router';
 import { allDynamicRoutes } from './dynamicRoutes';
 import { router, formatFlatteningRoutes } from './index';
-import { Session } from '@/utils/storage';
+import { Local } from '@/utils/storage';
 import { useRoutesList } from '@/stores/routesList';
 import pinia from '@/stores/index';
 import { useUserInfo } from '@/stores/userInfo';
@@ -23,11 +23,11 @@ export async function handleUserAuthRouters(): Promise<any> {
   const useUserInfoStores = useUserInfo();
   const storesTagsView = useTagsViewRoutes(pinia);
 
-  const userInfo = Session.get('userInfo');
-  useUserInfoStores.setUserInfos({ ...userInfo, token: Session.get('token') });
+  const userInfo = Local.getUserInfo();
+
+  useUserInfoStores.setUserInfos({ ...userInfo, token: Local.get('token') });
 
   const allRouterRules = formatFlatteningRoutes(allDynamicRoutes[0].children);
-
   const { id, userName } = userInfo;
 
   // 当登录 用户为 admin 用户是不进行菜单处理直接添加全部权限路由
@@ -37,6 +37,7 @@ export async function handleUserAuthRouters(): Promise<any> {
     // 设置
     await storesRoutesList.setRoutesList(allDynamicRoutes[0].children as any);
     await storesTagsView.setTagsViewRoutes(allRouterRules);
+
     // 返回第一个跳转后第一个展示的菜单展示
     NextLoading.done();
     return (allDynamicRoutes[0].children as any)[0].name;
@@ -68,6 +69,7 @@ export async function handleUserAuthRouters(): Promise<any> {
     return toRouter.name;
   }
 }
+
 // 菜单规则
 function handleChildrenMenu(children: RouteRecordRaw[], menus: Menu[]) {
   // 需要删除元素的索引

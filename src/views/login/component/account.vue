@@ -171,12 +171,11 @@ const getLoginCaptcha = async (): Promise<void> => {
 };
 
 // 登录 获取用户信息
-const getLoginUserInfo = async () => {
+const getLoginUserInfo = async (): Promise<any> => {
   try {
     const { data: res } = await login<LoginData>(loginState.loginForm);
-    const { code, data, message, success } = res;
-
-    if (code !== 20000 || !success) return ElMessage.error(message);
+    const { code, data, success } = res;
+    if (code !== 20000 || !success) return;
     return data;
   } catch (error) {
     throw error;
@@ -190,7 +189,11 @@ const handleUserLogin = async () => {
     await loginFormRef.value.validate();
     loginState.loading.signIn = true;
     // 调用后端验证码校验接口
-    const { user, tokens } = await getLoginUserInfo();
+    const { user, tokens } = (await getLoginUserInfo()) as LoginData;
+    if (!user || !tokens) return;
+    Local.set('userInfo', user);
+    Local.setRFToken(tokens.refresh_token);
+    Session.setACToken(tokens.access_token);
 
     // 处理登录用户角色的路由表
     const showPageName = await handleUserAuthRouters();
@@ -221,9 +224,9 @@ const currentTime = computed(() => {
 <style scoped lang="scss">
 .login-content-form {
   margin-top: 20px;
-  :deep(svg) {
-    border-radius: 5px;
-  }
+  // :deep(svg) {
+  //   border-radius: 3px;
+  // }
   @for $i from 1 through 4 {
     .login-animation#{$i} {
       opacity: 0;

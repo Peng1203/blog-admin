@@ -23,12 +23,8 @@ window.httpRequestList = [];
 // 添加请求拦截器
 service.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = Session.get('token');
-    const uuid = Local.get('uuid');
-    const userId = Session.get('userInfo')?.id;
-    uuid && (config.headers!['uuid'] = uuid);
-    token && (config.headers!['Authorization'] = token);
-    userId && (config.headers!['userId'] = userId);
+    const token = Session.getACToken();
+    token && (config.headers['Authorization'] = `Bearer ${token}`);
 
     config.cancelToken = new axios.CancelToken(cancel => {
       window.httpRequestList.push(cancel); //存储cancle
@@ -56,9 +52,23 @@ service.interceptors.response.use(
     return response;
   },
   (error: AxiosError<any>) => {
+    console.log('响应拦截器 ------', error);
     const { code, message, response } = error;
     if (code === 'ERR_NETWORK' || message === 'Network Error') return ElMessage.error('服务器连接错误!');
-    return Promise.reject(error);
+    const { status, data } = response!;
+
+    switch (status) {
+      case 400:
+        ElMessage.error(data.message);
+        break;
+      case 401:
+        ElMessage.error(data.message);
+        break;
+      default:
+        break;
+    }
+    console.log('status ------', status);
+    return Promise.reject(error.response?.data);
   }
 );
 

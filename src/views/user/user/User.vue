@@ -151,7 +151,7 @@ import { AxiosResponse } from 'axios';
 import { UserData, UserListData } from './';
 import Table from '@/components/Table';
 
-const { getUserList, deleteUserById, batchDeleteUsers } = useUserApi();
+const { getUsers, deleteUserById, batchDeleteUsers } = useUserApi();
 
 const userAuthStore = useUserAuthList();
 
@@ -256,7 +256,7 @@ const getUserTableData = async () => {
       order: tableState.order,
       roleId: tableState.roleId,
     };
-    const { data: res } = await getUserList<UserListData>(params);
+    const { data: res } = await getUsers<UserListData>(params);
 
     const { code, message, data } = res;
     if (code !== 20000 || !message) return;

@@ -1,5 +1,5 @@
-import request from '@/utils/request'
-import type { RequestListParams } from 'axios'
+import request from '@/utils/request';
+import { RequestListParams, TransformedResponse } from 'Api';
 
 export function useRoleApi() {
   return {
@@ -10,12 +10,12 @@ export function useRoleApi() {
      * @param {any} params:RequestListParams
      * @returns {any}
      */
-    getRoleList(params: RequestListParams) {
+    getRole<T>(params: RequestListParams): TransformedResponse<T> {
       return request({
-        url: '/role/getRoleList',
+        url: '/role',
         method: 'get',
         params,
-      })
+      });
     },
     /**
      * 添加角色
@@ -29,7 +29,7 @@ export function useRoleApi() {
         url: '/role/addRole',
         method: 'post',
         data: params,
-      })
+      });
     },
     /**
      * 通过ID更新角色信息
@@ -44,7 +44,7 @@ export function useRoleApi() {
         url: `/role/updateRoleInfoById/${id}`,
         method: 'put',
         data: params,
-      })
+      });
     },
     /**
      * 通过ID删除角色信息
@@ -57,7 +57,7 @@ export function useRoleApi() {
       return request({
         url: `/role/deleteRoleById/${id}`,
         method: 'delete',
-      })
+      });
     },
-  }
+  };
 }

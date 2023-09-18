@@ -1,5 +1,6 @@
 import request from '@/utils/request';
-import { TransformedResponse } from 'Api';
+import { TransformedResponse, RequestListParams } from 'Api';
+import { AddUserParams } from './params';
 
 export function useUserApi() {
   return {
@@ -10,7 +11,7 @@ export function useUserApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    getUserList<T = any>(params: object): TransformedResponse<T> {
+    getUsers<T = any>(params: RequestListParams): TransformedResponse<T> {
       return request({
         url: '/user',
         method: 'get',
@@ -24,7 +25,7 @@ export function useUserApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    addUser(params: object) {
+    addUser(params: AddUserParams) {
       return request({
         url: '/user/addUser',
         method: 'post',

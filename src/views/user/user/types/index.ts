@@ -1,3 +1,5 @@
+import { ListApiBaseResponse } from 'Api';
+
 export interface UserData {
   id: number;
   userName: string;
@@ -11,7 +13,4 @@ export interface UserData {
   updateTime: string | Date;
 }
 
-export interface UserListData {
-  list: UserData[];
-  total: number;
-}
+export type UserListData = ListApiBaseResponse<UserData>;

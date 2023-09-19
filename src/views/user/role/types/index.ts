@@ -1,3 +1,5 @@
+import { ListApiBaseResponse } from 'Api';
+
 export interface RoleData {
   id: number;
   roleName: string;
@@ -7,3 +9,5 @@ export interface RoleData {
   createTime: string | Date;
   updateTime: string | Date;
 }
+
+export type RoleListData = ListApiBaseResponse<RoleData>;

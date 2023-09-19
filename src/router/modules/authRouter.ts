@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from 'vue-router'
+import { RouteRecordRaw } from 'vue-router';
 
 // 权限管理路由规则
 const routerRules: Array<RouteRecordRaw> = [
@@ -21,7 +21,7 @@ const routerRules: Array<RouteRecordRaw> = [
       {
         path: '/auth/role',
         name: 'SystemRole',
-        component: () => import('@/views/user/role/index.vue'),
+        component: () => import('@/views/user/role'),
         meta: {
           parentMenuName: 'Auth',
           title: '角色管理',
@@ -68,6 +68,6 @@ const routerRules: Array<RouteRecordRaw> = [
       },
     ],
   },
-]
+];
 
-export default routerRules
+export default routerRules;

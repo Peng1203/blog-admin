@@ -2,6 +2,8 @@ import qs from 'qs';
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
 import { ElMessage, ElMessageBox, ElLoading } from 'element-plus';
 import { Session, Local } from '@/utils/storage';
+import { handleRefreshACToken } from './refreshToken';
+import router from '@/router';
 
 // 配置新建一个 axios 实例
 const service: AxiosInstance = axios.create({
@@ -51,9 +53,9 @@ service.interceptors.response.use(
   (response: AxiosResponse) => {
     return response;
   },
-  (error: AxiosError<any>) => {
+  async (error: AxiosError<any>) => {
     console.log('响应拦截器 ------', error);
-    const { code, message, response } = error;
+    const { code, message, response, config } = error;
     if (code === 'ERR_NETWORK' || message === 'Network Error') return ElMessage.error('服务器连接错误!');
     const { status, data } = response!;
 
@@ -62,12 +64,26 @@ service.interceptors.response.use(
         ElMessage.error(data.message);
         break;
       case 401:
-        ElMessage.error(data.message);
+        if (response?.data.code === 40104) {
+          // token过期触发的401 存在2种情况 access_token过期 refresh_token过期
+          // 根据接口中的 错误信息判断
+          // 该情况为 access_token 过期 需要调用刷新token的接口
+          // 重发出401接口的请求 该接口返回一个boolean类型 标识刷新tokem接口成功或者失败  刷新失败则不从新发起请求 否则会进入死循环
+          const refreshIsSuccess = await handleRefreshACToken();
+          if (!refreshIsSuccess) return;
+          // 修改准备发送的config对象的 token字段 否则会死循环401
+          config!.headers['Authorization'] = `Bearer ${Session.getACToken}`;
+          // 重新发送请 并将该次请求返回出去 用于触发业务组件中的后续操作
+          return service.request(error.config!);
+        } else if (response?.data.code === 40105) {
+          // 该情况为 refresh_token 过期 直接返回登录页
+          ElMessage.error(data.message);
+          return router.push({ name: 'login' });
+        }
         break;
       default:
         break;
     }
-    console.log('status ------', status);
     return Promise.reject(error.response?.data);
   }
 );

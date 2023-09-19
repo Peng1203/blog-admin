@@ -1,6 +1,7 @@
 import request from '@/utils/request';
 import { RawResponse, TransformedResponse } from 'Api';
 import { LoginParams } from './params';
+import { Local } from '@/utils/storage';
 
 export function useLoginApi() {
   return {
@@ -31,6 +32,18 @@ export function useLoginApi() {
         url: '/user/logout',
         method: 'post',
         data,
+      });
+    },
+    /**
+     * @method 刷新token
+     */
+    refreshToken(): TransformedResponse<{ access_token: string; refresh_token: string }> {
+      return request({
+        url: '/auth/refreshAccessToekn',
+        method: 'patch',
+        data: JSON.stringify({
+          refresh_token: Local.getRFToken(),
+        }),
       });
     },
   };

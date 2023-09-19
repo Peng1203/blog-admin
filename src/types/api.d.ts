@@ -39,5 +39,11 @@ declare module 'Api' {
    */
   export type TransformedResponse<T> = Promise<AxiosResponse<ApiBaseResponse<T>>>;
 
-  //
+  /**
+   * @description 列表接口返回的基本格式
+   */
+  export interface ListApiBaseResponse<T> {
+    list: T[];
+    total: number;
+  }
 }

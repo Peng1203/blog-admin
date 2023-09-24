@@ -37,10 +37,7 @@
             width="150px"
             placeholder="角色过滤"
             v-model="tableState.roleId"
-            :options="[
-              { label: '全部', value: 0 },
-              { label: 'admin', value: 1 },
-            ]"
+            :options="[{ label: '全部', value: 0 }, ...roleStore.roleOption]"
             @change="handleRoleFilter"
           />
         </div>
@@ -141,8 +138,8 @@
 </template>
 
 <script setup lang="ts" name="SystemUser">
-import { defineAsyncComponent, reactive, onMounted, ref, nextTick } from 'vue';
-import { useUserAuthList } from '@/stores/userAuthList';
+import { defineAsyncComponent, reactive, onMounted, ref } from 'vue';
+import { useRolesInfo } from '@/stores/roleList';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import { Delete, Edit } from '@element-plus/icons-vue';
 // import PengFrom from '@/components/Form/Index.vue'
@@ -153,7 +150,7 @@ import Table from '@/components/Table';
 
 const { getUsers, deleteUserById, batchDeleteUsers } = useUserApi();
 
-const userAuthStore = useUserAuthList();
+const roleStore = useRolesInfo();
 
 // 表格参数
 const tableState = reactive({
@@ -339,6 +336,7 @@ const batchDel = async (): Promise<boolean> => {
 };
 
 onMounted(() => {
+  roleStore.getRoleData();
   getUserTableData();
   // userAuthStore.getAllRoleList();
 });

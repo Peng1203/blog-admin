@@ -96,9 +96,8 @@
 
 <script setup lang="ts" name="loginAccount">
 import { ref, reactive, computed, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { ElMessage, ElNotification, FormRules } from 'element-plus';
-import { useUserInfo } from '@/stores/userInfo';
 import { handleUserAuthRouters } from '@/router/handleAuthRouter';
 import { Local, Session } from '@/utils/storage';
 import { formatAxis } from '@/utils/formatTime';
@@ -107,8 +106,7 @@ import { useLoginApi } from '@/api';
 import type { LoginData } from '../';
 
 const { getCaptcha, login } = useLoginApi();
-// 定义变量内容
-const useUserInfoStores = useUserInfo();
+
 const router = useRouter();
 
 const loginState = reactive({
@@ -177,7 +175,8 @@ const getLoginUserInfo = async (): Promise<any> => {
     const { code, data, success } = res;
     if (code !== 20000 || !success) return;
     return data;
-  } catch (error) {
+  } catch (error: any) {
+    if (error.code === 40101) handleRefreshCaptcha();
     throw error;
   }
 };

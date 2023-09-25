@@ -148,7 +148,7 @@ interface TableRes<T> {
   total: number;
 }
 
-type SizeEnum = 'large' | 'default' | 'small';
+type SizeEnum = '' | 'large' | 'default' | 'small';
 
 interface OptionItem {
   label: string;

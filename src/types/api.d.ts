@@ -46,4 +46,13 @@ declare module 'Api' {
     list: T[];
     total: number;
   }
+
+  export interface ApiErrorResponse {
+    code: number;
+    error: string;
+    path: string;
+    method: string;
+    message: string;
+    timestamp: string;
+  }
 }

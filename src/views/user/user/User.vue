@@ -146,7 +146,7 @@ import { Delete, Edit } from '@element-plus/icons-vue';
 import { useUserApi } from '@/api/user';
 import { AxiosResponse } from 'axios';
 import { UserData, UserListData } from './';
-import Table from '@/components/Table';
+import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
 
 const { getUsers, deleteUserById, batchDeleteUsers } = useUserApi();
 
@@ -157,7 +157,7 @@ const tableState = reactive({
   loading: false,
   selectVal: ref<number[]>([]),
   data: ref<UserData[]>([]),
-  tableColumns: ref<ColumnItem[]>([
+  tableColumns: ref<ColumnItem<UserData>[]>([
     {
       label: '头像',
       prop: 'userAvatar',

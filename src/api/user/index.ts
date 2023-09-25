@@ -27,7 +27,7 @@ export function useUserApi() {
      */
     addUser(params: AddUserParams) {
       return request({
-        url: '/user/addUser',
+        url: '/user',
         method: 'post',
         data: params,
       });

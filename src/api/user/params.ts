@@ -2,8 +2,8 @@ export interface AddUserParams {
   userName: string;
   password: string;
   roleIds: number[];
-  email: string;
+  email?: string;
   nickName: string;
-  userEnabled: 0 | 1;
+  userEnabled: number | 0 | 1;
   userAvatar: string;
 }

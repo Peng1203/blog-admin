@@ -22,7 +22,7 @@
             placeholder,
             span,
             offset,
-            xs,
+            xs = 24,
             sm,
             md,
             lg,
@@ -41,6 +41,7 @@
             fBgColor,
             isInline,
             clearable,
+            strengthLevel,
           },
           i
         ) in formItemList"
@@ -54,13 +55,7 @@
           :md="md"
           :lg="lg"
           :xl="xl"
-          :class="
-            i + 1 === formItemList.length
-              ? ''
-              : isShow === true || isShow === undefined
-              ? 'mb20'
-              : ''
-          "
+          :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
           v-if="type === 'slot'"
         >
           <!-- 自定义插槽 -->
@@ -83,13 +78,7 @@
           :md="md"
           :lg="lg"
           :xl="xl"
-          :class="
-            i + 1 === formItemList.length
-              ? ''
-              : isShow === true || isShow === undefined
-              ? 'mb20'
-              : ''
-          "
+          :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
           v-else-if="type === 'input'"
         >
           <el-form-item
@@ -119,13 +108,7 @@
           :md="md"
           :lg="lg"
           :xl="xl"
-          :class="
-            i + 1 === formItemList.length
-              ? ''
-              : isShow === true || isShow === undefined
-              ? 'mb20'
-              : ''
-          "
+          :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
           v-else-if="type === 'pwd'"
         >
           <el-form-item
@@ -134,6 +117,7 @@
             :label="label"
             :rules="rules"
             :required="required"
+            class="pwd-form-item"
             v-show="isShow === undefined ? true : isShow"
           >
             <el-input
@@ -145,6 +129,28 @@
               :clearable="clearable || true"
               v-model="formData[prop]"
             />
+
+            <!-- 密码强度检测 -->
+            <div
+              w100
+              mt2px
+              h5px
+              flex-sb-c
+              class="pwd-strength-detection"
+            >
+              <span
+                style="background-color: #fb8172"
+                :style="{ opacity: strengthLevel! >= 1 ? 1 : 0 }"
+              ></span>
+              <span
+                style="background-color: #fdd752"
+                :style="{ opacity: strengthLevel! >= 2 ? 1 : 0 }"
+              ></span>
+              <span
+                style="background-color: #01aa8f"
+                :style="{ opacity: strengthLevel! >= 3 ? 1 : 0 }"
+              ></span>
+            </div>
           </el-form-item>
         </el-col>
 
@@ -157,13 +163,7 @@
           :md="md"
           :lg="lg"
           :xl="xl"
-          :class="
-            i + 1 === formItemList.length
-              ? ''
-              : isShow === true || isShow === undefined
-              ? 'mb20'
-              : ''
-          "
+          :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
           v-else-if="type === 'select'"
         >
           <el-form-item
@@ -201,13 +201,7 @@
           :md="md"
           :lg="lg"
           :xl="xl"
-          :class="
-            i + 1 === formItemList.length
-              ? ''
-              : isShow === true || isShow === undefined
-              ? 'mb20'
-              : ''
-          "
+          :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
           v-else-if="type === 'switch'"
         >
           <el-form-item
@@ -228,9 +222,7 @@
               :inactive-value="fValue"
               :inactive-icon="fIcon"
               :inline-prompt="isInline === undefined ? false : isInline"
-              :style="`--el-switch-on-color: ${
-                tBgColor || '#13ce66'
-              } ; --el-switch-off-color: ${fBgColor || '#ff4949'} `"
+              :style="`--el-switch-on-color: ${tBgColor || '#13ce66'} ; --el-switch-off-color: ${fBgColor || '#ff4949'} `"
               @change="handleSwitchChange($event, prop, i)"
               v-model="formData[prop]"
             />
@@ -246,13 +238,7 @@
           :md="md"
           :lg="lg"
           :xl="xl"
-          :class="
-            i + 1 === formItemList.length
-              ? ''
-              : isShow === true || isShow === undefined
-              ? 'mb20'
-              : ''
-          "
+          :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
           v-else-if="type === 'radio'"
         >
           <el-form-item
@@ -292,13 +278,7 @@
           :md="md"
           :lg="lg"
           :xl="xl"
-          :class="
-            i + 1 === formItemList.length
-              ? ''
-              : isShow === true || isShow === undefined
-              ? 'mb20'
-              : ''
-          "
+          :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
           v-else-if="type === 'checkbox'"
         >
           <el-form-item
@@ -336,13 +316,7 @@
           :md="md"
           :lg="lg"
           :xl="xl"
-          :class="
-            i + 1 === formItemList.length
-              ? ''
-              : isShow === true || isShow === undefined
-              ? 'mb20'
-              : ''
-          "
+          :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
           v-else-if="type === 'textarea'"
         >
           <el-form-item
@@ -373,13 +347,7 @@
           :md="md"
           :lg="lg"
           :xl="xl"
-          :class="
-            i + 1 === formItemList.length
-              ? ''
-              : isShow === true || isShow === undefined
-              ? 'mb20'
-              : ''
-          "
+          :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
           v-else-if="type === 'transparent'"
         ></el-col>
       </template>
@@ -388,19 +356,44 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref } from 'vue';
+import { FormItem } from './types';
 interface PengFormAttribute {
-  formData: Record<string, unknown>
-  formItemList: FormItem[]
-  labelW?: string | number
-  labelP?: string
-  size?: string
-  disabled?: boolean
-  inline?: boolean
-  gutter?: number
+  /**
+   * 表单数据
+   */
+  formData: Record<string, unknown>;
+  /**
+   * 表单配置项
+   */
+  formItemList: FormItem[];
+  /**
+   * label 宽度
+   */
+  labelW?: string | number;
+  /**
+   * label 定位
+   */
+  labelP?: string;
+  /**
+   * 表单组件尺寸 大小
+   */
+  size?: SizeEnum;
+  /**
+   * 是否禁用该表单内的所有组件
+   */
+  disabled?: boolean;
+  /**
+   * 行内表单模式
+   */
+  inline?: boolean;
+  /**
+   * 每行间隔
+   */
+  gutter?: number;
 }
 
-const emit = defineEmits(['switchChange', 'selectChange', 'radioChange'])
+const emit = defineEmits(['switchChange', 'selectChange', 'radioChange']);
 
 const props = withDefaults(defineProps<PengFormAttribute>(), {
   formData: () => ({}),
@@ -411,35 +404,31 @@ const props = withDefaults(defineProps<PengFormAttribute>(), {
   disabled: false,
   inline: false,
   gutter: 30,
-})
+});
 
-const formRef = ref<any>(null)
+const formRef = ref<any>(null);
 // 获取Form表单的Ref
-const getRef = () => formRef.value
+const getRef = () => formRef.value;
 
 // switch 切换
 const handleSwitchChange = (newVal: any, prop: string, index: number) => {
   // console.log('switch切换 -----', newVal, prop, index)
-  emit('switchChange', { newVal, prop, index })
-}
+  emit('switchChange', { newVal, prop, index });
+};
 
 // 下拉框 切换
 const handleSelectChange = (newVal: any, prop: string, index: number) => {
   // console.log('switch切换 -----', newVal, prop, index)
-  emit('selectChange', { newVal, prop, index })
-}
+  emit('selectChange', { newVal, prop, index });
+};
 
 // 单选框切换
-const handleRadioChange = (
-  newVal: string | number | boolean,
-  prop: string,
-  index: number
-) => {
-  emit('radioChange', { newVal, prop, index })
-}
+const handleRadioChange = (newVal: string | number | boolean, prop: string, index: number) => {
+  emit('radioChange', { newVal, prop, index });
+};
 
 // 暴露出 可被父组件调用的变量或方法
-defineExpose({ getRef })
+defineExpose({ getRef });
 </script>
 
 <style lang="scss" scoped>
@@ -451,5 +440,14 @@ defineExpose({ getRef })
 <style>
 textarea {
   min-height: 100px;
+}
+
+.pwd-strength-detection {
+  padding: 0 5px;
+}
+.pwd-strength-detection > span {
+  flex: 1;
+  height: 100%;
+  transition: 0.5s;
 }
 </style>

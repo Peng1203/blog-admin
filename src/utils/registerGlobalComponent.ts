@@ -1,8 +1,8 @@
 import Table from '@/components/Table';
 import Search from '@/components/Search/index.vue';
 import Drawer from '@/components/Drawer/index.vue';
-import Dialog from '@/components/Dialog/index.vue';
-import Form from '@/components/Form/index.vue';
+import Dialog from '@/components/Dialog';
+import Form from '@/components/Form';
 import Icon from '@/components/SymbolIcon/index.vue';
 import Select from '@/components/Select/index.vue';
 

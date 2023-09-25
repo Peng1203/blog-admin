@@ -144,7 +144,7 @@
 
 <script lang="ts" setup>
 import { ref, reactive, watch, onMounted, inject } from 'vue';
-
+import { ColumnItem, PageInfo } from './types';
 const deviceClientType = inject('deviceClientType');
 
 interface PengTableAttribute {
@@ -194,7 +194,7 @@ let tableColumns = ref<ColumnItem[]>([]);
 // 过滤数据
 interface filterItem {
   text: string;
-  value: string;
+  value: any;
 }
 const filterList = reactive<filterItem[]>([]);
 watch(

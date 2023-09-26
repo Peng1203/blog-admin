@@ -34,7 +34,7 @@ const { addUser } = useUserApi();
 const roleStore = useRolesInfo();
 
 // 校验密码强度
-const passwordStrengthDetection = (rule: any, value: any, callback: any) => {
+const passwordStrengthDetection = (rule: any, value: any, callback: any): any => {
   const findFormItem = addUserState.formItemList.find(item => item.prop === 'password');
   if (!value) return findFormItem && (findFormItem.strengthLevel = 0);
 
@@ -48,9 +48,9 @@ const addUserDialogStatus = ref<boolean>(false);
 
 const addUserState = reactive({
   data: {
-    userName: 'test',
+    userName: '',
     nickName: '',
-    password: '123456',
+    password: '',
     roleIds: [1],
     email: '',
     userEnabled: 1,

@@ -42,6 +42,7 @@
             isInline,
             clearable,
             strengthLevel,
+            autocomplete = false,
           },
           i
         ) in formItemList"
@@ -94,7 +95,12 @@
               :placeholder="placeholder"
               :disabled="disabled || false"
               :clearable="clearable || true"
+              :autocomplete="autocomplete ? 'on' : 'off'"
+              aria-autocomplete="none"
+              auto-complete="new-password"
               v-model="formData[prop]"
+              readonly
+              @focus="(e: any) => e.target.removeAttribute('readonly')"
             />
           </el-form-item>
         </el-col>
@@ -123,10 +129,13 @@
             <el-input
               type="password"
               show-password
+              aria-autocomplete="none"
+              auto-complete="new-password"
               :size="size"
               :placeholder="placeholder"
               :disabled="disabled || false"
               :clearable="clearable || true"
+              :autocomplete="autocomplete ? 'on' : 'off'"
               v-model="formData[prop]"
             />
 

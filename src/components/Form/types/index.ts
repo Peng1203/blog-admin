@@ -32,6 +32,10 @@ export interface FormItem {
    */
   strengthLevel?: 0 | 1 | 2 | 3;
   [key: string]: any;
+  /**
+   * 输入框 自动填充历史值
+   */
+  autocomplete?: boolean;
 }
 
 // 封装表单 下拉框 / switch 组件 自定义事件传递参数

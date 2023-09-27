@@ -28,6 +28,8 @@ import { useRolesInfo } from '@/stores/roleList';
 import Dialog from '@/components/Dialog';
 import Form, { FormItem } from '@/components/Form';
 import { passwordStrengthLevelDetection } from '@/utils/pwd';
+import { UserData } from '../types';
+
 const emits = defineEmits(['updateList']);
 const { addUser } = useUserApi();
 
@@ -146,16 +148,11 @@ const addNewUser = async (): Promise<boolean> => {
       ...other,
       ...(email ? { email } : {}),
     };
-    const { data: res } = await addUser(params);
-    console.log('res ------', res);
-    const { code, data, message } = res;
-    if (code !== 200 || message !== 'Success') {
-      ElMessage.error(data);
-      return false;
-    } else {
-      ElMessage.success(data);
-      return true;
-    }
+    const { data: res } = await addUser<UserData>(params);
+    const { code, message, data, success } = res;
+    if (code !== 20100 || !success) return false;
+    ElMessage.success(message);
+    return true;
   } catch (e) {
     console.log(e);
     return false;

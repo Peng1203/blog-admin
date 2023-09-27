@@ -25,7 +25,7 @@ export function useUserApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    addUser(params: AddUserParams) {
+    addUser<T>(params: AddUserParams): TransformedResponse<T> {
       return request({
         url: '/user',
         method: 'post',

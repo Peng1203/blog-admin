@@ -145,7 +145,7 @@ import { Delete, Edit } from '@element-plus/icons-vue';
 // import PengFrom from '@/components/Form/Index.vue'
 import { useUserApi } from '@/api/user';
 import { AxiosResponse } from 'axios';
-import { UserData, UserListData } from './';
+import { UserData, UserListData } from './types';
 import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
 
 const { getUsers, deleteUserById, batchDeleteUsers } = useUserApi();

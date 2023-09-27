@@ -90,6 +90,7 @@ service.interceptors.response.use(
         }
         break;
       default:
+        ElMessage.error(data.message);
         break;
     }
     return Promise.reject(error.response?.data);

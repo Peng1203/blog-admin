@@ -151,9 +151,9 @@
 <script setup lang="ts" name="SystemUser">
 import { defineAsyncComponent, reactive, onMounted, ref } from 'vue';
 import { useRolesInfo } from '@/stores/roleList';
+import { useUsersInfo } from '@/stores/userList';
 import { ElMessage } from 'element-plus';
 import { Delete, Edit } from '@element-plus/icons-vue';
-// import PengFrom from '@/components/Form/Index.vue'
 import { useUserApi } from '@/api/user';
 import { AxiosResponse } from 'axios';
 import { UserData, UserListData } from './types';
@@ -162,6 +162,7 @@ import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } fro
 const { getUsers, deleteUserById, batchDeleteUsers } = useUserApi();
 
 const roleStore = useRolesInfo();
+const userStore = useUsersInfo();
 
 // 表格参数
 const tableState = reactive({
@@ -280,7 +281,9 @@ const getUserTableData = async () => {
 // 删除用户
 const handleDelUser = async (row: UserData) => {
   const delRes = await deleteUser(row.id);
-  if (delRes) getUserTableData();
+  if (!delRes) return;
+  getUserTableData();
+  userStore.getUserData(true);
 };
 // 删除用户
 const deleteUser = async (id: number): Promise<boolean> => {

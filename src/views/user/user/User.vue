@@ -151,14 +151,13 @@
 <script setup lang="ts" name="SystemUser">
 import { defineAsyncComponent, reactive, onMounted, ref } from 'vue';
 import { useRolesInfo } from '@/stores/roleList';
-import { ElMessageBox, ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus';
 import { Delete, Edit } from '@element-plus/icons-vue';
 // import PengFrom from '@/components/Form/Index.vue'
 import { useUserApi } from '@/api/user';
 import { AxiosResponse } from 'axios';
 import { UserData, UserListData } from './types';
 import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
-import { ApiBaseResponse } from 'Api';
 
 const { getUsers, deleteUserById, batchDeleteUsers } = useUserApi();
 

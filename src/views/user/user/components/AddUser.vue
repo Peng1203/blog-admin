@@ -3,8 +3,8 @@
   <Dialog
     title="添加用户"
     v-model="addUserDialogStatus"
-    @clickCancel="addUserDialogStatus = false"
     @clickConfirm="handleAdd"
+    @clickCancel="addUserDialogStatus = false"
   >
     <template #main>
       <!-- inline -->
@@ -13,9 +13,7 @@
         ref="addUserFormRef"
         :formData="addUserState.data"
         :formItemList="addUserState.formItemList"
-      >
-        <template #pwdSlot>1212</template>
-      </Form>
+      />
     </template>
   </Dialog>
 </template>
@@ -25,6 +23,7 @@ import { ref, reactive, watch } from 'vue';
 import { useUserApi } from '@/api/user';
 import { ElMessage } from 'element-plus';
 import { useRolesInfo } from '@/stores/roleList';
+import { useUsersInfo } from '@/stores/userList';
 import Dialog from '@/components/Dialog';
 import Form, { FormItem } from '@/components/Form';
 import { passwordStrengthLevelDetection } from '@/utils/pwd';
@@ -34,6 +33,7 @@ const emits = defineEmits(['updateList']);
 const { addUser } = useUserApi();
 
 const roleStore = useRolesInfo();
+const userStore = useUsersInfo();
 
 // 校验密码强度
 const passwordStrengthDetection = (rule: any, value: any, callback: any): any => {
@@ -139,6 +139,8 @@ const handleAdd = async () => {
   if (!addRes) return;
   addUserDialogStatus.value = false;
   emits('updateList');
+  // 添加成功 更新全局角色数据
+  userStore.getUserData(true);
 };
 // 添加用户
 const addNewUser = async (): Promise<boolean> => {

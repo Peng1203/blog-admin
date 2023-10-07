@@ -28,7 +28,7 @@
             <el-icon>
               <Delete />
             </el-icon>
-            删除
+            删 除
           </el-button>
 
           <!-- virtual -->
@@ -110,15 +110,26 @@
             :disabled="row.id === 1"
             @click="handleEditUserInfo(row)"
           />
-          <el-button
-            circle
-            title="删除"
-            size="small"
-            type="danger"
-            :icon="Delete"
-            :disabled="row.id === 1"
-            @click="handleDelUser(row)"
-          />
+
+          <el-popconfirm
+            width="auto"
+            icon="DeleteFilled"
+            icon-color="#f56c6c"
+            :title="`是否删除用户：${row.userName} ?`"
+            @confirm="handleDelUser(row)"
+          >
+            <template #reference>
+              <el-button
+                circle
+                title="删除"
+                size="small"
+                type="danger"
+                :icon="Delete"
+                :disabled="row.id === 1"
+              />
+              <!-- @click="" -->
+            </template>
+          </el-popconfirm>
         </template>
       </Table>
     </el-card>
@@ -147,6 +158,7 @@ import { useUserApi } from '@/api/user';
 import { AxiosResponse } from 'axios';
 import { UserData, UserListData } from './types';
 import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
+import { ApiBaseResponse } from 'Api';
 
 const { getUsers, deleteUserById, batchDeleteUsers } = useUserApi();
 
@@ -266,28 +278,17 @@ const getUserTableData = async () => {
   }
 };
 
-// 打开删除用户
-const handleDelUser = (row: UserData) => {
-  ElMessageBox.confirm(`此操作将永久删除用户：“${row.userName}”，是否继续?`, '提示', {
-    confirmButtonText: '确认',
-    cancelButtonText: '取消',
-    type: 'warning',
-  })
-    .then(async () => {
-      const delRes = await deleteUser(row.id);
-      if (delRes) getUserTableData();
-    })
-    .catch(() => {});
+// 删除用户
+const handleDelUser = async (row: UserData) => {
+  const delRes = await deleteUser(row.id);
+  if (delRes) getUserTableData();
 };
 // 删除用户
 const deleteUser = async (id: number): Promise<boolean> => {
   try {
-    const { data: res }: AxiosResponse<ResResponse> = await deleteUserById(id);
-    const { code, data, message } = res;
-    if (code !== 200 || message !== 'Success') {
-      ElMessage.error(data);
-      return false;
-    }
+    const { data: res } = await deleteUserById<string>(id);
+    const { code, message, data, success } = res;
+    if (code !== 20000 || !success) return false;
     ElMessage.success(data);
     return true;
   } catch (e) {

@@ -54,9 +54,9 @@ export function useUserApi() {
      * @param {any} userId:number
      * @returns {any}
      */
-    deleteUserById(userId: number) {
+    deleteUserById<T>(userId: number): TransformedResponse<T> {
       return request({
-        url: `/user/deleteUserById/${userId}`,
+        url: `/user/${userId}`,
         method: 'delete',
       });
     },

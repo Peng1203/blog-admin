@@ -59,7 +59,7 @@ const props = withDefaults(defineProps<DialogAttribute>(), {
   width: '770px',
   modelClose: false,
   escClose: true,
-  draggable: false,
+  draggable: true,
   aCenter: false,
 });
 

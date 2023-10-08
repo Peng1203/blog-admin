@@ -29,7 +29,7 @@ export function useUserApi() {
       return request({
         url: '/user',
         method: 'post',
-        data: params,
+        data: JSON.stringify(params),
       });
     },
     /**
@@ -58,6 +58,16 @@ export function useUserApi() {
       return request({
         url: `/user/${userId}`,
         method: 'delete',
+      });
+    },
+    /**
+     * 批量删除用户
+     */
+    deleteUsers(ids: number[]): TransformedResponse<string> {
+      return request({
+        url: `/user`,
+        method: 'delete',
+        data: JSON.stringify({ ids }),
       });
     },
     /**
@@ -104,20 +114,6 @@ export function useUserApi() {
         url: `/user/changePasswordById/${userId}`,
         method: 'post',
         data: params,
-      });
-    },
-    /**
-     * 批量删除用户
-     * @author Peng
-     * @date 2023-06-26
-     * @param {any} ids:number[]
-     * @returns {any}
-     */
-    batchDeleteUsers(ids: number[]) {
-      return request({
-        url: '/user/deleteUsers',
-        method: 'delete',
-        data: { ids },
       });
     },
   };

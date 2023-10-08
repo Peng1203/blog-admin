@@ -159,7 +159,7 @@ import { AxiosResponse } from 'axios';
 import { UserData, UserListData } from './types';
 import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
 
-const { getUsers, deleteUserById, batchDeleteUsers } = useUserApi();
+const { getUsers, deleteUserById, deleteUsers } = useUserApi();
 
 const roleStore = useRolesInfo();
 const userStore = useUsersInfo();
@@ -322,15 +322,17 @@ const handleRoleFilter = () => {
 // 处理批量删除用户操作
 const handleBatchDelUser = async () => {
   const delRes = await batchDel();
-  if (delRes) getUserTableData();
+  if (!delRes) return;
+  getUserTableData();
+  userStore.getUserData(true);
 };
 // 批量删除用户
 const batchDel = async (): Promise<boolean> => {
   try {
-    const { data: res }: AxiosResponse<ResResponse> = await batchDeleteUsers(tableState.selectVal);
-    const { code, message, data } = res;
-    if (code !== 200 || message !== 'Success') return false;
-    ElMessage.success(data);
+    const { data: res } = await deleteUsers(tableState.selectVal);
+    const { code, message, data, success } = res;
+    if (code !== 20000 || !success) return false;
+    ElMessage.success(message);
     return true;
   } catch (e) {
     console.log(e);

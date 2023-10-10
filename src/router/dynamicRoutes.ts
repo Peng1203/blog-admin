@@ -1,7 +1,8 @@
-import { RouteRecordRaw } from 'vue-router'
-import authRouterRules from './modules/authRouter'
-import userRouterRules from './modules/userRouter'
-import articleRouterRules from './modules/articleRouter'
+import { RouteRecordRaw } from 'vue-router';
+import authRouterRules from './modules/authRouter';
+import userRouterRules from './modules/userRouter';
+import articleRouterRules from './modules/articleRouter';
+import resourceRouterRules from './modules/resourceRouter';
 
 /**
  * 需要权限的路由表
@@ -39,6 +40,8 @@ export const allDynamicRoutes: Array<RouteRecordRaw> = [
       ...userRouterRules,
       // 文章管理
       ...articleRouterRules,
+      // 资源管理
+      ...resourceRouterRules,
       // 个人中心
       {
         path: '/personal',
@@ -57,4 +60,4 @@ export const allDynamicRoutes: Array<RouteRecordRaw> = [
       },
     ],
   },
-]
+];

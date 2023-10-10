@@ -155,7 +155,6 @@ import { useUsersInfo } from '@/stores/userList';
 import { ElMessage } from 'element-plus';
 import { Delete, Edit } from '@element-plus/icons-vue';
 import { useUserApi } from '@/api/user';
-import { AxiosResponse } from 'axios';
 import { UserData, UserListData } from './types';
 import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
 

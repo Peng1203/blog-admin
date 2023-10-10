@@ -6,6 +6,174 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "4893194",
+      "name": "GIF",
+      "font_class": "GIF",
+      "unicode": "ec17",
+      "unicode_decimal": 60439
+    },
+    {
+      "icon_id": "4893195",
+      "name": "JPG",
+      "font_class": "JPG",
+      "unicode": "ec18",
+      "unicode_decimal": 60440
+    },
+    {
+      "icon_id": "4893196",
+      "name": "PNG",
+      "font_class": "PNG",
+      "unicode": "ec19",
+      "unicode_decimal": 60441
+    },
+    {
+      "icon_id": "10135255",
+      "name": "mp4",
+      "font_class": "mp",
+      "unicode": "e8b7",
+      "unicode_decimal": 59575
+    },
+    {
+      "icon_id": "10135258",
+      "name": "mp3",
+      "font_class": "mp1",
+      "unicode": "e8b8",
+      "unicode_decimal": 59576
+    },
+    {
+      "icon_id": "12600960",
+      "name": "webp",
+      "font_class": "webp",
+      "unicode": "e671",
+      "unicode_decimal": 58993
+    },
+    {
+      "icon_id": "34452853",
+      "name": "format-txt",
+      "font_class": "format-txt",
+      "unicode": "e82b",
+      "unicode_decimal": 59435
+    },
+    {
+      "icon_id": "431762",
+      "name": "folder-open",
+      "font_class": "folderopen",
+      "unicode": "e6f9",
+      "unicode_decimal": 59129
+    },
+    {
+      "icon_id": "1005177",
+      "name": "folder",
+      "font_class": "folder",
+      "unicode": "e697",
+      "unicode_decimal": 59031
+    },
+    {
+      "icon_id": "1305838",
+      "name": "网盘",
+      "font_class": "wangpan",
+      "unicode": "e655",
+      "unicode_decimal": 58965
+    },
+    {
+      "icon_id": "4936623",
+      "name": "folder-fill",
+      "font_class": "folder-fill",
+      "unicode": "e85e",
+      "unicode_decimal": 59486
+    },
+    {
+      "icon_id": "6129307",
+      "name": "263资源、管理",
+      "font_class": "ziyuanguanli",
+      "unicode": "e7df",
+      "unicode_decimal": 59359
+    },
+    {
+      "icon_id": "7239476",
+      "name": "folder-open",
+      "font_class": "folder-open",
+      "unicode": "e6f4",
+      "unicode_decimal": 59124
+    },
+    {
+      "icon_id": "7459722",
+      "name": "文件夹",
+      "font_class": "weibiaoti-_huabanfuben",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "18610495",
+      "name": "资源",
+      "font_class": "ziyuan",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "19009908",
+      "name": "资源-resources",
+      "font_class": "ziyuan-resources",
+      "unicode": "e64d",
+      "unicode_decimal": 58957
+    },
+    {
+      "icon_id": "27964205",
+      "name": "folder",
+      "font_class": "folder1",
+      "unicode": "e67a",
+      "unicode_decimal": 59002
+    },
+    {
+      "icon_id": "1667293",
+      "name": "用户列表",
+      "font_class": "yonghuliebiao",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "5323794",
+      "name": "系统管理_角色管理",
+      "font_class": "xitongguanli_jiaoseguanli",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "8802635",
+      "name": "系统管理",
+      "font_class": "xitongguanli",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
+      "icon_id": "9978030",
+      "name": "用户列表",
+      "font_class": "list",
+      "unicode": "e6a8",
+      "unicode_decimal": 59048
+    },
+    {
+      "icon_id": "11441221",
+      "name": "系统管理",
+      "font_class": "xitongguanli1",
+      "unicode": "e637",
+      "unicode_decimal": 58935
+    },
+    {
+      "icon_id": "15353859",
+      "name": "系统管理",
+      "font_class": "xitongguanli2",
+      "unicode": "e63c",
+      "unicode_decimal": 58940
+    },
+    {
+      "icon_id": "18494112",
+      "name": "用户列表",
+      "font_class": "yonghuliebiao1",
+      "unicode": "e7f1",
+      "unicode_decimal": 59377
+    },
+    {
       "icon_id": "6399129",
       "name": "发文章",
       "font_class": "weibiaoti--",

@@ -6,3 +6,4 @@ export * from './menu';
 export * from './role';
 export * from './tag';
 export * from './user';
+export * from './resource';

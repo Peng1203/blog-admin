@@ -3,7 +3,7 @@ import { TransformedResponse, RequestListParams } from 'Api';
 
 export function useResourceApi() {
   return {
-    getNetdiskDir<T>(params?: { path?: string }): TransformedResponse<T> {
+    getNetdiskDir<T>(params?: Record<'path', string>): TransformedResponse<T> {
       return request({
         url: '/resource/netdisk',
         method: 'get',

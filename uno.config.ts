@@ -72,6 +72,13 @@ export default defineConfig({
         cursor: 'pointer',
       },
     ],
+    [
+      'pseudo-c-p-c',
+      {
+        cursor: 'pointer',
+        color: '#1890ff',
+      },
+    ],
   ],
   shortcuts: {
     btn: 'py-2 px-4 font-semibold rounded-lg',

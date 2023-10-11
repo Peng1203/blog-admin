@@ -1,16 +1,20 @@
 <template>
   <el-table
-    stripe
     style="width: 100%"
-    empty-text="暂无数据"
     v-loading="props.loading"
     row-key="id"
     :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+    :stripe="props.stripe"
     :border="props.border"
     :data="props.data"
+    :size="props.size"
+    :empty-text="props.emptyText"
     @filter-change="handleFilterTable"
     @sort-change="handleColumnSort"
     @selection-change="handleSelectionChange"
+    @row-dblclick="handleDbRowClick"
+    @row-click="handleRowClick"
+    @row-contextmenu="handleMouseRightRowClick"
   >
     <el-table-column
       v-if="props.isSelection"
@@ -23,7 +27,9 @@
 
     <template
       :key="i"
-      v-for="({ label, prop, width, minWidth, sort, tooltip, fixed, align, slotName, childrenColumns, classNname }, i) in tableColumns"
+      v-for="(
+        { label, prop, width, minWidth, sort, tooltip, fixed, align, slotName, childrenColumns, classNname }, i
+      ) in tableColumns"
     >
       <!-- 自定义某列 -->
       <el-table-column
@@ -154,18 +160,20 @@ interface PengTableAttribute {
   isSelection?: boolean;
   checkBoxIsEnableCallBack?: Function;
   loading?: boolean;
+  /** 过滤列 */
   isFilterShowColumn?: boolean;
+  /** 是否需要分页器 */
   isNeedPager?: boolean;
+  /** 分页器信息 */
   pagerInfo?: PageInfo;
+  /** 尺寸 */
+  size?: SizeEnum;
+  /** 斑马纹 */
+  stripe?: boolean;
+  emptyText?: string;
 }
 
 const props = withDefaults(defineProps<PengTableAttribute>(), {
-  // 表格数据
-  // data: () => [],
-
-  // columns 列表
-  // columns: () => [],
-
   border: false,
 
   // 是否有复选
@@ -184,9 +192,25 @@ const props = withDefaults(defineProps<PengTableAttribute>(), {
 
   // 分页器信息
   pagerInfo: () => ({ page: 1, pageSize: 10, total: 0 }),
+
+  // 表格尺寸
+  size: 'default',
+
+  stripe: true,
+
+  emptyText: '暂无数据',
 });
 
-const emits = defineEmits(['columnSort', 'pageChange', 'pageSizeChange', 'pageNumOrSizeChange', 'selectionChange']);
+const emits = defineEmits([
+  'columnSort',
+  'pageChange',
+  'pageSizeChange',
+  'pageNumOrSizeChange',
+  'selectionChange',
+  'rowClick',
+  'dbRowClick',
+  'mouseRightRowClick',
+]);
 
 // 表格展示的 columns
 let tableColumns = ref<ColumnItem[]>([]);
@@ -268,8 +292,20 @@ const handlePageSzieChange = (val: number) => {
   emits('pageNumOrSizeChange', { page: Page.value, pageSize: PageSize.value });
 };
 
-const handleSelectionChange = (val: any) => {
-  emits('selectionChange', val);
+const handleSelectionChange = (val: any, column: any, event: any) => {
+  emits('selectionChange', val, column, event);
+};
+
+const handleDbRowClick = (val: any, column: any, event: any) => {
+  emits('dbRowClick', val, column, event);
+};
+
+const handleRowClick = (val: any, column: any, event: any) => {
+  emits('rowClick', val, column, event);
+};
+
+const handleMouseRightRowClick = (val: any, column: any, event: any) => {
+  emits('mouseRightRowClick', val, column, event);
 };
 
 onMounted(() => {

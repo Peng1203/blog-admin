@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 import { TransformedResponse, RequestListParams } from 'Api';
-import { AddUserParams } from './params';
+import { UserParams } from './params';
 
 export function useUserApi() {
   return {
@@ -25,7 +25,7 @@ export function useUserApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    addUser<T>(params: AddUserParams): TransformedResponse<T> {
+    addUser<T>(params: UserParams): TransformedResponse<T> {
       return request({
         url: '/user',
         method: 'post',
@@ -37,13 +37,20 @@ export function useUserApi() {
      * @author Peng
      * @date 2023-04-15
      * @param {any} userId:number
-     * @param {any} params:object
+     * @param {any} params:UserParams
      * @returns {any}
      */
-    updateUserInfo(userId: number, params: object) {
+    updateUser<T>(userId: number, params: UserParams): TransformedResponse<T> {
       return request({
-        url: `/user/updateUserInfoById/${userId}`,
+        url: `/user/${userId}`,
         method: 'put',
+        data: params,
+      });
+    },
+    update<T>(userId: number, params: UserParams): TransformedResponse<T> {
+      return request({
+        url: `/user/${userId}`,
+        method: 'patch',
         data: params,
       });
     },

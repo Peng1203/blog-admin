@@ -1,6 +1,6 @@
-export interface AddUserParams {
+export interface UserParams {
   userName: string;
-  password: string;
+  password?: string;
   roleIds: number[];
   email?: string;
   nickName: string;

@@ -23,7 +23,7 @@ import Form, { FormItem } from '@/components/Form';
 import Drawer from '@/components/Drawer';
 import { EditProps, AddEditUserType, UserData } from '../types';
 
-const { updateUserInfo } = useUserApi();
+const { updateUser } = useUserApi();
 
 const props = withDefaults(defineProps<EditProps>(), {
   editRow: () => ({} as UserData),
@@ -102,29 +102,36 @@ watch(
   }
 );
 // 保存编辑信息
-const saveEditUserInfo = async () => {
+const saveEditUserInfo = async (): Promise<boolean> => {
   try {
-    const { id, roleId, userName, state, email, unsealTime, updateTime, createdTime } = editFormState.data;
+    const { userName, nickName, userAvatar, userEnabled, roleIds, email } = editFormState.data;
     const params = {
-      roleId,
       userName,
-      state,
+      nickName,
+      userAvatar,
+      userEnabled,
+      roleIds,
       email,
-      unsealTime,
     };
-    const { data: res } = await updateUserInfo(id!, params);
-    const { data, code, message } = res;
-    if (code !== 200 || message !== 'Success') return ElMessage.error(data);
-    ElMessage.success(data);
+    const { data: res } = await updateUser<UserData>(props.editRow.id, params as any);
+    const { code, message } = res;
+    if (code !== 20001 || !message) {
+      ElMessage.error(message);
+      return false;
+    }
+    ElMessage.success(message);
+    return true;
   } catch (e) {
     // ElMessage.error('更新失败')
     console.log(e);
+    return false;
   }
 };
 
 // 处理保存修改信息
 const handleSaveEdit = async () => {
-  await saveEditUserInfo();
+  const updateRes = await saveEditUserInfo();
+  if (!updateRes) return;
   editDrawerStatus.value = false;
   emits('updateList');
 };

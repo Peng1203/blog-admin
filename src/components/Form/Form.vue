@@ -231,7 +231,9 @@
               :inactive-value="fValue"
               :inactive-icon="fIcon"
               :inline-prompt="isInline === undefined ? false : isInline"
-              :style="`--el-switch-on-color: ${tBgColor || '#13ce66'} ; --el-switch-off-color: ${fBgColor || '#ff4949'} `"
+              :style="`--el-switch-on-color: ${tBgColor || '#13ce66'} ; --el-switch-off-color: ${
+                fBgColor || '#ff4949'
+              } `"
               @change="handleSwitchChange($event, prop, i)"
               v-model="formData[prop]"
             />
@@ -366,45 +368,11 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { FormItem } from './types';
-interface PengFormAttribute {
-  /**
-   * 表单数据
-   */
-  formData: Record<string, unknown>;
-  /**
-   * 表单配置项
-   */
-  formItemList: FormItem[];
-  /**
-   * label 宽度
-   */
-  labelW?: string | number;
-  /**
-   * label 定位
-   */
-  labelP?: string;
-  /**
-   * 表单组件尺寸 大小
-   */
-  size?: SizeEnum;
-  /**
-   * 是否禁用该表单内的所有组件
-   */
-  disabled?: boolean;
-  /**
-   * 行内表单模式
-   */
-  inline?: boolean;
-  /**
-   * 每行间隔
-   */
-  gutter?: number;
-}
+import { FormAttribute } from './types';
 
 const emit = defineEmits(['switchChange', 'selectChange', 'radioChange']);
 
-const props = withDefaults(defineProps<PengFormAttribute>(), {
+const props = withDefaults(defineProps<FormAttribute>(), {
   formData: () => ({}),
   formItemList: () => [],
   labelW: 'auto',

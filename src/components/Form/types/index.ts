@@ -1,11 +1,55 @@
-export type FormItemEnum = 'slot' | 'input' | 'select' | 'switch' | 'checkbox' | 'radio' | 'pwd' | 'transparent' | 'textarea';
+export interface FormAttribute {
+  /**
+   * 表单数据
+   */
+  formData: Record<string, unknown>;
+  /**
+   * 表单配置项
+   */
+  formItemList: FormItem[];
+  /**
+   * label 宽度
+   */
+  labelW?: string | number;
+  /**
+   * label 定位
+   */
+  labelP?: string;
+  /**
+   * 表单组件尺寸 大小
+   */
+  size?: SizeEnum;
+  /**
+   * 是否禁用该表单内的所有组件
+   */
+  disabled?: boolean;
+  /**
+   * 行内表单模式
+   */
+  inline?: boolean;
+  /**
+   * 每行间隔
+   */
+  gutter?: number;
+}
+
+export type FormItemEnum =
+  | 'slot'
+  | 'input'
+  | 'select'
+  | 'switch'
+  | 'checkbox'
+  | 'radio'
+  | 'pwd'
+  | 'transparent'
+  | 'textarea';
 
 // 封装表单formItem属性
-export interface FormItem {
+export interface FormItem<T = any> {
   // type: string // slot input select
   type: FormItemEnum; // slot input select
   label: string;
-  prop: string;
+  prop: keyof T | T;
   size?: string;
   placeholder?: string;
   labelItemW?: string | number;

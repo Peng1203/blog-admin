@@ -1,14 +1,15 @@
 import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
 import { defineConfig, loadEnv, ConfigEnv } from 'vite';
-import vueSetupExtend from 'vite-plugin-vue-setup-extend';
+import DefineOptions from 'unplugin-vue-define-options/vite';
 import viteCompression from 'vite-plugin-compression';
 import UnoCSS from 'unocss/vite';
 
 const viteConfig = defineConfig((mode: ConfigEnv) => {
   const env = loadEnv(mode.mode, process.cwd());
   return {
-    plugins: [vue(), vueSetupExtend(), viteCompression(), UnoCSS()],
+    // vueSetupExtend(),
+    plugins: [vue(), DefineOptions(), viteCompression(), UnoCSS()],
     root: process.cwd(),
     resolve: {
       alias: {

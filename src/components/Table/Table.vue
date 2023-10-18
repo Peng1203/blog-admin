@@ -150,30 +150,10 @@
 
 <script lang="ts" setup>
 import { ref, reactive, watch, onMounted, inject } from 'vue';
-import { ColumnItem, PageInfo } from './types';
+import { ColumnItem, TableAttribute } from './types';
 const deviceClientType = inject('deviceClientType');
 
-interface PengTableAttribute {
-  data: any[];
-  columns: ColumnItem[];
-  border?: boolean;
-  isSelection?: boolean;
-  checkBoxIsEnableCallBack?: Function;
-  loading?: boolean;
-  /** 过滤列 */
-  isFilterShowColumn?: boolean;
-  /** 是否需要分页器 */
-  isNeedPager?: boolean;
-  /** 分页器信息 */
-  pagerInfo?: PageInfo;
-  /** 尺寸 */
-  size?: SizeEnum;
-  /** 斑马纹 */
-  stripe?: boolean;
-  emptyText?: string;
-}
-
-const props = withDefaults(defineProps<PengTableAttribute>(), {
+const props = withDefaults(defineProps<TableAttribute>(), {
   border: false,
 
   // 是否有复选

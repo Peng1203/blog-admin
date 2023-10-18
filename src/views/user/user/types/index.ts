@@ -14,3 +14,14 @@ export interface UserData {
 }
 
 export type UserListData = ListApiBaseResponse<UserData>;
+
+//
+export interface AddProps {
+  roles: OptionItem[];
+}
+
+export interface EditProps extends AddProps {
+  editRow: UserData;
+}
+
+export type AddEditUserType = Partial<UserData & { roleIds: number[] }>;

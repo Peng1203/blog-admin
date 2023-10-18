@@ -19,20 +19,20 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch } from 'vue';
+import { ref, reactive, watch, PropType } from 'vue';
 import { useUserApi } from '@/api/user';
 import { ElMessage } from 'element-plus';
-import { useRolesInfo } from '@/stores/roleList';
 import { useUsersInfo } from '@/stores/userList';
 import Dialog from '@/components/Dialog';
 import Form, { FormItem } from '@/components/Form';
 import { passwordStrengthLevelDetection } from '@/utils/pwd';
-import { UserData } from '../types';
+import { UserData, AddProps, AddEditUserType } from '../types';
+
+const props = defineProps<AddProps>();
 
 const emits = defineEmits(['updateList']);
 const { addUser } = useUserApi();
 
-const roleStore = useRolesInfo();
 const userStore = useUsersInfo();
 
 // 校验密码强度
@@ -49,7 +49,7 @@ const passwordStrengthDetection = (rule: any, value: any, callback: any): any =>
 const addUserDialogStatus = ref<boolean>(false);
 
 const addUserState = reactive({
-  data: {
+  data: ref<AddEditUserType>({
     userName: '',
     nickName: '',
     password: '',
@@ -57,8 +57,8 @@ const addUserState = reactive({
     email: '',
     userEnabled: 1,
     userAvatar: '',
-  },
-  formItemList: ref<FormItem[]>([
+  }),
+  formItemList: ref<FormItem<AddEditUserType>[]>([
     {
       type: 'input',
       label: '用户名',
@@ -99,8 +99,7 @@ const addUserState = reactive({
       label: '角色',
       multiple: true,
       prop: 'roleIds',
-      options: [],
-
+      options: props.roles,
       span: 20,
       placeholder: '请输入选择角色',
       rules: [{ required: true, trigger: 'change' }],
@@ -150,7 +149,7 @@ const addNewUser = async (): Promise<boolean> => {
       ...other,
       ...(email ? { email } : {}),
     };
-    const { data: res } = await addUser<UserData>(params);
+    const { data: res } = await addUser<UserData>(params as any);
     const { code, message, data, success } = res;
     if (code !== 20100 || !success) return false;
     ElMessage.success(message);
@@ -177,12 +176,7 @@ const formInit = () => {
 };
 
 watch(addUserDialogStatus, async val => {
-  if (val) {
-    const rolesItem = addUserState.formItemList.find(item => item.prop === 'roleIds');
-    rolesItem?.options && !rolesItem.options.length && (rolesItem.options = roleStore.roleOption);
-  } else {
-    formInit();
-  }
+  if (!val) return formInit();
 });
 
 defineExpose({ addUserDialogStatus });

@@ -37,7 +37,7 @@
             width="150px"
             placeholder="角色过滤"
             v-model="tableState.roleId"
-            :options="[{ label: '全部', value: 0 }, ...roleStore.roleOption]"
+            :options="[{ label: '全部', value: 0 }, ...roleColumns]"
             @change="handleRoleFilter"
           />
         </div>
@@ -136,12 +136,14 @@
     <!-- 添加用户对话框 -->
     <AddUserDialog
       ref="addDialogRef"
+      :roles="roleColumns"
       @updateList="getUserTableData"
     />
 
     <!-- 编辑用户信息抽屉 -->
     <EditUserDrawer
-      :editRow="editRow"
+      :editRow="editRow!"
+      :roles="roleColumns"
       ref="editDrawerRef"
       @updateList="getUserTableData"
     />
@@ -222,6 +224,9 @@ const tableState = reactive({
     total: 0,
   }),
 });
+
+// 角色下拉数据
+const roleColumns = ref<OptionItem[]>([]);
 
 // 根据条件来判断复选框是否可选
 const handleCheckboxIsEnable = (row: UserData) => (row.id === 1 ? false : true);
@@ -340,7 +345,7 @@ const batchDel = async (): Promise<boolean> => {
 };
 
 onMounted(() => {
-  roleStore.getRoleData();
+  roleStore.getRoleData().then(() => (roleColumns.value = roleStore.roleOption));
   getUserTableData();
   // userAuthStore.getAllRoleList();
 });

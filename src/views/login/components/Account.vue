@@ -80,9 +80,9 @@
       </el-col>
     </el-form-item>
     <el-form-item class="login-animation4">
-      <!-- v-waves -->
       <el-button
         round
+        v-waves
         type="primary"
         class="login-content-submit"
         :loading="loginState.loading.signIn"

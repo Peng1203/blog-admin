@@ -33,10 +33,8 @@
       </el-col>
       <el-col :span="1"></el-col>
       <el-col :span="8">
-        <el-button
-          v-waves
-          class="login-content-code"
-        >获取验证码</el-button>
+        <!-- v-waves -->
+        <el-button class="login-content-code">获取验证码</el-button>
       </el-col>
     </el-form-item>
     <el-form-item class="login-animation3">
@@ -49,48 +47,45 @@
         <span>登 录</span>
       </el-button>
     </el-form-item>
-    <div class="font12 mt30 login-animation4 login-msg">
-      * 温馨提示：建议使用谷歌、Microsoft Edge，版本 79.0.1072.62 及以上浏览器，360浏览器请使用极速模式
-    </div>
   </el-form>
 </template>
 
 <script setup lang="ts" name="loginMobile">
-import { reactive } from 'vue'
+import { reactive } from 'vue';
 
 // 定义变量内容
 const state = reactive({
-	ruleForm: {
-		userName: '',
-		code: '',
-	},
-})
+  ruleForm: {
+    userName: '',
+    code: '',
+  },
+});
 </script>
 
 <style scoped lang="scss">
 .login-content-form {
-	margin-top: 20px;
-	@for $i from 1 through 4 {
-		.login-animation#{$i} {
-			opacity: 0;
-			animation-name: error-num;
-			animation-duration: 0.5s;
-			animation-fill-mode: forwards;
-			animation-delay: calc($i/10) + s;
-		}
-	}
-	.login-content-code {
-		width: 100%;
-		padding: 0;
-	}
-	.login-content-submit {
-		width: 100%;
-		letter-spacing: 2px;
-		font-weight: 300;
-		margin-top: 15px;
-	}
-	.login-msg {
-		color: var(--el-text-color-placeholder);
-	}
+  margin-top: 20px;
+  @for $i from 1 through 4 {
+    .login-animation#{$i} {
+      opacity: 0;
+      animation-name: error-num;
+      animation-duration: 0.5s;
+      animation-fill-mode: forwards;
+      animation-delay: calc($i/10) + s;
+    }
+  }
+  .login-content-code {
+    width: 100%;
+    padding: 0;
+  }
+  .login-content-submit {
+    width: 100%;
+    letter-spacing: 2px;
+    font-weight: 300;
+    margin-top: 15px;
+  }
+  .login-msg {
+    color: var(--el-text-color-placeholder);
+  }
 }
 </style>

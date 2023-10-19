@@ -1,5 +1,5 @@
 import Table from '@/components/Table';
-import Search from '@/components/Search/index.vue';
+import Search from '@/components/Search';
 import Drawer from '@/components/Drawer';
 import Dialog from '@/components/Dialog';
 import Form from '@/components/Form';

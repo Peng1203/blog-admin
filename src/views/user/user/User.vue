@@ -42,7 +42,7 @@
           />
         </div>
 
-        <Peng-Search
+        <Search
           placeholder="用户名 / 昵称"
           v-model="tableState.queryStr"
           :loading="tableState.loading"
@@ -159,6 +159,7 @@ import { Delete, Edit } from '@element-plus/icons-vue';
 import { useUserApi } from '@/api/user';
 import { UserData, UserListData } from './types';
 import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
+import Search from '@/components/Search';
 
 const { getUsers, deleteUserById, deleteUsers } = useUserApi();
 

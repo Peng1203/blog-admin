@@ -27,6 +27,7 @@ import Dialog from '@/components/Dialog';
 import Form, { FormItem } from '@/components/Form';
 import { passwordStrengthLevelDetection } from '@/utils/pwd';
 import { UserData, AddProps, AddEditUserType } from '../types';
+import { UploadRequestOptions } from 'element-plus';
 
 const props = defineProps<AddProps>();
 
@@ -122,8 +123,24 @@ const addUserState = reactive({
       isInline: true,
       span: 20,
     },
+    {
+      type: 'upload',
+      label: '头像',
+      prop: 'userAvatar',
+      span: 20,
+      multiple: true,
+      // fsShow: true,
+      fileMaxSize: 3,
+      // autoUpload: false,
+      customUploadCb: handleUploadAvatar,
+      accept: ['.gif', '.jpeg', '.png', '.jpg', '.gif', '.webp'],
+    },
   ]),
 });
+
+function handleUploadAvatar(options: UploadRequestOptions) {
+  console.log('options ------', options);
+}
 
 const addUserFormRef = ref<RefType>(null);
 // 处理添加用户

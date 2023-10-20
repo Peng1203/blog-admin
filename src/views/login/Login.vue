@@ -1,42 +1,44 @@
 <template>
-  <canvas id="bgCanvas" />
-  <div class="login-container flex">
-    <div class="login-right flex">
-      <div class="login-right-warp flex-margin">
-        <span class="login-right-warp-one"></span>
-        <span class="login-right-warp-two"></span>
-        <div class="login-right-warp-mian">
-          <div class="login-right-warp-main-title">{{ getThemeConfig.globalTitle }} 欢迎您！</div>
-          <div class="login-right-warp-main-form">
-            <div v-if="!state.isScan">
-              <el-tabs v-model="state.tabsActiveName">
-                <el-tab-pane
-                  label="账号密码登录"
-                  name="account"
-                >
-                  <Account />
-                </el-tab-pane>
-                <el-tab-pane
-                  label="手机号登录"
-                  name="mobile"
-                >
-                  <Mobile />
-                </el-tab-pane>
-              </el-tabs>
-            </div>
+  <div class="login">
+    <canvas id="bgCanvas" />
+    <div class="login-container flex">
+      <div class="login-right flex">
+        <div class="login-right-warp flex-margin">
+          <span class="login-right-warp-one"></span>
+          <span class="login-right-warp-two"></span>
+          <div class="login-right-warp-mian">
+            <div class="login-right-warp-main-title">{{ getThemeConfig.globalTitle }} 欢迎您！</div>
+            <div class="login-right-warp-main-form">
+              <div v-if="!state.isScan">
+                <el-tabs v-model="state.tabsActiveName">
+                  <el-tab-pane
+                    label="账号密码登录"
+                    name="account"
+                  >
+                    <Account />
+                  </el-tab-pane>
+                  <el-tab-pane
+                    label="手机号登录"
+                    name="mobile"
+                  >
+                    <Mobile />
+                  </el-tab-pane>
+                </el-tabs>
+              </div>
 
-            <div v-if="state.isScan">
-              <Scan />
-            </div>
-            <div
-              class="login-content-main-sacn"
-              @click="state.isScan = !state.isScan"
-            >
-              <i
-                class="iconfont"
-                :class="state.isScan ? 'icon-diannao1' : 'icon-barcode-qr'"
-              ></i>
-              <div class="login-content-main-sacn-delta"></div>
+              <div v-if="state.isScan">
+                <Scan />
+              </div>
+              <div
+                class="login-content-main-sacn"
+                @click="state.isScan = !state.isScan"
+              >
+                <i
+                  class="iconfont"
+                  :class="state.isScan ? 'icon-diannao1' : 'icon-barcode-qr'"
+                ></i>
+                <div class="login-content-main-sacn-delta"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -46,7 +48,7 @@
 </template>
 
 <script setup lang="ts" name="loginIndex">
-import { defineAsyncComponent, onMounted, reactive, computed, onUnmounted } from 'vue';
+import { defineAsyncComponent, reactive, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useThemeConfig } from '@/stores/themeConfig';
 import { useCanvasBgc } from './hooks/useCanvasBgc';
@@ -56,7 +58,8 @@ const Account = defineAsyncComponent(() => import('@/views/login/components/Acco
 const Mobile = defineAsyncComponent(() => import('@/views/login/components/Mobile.vue'));
 const Scan = defineAsyncComponent(() => import('@/views/login/components/Scan.vue'));
 
-const { renderBgc, clearBgc } = useCanvasBgc();
+// 设置背景的hooks
+useCanvasBgc();
 
 // 定义变量内容
 const storesThemeConfig = useThemeConfig();
@@ -70,24 +73,27 @@ const state = reactive({
 const getThemeConfig = computed(() => {
   return themeConfig.value;
 });
-
-// 页面加载时
-onMounted(() => {
-  // NextLoading.done()
-  renderBgc();
-});
-
-onUnmounted(() => {
-  clearBgc();
-});
 </script>
 
 <style scoped lang="scss">
-#bgCanvas {
+#bgCanvas,
+.login {
   position: fixed;
   width: 100%;
   height: 100%;
 }
+.login {
+  // color: #ffffff9c;
+  width: 100%;
+  height: 100vh;
+  /* 背景渐变 */
+  // background-image: linear-gradient(-225deg, #231557 0%, #43107a 29%, #5231ad 100%);
+  // background-image: linear-gradient(-225deg, #0d0b1d 0%, #1e0f37 29%, #220d47 100%);
+  background-image: linear-gradient(-225deg, #001f3f 0%, #0b559f 29%, #136fb9 60%, #0e80dd 100%);
+  // background-image: linear-gradient(-225deg, #000019 0%, #00003b 29%, #000052 100%);
+  // background-image: linear-gradient(to right, #b8cbb8 0%, #b465da 0%, #cf6cc9 33%, #ee609c 66%, #ee609c 100%);
+}
+
 @media screen and (max-width: 768px) {
   .login-container {
     width: 100%;

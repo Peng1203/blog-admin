@@ -1,3 +1,5 @@
+import { onMounted, onUnmounted } from 'vue';
+
 export const useCanvasBgc = () => {
   let canvas: HTMLCanvasElement;
   let context: CanvasRenderingContext2D;
@@ -222,5 +224,14 @@ export const useCanvasBgc = () => {
   const clearBgc = () => {
     context.clearRect(0, 0, canvas.width, canvas.height);
   };
+
+  onMounted(() => {
+    renderBgc();
+  });
+
+  onUnmounted(() => {
+    clearBgc();
+  });
+
   return { renderBgc, clearBgc };
 };

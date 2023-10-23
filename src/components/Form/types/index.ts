@@ -5,11 +5,11 @@ export interface FormAttribute {
   /**
    * 表单数据
    */
-  formData: Record<string, unknown>;
+  modelValue: Record<string, unknown>;
   /**
    * 表单配置项
    */
-  formItemList: FormItem[];
+  formItems: FormItem[];
   /**
    * label 宽度
    */

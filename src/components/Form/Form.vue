@@ -51,7 +51,7 @@
               ...args
             },
             i
-          ) in formItemList"
+          ) in formItems"
           :key="i"
         >
           <el-col
@@ -62,7 +62,7 @@
             :md="md"
             :lg="lg"
             :xl="xl"
-            :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
+            :class="i + 1 === formItems.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
             v-if="type === 'slot'"
           >
             <!-- 自定义插槽 -->
@@ -85,7 +85,7 @@
             :md="md"
             :lg="lg"
             :xl="xl"
-            :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
+            :class="i + 1 === formItems.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
             v-else-if="type === 'input'"
           >
             <el-form-item
@@ -120,7 +120,7 @@
             :md="md"
             :lg="lg"
             :xl="xl"
-            :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
+            :class="i + 1 === formItems.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
             v-else-if="type === 'pwd'"
           >
             <el-form-item
@@ -178,7 +178,7 @@
             :md="md"
             :lg="lg"
             :xl="xl"
-            :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
+            :class="i + 1 === formItems.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
             v-else-if="type === 'select'"
           >
             <el-form-item
@@ -216,7 +216,7 @@
             :md="md"
             :lg="lg"
             :xl="xl"
-            :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
+            :class="i + 1 === formItems.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
             v-else-if="type === 'switch'"
           >
             <el-form-item
@@ -255,7 +255,7 @@
             :md="md"
             :lg="lg"
             :xl="xl"
-            :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
+            :class="i + 1 === formItems.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
             v-else-if="type === 'radio'"
           >
             <el-form-item
@@ -295,7 +295,7 @@
             :md="md"
             :lg="lg"
             :xl="xl"
-            :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
+            :class="i + 1 === formItems.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
             v-else-if="type === 'checkbox'"
           >
             <el-form-item
@@ -333,7 +333,7 @@
             :md="md"
             :lg="lg"
             :xl="xl"
-            :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
+            :class="i + 1 === formItems.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
             v-else-if="type === 'textarea'"
           >
             <el-form-item
@@ -364,7 +364,7 @@
             :md="md"
             :lg="lg"
             :xl="xl"
-            :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
+            :class="i + 1 === formItems.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
             v-else-if="type === 'transparent'"
           ></el-col>
 
@@ -377,7 +377,7 @@
             :md="md"
             :lg="lg"
             :xl="xl"
-            :class="i + 1 === formItemList.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
+            :class="i + 1 === formItems.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
             v-else-if="type === 'upload'"
           >
             <el-form-item
@@ -423,21 +423,41 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { FormAttribute, UploadLimit } from './types';
 import { UploadRawFile, ElMessage } from 'element-plus';
 
-const emit = defineEmits(['switchChange', 'selectChange', 'radioChange']);
+const emits = defineEmits(['update:modelValue', 'switchChange', 'selectChange', 'radioChange']);
 
 const props = withDefaults(defineProps<FormAttribute>(), {
-  formData: () => ({}),
-  formItemList: () => [],
+  formItems: () => [],
   labelW: 'auto',
   labelP: 'right', // left right top
   size: 'large', // large default small
   disabled: false,
   inline: false,
   gutter: 30,
+});
+
+const formData = computed({
+  get() {
+    return new Proxy(props.modelValue, {
+      get(target, key) {
+        // return target[key];
+        return Reflect.get(target, key);
+      },
+      set(target, key: string, value) {
+        // 通过事件更新父组件表单数据 保持单向数据流原则
+        emits('update:modelValue', {
+          ...target,
+          [key]: value,
+        });
+      },
+    });
+  },
+  set(val) {
+    console.log(val);
+  },
 });
 
 const formRef = ref<any>(null);
@@ -447,18 +467,18 @@ const getRef = () => formRef.value;
 // switch 切换
 const handleSwitchChange = (newVal: any, prop: string, index: number) => {
   // console.log('switch切换 -----', newVal, prop, index)
-  emit('switchChange', { newVal, prop, index });
+  emits('switchChange', { newVal, prop, index });
 };
 
 // 下拉框 切换
 const handleSelectChange = (newVal: any, prop: string, index: number) => {
   // console.log('switch切换 -----', newVal, prop, index)
-  emit('selectChange', { newVal, prop, index });
+  emits('selectChange', { newVal, prop, index });
 };
 
 // 单选框切换
 const handleRadioChange = (newVal: string | number | boolean, prop: string, index: number) => {
-  emit('radioChange', { newVal, prop, index });
+  emits('radioChange', { newVal, prop, index });
 };
 
 /** 文件上传前的回调 返回 false 或者 Promise.reject() 停止上传 */

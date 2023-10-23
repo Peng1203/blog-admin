@@ -6,20 +6,18 @@
     @clickConfirm="handleAdd"
     @clickCancel="addUserDialogStatus = false"
   >
-    <template #main>
-      <!-- inline -->
-      <Form
-        labelW="180"
-        ref="addUserFormRef"
-        :formData="addUserState.data"
-        :formItemList="addUserState.formItemList"
-      />
-    </template>
+    <!-- inline -->
+    <Form
+      labelW="180"
+      ref="addUserFormRef"
+      v-model="addUserState.data"
+      :formItems="addUserState.formItemList"
+    />
   </Dialog>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch, PropType } from 'vue';
+import { ref, reactive, watch } from 'vue';
 import { useUserApi } from '@/api/user';
 import { ElMessage } from 'element-plus';
 import { useUsersInfo } from '@/stores/userList';

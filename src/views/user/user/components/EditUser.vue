@@ -8,15 +8,14 @@
       ref="editFormRef"
       size="default"
       :labelW="80"
-      :formData="editFormState.data"
-      :formItemList="editFormState.formItemList"
+      :formItems="editFormState.formItemList"
+      v-model="editFormState.data"
     />
   </Drawer>
 </template>
 
 <script lang="ts" setup>
 import { ref, reactive, watch } from 'vue';
-import { storeToRefs } from 'pinia';
 import { ElMessage } from 'element-plus';
 import { useUserApi } from '@/api/user/index';
 import Form, { FormItem } from '@/components/Form';

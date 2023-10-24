@@ -452,6 +452,7 @@ const formData = computed({
           ...target,
           [key]: value,
         });
+        return true;
       },
     });
   },

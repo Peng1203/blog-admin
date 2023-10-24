@@ -9,7 +9,7 @@
       size="default"
       :labelW="80"
       :formItems="editFormState.formItemList"
-      v-model="editFormState.data"
+      v-model="formData"
     />
   </Drawer>
 </template>
@@ -27,21 +27,22 @@ const { updateUser } = useUserApi();
 const props = withDefaults(defineProps<EditProps>(), {
   editRow: () => ({} as UserData),
 });
+const emits = defineEmits(['updateList']);
 
 // 抽屉状态
 const editDrawerStatus = ref<boolean>(false);
 
-const emits = defineEmits(['updateList']);
+const formData = ref<AddEditUserType>({
+  userName: '',
+  nickName: '',
+  roleIds: [],
+  email: '',
+  userEnabled: 1,
+  userAvatar: '',
+});
+
 // 编辑状态信息
 const editFormState = reactive({
-  data: ref<AddEditUserType>({
-    userName: '',
-    nickName: '',
-    roleIds: [],
-    email: '',
-    userEnabled: 1,
-    userAvatar: '',
-  }),
   formItemList: ref<FormItem<AddEditUserType>[]>([
     {
       type: 'input',
@@ -63,7 +64,7 @@ const editFormState = reactive({
       rules: [{ min: 2, max: 16, trigger: 'blur' }],
     },
     {
-      type: 'select',
+      type: 'checkbox',
       label: '角色',
       multiple: true,
       prop: 'roleIds',
@@ -96,14 +97,14 @@ const editFormState = reactive({
 watch(
   () => props.editRow,
   val => {
-    editFormState.data = JSON.parse(JSON.stringify(val));
-    editFormState.data.roleIds = editFormState.data.roles?.map(role => role.id);
+    formData.value = JSON.parse(JSON.stringify(val));
+    formData.value.roleIds = formData.value.roles?.map(role => role.id);
   }
 );
 // 保存编辑信息
 const saveEditUserInfo = async (): Promise<boolean> => {
   try {
-    const { userName, nickName, userAvatar, userEnabled, roleIds, email } = editFormState.data;
+    const { userName, nickName, userAvatar, userEnabled, roleIds, email } = formData.value;
     const params = {
       userName,
       nickName,

@@ -10,7 +10,7 @@
     <Form
       labelW="180"
       ref="addUserFormRef"
-      v-model="addUserState.data"
+      v-model="formData"
       :formItems="addUserState.formItemList"
     />
   </Dialog>
@@ -47,16 +47,18 @@ const passwordStrengthDetection = (rule: any, value: any, callback: any): any =>
 // 对话框状态
 const addUserDialogStatus = ref<boolean>(false);
 
+// 表单数据
+const formData = ref<AddEditUserType>({
+  userName: '',
+  nickName: '',
+  password: '',
+  roleIds: [1],
+  email: '',
+  userEnabled: 1,
+  userAvatar: '',
+});
+
 const addUserState = reactive({
-  data: ref<AddEditUserType>({
-    userName: '',
-    nickName: '',
-    password: '',
-    roleIds: [1],
-    email: '',
-    userEnabled: 1,
-    userAvatar: '',
-  }),
   formItemList: ref<FormItem<AddEditUserType>[]>([
     {
       type: 'input',
@@ -159,7 +161,7 @@ const handleAdd = async () => {
 // 添加用户
 const addNewUser = async (): Promise<boolean> => {
   try {
-    const { email, ...other } = addUserState.data;
+    const { email, ...other } = formData.value;
     const params = {
       ...other,
       ...(email ? { email } : {}),
@@ -176,21 +178,20 @@ const addNewUser = async (): Promise<boolean> => {
 };
 
 const formInit = () => {
-  addUserState.data = {
-    userName: '',
-    nickName: '',
-    password: '',
-    roleIds: [],
-    email: '',
-    userEnabled: 1,
-    userAvatar: '',
-  };
+  formData.value.userName = '';
+  formData.value.nickName = '';
+  formData.value.password = '';
+  formData.value.roleIds = [];
+  formData.value.email = '';
+  formData.value.userEnabled = 1;
+  formData.value.userAvatar = '';
+
   addUserFormRef.value.getRef().resetFields();
   const findFormItem = addUserState.formItemList.find(item => item.prop === 'password');
   if (findFormItem) findFormItem.strengthLevel = 0;
 };
 
-watch(addUserDialogStatus, async val => {
+watch(addUserDialogStatus, val => {
   if (!val) return formInit();
 });
 

@@ -73,7 +73,7 @@
 
         <!-- 用户名 -->
         <template #uName="{ row, prop }">
-          <span v-html="queryStrStyle(row[prop!])" />
+          <span v-html="queryStrHighlight(row[prop!], tableState.queryStr)" />
         </template>
 
         <!-- 角色 -->
@@ -160,6 +160,7 @@ import { useUserApi } from '@/api/user';
 import { UserData, UserListData } from './types';
 import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
 import Search from '@/components/Search';
+import { queryStrHighlight } from '@/utils/queryStrHighlight';
 
 const { getUsers, deleteUserById, deleteUsers } = useUserApi();
 
@@ -250,12 +251,6 @@ const handleColumnChange = ({ column, order }: ColumnChangeParams) => {
   tableState.column = column;
   tableState.order = order;
   getUserTableData();
-};
-
-// 文字搜索高亮
-const queryStrStyle = (str: string) => {
-  const regex = new RegExp(tableState.queryStr, 'ig');
-  return str.replace(regex, `<font color="red">$&</font>`);
 };
 
 // 获取用户表格数据

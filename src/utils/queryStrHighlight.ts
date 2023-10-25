@@ -1,4 +1,3 @@
-
 /**
  * 搜索关键字高亮
  * @author Peng
@@ -8,7 +7,6 @@
  * @returns {any}
  */
 export const queryStrHighlight = (str: string, queryStr: string) => {
-  const regex = new RegExp(queryStr, 'ig')
-  return str.replace(regex, `<font color="red">$&</font>`)
-}
-
+  const regex = new RegExp(queryStr, 'ig');
+  return str.replace(regex, `<font color="red">$&</font>`);
+};

@@ -154,7 +154,7 @@ import { ColumnItem, TableAttribute } from './types';
 const deviceClientType = inject('deviceClientType');
 
 const props = withDefaults(defineProps<TableAttribute>(), {
-  border: false,
+  border: true,
 
   // 是否有复选
   isSelection: false,

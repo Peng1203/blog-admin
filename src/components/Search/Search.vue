@@ -5,7 +5,7 @@
     :disabled="props.loading"
     :placeholder="props.placeholder"
     class="transition-effect"
-    :style="{ width: `${width}px` }"
+    :style="{ width: `${inputWidth}px` }"
     v-model.trim="queryString"
     @keyup.enter="handleSearch"
     @focus="handleInputFocus"
@@ -46,6 +46,14 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  focusStyle: {
+    type: Boolean,
+    default: false,
+  },
+  width: {
+    type: Number,
+    default: 200,
+  },
 });
 
 // const emits = defineEmits({
@@ -75,14 +83,16 @@ const handleSearch = () => {
 };
 
 // 输入框最大宽度
-const width = ref<number>(200);
+const inputWidth = ref<number>(props.width);
 // 输入框聚焦时
 const handleInputFocus = () => {
-  width.value = width.value * 1.5;
+  if (!props.focusStyle) return;
+  inputWidth.value = inputWidth.value * 1.5;
 };
 // 输入框失去焦点时
 const handleInputBlur = () => {
-  width.value = 200;
+  if (!props.focusStyle) return;
+  inputWidth.value = props.width;
 };
 </script>
 

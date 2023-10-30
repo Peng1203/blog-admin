@@ -10,7 +10,6 @@
         <el-button
           size="default"
           type="success"
-          class="ml10"
           @click="addDialogRef.addRoleDialogStatus = true"
         >
           <!-- @click="addAuthDialogRef.addAuthPermissonDialogStatus = true" -->
@@ -35,12 +34,47 @@
         @pageNumOrSizeChange="handlePageInfoChange"
       >
         <template #queryHighNight="{ row, prop }">
-          <div class="flex-s-c">
-            <span
-              class="ml5"
-              v-html="queryStrHighlight(row[prop], tableState.queryStr)"
-            />
-          </div>
+          <span v-html="queryStrHighlight(row[prop], tableState.queryStr)" />
+        </template>
+
+        <template #operation="{ row }">
+          <el-button
+            circle
+            title="修改信息"
+            size="small"
+            type="primary"
+            :icon="Edit"
+            :disabled="row.id === 1"
+            @click="handleEditRole(row)"
+          />
+
+          <el-popconfirm
+            width="auto"
+            icon="DeleteFilled"
+            icon-color="#f56c6c"
+            :title="`是否删除用户：${row.roleName} ?`"
+            @confirm="handleDelRole(row)"
+          >
+            <template #reference>
+              <el-button
+                circle
+                title="删除"
+                size="small"
+                type="danger"
+                :icon="Delete"
+                :disabled="row.id === 1"
+              />
+            </template>
+          </el-popconfirm>
+
+          <el-button
+            circle
+            title="修改信息"
+            size="small"
+            type="success"
+            :icon="View"
+            @click="handleEditRole(row)"
+          />
         </template>
       </Table>
     </el-card>
@@ -65,7 +99,7 @@
 <script setup lang="ts" name="SystemRole">
 import { defineAsyncComponent, ref, onMounted, reactive } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
-import { Delete, Edit } from '@element-plus/icons-vue';
+import { Delete, Edit, View } from '@element-plus/icons-vue';
 import { useUserAuthList } from '@/stores/userAuthList';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
 import { useRoleApi } from '@/api/role/index';
@@ -110,7 +144,7 @@ const tableState = reactive({
     {
       label: '操作',
       prop: '',
-      minWidth: 95,
+      minWidth: 70,
       slotName: 'operation',
       fixed: 'right',
     },
@@ -143,9 +177,8 @@ const getRoleTableData = async () => {
       pageSize: pagerInfo.pageSize,
     };
     const { data: res } = await getRole<RoleListData>(params);
-    console.log('res ------', res);
 
-    const { code, message, data, success } = res;
+    const { code, data, success } = res;
     if (code !== 20000 || !success) return;
     tableState.data = data.list;
     tableState.pagerInfo.total = data.total;
@@ -177,16 +210,7 @@ const handleColumnChange = ({ column, order }: ColumnChangeParams) => {
 };
 
 // 处理删除角色
-const handleDelRole = async (row: RoleData) => {
-  const confirmRes = await ElMessageBox.confirm(`此操作将永久角色：“${row.roleName}”，是否继续?`, '提示', {
-    confirmButtonText: '确认',
-    cancelButtonText: '取消',
-    type: 'warning',
-  }).catch(() => false);
-  if (!confirmRes) return;
-  const delRes = await deleteRoleById(row.id);
-  if (delRes) getRoleTableData();
-};
+const handleDelRole = async (row: RoleData) => {};
 
 // 删除角色
 const deleteRoleById = async (id: number): Promise<boolean> => {
@@ -209,10 +233,7 @@ const deleteRoleById = async (id: number): Promise<boolean> => {
 const editRow = ref();
 const EditRoleDrawer = defineAsyncComponent(() => import('./components/EditRole.vue'));
 const editDrawerRef = ref<RefType>(null);
-const handleEditRole = (row: RoleData) => {
-  editRow.value = JSON.parse(JSON.stringify(row));
-  editDrawerRef.value.editDrawerStatus = true;
-};
+const handleEditRole = (row: RoleData) => {};
 
 // 处理添加角色
 const AddRoleDialog = defineAsyncComponent(() => import('./components/AddRole.vue'));

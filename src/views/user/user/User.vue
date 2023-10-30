@@ -10,7 +10,6 @@
           <el-button
             size="default"
             type="success"
-            class="ml10"
             @click="() => (addDialogRef.addUserDialogStatus = true)"
           >
             <el-icon>
@@ -127,7 +126,6 @@
                 :icon="Delete"
                 :disabled="row.id === 1"
               />
-              <!-- @click="" -->
             </template>
           </el-popconfirm>
         </template>

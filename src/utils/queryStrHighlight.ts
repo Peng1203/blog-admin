@@ -7,6 +7,7 @@
  * @returns {any}
  */
 export const queryStrHighlight = (str: string, queryStr: string) => {
+  if (!str) return str;
   const regex = new RegExp(queryStr, 'ig');
   return str.replace(regex, `<font color="red">$&</font>`);
 };

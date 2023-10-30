@@ -7,11 +7,10 @@
       <!-- 顶部 -->
       <!-- <IconSelector v-model="test" /> -->
       <div class="mb15 flex-sb-c">
-        <div v-auth="'ADD'">
+        <div>
           <el-button
             size="default"
             type="success"
-            class="ml10"
             @click="addDialogRef.addMenuDialogStatus = true"
           >
             <!-- @click="addAuthDialogRef.addAuthPermissonDialogStatus = true" -->
@@ -188,7 +187,6 @@
           <!-- :disabled="row.id === 1" -->
           <el-button
             circle
-            v-auth="'EDIT'"
             title="修改菜单信息"
             size="small"
             type="primary"
@@ -198,7 +196,6 @@
           <!-- @click="handleEditAuthPermission(row)" -->
           <el-button
             circle
-            v-auth="'DELETE'"
             title="删除"
             size="small"
             type="danger"

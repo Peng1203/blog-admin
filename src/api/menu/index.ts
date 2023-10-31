@@ -1,5 +1,5 @@
-import request from '@/utils/request'
-import type { RequestListParams } from 'axios'
+import request from '@/utils/request';
+import { TransformedResponse, RequestNoPageListParams } from 'Api';
 
 export function useMenuApi() {
   return {
@@ -7,20 +7,15 @@ export function useMenuApi() {
      * 获取菜单列表
      * @author Peng
      * @date 2023-04-18
-     * @param {any} params:RequestListParams
+     * @param {any} params:RequestNoPageListParams
      * @returns {any}
      */
-    getMenuList(params: {
-      queryStr: string
-      column: string
-      order: string
-      [key: string]: any
-    }) {
+    getMenus<T = any>(params: RequestNoPageListParams): TransformedResponse<T> {
       return request({
-        url: '/menu/getMenuList',
+        url: '/menu',
         method: 'get',
         params,
-      })
+      });
     },
     /**
      * 添加菜单
@@ -34,7 +29,7 @@ export function useMenuApi() {
         url: '/menu/addMenu',
         method: 'post',
         data: params,
-      })
+      });
     },
     /**
      * 删除菜单
@@ -48,7 +43,7 @@ export function useMenuApi() {
       return request({
         url: `/menu/deleteMenuById/${id}`,
         method: 'delete',
-      })
+      });
     },
     /**
      * 更新菜单信息
@@ -63,7 +58,7 @@ export function useMenuApi() {
         url: `/menu/updateMenuById/${id}`,
         method: 'put',
         data: JSON.stringify(params),
-      })
+      });
     },
     /**
      * 添加全部默认菜单
@@ -80,7 +75,7 @@ export function useMenuApi() {
         headers: {
           'Content-Type': 'application/json',
         },
-      })
+      });
     },
-  }
+  };
 }

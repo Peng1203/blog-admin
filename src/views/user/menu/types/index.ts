@@ -1,32 +1,19 @@
-// 菜单列表响应结构
+import { ListApiBaseResponse, BooleanEnum } from 'Api';
+
 export interface MenuData {
-  URIs: string[];
-  code: number;
-  data: Menu[];
-  message: MessageEnum;
-  total: number;
-}
-
-// 菜单其他配置
-
-interface OtherConfig {
-  isHide: boolean;
-  isKeepAlive: boolean;
-  parentMenuName: string | '';
-}
-
-// 菜单信息
-interface Menu {
   id: number;
   menuName: string;
-  menuIcon: string;
   menuPath: string;
-  menuURI: string;
+  menuUri: string;
+  menuIcon: string | null;
+  orderNum: number;
   parentId: number;
-  menuType: '1' | '2' | '3' | '4';
-  menuRedirect: string;
-  otherConfig: OtherConfig;
-  updateTime: string;
-  createdTime: string;
-  children?: Menu[];
+  message: MessageEnum;
+  isHidden: BooleanEnum;
+  isKeepalive: BooleanEnum;
+  createTime: string | Date;
+  updateTime: string | Date;
+  children: MenuData[];
 }
+
+export type MenuListData = ListApiBaseResponse<MenuData>;

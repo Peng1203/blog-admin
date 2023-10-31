@@ -37,7 +37,7 @@ const routerRules: Array<RouteRecordRaw> = [
       {
         path: '/auth/menu',
         name: 'SystemMenu',
-        component: () => import('@/views/user/menu/index.vue'),
+        component: () => import('@/views/user/menu'),
         meta: {
           parentMenuName: 'Auth',
           title: '菜单管理',

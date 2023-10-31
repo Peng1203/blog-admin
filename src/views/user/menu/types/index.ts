@@ -8,7 +8,6 @@ export interface MenuData {
   menuIcon: string | null;
   orderNum: number;
   parentId: number;
-  message: MessageEnum;
   isHidden: BooleanEnum;
   isKeepalive: BooleanEnum;
   createTime: string | Date;
@@ -17,3 +16,5 @@ export interface MenuData {
 }
 
 export type MenuListData = ListApiBaseResponse<MenuData>;
+
+export type AddMenuType = Partial<MenuData & { menuType: 0 | 1 }>;

@@ -124,16 +124,12 @@
 </template>
 
 <script setup lang="ts" name="SystemMenu">
-import { defineAsyncComponent, ref, onMounted, reactive, nextTick } from 'vue';
-// import { RouteRecordRaw } from 'vue-router'
+import { defineAsyncComponent, ref, onMounted, reactive } from 'vue';
 import { ElMessage } from 'element-plus';
-// import { storeToRefs } from 'pinia'
-// import { useRoutesList } from '@/stores/routesList'
-// import { setBackEndControlRefreshRoutes } from "@/router/backEnd";
 import { Delete, Edit } from '@element-plus/icons-vue';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
 import { useMenuApi } from '@/api';
-import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
+import Table, { ColumnItem, ColumnChangeParams } from '@/components/Table';
 import { useUserAuthList } from '@/stores/userAuthList';
 import { MenuData, MenuListData } from './types';
 import Search from '@/components/Search';

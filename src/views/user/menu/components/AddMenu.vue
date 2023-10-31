@@ -1,64 +1,23 @@
 <template>
-  <Peng-Dialog
+  <Dialog
     title="添加菜单"
-    width="45%"
     v-model="addMenuDialogStatus"
+    @clickCancel="addMenuDialogStatus = false"
+    @clickConfirm="handleAdd"
   >
     <template #main>
       <!-- labelP="top" -->
-      <Peng-Form
+      <Form
         ref="addFormRef"
-        size="default"
         :labelW="'120px'"
-        :formData="addMenuState.data"
+        v-model="addMenuState.data"
         :formItemList="addMenuState.formItemList"
         @selectChange="handleSelectChange"
         @switchChange="handleSwitchChange"
         @radioChange="handleRadioChange"
-      >
-        <!-- 选择父级菜单 -->
-        <template #selectParentMenu>
-          <el-cascader
-            :options="allMenuRules"
-            :props="{ checkStrictly: true, value: 'path', label: 'title' }"
-            placeholder="请选择上级菜单"
-            clearable
-            class="w100"
-            v-model="addMenuState.data.parentId"
-          >
-            <template #default="{ node, data }">
-              <span>{{ data.title }}</span>
-              <span v-if="!node.isLeaf">({{ data.children.length }})</span>
-            </template>
-          </el-cascader>
-        </template>
-
-        <template #menuIcon>
-          <IconSelector
-            :prepend="preIcon"
-            v-model="addMenuState.data.menuIcon"
-            @get="(icon: string) => (addMenuState.data.menuIcon = icon)"
-          />
-        </template>
-      </Peng-Form>
+      ></Form>
     </template>
-
-    <template #footer>
-      <el-button
-        size="small"
-        @click="addMenuDialogStatus = false"
-      >
-        取消
-      </el-button>
-      <el-button
-        type="primary"
-        size="small"
-        @click="handleAdd"
-      >
-        确认
-      </el-button>
-    </template>
-  </Peng-Dialog>
+  </Dialog>
 </template>
 
 <script lang="ts" setup>
@@ -70,6 +29,9 @@ import { allDynamicRoutes } from '@/router/dynamicRoutes.js';
 import { formatFlatteningRoutes } from '@/router/index';
 import { useUserAuthList } from '@/stores/userAuthList';
 import { useRoutesList } from '@/stores/routesList';
+import Dialog from '@/components/Dialog';
+import Form, { FormItem, OperationItem } from '@/components/Form';
+import { MenuData, AddMenuType } from '../types';
 
 const userAuthListStore = useUserAuthList();
 const userAuthList = storeToRefs(userAuthListStore);
@@ -92,148 +54,25 @@ const props = defineProps({
 const addMenuDialogStatus = ref<boolean>(false);
 
 const addMenuState = reactive({
-  data: {
+  data: ref<AddMenuType>({
+    menuUri: '',
     menuName: '',
     menuPath: '',
-    menuURI: '',
     menuIcon: '',
+    menuType: 0,
     parentId: 0,
-    roles: ref<number[]>([1]),
-    menuType: '1',
     updateTime: '',
-    createdTime: '',
-    regedit: '',
-    isKeepAlive: false,
-    isHide: false,
-    parentMenuName: '',
-  },
-  formItemList: ref<FormItem[]>([
+    createTime: '',
+    orderNum: 0,
+    isKeepalive: 0,
+    isHidden: 0,
+    children: [],
+  }),
+  formItemList: ref<FormItem<MenuData>[]>([
     {
-      xs: 24,
-      span: 24,
       type: 'radio',
-      label: '菜单类型',
-      prop: 'menuType',
-      options: ref<RadioItem[]>([
-        {
-          label: '一级目录',
-          value: '1',
-        },
-        {
-          label: '目录',
-          value: '2',
-        },
-        {
-          label: '一级菜单',
-          value: '3',
-        },
-        {
-          label: '菜单',
-          value: '4',
-        },
-      ]),
-    },
-    {
-      xs: 24,
-      span: 24,
-      // 父级菜单 parentId 传0
-      type: 'slot',
-      slotName: 'selectParentMenu',
-      label: '父级菜单',
-      prop: 'parentId',
-      // 使用级联选择器处理选择菜单位置信息
-      options: [],
-      isShow: false,
-      // rules: [{ required: true, trigger: 'change' }],
-    },
-    {
-      xs: 24,
-      span: 24,
-      type: 'input',
-      label: '重定向菜单',
-      placeholder: '请输入菜单唯一标识',
-      prop: 'regedit',
-      isShow: true,
-      // rules: [{ required: true, trigger: 'blur' }],
-      rules: [{ required: true, trigger: 'change' }],
-    },
-    {
-      xs: 24,
-      span: 12,
-      type: 'select',
-      label: '添加菜单',
-      prop: 'menuURI',
-      options: [],
-      rules: [{ required: true, message: '请选择菜单', trigger: 'change' }],
-    },
-    {
-      xs: 24,
-      span: 12,
-      disabled: true,
-      type: 'input',
-      label: '菜单名',
-      prop: 'menuName',
-      placeholder: '',
-      rules: [{ required: true, trigger: 'change' }],
-    },
-    {
-      xs: 24,
-      span: 12,
-      disabled: true,
-      type: 'input',
-      label: '菜单路径',
-      prop: 'menuPath',
-      rules: [{ required: true, trigger: 'change' }],
-    },
-    // {
-    //   xs: 24,
-    //   span: 12,
-    //   disabled: true,
-    //   type: 'input',
-    //   label: '唯一URI',
-    //   prop: 'menuURI',
-    //   placeholder: '',
-    //   rules: [{ required: true, trigger: 'change' }],
-    // },
-    {
-      xs: 24,
-      span: 12,
-      type: 'slot',
-      label: '菜单图标',
-      prop: 'menuIcon',
-      slotName: 'menuIcon',
-    },
-    // {
-    //   xs: 24,
-    //   span: 12,
-    //   type: 'select',
-    //   label: '持有角色',
-    //   multiple: true,
-    //   prop: 'roles',
-    //   options: [],
-    //   rules: [{ type: 'array', required: true, trigger: 'change' }],
-    // },
-    {
-      xs: 24,
-      span: 12,
-      type: 'switch',
-      label: '是否缓存',
-      prop: 'isKeepAlive',
-      tValue: true,
-      fValue: false,
-      tText: '是',
-      fText: '否',
-    },
-    {
-      xs: 24,
-      span: 12,
-      type: 'switch',
-      label: '是否隐藏',
-      prop: 'isHide',
-      tValue: true,
-      fValue: false,
-      tText: '是',
-      fText: '否',
+      label: '类型',
+      prop: '',
     },
   ]),
 });
@@ -241,32 +80,11 @@ const addMenuState = reactive({
 const addFormRef = ref<any>(null);
 // 处理添加操作
 const handleAdd = async () => {
-  // 校验结果
-  let validRes: boolean = false;
-  let validProps: any[] = [];
-
-  switch (addMenuState.data.menuType) {
-    // 一级目录 参数校验
-    case '1':
-      validProps = ['regedit', 'menuURI', 'menuName', 'menuPath', 'menuIcon', 'isKeepAlive', 'isHide'];
-      break;
-    case '2':
-      validProps = ['parentId', 'regedit', 'menuURI', 'menuName', 'menuPath', 'menuIcon', 'isKeepAlive', 'isHide'];
-      break;
-    case '3':
-      validProps = ['menuURI', 'menuName', 'menuPath', 'menuIcon', 'isKeepAlive', 'isHide'];
-      break;
-    case '4':
-      validProps = ['parentId', 'menuURI', 'menuName', 'menuPath', 'menuIcon', 'isKeepAlive', 'isHide'];
-      break;
-  }
-  await addFormRef.value.getRef().validateField(validProps, (isValid: boolean) => (validRes = isValid));
-
-  if (!validRes) return;
-  const addRes = await addNewMenu();
-  if (!addRes) return;
-  addMenuDialogStatus.value = false;
-  emits('updateList');
+  // if (!validRes) return;
+  // const addRes = await addNewMenu();
+  // if (!addRes) return;
+  // addMenuDialogStatus.value = false;
+  // emits('updateList');
 };
 
 // 添加权限标识
@@ -435,17 +253,6 @@ const reSetAddForm = () => {
     parentMenuName: '',
   };
 };
-
-// 弹框关闭时清除表单信息
-watch(addMenuDialogStatus, async val => {
-  if (val) {
-    await userAuthListStore.getAllRoleList();
-    addMenuState.formItemList[5].options = userAuthList.allRoleOptions.value;
-  } else {
-    addFormRef.value.getRef().resetFields();
-    reSetAddForm();
-  }
-});
 
 // 级联选择器数据
 const allMenuRules = ref<any>();

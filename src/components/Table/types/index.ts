@@ -32,7 +32,7 @@ export interface BaseTableAttribute {
 // 表格column 可选属性
 export interface ColumnItem<T = any> {
   label: string;
-  prop: keyof T | '';
+  prop: keyof T | 'operation';
   width?: number | string | 'auto';
   minWidth?: number | string;
   sort?: boolean | 'custom';

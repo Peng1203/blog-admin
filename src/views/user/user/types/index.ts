@@ -1,4 +1,4 @@
-import { ListApiBaseResponse } from 'Api';
+import { ListApiBaseResponse, BooleanEnum } from 'Api';
 
 export interface UserData {
   id: number;
@@ -7,7 +7,7 @@ export interface UserData {
   roles: any[];
   email: string | null;
   nickName: string | null;
-  userEnabled: number;
+  userEnabled: BooleanEnum;
   userAvatar: string | null;
   createTime: string | Date;
   updateTime: string | Date;

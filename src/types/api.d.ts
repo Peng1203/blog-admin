@@ -10,6 +10,12 @@ declare module 'Api' {
     order: string;
     [key: string]: T;
   };
+  export type RequestNoPageListParams<T = any> = {
+    queryStr: string;
+    column: string;
+    order: string;
+    [key: string]: T;
+  };
 
   export interface ApiBaseResponse<T = any> {
     /**
@@ -55,4 +61,6 @@ declare module 'Api' {
     message: string;
     timestamp: string;
   }
+
+  export type BooleanEnum = 0 | 1;
 }

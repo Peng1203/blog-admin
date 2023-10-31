@@ -143,7 +143,7 @@ const tableState = reactive({
     { label: '创建时间', prop: 'createTime', minWidth: 200, sort: true },
     {
       label: '操作',
-      prop: '',
+      prop: 'operation',
       minWidth: 70,
       slotName: 'operation',
       fixed: 'right',

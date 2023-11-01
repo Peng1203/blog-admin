@@ -1,5 +1,4 @@
-import { UploadRawFile, UploadRequestOptions } from 'element-plus';
-import { Awaitable } from 'element-plus/es/utils';
+import { UploadRequestOptions } from 'element-plus';
 
 export interface FormAttribute {
   /**
@@ -46,12 +45,13 @@ export type FormItemEnum =
   | 'pwd'
   | 'transparent'
   | 'textarea'
-  | 'upload';
+  | 'upload'
+  | 'inputNum';
 
 export type AcceptEnum = '.png' | '.jpg' | '.jpeg' | '.gif' | '.webp' | '.txt' | '.mp3' | '.mp4';
 
 // 封装表单formItem属性
-export type FormItem<T = any> = BaseFormItem<T> & UploadLimit;
+export type FormItem<T = any> = BaseFormItem<T> & UploadLimit & InputAttr & SwitchAttr & InputNumAttr;
 
 /** 封装表单formItem基础属性 */
 export interface BaseFormItem<T = any> {
@@ -78,18 +78,19 @@ export interface BaseFormItem<T = any> {
   options?: OperationItem[] | RadioItem[] | any;
   /** 开启多选 */
   multiple?: boolean;
-  /** switch true 文本 */
-  tText?: string | number;
-  /** switch false 文本 */
-  fText?: string | number;
-  /** switch true 值 */
-  tValue?: string | number | boolean;
-  /** switch false 值 */
-  fValue?: string | number | boolean;
   /** 宽度 */
   width?: number;
   /** 高度 */
   height?: number;
+  [key: string]: any;
+}
+
+/** input类型 输入框 特有属性 */
+export interface InputAttr {
+  /** 复合型输入框 前置插槽内容 */
+  statrPre?: string;
+  /** 复合型输入框 后置插槽内容 */
+  endPre?: string;
   /**
    * 密码强度等级
    */
@@ -98,15 +99,27 @@ export interface BaseFormItem<T = any> {
    * 输入框 自动填充历史值
    */
   autocomplete?: boolean;
-  /** 是否显示已上传文件列表 */
-  fsShow?: boolean;
-  /** 自动上传 */
-  autoUpload?: boolean;
-  /** 文件上传前的回调 返回 false 或者 Promise.reject() 停止上传 */
-  // beforeUploadCb?: (rawFile: UploadRawFile) => Awaitable<void | undefined | null | boolean | File | Blob>;
-  /** 自定义上传函数 */
-  customUploadCb?: (options: UploadRequestOptions) => any;
-  [key: string]: any;
+}
+
+export interface InputNumAttr {
+  /** 数字输入框最小值 */
+  minVal?: number;
+  /** 数字输入框最大值 */
+  maxVal?: number;
+  /** 控件是否居右 */
+  controlsR?: boolean;
+}
+
+/** swatch类型 特有属性 */
+export interface SwitchAttr {
+  /** switch true 文本 */
+  tText?: string | number;
+  /** switch false 文本 */
+  fText?: string | number;
+  /** switch true 值 */
+  tValue?: string | number | boolean;
+  /** switch false 值 */
+  fValue?: string | number | boolean;
 }
 
 /** 文件上传的限制属性 */
@@ -117,6 +130,14 @@ export interface UploadLimit {
   limit?: number;
   /** 单个文件最大大小 Mb */
   fileMaxSize?: number;
+  /** 是否显示已上传文件列表 */
+  fsShow?: boolean;
+  /** 自动上传 */
+  autoUpload?: boolean;
+  /** 文件上传前的回调 返回 false 或者 Promise.reject() 停止上传 */
+  // beforeUploadCb?: (rawFile: UploadRawFile) => Awaitable<void | undefined | null | boolean | File | Blob>;
+  /** 自定义上传函数 */
+  customUploadCb?: (options: UploadRequestOptions) => any;
 }
 
 // 封装表单 下拉框 / switch 组件 自定义事件传递参数

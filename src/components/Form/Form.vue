@@ -21,7 +21,7 @@
               required,
               disabled,
               placeholder,
-              span,
+              span = 20,
               offset,
               xs = 24,
               sm,
@@ -72,7 +72,10 @@
               :required="required"
               v-show="isShow === undefined ? true : isShow"
             >
-              <slot :name="slotName" />
+              <slot
+                :prop="prop"
+                :name="slotName"
+              />
             </el-form-item>
           </el-col>
 
@@ -107,6 +110,51 @@
                 v-model="formData[prop]"
                 readonly
                 @focus="(e: any) => e.target.removeAttribute('readonly')"
+              >
+                <template
+                  v-if="args.statrPre"
+                  #prepend
+                >
+                  {{ args.statrPre }}
+                </template>
+
+                <template
+                  v-if="args.endPre"
+                  #append
+                >
+                  {{ args.endPre }}
+                </template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+
+          <!-- 数字输入框 -->
+          <el-col
+            :span="span"
+            :offset="offset"
+            :xs="xs"
+            :sm="sm"
+            :md="md"
+            :lg="lg"
+            :xl="xl"
+            :class="i + 1 === formItems.length ? '' : isShow === true || isShow === undefined ? 'mb20' : ''"
+            v-else-if="type === 'inputNum'"
+          >
+            <el-form-item
+              :size="size"
+              :prop="prop"
+              :label="label"
+              :rules="rules"
+              :required="required"
+              v-show="isShow === undefined ? true : isShow"
+            >
+              <el-input-number
+                :size="size"
+                :disabled="disabled || false"
+                :min="args.minVal || 0"
+                :max="args.maxVal || 100"
+                :controls-position="args.controlsR ? 'right' : ''"
+                v-model="formData[prop]"
               />
             </el-form-item>
           </el-col>
@@ -433,7 +481,7 @@ const props = withDefaults(defineProps<FormAttribute>(), {
   formItems: () => [],
   labelW: 'auto',
   labelP: 'right', // left right top
-  size: 'large', // large default small
+  size: 'default', // large default small
   disabled: false,
   inline: false,
   gutter: 30,

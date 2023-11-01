@@ -5,7 +5,7 @@ export interface MenuData {
   menuName: string;
   menuPath: string;
   menuUri: string;
-  menuIcon: string | null;
+  menuIcon: string;
   orderNum: number;
   parentId: number;
   isHidden: BooleanEnum;

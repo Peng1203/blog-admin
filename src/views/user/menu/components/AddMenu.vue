@@ -5,18 +5,25 @@
     @clickCancel="addMenuDialogStatus = false"
     @clickConfirm="handleAdd"
   >
-    <template #main>
-      <!-- labelP="top" -->
-      <Form
-        ref="addFormRef"
-        :labelW="'120px'"
-        v-model="addMenuState.data"
-        :formItemList="addMenuState.formItemList"
-        @selectChange="handleSelectChange"
-        @switchChange="handleSwitchChange"
-        @radioChange="handleRadioChange"
-      ></Form>
-    </template>
+    {{ addMenuState.data }}
+    <Form
+      ref="addFormRef"
+      :labelW="'120px'"
+      :formItems="addMenuState.formItemList"
+      v-model="addMenuState.data"
+    >
+      <template #iconSlot="{ prop }">
+        <!-- <span>{{ row[prop!] }}</span> -->
+        <IconSelector
+          :prepend="preIcon"
+          v-model="addMenuState.data.menuIcon"
+        />
+        <!-- @get="(icon) => (addTagState.data.tagIcon = icon)" -->
+      </template>
+    </Form>
+    <!-- @radioChange="handleRadioChange" -->
+    <!-- @selectChange="handleSelectChange" -->
+    <!-- @switchChange="handleSwitchChange" -->
   </Dialog>
 </template>
 
@@ -30,7 +37,7 @@ import { formatFlatteningRoutes } from '@/router/index';
 import { useUserAuthList } from '@/stores/userAuthList';
 import { useRoutesList } from '@/stores/routesList';
 import Dialog from '@/components/Dialog';
-import Form, { FormItem, OperationItem } from '@/components/Form';
+import Form, { FormItem, RadioItem, OperationItem } from '@/components/Form';
 import { MenuData, AddMenuType } from '../types';
 
 const userAuthListStore = useUserAuthList();
@@ -68,11 +75,64 @@ const addMenuState = reactive({
     isHidden: 0,
     children: [],
   }),
-  formItemList: ref<FormItem<MenuData>[]>([
+  formItemList: ref<FormItem<AddMenuType>[]>([
     {
       type: 'radio',
       label: '类型',
-      prop: '',
+      prop: 'menuType',
+      options: ref<RadioItem[]>([
+        { label: '目录', value: 0 },
+        { label: '菜单', value: 1 },
+      ]),
+    },
+    {
+      type: 'input',
+      label: '菜单名',
+      prop: 'menuName',
+      rules: [
+        { required: true, trigger: 'blur' },
+        { min: 2, max: 8, trigger: 'blur' },
+      ],
+    },
+    {
+      type: 'slot',
+      label: '图标',
+      prop: 'menuIcon',
+      slotName: 'iconSlot',
+    },
+    {
+      type: 'input',
+      label: '访问路径',
+      prop: 'menuPath',
+      statrPre: '/',
+      rules: [
+        { required: true, trigger: 'blur' },
+        { min: 2, max: 8, trigger: 'blur' },
+      ],
+    },
+    {
+      type: 'switch',
+      label: '缓存',
+      prop: 'isKeepalive',
+      tValue: 1,
+      fValue: 0,
+      span: 10,
+    },
+    {
+      type: 'switch',
+      label: '隐藏',
+      prop: 'isHidden',
+      tValue: 1,
+      fValue: 0,
+      span: 10,
+    },
+    {
+      type: 'inputNum',
+      label: '排序',
+      prop: 'orderNum',
+      minVal: 0,
+      maxVal: 20,
+      controlsR: true,
     },
   ]),
 });
@@ -87,50 +147,6 @@ const handleAdd = async () => {
   // emits('updateList');
 };
 
-// 添加权限标识
-const addNewMenu = async (): Promise<boolean> => {
-  try {
-    const {
-      menuName,
-      menuPath,
-      menuIcon,
-      menuURI,
-      parentId,
-      menuType,
-      regedit,
-      roles,
-      // updateTime,
-      // createdTime,
-      isKeepAlive,
-      isHide,
-      parentMenuName,
-    } = addMenuState.data;
-    const params = {
-      menuName,
-      menuPath,
-      menuIcon,
-      menuURI,
-      parentId,
-      menuType,
-      menuRedirect: regedit,
-      // otherConfig: { isKeepAlive, isHide },
-      otherConfig: JSON.stringify({ isKeepAlive, isHide, parentMenuName }),
-    };
-    const { data: res } = await addMenu(params);
-    const { code, data, message } = res;
-    if (code !== 200 || message !== 'Success') {
-      ElMessage.error(data);
-      return false;
-    } else {
-      ElMessage.success(data);
-      return true;
-    }
-  } catch (e) {
-    console.log(e);
-    return false;
-  }
-};
-
 // 图标选择器前置图标
 const preIcon = computed<string>(() => {
   if (addMenuState.data.menuIcon) return addMenuState.data.menuIcon;
@@ -138,120 +154,32 @@ const preIcon = computed<string>(() => {
 });
 
 // 下拉选择切换
-const handleSelectChange = ({ newVal, prop, index }: FormItemChangeType) => {
-  // 选择本地菜单切换
-  if (prop === 'menuURI') {
-    const selectMenuDetail: any = unAddMenus.value.find((item: any) => item.name === newVal);
-    const { name, path, meta, redirect } = selectMenuDetail;
+// const handleSelectChange = ({ newVal, prop, index }) => {};
 
-    addMenuState.data.menuName = meta.title;
-    addMenuState.data.menuIcon = meta.icon;
-    addMenuState.data.menuURI = name;
-    addMenuState.data.menuPath = path;
-    addMenuState.data.regedit = redirect ? redirect.name : '';
-    addMenuState.data.parentMenuName = meta.parentMenuName || '';
-    addMenuState.data.menuType = meta.menuType;
-
-    // 选择父级菜单行 是否展示
-    const findRes1 = addMenuState.formItemList.find(i => i.prop === 'parentId');
-    // 输入重定向地址
-    const findRes2 = addMenuState.formItemList.find(i => i.prop === 'regedit');
-
-    if (['2', '4'].includes(addMenuState.data.menuType)) {
-      findRes1 && (findRes1.isShow = true);
-    } else if (['1', '3'].includes(addMenuState.data.menuType)) {
-      findRes1 && (findRes1.isShow = false);
-    }
-
-    if (['1', '2'].includes(addMenuState.data.menuType)) {
-      findRes2 && (findRes2.isShow = true);
-    } else if (['3', '4'].includes(addMenuState.data.menuType)) {
-      findRes2 && (findRes2.isShow = false);
-    }
-  }
-};
-
-// switch 选项切换
-const handleSwitchChange = ({ newVal, prop, index }: FormItemChangeType) => {
-  // if (prop === 'isParentMenu') {
-  //   if (newVal) {
-  //     addMenuState.data.parentId = 0
-  //     addMenuState.formItemList[index + 1].isShow = false
-  //   } else {
-  //     addMenuState.formItemList[index + 1].isShow = true
-  //   }
-  // }
-};
+// // switch 选项切换
+// const handleSwitchChange = ({ newVal, prop, index }) => {};
 
 // radios 单选框切换
-const handleRadioChange = ({ newVal, prop, index }: FormItemChangeType) => {
-  if (prop === 'menuType') {
-    // 选择父级菜单行 是否展示
-    const findRes1 = addMenuState.formItemList.find(i => i.prop === 'parentId');
-    // 输入重定向地址
-    const findRes2 = addMenuState.formItemList.find(i => i.prop === 'regedit');
-
-    if (['2', '4'].includes(newVal)) {
-      findRes1 && (findRes1.isShow = true);
-    } else if (['1', '3'].includes(newVal)) {
-      findRes1 && (findRes1.isShow = false);
-    }
-
-    if (['1', '2'].includes(newVal)) {
-      findRes2 && (findRes2.isShow = true);
-    } else if (['3', '4'].includes(newVal)) {
-      findRes2 && (findRes2.isShow = false);
-    }
-
-    reSetAddForm();
-    addMenuState.data.menuType = newVal;
-  }
-};
+// const handleRadioChange = ({ newVal, prop, index }) => {};
 
 // 可添加菜单详情数组 用于查找
 const unAddMenus = ref();
 // 下拉筛选数据
 const menuOptions = ref([]);
 
-watch(
-  () => props.URIs,
-  val => {
-    // 根据本地全部的菜单数组 以及数据库中以存在的菜单 对比过滤出 可选添加的新菜单
-    // .filter((rule: any) => !rule.redirect && rule)
-    const menuRules = formatFlatteningRoutes(allDynamicRoutes).filter((rule: any) => rule.name !== 'Index');
-
-    // 过滤出可选菜单
-    unAddMenus.value = menuRules.filter((rule: any) => !val?.includes(rule.name));
-    menuOptions.value = unAddMenus.value.map((item: any) => ({
-      label: item.meta.title,
-      value: item.name,
-    }));
-    const findMenu = addMenuState.formItemList.find(i => i.prop === 'menuURI');
-    findMenu && (findMenu.options = menuOptions.value);
-    // addMenuState.formItemList[0]
-  },
-  {
-    deep: true,
-    immediate: true,
-  }
-);
-
 const reSetAddForm = () => {
-  addMenuState.data = {
-    menuName: '',
-    menuPath: '',
-    menuURI: '',
-    menuIcon: '',
-    parentId: 0,
-    roles: [1],
-    menuType: '1',
-    updateTime: '',
-    createdTime: '',
-    regedit: '',
-    isKeepAlive: false,
-    isHide: false,
-    parentMenuName: '',
-  };
+  // addMenuState.data = {
+  //   menuName: '',
+  //   menuPath: '',
+  //   menuUri: '',
+  //   menuIcon: '',
+  //   parentId: 0,
+  //   menuType: 1,
+  //   updateTime: '',
+  //   createTime: '',
+  //   isKeepalive: 0,
+  //   isHidden: 0,
+  // };
 };
 
 // 级联选择器数据

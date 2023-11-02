@@ -1,10 +1,11 @@
 <template>
   <Dialog
-    title="添加菜单"
+    :title="isAddChildren ? '添加子菜单' : '添加菜单'"
     v-model="addMenuDialogStatus"
     @clickCancel="addMenuDialogStatus = false"
     @clickConfirm="handleAdd"
   >
+    {{ props.parentRow }}
     {{ addMenuState.data }}
     <Form
       ref="addFormRef"
@@ -53,8 +54,13 @@ const { addMenu } = useMenuApi();
 const emits = defineEmits(['updateList']);
 
 const props = defineProps({
-  URIs: {
-    type: Array as PropType<string[]>,
+  isAddChildren: {
+    type: Boolean,
+    default: false,
+  },
+  parentRow: {
+    type: Object as PropType<MenuData>,
+    default: () => ({}),
   },
 });
 

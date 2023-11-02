@@ -148,7 +148,7 @@
   </div>
 </template>
 
-<script setup lang="ts" name="SystemUser">
+<script setup lang="ts" name="UserList">
 import { defineAsyncComponent, reactive, onMounted, ref } from 'vue';
 import { useRolesInfo } from '@/stores/roleList';
 import { useUsersInfo } from '@/stores/userList';

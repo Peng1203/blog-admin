@@ -11,7 +11,12 @@
           <el-button
             size="default"
             type="success"
-            @click="addDialogRef.addMenuDialogStatus = true"
+            @click="
+              () => {
+                addDialogRef.addMenuDialogStatus = true;
+                isAddChildren = false;
+              }
+            "
           >
             <!-- @click="addAuthDialogRef.addAuthPermissonDialogStatus = true" -->
             <el-icon>
@@ -86,12 +91,13 @@
           <!-- :disabled="row.id === 1" -->
           <el-button
             circle
-            title="修改菜单信息"
+            title="添加"
             size="small"
-            type="primary"
-            :icon="Edit"
-            @click="handleEditMenu(row)"
+            type="success"
+            :icon="Plus"
+            @click="handleAddChildrenMenu(row)"
           />
+
           <!-- @click="handleEditAuthPermission(row)" -->
           <el-button
             circle
@@ -100,6 +106,15 @@
             type="danger"
             :icon="Delete"
             @click="handleDelMenu(row)"
+          />
+
+          <el-button
+            circle
+            title="修改菜单"
+            size="small"
+            type="primary"
+            :icon="Edit"
+            @click="handleEditMenu(row)"
           />
           <!-- @click="handleDeleteAuthPermission(row)" -->
           <!-- :disabled="row.id === 1" -->
@@ -117,7 +132,8 @@
     <!-- 添加菜单对话框 -->
     <AddMenuDialog
       ref="addDialogRef"
-      :URIs="tableState.URIs"
+      :parentRow="parentRow"
+      :isAddChildren="isAddChildren"
       @updateList="handleUpdate"
     />
   </div>
@@ -126,13 +142,14 @@
 <script setup lang="ts" name="SystemMenu">
 import { defineAsyncComponent, ref, onMounted, reactive } from 'vue';
 import { ElMessage } from 'element-plus';
-import { Delete, Edit } from '@element-plus/icons-vue';
+import { Delete, Edit, Plus } from '@element-plus/icons-vue';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
 import { useMenuApi } from '@/api';
 import Table, { ColumnItem, ColumnChangeParams } from '@/components/Table';
 import { useUserAuthList } from '@/stores/userAuthList';
 import { MenuData, MenuListData } from './types';
 import Search from '@/components/Search';
+import { ElButton } from 'element-plus';
 
 const { getMenus, deleteMenu } = useMenuApi();
 
@@ -262,6 +279,15 @@ const EditMenuDrawer = defineAsyncComponent(() => import('./components/EditMenu.
 const editDrawerRef = ref<RefType>(null);
 const handleEditMenu = (row: MenuData) => {};
 
+const isAddChildren = ref<boolean>();
+const handleAddChildrenMenu = (row: MenuData) => {
+  parentRow.value = row;
+  isAddChildren.value = true;
+  addDialogRef.value.addMenuDialogStatus = true;
+};
+
+// 添加子菜单的父菜单
+const parentRow = ref<MenuData>();
 // 处理添加菜单
 const AddMenuDialog = defineAsyncComponent(() => import('./components/AddMenu.vue'));
 const addDialogRef = ref<RefType>(null);

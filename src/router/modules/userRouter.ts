@@ -5,7 +5,7 @@ const routerRules: RouteRecordRaw[] = [
   {
     path: '/user',
     name: 'User',
-    redirect: { name: 'SystemUser' },
+    redirect: { name: 'UserList' },
     // component: () => import('@/layout/routerView/parent.vue'),
     meta: {
       title: '用户管理',
@@ -20,7 +20,7 @@ const routerRules: RouteRecordRaw[] = [
     children: [
       {
         path: '/user/list',
-        name: 'SystemUser',
+        name: 'UserList',
         component: () => import('@/views/user/user'),
         meta: {
           parentMenuName: 'User',

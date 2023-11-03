@@ -5,8 +5,6 @@
     @clickCancel="addMenuDialogStatus = false"
     @clickConfirm="handleAdd"
   >
-    {{ props.parentRow }}
-    {{ addMenuState.data }}
     <Form
       ref="addFormRef"
       :labelW="'120px'"
@@ -33,16 +31,11 @@ import { ref, reactive, watch, PropType, computed, onMounted, defineAsyncCompone
 import { storeToRefs } from 'pinia';
 import { ElMessage } from 'element-plus';
 import { useMenuApi } from '@/api/menu/index';
-import { allDynamicRoutes } from '@/router/dynamicRoutes.js';
-import { formatFlatteningRoutes } from '@/router/index';
-import { useUserAuthList } from '@/stores/userAuthList';
 import { useRoutesList } from '@/stores/routesList';
 import Dialog from '@/components/Dialog';
 import Form, { FormItem, RadioItem, OperationItem } from '@/components/Form';
 import { MenuData, AddMenuType } from '../types';
 
-const userAuthListStore = useUserAuthList();
-const userAuthList = storeToRefs(userAuthListStore);
 const stores = useRoutesList();
 
 const { routesList } = storeToRefs(stores);
@@ -68,18 +61,15 @@ const addMenuDialogStatus = ref<boolean>(false);
 
 const addMenuState = reactive({
   data: ref<AddMenuType>({
-    menuUri: '',
-    menuName: '',
-    menuPath: '',
-    menuIcon: '',
+    menuName: 'test',
+    menuUri: 'Test',
+    menuPath: '/test',
+    menuIcon: 'iconfont icon-GIF',
     menuType: 0,
     parentId: 0,
-    updateTime: '',
-    createTime: '',
     orderNum: 0,
     isKeepalive: 0,
     isHidden: 0,
-    children: [],
   }),
   formItemList: ref<FormItem<AddMenuType>[]>([
     {
@@ -101,10 +91,13 @@ const addMenuState = reactive({
       ],
     },
     {
-      type: 'slot',
-      label: '图标',
-      prop: 'menuIcon',
-      slotName: 'iconSlot',
+      type: 'input',
+      label: '菜单URI',
+      prop: 'menuUri',
+      rules: [
+        { required: true, trigger: 'blur' },
+        { min: 2, max: 8, trigger: 'blur' },
+      ],
     },
     {
       type: 'input',
@@ -113,8 +106,14 @@ const addMenuState = reactive({
       statrPre: '/',
       rules: [
         { required: true, trigger: 'blur' },
-        { min: 2, max: 8, trigger: 'blur' },
+        { min: 2, max: 18, trigger: 'blur' },
       ],
+    },
+    {
+      type: 'slot',
+      label: '图标',
+      prop: 'menuIcon',
+      slotName: 'iconSlot',
     },
     {
       type: 'switch',
@@ -146,11 +145,39 @@ const addMenuState = reactive({
 const addFormRef = ref<any>(null);
 // 处理添加操作
 const handleAdd = async () => {
-  // if (!validRes) return;
-  // const addRes = await addNewMenu();
-  // if (!addRes) return;
-  // addMenuDialogStatus.value = false;
-  // emits('updateList');
+  const validRes = await addFormRef.value
+    .getRef()
+    .validate()
+    .catch(() => false);
+  if (!validRes) return;
+  const addRes = await addNewMenu();
+  if (!addRes) return;
+  addMenuDialogStatus.value = false;
+  emits('updateList');
+};
+
+const addNewMenu = async (): Promise<boolean> => {
+  try {
+    const { menuName, menuUri, menuPath, menuIcon, parentId, orderNum, isKeepalive, isHidden } = addMenuState.data;
+    const params = {
+      menuName,
+      menuUri,
+      menuPath,
+      menuIcon,
+      parentId: props.isAddChildren ? props.parentRow.id : 0,
+      orderNum,
+      isKeepalive,
+      isHidden,
+    } as any;
+    const { data: res } = await addMenu<MenuData>(params);
+    const { code, success, message } = res;
+    if (code !== 20100 || !success) return false;
+    ElMessage.success(message);
+    return true;
+  } catch (error) {
+    console.log('error ------', error);
+    return false;
+  }
 };
 
 // 图标选择器前置图标

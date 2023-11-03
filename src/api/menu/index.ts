@@ -1,5 +1,6 @@
 import request from '@/utils/request';
 import { TransformedResponse, RequestNoPageListParams } from 'Api';
+import { MenuParams } from './params';
 
 export function useMenuApi() {
   return {
@@ -21,14 +22,14 @@ export function useMenuApi() {
      * 添加菜单
      * @author Peng
      * @date 2023-04-18
-     * @param {any} params:object
+     * @param {any} data:MenuParams
      * @returns {any}
      */
-    addMenu(params: object) {
+    addMenu<T = any>(data: MenuParams): TransformedResponse<T> {
       return request({
-        url: '/menu/addMenu',
+        url: '/menu',
         method: 'post',
-        data: params,
+        data: JSON.stringify(data),
       });
     },
     /**

@@ -298,7 +298,6 @@ const AddAllMenuButton = defineAsyncComponent(() => import('./components/AddAllM
 // 处理子组件通知父组件更新列表
 const handleUpdate = () => {
   getMenuTableData();
-  userAuthStore.getAllMenuList(true);
 };
 
 // 页面加载时

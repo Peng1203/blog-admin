@@ -40,9 +40,9 @@ export function useMenuApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    deleteMenu(id: number) {
+    deleteMenu<T = string>(id: number): TransformedResponse<T> {
       return request({
-        url: `/menu/deleteMenuById/${id}`,
+        url: `/menu/${id}`,
         method: 'delete',
       });
     },

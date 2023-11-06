@@ -99,14 +99,23 @@
           />
 
           <!-- @click="handleEditAuthPermission(row)" -->
-          <el-button
-            circle
-            title="删除"
-            size="small"
-            type="danger"
-            :icon="Delete"
-            @click="handleDelMenu(row)"
-          />
+          <el-popconfirm
+            width="auto"
+            icon="DeleteFilled"
+            icon-color="#f56c6c"
+            :title="`是否删除菜单：${row.menuName} ?`"
+            @confirm="handleDelMenu(row)"
+          >
+            <template #reference>
+              <el-button
+                circle
+                title="删除"
+                size="small"
+                type="danger"
+                :icon="Delete"
+              />
+            </template>
+          </el-popconfirm>
 
           <el-button
             circle
@@ -149,7 +158,6 @@ import Table, { ColumnItem, ColumnChangeParams } from '@/components/Table';
 import { useUserAuthList } from '@/stores/userAuthList';
 import { MenuData, MenuListData } from './types';
 import Search from '@/components/Search';
-import { ElButton } from 'element-plus';
 
 const { getMenus, deleteMenu } = useMenuApi();
 
@@ -254,17 +262,18 @@ const handleColumnChange = ({ column, order }: ColumnChangeParams) => {
 };
 
 // 处理删除菜单
-const handleDelMenu = async (row: MenuData) => {};
+const handleDelMenu = async (row: MenuData) => {
+  const delRes = await deleteMenuById(row.id);
+  if (!delRes) return;
+  getMenuTableData();
+};
 
 // 删除菜单
 const deleteMenuById = async (id: number): Promise<boolean> => {
   try {
-    const { data: res } = await deleteMenu(id);
-    const { code, data, message } = res;
-    if (code !== 200 || message !== 'Success') {
-      ElMessage.error(data);
-      return false;
-    }
+    const { data: res } = await deleteMenu<string>(id);
+    const { code, data, success } = res;
+    if (code !== 20000 || !success) return false;
     ElMessage.success(data);
     return true;
   } catch (e) {

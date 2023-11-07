@@ -81,7 +81,10 @@ const handleClose = () => {
   emits('dialogClose', dialogStatus.value);
 };
 
-const handleClickCancel = () => emits('clickCancel');
+const handleClickCancel = () => {
+  emits('clickCancel');
+  handleClose();
+};
 
 const handleClickConfirm = () => emits('clickConfirm');
 </script>

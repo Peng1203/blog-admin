@@ -6,7 +6,7 @@
   >
     <Form
       ref="editFormRef"
-      size="default"
+      label-p="top"
       :labelW="80"
       :formItems="editFormState.formItemList"
       v-model="formData"
@@ -94,13 +94,6 @@ const editFormState = reactive({
   ]),
 });
 
-watch(
-  () => props.editRow,
-  val => {
-    formData.value = JSON.parse(JSON.stringify(val));
-    formData.value.roleIds = formData.value.roles?.map(role => role.id);
-  }
-);
 // 保存编辑信息
 const saveEditUserInfo = async (): Promise<boolean> => {
   try {
@@ -137,6 +130,14 @@ const handleSaveEdit = async () => {
 };
 
 const editFormRef = ref<RefType>(null);
+
+watch(
+  () => props.editRow,
+  val => {
+    formData.value = JSON.parse(JSON.stringify(val));
+    formData.value.roleIds = formData.value.roles?.map(role => role.id);
+  }
+);
 
 watch(editDrawerStatus, async val => {
   if (!val) editFormRef.value.getRef().resetFields();

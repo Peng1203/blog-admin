@@ -2,8 +2,8 @@
   <Dialog
     :title="isAddChildren ? '添加子菜单' : '添加菜单'"
     v-model="addMenuDialogStatus"
-    @clickCancel="addMenuDialogStatus = false"
     @clickConfirm="handleAdd"
+    @dialogClose="handleDialogClose"
   >
     <Form
       ref="addFormRef"
@@ -56,10 +56,10 @@ const addMenuDialogStatus = ref<boolean>(false);
 
 const addMenuState = reactive({
   data: ref<AddMenuType>({
-    menuName: 'test',
-    menuUri: 'Test',
-    menuPath: '/test',
-    menuIcon: 'iconfont icon-GIF',
+    menuName: '',
+    menuUri: '',
+    menuPath: '',
+    menuIcon: '',
     menuType: 0,
     parentId: 0,
     orderNum: 0,
@@ -67,15 +67,15 @@ const addMenuState = reactive({
     isHidden: 0,
   }),
   formItemList: ref<FormItem<AddMenuType>[]>([
-    {
-      type: 'radio',
-      label: '类型',
-      prop: 'menuType',
-      options: ref<RadioItem[]>([
-        { label: '目录', value: 0 },
-        { label: '菜单', value: 1 },
-      ]),
-    },
+    // {
+    //   type: 'radio',
+    //   label: '类型',
+    //   prop: 'menuType',
+    //   options: ref<RadioItem[]>([
+    //     { label: '目录', value: 0 },
+    //     { label: '菜单', value: 1 },
+    //   ]),
+    // },
     {
       type: 'input',
       label: '菜单名',
@@ -98,7 +98,7 @@ const addMenuState = reactive({
       type: 'input',
       label: '访问路径',
       prop: 'menuPath',
-      statrPre: '/',
+      // statrPre: '/',
       rules: [
         { required: true, trigger: 'blur' },
         { min: 2, max: 18, trigger: 'blur' },
@@ -148,6 +148,7 @@ const handleAdd = async () => {
   const addRes = await addNewMenu();
   if (!addRes) return;
   addMenuDialogStatus.value = false;
+  resetAddForm();
   emits('updateList');
 };
 
@@ -195,41 +196,23 @@ const unAddMenus = ref();
 // 下拉筛选数据
 const menuOptions = ref([]);
 
-const reSetAddForm = () => {
-  // addMenuState.data = {
-  //   menuName: '',
-  //   menuPath: '',
-  //   menuUri: '',
-  //   menuIcon: '',
-  //   parentId: 0,
-  //   menuType: 1,
-  //   updateTime: '',
-  //   createTime: '',
-  //   isKeepalive: 0,
-  //   isHidden: 0,
-  // };
+const resetAddForm = () => {
+  addMenuState.data.menuName = '';
+  addMenuState.data.menuPath = '';
+  addMenuState.data.menuUri = '';
+  addMenuState.data.menuIcon = '';
+  addMenuState.data.parentId = 0;
+  addMenuState.data.menuType = 1;
+  addMenuState.data.updateTime = '';
+  addMenuState.data.createTime = '';
+  addMenuState.data.isKeepalive = 0;
+  addMenuState.data.isHidden = 0;
 };
 
-// 级联选择器数据
-const allMenuRules = ref<any>();
-// 处理级联选择器菜单数据
-const hanldeFormatCascader = (rules: any[]) => {
-  rules.forEach(rule => {
-    rule.title = rule.meta.title;
-    if (rule.children && rule.children.length) {
-      rule.disabled = false;
-      hanldeFormatCascader(rule.children);
-    } else {
-      rule.disabled = true;
-    }
-  });
+const handleDialogClose = () => {
+  resetAddForm();
+  addFormRef.value.getRef().resetFields();
 };
-
-onMounted(() => {
-  // 处理选择父级菜单级联选择器数据
-  hanldeFormatCascader(routesList.value);
-  allMenuRules.value = routesList.value;
-});
 
 defineExpose({ addMenuDialogStatus });
 </script>

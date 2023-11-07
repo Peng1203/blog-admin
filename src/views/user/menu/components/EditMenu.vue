@@ -67,7 +67,6 @@ const editFormState = reactive({
       type: 'input',
       label: '菜单名',
       prop: 'menuName',
-
       rules: [
         { required: true, trigger: 'blur' },
         { min: 2, max: 8, trigger: 'blur' },
@@ -77,7 +76,6 @@ const editFormState = reactive({
       type: 'input',
       label: '菜单URI',
       prop: 'menuUri',
-
       rules: [
         { required: true, trigger: 'blur' },
         { min: 2, max: 8, trigger: 'blur' },
@@ -87,8 +85,7 @@ const editFormState = reactive({
       type: 'input',
       label: '访问路径',
       prop: 'menuPath',
-
-      statrPre: '/',
+      // statrPre: '/',
       rules: [
         { required: true, trigger: 'blur' },
         { min: 2, max: 18, trigger: 'blur' },
@@ -98,7 +95,6 @@ const editFormState = reactive({
       type: 'slot',
       label: '图标',
       prop: 'menuIcon',
-
       slotName: 'iconSlot',
     },
     {

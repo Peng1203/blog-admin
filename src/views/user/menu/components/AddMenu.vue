@@ -12,17 +12,12 @@
       v-model="addMenuState.data"
     >
       <template #iconSlot="{ prop }">
-        <!-- <span>{{ row[prop!] }}</span> -->
         <IconSelector
           :prepend="preIcon"
           v-model="addMenuState.data.menuIcon"
         />
-        <!-- @get="(icon) => (addTagState.data.tagIcon = icon)" -->
       </template>
     </Form>
-    <!-- @radioChange="handleRadioChange" -->
-    <!-- @selectChange="handleSelectChange" -->
-    <!-- @switchChange="handleSwitchChange" -->
   </Dialog>
 </template>
 

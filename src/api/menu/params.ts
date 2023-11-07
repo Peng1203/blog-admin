@@ -10,3 +10,5 @@ export interface MenuParams {
   isHidden: BooleanEnum;
   isKeepalive: BooleanEnum;
 }
+
+export type EditMenuParams = Partial<MenuParams>;

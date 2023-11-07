@@ -220,7 +220,8 @@ const tableState = reactive({
     {
       label: '操作',
       prop: 'operation',
-      minWidth: 95,
+      width: 125,
+      // minWidth: 125,
       slotName: 'operation',
       fixed: 'right',
     },
@@ -283,10 +284,13 @@ const deleteMenuById = async (id: number): Promise<boolean> => {
 };
 
 // 处理编辑菜单
-const editRow = ref();
 const EditMenuDrawer = defineAsyncComponent(() => import('./components/EditMenu.vue'));
 const editDrawerRef = ref<RefType>(null);
-const handleEditMenu = (row: MenuData) => {};
+const editRow = ref<MenuData>();
+const handleEditMenu = (row: MenuData) => {
+  editRow.value = JSON.parse(JSON.stringify(row));
+  editDrawerRef.value.editDrawerStatus = true;
+};
 
 const isAddChildren = ref<boolean>();
 const handleAddChildrenMenu = (row: MenuData) => {

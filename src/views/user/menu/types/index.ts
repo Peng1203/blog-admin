@@ -18,3 +18,9 @@ export interface MenuData {
 export type MenuListData = ListApiBaseResponse<MenuData>;
 
 export type AddMenuType = Partial<MenuData & { menuType: 0 | 1 }>;
+
+export type EditMenuType = AddMenuType;
+
+export interface EditProps {
+  editRow: MenuData;
+}

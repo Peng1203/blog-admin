@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 import { TransformedResponse, RequestNoPageListParams } from 'Api';
-import { MenuParams } from './params';
+import { EditMenuParams, MenuParams } from './params';
 
 export function useMenuApi() {
   return {
@@ -37,7 +37,6 @@ export function useMenuApi() {
      * @author Peng
      * @date 2023-04-18
      * @param {any} id:number
-     * @param {any} params:object
      * @returns {any}
      */
     deleteMenu<T = string>(id: number): TransformedResponse<T> {
@@ -51,12 +50,12 @@ export function useMenuApi() {
      * @author Peng
      * @date 2023-04-18
      * @param {any} id:number
-     * @param {any} params:object
+     * @param {any} params:EditMenuParams
      * @returns {any}
      */
-    updataMenu(id: number, params: object) {
+    updataMenu<T = string>(id: number, params: EditMenuParams): TransformedResponse<T> {
       return request({
-        url: `/menu/updateMenuById/${id}`,
+        url: `/menu/${id}`,
         method: 'put',
         data: JSON.stringify(params),
       });

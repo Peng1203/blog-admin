@@ -53,7 +53,7 @@ const routerRules: Array<RouteRecordRaw> = [
       {
         path: '/auth/authPermission',
         name: 'SystemAuthPermission',
-        component: () => import('@/views/user/authPermission/index.vue'),
+        component: () => import('@/views/user/authPermission'),
         meta: {
           parentMenuName: 'Auth',
           title: '权限标识',

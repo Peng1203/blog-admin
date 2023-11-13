@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useRoleApi } from '@/api';
-import { RoleData, RoleListData } from '@/views/user/role';
+import { RoleData, RoleListData } from '@/views/auth/role';
 
 const { getRole } = useRoleApi();
 

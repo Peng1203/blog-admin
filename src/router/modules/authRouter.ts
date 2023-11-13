@@ -21,7 +21,7 @@ const routerRules: Array<RouteRecordRaw> = [
       {
         path: '/auth/role',
         name: 'SystemRole',
-        component: () => import('@/views/user/role'),
+        component: () => import('@/views/auth/role'),
         meta: {
           parentMenuName: 'Auth',
           title: '角色管理',
@@ -37,7 +37,7 @@ const routerRules: Array<RouteRecordRaw> = [
       {
         path: '/auth/menu',
         name: 'SystemMenu',
-        component: () => import('@/views/user/menu'),
+        component: () => import('@/views/auth/menu'),
         meta: {
           parentMenuName: 'Auth',
           title: '菜单管理',
@@ -53,7 +53,7 @@ const routerRules: Array<RouteRecordRaw> = [
       {
         path: '/auth/authPermission',
         name: 'SystemAuthPermission',
-        component: () => import('@/views/user/authPermission'),
+        component: () => import('@/views/auth/authPermission'),
         meta: {
           parentMenuName: 'Auth',
           title: '权限标识',

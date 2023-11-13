@@ -85,6 +85,7 @@ import { ref, reactive, onMounted, defineAsyncComponent } from 'vue';
 import { useAuthPermissionApi } from '@/api/authPermission/index';
 import { Delete, Edit } from '@element-plus/icons-vue';
 import { useUserAuthList } from '@/stores/userAuthList';
+import { ColumnItem } from '@/components/Table';
 
 const userAuthStore = useUserAuthList();
 

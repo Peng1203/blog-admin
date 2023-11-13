@@ -1,5 +1,5 @@
 export * from './article';
-export * from './authPermission';
+export * from './permission';
 export * from './category';
 export * from './login';
 export * from './menu';

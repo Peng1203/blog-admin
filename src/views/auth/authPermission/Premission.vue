@@ -82,14 +82,14 @@
 import { AxiosResponse } from 'axios';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { ref, reactive, onMounted, defineAsyncComponent } from 'vue';
-import { useAuthPermissionApi } from '@/api/authPermission/index';
+import { usePermissionApi } from '@/api';
 import { Delete, Edit } from '@element-plus/icons-vue';
 import { useUserAuthList } from '@/stores/userAuthList';
 import { ColumnItem } from '@/components/Table';
 
 const userAuthStore = useUserAuthList();
 
-const { getAuthPermissionList, delAuthPermission } = useAuthPermissionApi();
+const { getPermissions, delAuthPermission } = usePermissionApi();
 // 表格参数
 const tableState = reactive({
   loading: false,
@@ -143,7 +143,7 @@ const getAuthPermissionTableData = async (): Promise<void> => {
       column: tableState.column,
       order: tableState.order,
     };
-    const { data: res }: AxiosResponse<AuthPermissionData> = await getAuthPermissionList(params);
+    const { data: res } = await getPermissions<any>(params);
     const { code, message, data, total } = res;
     if (code !== 200 || message !== 'Success') return;
     tableState.data = data;
@@ -251,3 +251,4 @@ onMounted(() => {
   }
 }
 </style>
+@/api/permission/index

@@ -1,13 +1,12 @@
-import request from '@/utils/request'
-import type { RequestListParams } from 'axios'
-
+import request from '@/utils/request';
+import { TransformedResponse, RequestListParams } from 'Api';
 /**
  * 操作权限标识
  * @author Peng
  * @date 2023-04-16
  * @returns {any}
  */
-export function useAuthPermissionApi() {
+export function usePermissionApi() {
   return {
     /**
      * 获取权限标识列表
@@ -16,12 +15,12 @@ export function useAuthPermissionApi() {
      * @param {any} params:RequestListParams
      * @returns {any}
      */
-    getAuthPermissionList(params: RequestListParams) {
+    getPermissions<T = any>(params: RequestListParams): TransformedResponse<T> {
       return request({
-        url: '/auth-permission/getAuthPermissionList',
+        url: '/permission',
         method: 'get',
         params,
-      })
+      });
     },
     /**
      * 删除权限标识
@@ -34,7 +33,7 @@ export function useAuthPermissionApi() {
       return request({
         url: `/auth-permission/deleteAuthPermById/${id}`,
         method: 'delete',
-      })
+      });
     },
     /**
      * 添加权限标识
@@ -48,7 +47,7 @@ export function useAuthPermissionApi() {
         url: '/auth-permission/addAuthPermission',
         method: 'post',
         data: params,
-      })
+      });
     },
     /**
      * 更新权限标识信息
@@ -63,7 +62,7 @@ export function useAuthPermissionApi() {
         url: `/auth-permission/updateAuthPermInfoById/${id}`,
         method: 'put',
         data: params,
-      })
+      });
     },
-  }
+  };
 }

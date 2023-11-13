@@ -1,15 +1,17 @@
-interface AuthPermissionData {
-  code: number
-  data: AuthPermission[]
-  message: MessageEnum
-  total: number
+import { ListApiBaseResponse } from 'Api';
+
+export type ResourceMethodType = 1 | 2 | 3 | 4 | 5 | 6 | null;
+export interface PermissionData {
+  id: number;
+  permissionName: string;
+  permissionCode: string | null;
+  resourceMethod: ResourceMethodType;
+  resourceUrl: string | null;
+  parentId: number;
+  description: string | null;
+  updateTime: string;
+  createTime: string;
+  children: PermissionData[];
 }
 
-interface AuthPermission {
-  id: number
-  desc: string
-  permissionCode: string
-  permissionName: string
-  updateTime: string
-  createdTime: string
-}
+export type PermissionListData = ListApiBaseResponse<PermissionData>;

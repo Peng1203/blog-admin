@@ -16,6 +16,7 @@ export default defineConfig({
     [/^w(\d+)px$/, ([, d]) => ({ width: `${d}px` })],
     [/^h([1-9]\d?|100)$/, ([, d]) => ({ height: `${d}%` })],
     [/^h(\d+)px$/, ([, d]) => ({ height: `${d}px` })],
+    [/^fz(\d+)$/, ([, d]) => ({ 'font-size': `${d}px` })],
     [
       'flex-c-c',
       {

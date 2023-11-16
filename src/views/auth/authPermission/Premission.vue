@@ -24,7 +24,7 @@
         />
       </div>
 
-      <Peng-Table
+      <Table
         :isFilterShowColumn="true"
         :data="tableState.data"
         :loading="tableState.loading"
@@ -35,12 +35,24 @@
       >
         <!-- 权限标识名称 权限标识代码 查询高亮 -->
         <template #queryHighlight="{ row, prop }">
-          <span v-html="queryStrStyle(row[prop])" />
+          <span v-html="queryStrHighlight(row[prop], tableState.queryStr)" />
+        </template>
+
+        <!-- 请求方式 -->
+        <template #requestMethodSlot="{ row, prop }">
+          <el-tag
+            w60
+            style="border: none"
+            v-if="row[prop]"
+            effect="dark"
+            :color="handleMethodTagColor(row[prop])"
+          >
+            {{ handleMethodTagText(row[prop]) }}
+          </el-tag>
         </template>
 
         <!-- 操作 -->
         <template #operation="{ row }">
-          <!-- :disabled="row.id === 1" -->
           <el-button
             circle
             title="修改信息"
@@ -49,7 +61,6 @@
             :icon="Edit"
             @click="handleEditAuthPermission(row)"
           />
-          <!-- @click="handleEditUserInfo(row)" -->
           <el-button
             circle
             title="删除"
@@ -58,34 +69,34 @@
             :icon="Delete"
             @click="handleDeleteAuthPermission(row)"
           />
-          <!-- :disabled="row.id === 1" -->
-          <!-- @click="handleDelUser(row)" -->
         </template>
-      </Peng-Table>
+      </Table>
     </el-card>
+
     <!-- 修改权限标识信息 -->
-    <EditAuthPermissonDrawer
+    <!-- <EditAuthPermissonDrawer
       ref="editAuthDrawerRef"
       :editRow="editAuthRowInfo"
       @updateList="handleUpdate"
-    />
+    /> -->
 
     <!-- 添加权限标识 -->
-    <AddAuthPermissonDialog
+    <!-- <AddAuthPermissonDialog
       ref="addAuthDialogRef"
       @updateList="handleUpdate"
-    />
+    /> -->
   </div>
 </template>
 
 <script lang="ts" setup name="SystemAuthPermission">
-import { AxiosResponse } from 'axios';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { ref, reactive, onMounted, defineAsyncComponent } from 'vue';
 import { usePermissionApi } from '@/api';
 import { Delete, Edit } from '@element-plus/icons-vue';
 import { useUserAuthList } from '@/stores/userAuthList';
-import { ColumnItem } from '@/components/Table';
+import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
+import { PermissionData, PermissionListData } from './types';
+import { queryStrHighlight } from '@/utils/queryStrHighlight';
 
 const userAuthStore = useUserAuthList();
 
@@ -96,13 +107,12 @@ const tableState = reactive({
   queryStr: '',
   column: '',
   order: '',
-  data: ref<AuthPermission[]>([]),
-  tableColumns: ref<ColumnItem[]>([
+  data: ref<PermissionData[]>([]),
+  tableColumns: ref<ColumnItem<PermissionData>[]>([
     {
       label: '标识名称',
       prop: 'permissionName',
-      minWidth: 100,
-      tooltip: true,
+      minWidth: 130,
       slotName: 'queryHighlight',
     },
     {
@@ -112,9 +122,21 @@ const tableState = reactive({
       tooltip: true,
       slotName: 'queryHighlight',
     },
-    { label: '描述', prop: 'desc', tooltip: true },
+    {
+      label: '请求资源',
+      prop: 'resourceUrl',
+      minWidth: 130,
+      tooltip: true,
+    },
+    {
+      label: '请求方式',
+      prop: 'resourceMethod',
+      minWidth: 130,
+      slotName: 'requestMethodSlot',
+    },
+    { label: '描述', prop: 'description', minWidth: 100, tooltip: true },
     { label: '更新时间', prop: 'updateTime', width: 200, sort: true },
-    { label: '创建时间', prop: 'createdTime', width: 200, sort: true },
+    { label: '创建时间', prop: 'createTime', width: 200, sort: true },
     {
       label: '操作',
       prop: 'operation',
@@ -143,11 +165,11 @@ const getAuthPermissionTableData = async (): Promise<void> => {
       column: tableState.column,
       order: tableState.order,
     };
-    const { data: res } = await getPermissions<any>(params);
-    const { code, message, data, total } = res;
-    if (code !== 200 || message !== 'Success') return;
-    tableState.data = data;
-    tableState.pagerInfo.total = total;
+    const { data: res } = await getPermissions<PermissionListData>(params);
+    const { code, message, success, data } = res;
+    if (code !== 20000 || !success) return;
+    tableState.data = data.list;
+    tableState.pagerInfo.total = data.total;
   } catch (e) {
     console.log(e);
   } finally {
@@ -169,12 +191,6 @@ const handlePageInfoChange = ({ page, pageSize }: PageChangeParams) => {
   getAuthPermissionTableData();
 };
 
-// 文字搜索高亮
-const queryStrStyle = (str: string) => {
-  const regex = new RegExp(tableState.queryStr, 'ig');
-  return str.replace(regex, `<font color="red">$&</font>`);
-};
-
 // 搜索
 const handleSearch = () => {
   tableState.pagerInfo.page = 1;
@@ -182,7 +198,7 @@ const handleSearch = () => {
 };
 
 // 处理删除权限标识
-const handleDeleteAuthPermission = async (row: AuthPermission) => {
+const handleDeleteAuthPermission = async (row: PermissionData) => {
   const confirmRes = await ElMessageBox.confirm(
     `此操作将永久删除操作权限标识：“${row.permissionName}”，是否继续?`,
     '提示',
@@ -219,7 +235,7 @@ const EditAuthPermissonDrawer = defineAsyncComponent(() => import('./components/
 const editAuthDrawerRef = ref<RefType>(null);
 const editAuthRowInfo = ref();
 // 编辑权限标识
-const handleEditAuthPermission = (row: AuthPermission) => {
+const handleEditAuthPermission = (row: PermissionData) => {
   editAuthRowInfo.value = JSON.parse(JSON.stringify(row));
   editAuthDrawerRef.value.editDrawerStatus = true;
 };
@@ -231,6 +247,26 @@ const addAuthDialogRef = ref<RefType>(null);
 const handleUpdate = () => {
   getAuthPermissionTableData();
   userAuthStore.getAllAuthPermissionList(true);
+};
+
+const handleMethodTagColor = (key: any) => {
+  return {
+    1: '#5bacfa',
+    2: '#07cd93',
+    3: '#ffa443',
+    4: '#ff4244',
+    5: '#0ae3c3',
+  }[key as string];
+};
+
+const handleMethodTagText = (key: any) => {
+  return {
+    1: 'GET',
+    2: 'POST',
+    3: 'PUT',
+    4: 'DELETE',
+    5: 'PATCH',
+  }[key as string];
 };
 
 onMounted(() => {
@@ -245,10 +281,10 @@ onMounted(() => {
     flex-direction: column;
     flex: 1;
     overflow: auto;
+
     .el-table {
       flex: 1;
     }
   }
 }
 </style>
-@/api/permission/index

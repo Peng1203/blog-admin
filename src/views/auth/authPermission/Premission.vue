@@ -81,10 +81,10 @@
     /> -->
 
     <!-- 添加权限标识 -->
-    <!-- <AddAuthPermissonDialog
+    <AddAuthPermissonDialog
       ref="addAuthDialogRef"
       @updateList="handleUpdate"
-    /> -->
+    />
   </div>
 </template>
 
@@ -97,6 +97,7 @@ import { useUserAuthList } from '@/stores/userAuthList';
 import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
 import { PermissionData, PermissionListData } from './types';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
+import { resourceMethodOptions } from './';
 
 const userAuthStore = useUserAuthList();
 
@@ -249,24 +250,12 @@ const handleUpdate = () => {
   userAuthStore.getAllAuthPermissionList(true);
 };
 
-const handleMethodTagColor = (key: any) => {
-  return {
-    1: '#5bacfa',
-    2: '#07cd93',
-    3: '#ffa443',
-    4: '#ff4244',
-    5: '#0ae3c3',
-  }[key as string];
+const handleMethodTagColor = (value: any) => {
+  return resourceMethodOptions.find(item => item.value === value)!.color;
 };
 
-const handleMethodTagText = (key: any) => {
-  return {
-    1: 'GET',
-    2: 'POST',
-    3: 'PUT',
-    4: 'DELETE',
-    5: 'PATCH',
-  }[key as string];
+const handleMethodTagText = (value: any) => {
+  return resourceMethodOptions.find(item => item.value === value)!.label;
 };
 
 onMounted(() => {

@@ -147,9 +147,9 @@ const handleAdd = async () => {
   if (!validRes) return;
   const addRes = await addNewMenu();
   if (!addRes) return;
-  addMenuDialogStatus.value = false;
   resetAddForm();
   emits('updateList');
+  addMenuDialogStatus.value = false;
 };
 
 const addNewMenu = async (): Promise<boolean> => {

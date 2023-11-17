@@ -15,3 +15,5 @@ export interface PermissionData {
 }
 
 export type PermissionListData = ListApiBaseResponse<PermissionData>;
+
+export type AddPermissionType = Partial<PermissionData>;

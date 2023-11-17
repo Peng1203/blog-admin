@@ -23,6 +23,20 @@ export function usePermissionApi() {
       });
     },
     /**
+     * 添加权限标识
+     * @author Peng
+     * @date 2023-04-17
+     * @param {any} params:object
+     * @returns {any}
+     */
+    addPermission<T = any>(params: object): TransformedResponse<T> {
+      return request({
+        url: '/permission',
+        method: 'post',
+        data: params,
+      });
+    },
+    /**
      * 删除权限标识
      * @author Peng
      * @date 2023-04-17
@@ -33,20 +47,6 @@ export function usePermissionApi() {
       return request({
         url: `/auth-permission/deleteAuthPermById/${id}`,
         method: 'delete',
-      });
-    },
-    /**
-     * 添加权限标识
-     * @author Peng
-     * @date 2023-04-17
-     * @param {any} params:object
-     * @returns {any}
-     */
-    addAuthPermission(params: object) {
-      return request({
-        url: '/auth-permission/addAuthPermission',
-        method: 'post',
-        data: params,
       });
     },
     /**

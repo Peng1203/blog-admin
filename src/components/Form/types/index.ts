@@ -75,7 +75,7 @@ export interface BaseFormItem<T = any> {
   isShow?: boolean;
   slotName?: string;
   /** 下拉框的数据 复选框数据 */
-  options?: OperationItem[] | RadioItem[] | any;
+  options?: OperationItem[] | RadioItem[];
   /** 开启多选 */
   multiple?: boolean;
   /** 宽度 */

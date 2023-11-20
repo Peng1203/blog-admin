@@ -9,6 +9,7 @@
     :data="props.data"
     :size="props.size"
     :empty-text="props.emptyText"
+    :default-expand-all="props.defaultExpandAll"
     @filter-change="handleFilterTable"
     @sort-change="handleColumnSort"
     @selection-change="handleSelectionChange"
@@ -77,7 +78,7 @@
             :show-overflow-tooltip="childrenItem.tooltip"
             :width="childrenItem.width || 'auto'"
           >
-            <template #defult="scope">
+            <template #default="scope">
               <slot
                 :row="scope.row"
                 :name="childrenItem.slotName"
@@ -112,6 +113,66 @@
         :align="align || 'left'"
       />
     </template>
+
+    <!-- 操作列 -->
+    <el-table-column
+      label="操作"
+      fixed="right"
+      align="center"
+      :width="45 * operationColumnBtns.length"
+      v-if="props.operationColumn"
+    >
+      <template #default="scope">
+        <el-button
+          circle
+          title="添加"
+          size="small"
+          type="success"
+          :icon="Plus"
+          @click="handleAddBtn(scope.row)"
+          v-if="operationColumnBtns.includes('add')"
+        />
+
+        <el-button
+          circle
+          title="修改信息"
+          size="small"
+          type="primary"
+          :icon="Edit"
+          @click="handleEditBtn(scope.row)"
+          v-if="operationColumnBtns.includes('edit')"
+        />
+
+        <el-popconfirm
+          width="auto"
+          icon="DeleteFilled"
+          icon-color="#f56c6c"
+          :title="`是否删除 ?`"
+          @confirm="handleDelBtn(scope.row)"
+          v-if="operationColumnBtns.includes('delete')"
+        >
+          <template #reference>
+            <el-button
+              circle
+              title="删除"
+              size="small"
+              type="danger"
+              :icon="Delete"
+            />
+          </template>
+        </el-popconfirm>
+
+        <el-button
+          circle
+          title="查看"
+          size="small"
+          type="info"
+          :icon="View"
+          @click="handleView(scope.row)"
+          v-if="operationColumnBtns.includes('view')"
+        />
+      </template>
+    </el-table-column>
 
     <!-- 过滤 当有二级表头时也不展示 -->
     <el-table-column
@@ -150,7 +211,9 @@
 
 <script lang="ts" setup>
 import { ref, reactive, watch, onMounted, inject } from 'vue';
-import { ColumnItem, TableAttribute } from './types';
+import { ColumnItem, TableAttribute, OperationBtnsType } from './types';
+import { Plus, Edit, Delete, View } from '@element-plus/icons-vue';
+
 const deviceClientType = inject('deviceClientType');
 
 const props = withDefaults(defineProps<TableAttribute>(), {
@@ -179,6 +242,9 @@ const props = withDefaults(defineProps<TableAttribute>(), {
   stripe: true,
 
   emptyText: '暂无数据',
+  defaultExpandAll: false,
+  operationColumn: false,
+  operationColumnBtns: () => ['edit', 'delete'],
 });
 
 const emits = defineEmits([
@@ -190,6 +256,10 @@ const emits = defineEmits([
   'rowClick',
   'dbRowClick',
   'mouseRightRowClick',
+  'addBtn',
+  'editBtn',
+  'deleteBtn',
+  'viewBtn',
 ]);
 
 // 表格展示的 columns
@@ -287,6 +357,12 @@ const handleRowClick = (val: any, column: any, event: any) => {
 const handleMouseRightRowClick = (val: any, column: any, event: any) => {
   emits('mouseRightRowClick', val, column, event);
 };
+
+// 操作按钮事件
+const handleAddBtn = (row: any) => emits('addBtn', row);
+const handleEditBtn = (row: any) => emits('editBtn', row);
+const handleDelBtn = (row: any) => emits('deleteBtn', row);
+const handleView = (row: any) => emits('viewBtn', row);
 
 onMounted(() => {
   tableColumns.value = props.columns;

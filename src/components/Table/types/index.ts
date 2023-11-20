@@ -15,8 +15,19 @@ export interface TableAttribute {
   size?: SizeEnum;
   /** 斑马纹 */
   stripe?: boolean;
+  /** 空数据描述 */
   emptyText?: string;
+  /** 是否展开树形数据 */
+  defaultExpandAll?: boolean;
+  /** 操作列 */
+  operationColumn?: boolean;
+  /** 操作列的按钮 */
+  operationColumnBtns?: OperationBtnsType;
 }
+
+export type OperationType = 'add' | 'edit' | 'delete' | 'view';
+
+export type OperationBtnsType = [OperationType?, OperationType?, OperationType?, OperationType?];
 
 export interface BaseTableAttribute {
   data: any[];

@@ -69,7 +69,7 @@
 
           <el-button
             circle
-            title="修改信息"
+            title="查询"
             size="small"
             type="success"
             :icon="View"

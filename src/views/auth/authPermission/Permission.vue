@@ -10,7 +10,7 @@
           size="default"
           type="success"
           class="ml10"
-          @click="addAuthDialogRef.addAuthPermissonDialogStatus = true"
+          @click="handleAddPermission(0)"
         >
           <i class="iconfont icon-permissions-o" />
           添加权限标识
@@ -23,8 +23,11 @@
           @search="handleSearch"
         />
       </div>
-
+      <!-- operation-column -->
+      <!-- :operationColumnBtns="['add', 'edit', 'delete']" -->
       <Table
+        defaultExpandAll
+        :is-need-pager="false"
         :isFilterShowColumn="true"
         :data="tableState.data"
         :loading="tableState.loading"
@@ -55,12 +58,23 @@
         <template #operation="{ row }">
           <el-button
             circle
+            title="添加"
+            size="small"
+            type="success"
+            :icon="Plus"
+            v-if="[null, ''].includes(row.permissionCode)"
+            @click="handleAddPermission(row)"
+          />
+
+          <el-button
+            circle
             title="修改信息"
             size="small"
             type="primary"
             :icon="Edit"
             @click="handleEditAuthPermission(row)"
           />
+
           <el-button
             circle
             title="删除"
@@ -83,6 +97,7 @@
     <!-- 添加权限标识 -->
     <AddAuthPermissonDialog
       ref="addAuthDialogRef"
+      :parentId="parentId"
       @updateList="handleUpdate"
     />
   </div>
@@ -92,7 +107,7 @@
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { ref, reactive, onMounted, defineAsyncComponent } from 'vue';
 import { usePermissionApi } from '@/api';
-import { Delete, Edit } from '@element-plus/icons-vue';
+import { Delete, Edit, Plus } from '@element-plus/icons-vue';
 import { useUserAuthList } from '@/stores/userAuthList';
 import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
 import { PermissionData, PermissionListData } from './types';
@@ -141,7 +156,8 @@ const tableState = reactive({
     {
       label: '操作',
       prop: 'operation',
-      width: 95,
+      width: 135,
+      align: 'center',
       slotName: 'operation',
       fixed: 'right',
     },
@@ -150,7 +166,7 @@ const tableState = reactive({
   // 分页器信息
   pagerInfo: ref<PageInfo>({
     page: 1,
-    pageSize: 10,
+    pageSize: 9999,
     total: 0,
   }),
 });
@@ -167,9 +183,9 @@ const getAuthPermissionTableData = async (): Promise<void> => {
       order: tableState.order,
     };
     const { data: res } = await getPermissions<PermissionListData>(params);
-    const { code, message, success, data } = res;
+    const { code, success, data } = res;
     if (code !== 20000 || !success) return;
-    tableState.data = data.list;
+    tableState.data = data.list.map(permission => ({ ...permission, hasChildren: false }));
     tableState.pagerInfo.total = data.total;
   } catch (e) {
     console.log(e);
@@ -256,6 +272,15 @@ const handleMethodTagColor = (value: any) => {
 
 const handleMethodTagText = (value: any) => {
   return resourceMethodOptions.find(item => item.value === value)!.label;
+};
+
+// 0
+const parentId = ref<number>();
+
+const handleAddPermission = (row?: PermissionData | number) => {
+  if (typeof row !== 'number') parentId.value = row?.id;
+  else parentId.value = 0;
+  addAuthDialogRef.value.addAuthPermissonDialogStatus = true;
 };
 
 onMounted(() => {

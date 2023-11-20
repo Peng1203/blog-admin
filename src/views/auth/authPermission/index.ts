@@ -1,6 +1,6 @@
 import { OperationItem } from '@/components/Form';
 
-export { default as default } from './Premission.vue';
+export { default as default } from './Permission.vue';
 
 // 请求方式下拉数据
 export const resourceMethodOptions: OperationItem[] = [

@@ -5,7 +5,6 @@
     @clickConfirm="handleAdd"
     @dialogClose="handleDialogClose"
   >
-    {{ addAuthState.data }}
     <Form
       ref="addAuthFormRef"
       :labelW="'120px'"
@@ -16,13 +15,21 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch } from 'vue';
+import { ref, reactive, watchEffect } from 'vue';
 import { usePermissionApi } from '@/api';
 import { ElMessage } from 'element-plus';
 import Dialog from '@/components/Dialog';
-import Form, { FormItem, RadioItem, OperationItem } from '@/components/Form';
+import Form, { FormItem } from '@/components/Form';
 import { PermissionData, AddPermissionType, resourceMethodOptions } from '../';
+
 const emits = defineEmits(['updateList']);
+
+const props = defineProps({
+  parentId: {
+    type: Number,
+    default: 0,
+  },
+});
 
 const { addPermission } = usePermissionApi();
 
@@ -49,6 +56,7 @@ const addAuthState = reactive({
       type: 'input',
       label: '标识CODE',
       prop: 'permissionCode',
+      isShow: false,
       rules: [
         { required: true, trigger: 'blur' },
         { min: 2, trigger: 'blur' },
@@ -58,6 +66,7 @@ const addAuthState = reactive({
       type: 'input',
       label: '请求资源',
       prop: 'resourceUrl',
+      isShow: false,
       rules: [
         { required: true, trigger: 'blur' },
         { min: 2, trigger: 'blur' },
@@ -67,6 +76,7 @@ const addAuthState = reactive({
       type: 'select',
       label: '请求方式',
       prop: 'resourceMethod',
+      isShow: false,
       options: resourceMethodOptions,
     },
     {
@@ -81,25 +91,34 @@ const addAuthState = reactive({
 const addAuthFormRef = ref<RefType>(null);
 // 处理添加操作
 const handleAdd = async () => {
+  const validProps = props.parentId ? undefined : ['permissionName'];
+  // 动态调用校验方法
   const validRes = await addAuthFormRef.value
     .getRef()
-    .validate()
+    [`${props.parentId ? 'validate' : 'validateField'}`](validProps)
     .catch(() => false);
+
   if (!validRes) return;
   const addRes = await addNewAuthPermission();
   if (!addRes) return;
   resetAddForm();
-  addAuthPermissonDialogStatus.value = false;
   emits('updateList');
+  addAuthPermissonDialogStatus.value = false;
 };
 
 // 添加权限标识
 const addNewAuthPermission = async (): Promise<boolean> => {
   try {
-    const { data: res } = await addPermission<PermissionData>(addAuthState.data);
-    const { code, data, message, success } = res;
+    const { resourceMethod, permissionCode, ...args } = addAuthState.data;
+    const params = {
+      ...args,
+      resourceMethod: props.parentId ? resourceMethod : null,
+      permissionCode: props.parentId ? permissionCode : null,
+      parentId: props.parentId,
+    };
+    const { data: res } = await addPermission<PermissionData>(params);
+    const { code, message, success } = res;
     if (code !== 20100 || !success) return false;
-    console.log('data ------', data);
     ElMessage.success(message);
     return true;
   } catch (e) {
@@ -122,8 +141,13 @@ const handleDialogClose = () => {
   addAuthFormRef.value.getRef().resetFields();
 };
 
+watchEffect(() => {
+  addAuthState.formItemList.find(item => item.prop === 'permissionCode')!.isShow = props.parentId !== 0;
+  addAuthState.formItemList.find(item => item.prop === 'resourceUrl')!.isShow = props.parentId !== 0;
+  addAuthState.formItemList.find(item => item.prop === 'resourceMethod')!.isShow = props.parentId !== 0;
+});
+
 defineExpose({ addAuthPermissonDialogStatus });
 </script>
 
 <style lang="scss" scoped></style>
-@/api/permission/index

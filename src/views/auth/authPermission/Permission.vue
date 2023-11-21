@@ -93,16 +93,12 @@ import { ref, reactive, onMounted, defineAsyncComponent } from 'vue';
 import { usePermissionInfo } from '@/stores/permissionList';
 import { usePermissionApi } from '@/api';
 import { Plus } from '@element-plus/icons-vue';
-import { useUserAuthList } from '@/stores/userAuthList';
 import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
 import { PermissionData, PermissionListData } from './types';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
 import { resourceMethodOptions } from './';
 
-const checkedKeys = ref<number[]>([1, 2]);
-
 const permissionStore = usePermissionInfo();
-const userAuthStore = useUserAuthList();
 
 const { getPermissions, delAuthPermission } = usePermissionApi();
 // 表格参数
@@ -242,7 +238,7 @@ const handleMethodTagText = (value: any) => {
   return resourceMethodOptions.find(item => item.value === value)!.label;
 };
 
-// 0
+// 用于区分添加权限标识的类型 0 为目录
 const parentId = ref<number>();
 
 const handleAddPermission = (row?: PermissionData | number) => {

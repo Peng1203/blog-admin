@@ -43,9 +43,9 @@ export function usePermissionApi() {
      * @param {any} id:number
      * @returns {any}
      */
-    delAuthPermission(id: number) {
+    delAuthPermission<T = any>(id: number): TransformedResponse<T> {
       return request({
-        url: `/auth-permission/deleteAuthPermById/${id}`,
+        url: `/permission/${id}`,
         method: 'delete',
       });
     },
@@ -57,7 +57,7 @@ export function usePermissionApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    updateAuthPermInfo<T>(id: number, params: object): TransformedResponse<T> {
+    updateAuthPermInfo<T = any>(id: number, params: object): TransformedResponse<T> {
       return request({
         url: `/permission/${id}`,
         method: 'patch',

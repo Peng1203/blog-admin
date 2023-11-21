@@ -9,7 +9,6 @@
         <el-button
           size="default"
           type="success"
-          class="ml10"
           @click="handleAddPermission(0)"
         >
           <i class="iconfont icon-permissions-o" />
@@ -23,10 +22,11 @@
           @search="handleSearch"
         />
       </div>
-      <!-- operation-column -->
-      <!-- :operationColumnBtns="['add', 'edit', 'delete']" -->
       <Table
         defaultExpandAll
+        operationColumn
+        :operationColumnWidth="45 * 3"
+        :operationColumnBtns="['edit', 'delete']"
         :is-need-pager="false"
         :isFilterShowColumn="true"
         :data="tableState.data"
@@ -35,6 +35,8 @@
         :columns="tableState.tableColumns"
         @columnSort="handleColumnChange"
         @pageNumOrSizeChange="handlePageInfoChange"
+        @editBtn="handleEditAuthPermission"
+        @deleteBtn="handleDeleteAuthPermission"
       >
         <!-- 权限标识名称 权限标识代码 查询高亮 -->
         <template #queryHighlight="{ row, prop }">
@@ -55,7 +57,7 @@
         </template>
 
         <!-- 操作 -->
-        <template #operation="{ row }">
+        <template #operationStartSlot="{ row }">
           <el-button
             circle
             title="添加"
@@ -64,24 +66,6 @@
             :icon="Plus"
             v-if="[null, ''].includes(row.permissionCode)"
             @click="handleAddPermission(row)"
-          />
-
-          <el-button
-            circle
-            title="修改信息"
-            size="small"
-            type="primary"
-            :icon="Edit"
-            @click="handleEditAuthPermission(row)"
-          />
-
-          <el-button
-            circle
-            title="删除"
-            size="small"
-            type="danger"
-            :icon="Delete"
-            @click="handleDeleteAuthPermission(row)"
           />
         </template>
       </Table>
@@ -153,14 +137,6 @@ const tableState = reactive({
     { label: '描述', prop: 'description', minWidth: 100, tooltip: true },
     { label: '更新时间', prop: 'updateTime', width: 200, sort: true },
     { label: '创建时间', prop: 'createTime', width: 200, sort: true },
-    {
-      label: '操作',
-      prop: 'operation',
-      width: 135,
-      align: 'center',
-      slotName: 'operation',
-      fixed: 'right',
-    },
   ]),
 
   // 分页器信息
@@ -216,28 +192,16 @@ const handleSearch = () => {
 
 // 处理删除权限标识
 const handleDeleteAuthPermission = async (row: PermissionData) => {
-  const confirmRes = await ElMessageBox.confirm(
-    `此操作将永久删除操作权限标识：“${row.permissionName}”，是否继续?`,
-    '提示',
-    {
-      confirmButtonText: '确认',
-      cancelButtonText: '取消',
-      type: 'warning',
-    }
-  ).catch(() => false);
-  if (!confirmRes) return;
   const delRes = await delAuthPermissionById(row.id);
-  if (delRes) getAuthPermissionTableData();
+  if (!delRes) return;
+  getAuthPermissionTableData();
 };
 // 通过ID删除权限标识
 const delAuthPermissionById = async (id: number): Promise<boolean> => {
   try {
-    const { data: res } = await delAuthPermission(id);
-    const { code, data, message } = res;
-    if (code !== 200 || message !== 'Success') {
-      ElMessage.error(data);
-      return false;
-    }
+    const { data: res } = await delAuthPermission<string>(id);
+    const { code, data, success } = res;
+    if (code !== 20000 || !success) return false;
     ElMessage.success(data);
     return true;
   } catch (e) {

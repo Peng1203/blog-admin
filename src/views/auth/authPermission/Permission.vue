@@ -88,16 +88,20 @@
 </template>
 
 <script lang="ts" setup name="SystemAuthPermission">
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElMessage } from 'element-plus';
 import { ref, reactive, onMounted, defineAsyncComponent } from 'vue';
+import { usePermissionInfo } from '@/stores/permissionList';
 import { usePermissionApi } from '@/api';
-import { Delete, Edit, Plus } from '@element-plus/icons-vue';
+import { Plus } from '@element-plus/icons-vue';
 import { useUserAuthList } from '@/stores/userAuthList';
 import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
 import { PermissionData, PermissionListData } from './types';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
 import { resourceMethodOptions } from './';
 
+const checkedKeys = ref<number[]>([1, 2]);
+
+const permissionStore = usePermissionInfo();
 const userAuthStore = useUserAuthList();
 
 const { getPermissions, delAuthPermission } = usePermissionApi();
@@ -194,7 +198,7 @@ const handleSearch = () => {
 const handleDeleteAuthPermission = async (row: PermissionData) => {
   const delRes = await delAuthPermissionById(row.id);
   if (!delRes) return;
-  getAuthPermissionTableData();
+  handleUpdate();
 };
 // 通过ID删除权限标识
 const delAuthPermissionById = async (id: number): Promise<boolean> => {
@@ -227,7 +231,7 @@ const addAuthDialogRef = ref<RefType>(null);
 
 const handleUpdate = () => {
   getAuthPermissionTableData();
-  userAuthStore.getAllAuthPermissionList(true);
+  permissionStore.getPermissionData(true);
 };
 
 const handleMethodTagColor = (value: any) => {
@@ -246,6 +250,8 @@ const handleAddPermission = (row?: PermissionData | number) => {
   else parentId.value = 0;
   addAuthDialogRef.value.addAuthPermissonDialogStatus = true;
 };
+
+const Tree = defineAsyncComponent(() => import('./components/PermissionTree.vue'));
 
 onMounted(() => {
   getAuthPermissionTableData();

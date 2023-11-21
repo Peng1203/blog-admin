@@ -91,14 +91,16 @@ const addAuthState = reactive({
 const addAuthFormRef = ref<RefType>(null);
 // 处理添加操作
 const handleAdd = async () => {
-  const validProps = props.parentId ? undefined : ['permissionName'];
+  const [validateMethod, validateProps] = props.parentId
+    ? ['validate', undefined]
+    : ['validateField', ['permissionName']];
   // 动态调用校验方法
-  const validRes = await addAuthFormRef.value
+  const isValidatePass = await addAuthFormRef.value
     .getRef()
-    [`${props.parentId ? 'validate' : 'validateField'}`](validProps)
+    [validateMethod](validateProps)
     .catch(() => false);
 
-  if (!validRes) return;
+  if (!isValidatePass) return;
   const addRes = await addNewAuthPermission();
   if (!addRes) return;
   resetAddForm();

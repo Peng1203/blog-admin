@@ -155,20 +155,15 @@ import { Delete, Edit, Plus } from '@element-plus/icons-vue';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
 import { useMenuApi } from '@/api';
 import Table, { ColumnItem, ColumnChangeParams } from '@/components/Table';
-import { useUserAuthList } from '@/stores/userAuthList';
 import { MenuData, MenuListData } from './types';
 import Search from '@/components/Search';
 
 const { getMenus, deleteMenu } = useMenuApi();
 
-const userAuthStore = useUserAuthList();
-
 // 表格参数
 const tableState = reactive({
   loading: false,
   data: ref<MenuData[]>([]),
-  // 已添加菜单的全部URI标识
-  URIs: ref<string[]>(),
   tableColumns: ref<ColumnItem<MenuData>[]>([
     {
       label: '菜单名',
@@ -306,7 +301,7 @@ const AddMenuDialog = defineAsyncComponent(() => import('./components/AddMenu.vu
 const addDialogRef = ref<RefType>(null);
 
 // 添加全部菜单按钮
-const AddAllMenuButton = defineAsyncComponent(() => import('./components/AddAllMenu.vue'));
+// const AddAllMenuButton = defineAsyncComponent(() => import('./components/AddAllMenu.vue'));
 
 // 处理子组件通知父组件更新列表
 const handleUpdate = () => {

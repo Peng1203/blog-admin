@@ -119,10 +119,16 @@
       label="操作"
       fixed="right"
       align="center"
-      :width="45 * operationColumnBtns.length"
+      :width="props.operationColumnWidth || 45 * operationColumnBtns.length"
       v-if="props.operationColumn"
     >
       <template #default="scope">
+        <slot
+          name="operationStartSlot"
+          :scope="scope"
+          :row="scope.row"
+        />
+
         <el-button
           circle
           title="添加"
@@ -170,6 +176,12 @@
           :icon="View"
           @click="handleView(scope.row)"
           v-if="operationColumnBtns.includes('view')"
+        />
+
+        <slot
+          name="operationEndSlot"
+          :scope="scope"
+          :row="scope.row"
         />
       </template>
     </el-table-column>

@@ -23,6 +23,8 @@ export interface TableAttribute {
   operationColumn?: boolean;
   /** 操作列的按钮 */
   operationColumnBtns?: OperationBtnsType;
+  /** 操作列宽 */
+  operationColumnWidth?: number;
 }
 
 export type OperationType = 'add' | 'edit' | 'delete' | 'view';

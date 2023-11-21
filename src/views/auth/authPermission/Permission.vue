@@ -88,11 +88,11 @@
     </el-card>
 
     <!-- 修改权限标识信息 -->
-    <!-- <EditAuthPermissonDrawer
+    <EditAuthPermissonDrawer
       ref="editAuthDrawerRef"
       :editRow="editAuthRowInfo"
       @updateList="handleUpdate"
-    /> -->
+    />
 
     <!-- 添加权限标识 -->
     <AddAuthPermissonDialog
@@ -185,7 +185,7 @@ const getAuthPermissionTableData = async (): Promise<void> => {
     const { data: res } = await getPermissions<PermissionListData>(params);
     const { code, success, data } = res;
     if (code !== 20000 || !success) return;
-    tableState.data = data.list.map(permission => ({ ...permission, hasChildren: false }));
+    tableState.data = data.list;
     tableState.pagerInfo.total = data.total;
   } catch (e) {
     console.log(e);
@@ -250,7 +250,7 @@ const delAuthPermissionById = async (id: number): Promise<boolean> => {
 const EditAuthPermissonDrawer = defineAsyncComponent(() => import('./components/EditAuthPermisson.vue'));
 
 const editAuthDrawerRef = ref<RefType>(null);
-const editAuthRowInfo = ref();
+const editAuthRowInfo = ref<PermissionData>();
 // 编辑权限标识
 const handleEditAuthPermission = (row: PermissionData) => {
   editAuthRowInfo.value = JSON.parse(JSON.stringify(row));

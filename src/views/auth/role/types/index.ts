@@ -1,6 +1,6 @@
 import { ListApiBaseResponse } from 'Api';
-// import { MenuData } from '@/views/auth/menu';
-// import { PermissionData } from '@/views/auth/authPermission';
+import { MenuData } from '@/views/auth/menu';
+import { PermissionData } from '@/views/auth/authPermission';
 
 export interface RoleData<T = number, V = number> {
   id: number;
@@ -13,6 +13,8 @@ export interface RoleData<T = number, V = number> {
   createTime: string | Date;
   updateTime: string | Date;
 }
+
+export type RoleEntityData = RoleData<MenuData, PermissionData>;
 
 export type AddEditRoleType = Partial<RoleData>;
 

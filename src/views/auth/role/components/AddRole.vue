@@ -116,7 +116,6 @@ const addNewRole = async (): Promise<boolean> => {
     const { data: res } = await addRole<RoleData<MenuData, PermissionData>>(params);
     const { code, data, message, success } = res;
     if (code !== 20100 || !success) return false;
-    console.log('data ------', data);
     ElMessage.success(message);
     return true;
   } catch (e) {

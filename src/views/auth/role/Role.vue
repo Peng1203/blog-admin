@@ -14,7 +14,7 @@
         >
           <!-- @click="addAuthDialogRef.addAuthPermissonDialogStatus = true" -->
           <Peng-Icon name="icon-jiaoseguanli1" />
-          <span style="margin-left: 5px">添加角色</span>
+          <span ml5>添加角色</span>
         </el-button>
 
         <Search
@@ -64,16 +64,13 @@
 <script setup lang="ts" name="SystemRole">
 import { defineAsyncComponent, ref, onMounted, reactive } from 'vue';
 import { ElMessage } from 'element-plus';
-import { useUserAuthList } from '@/stores/userAuthList';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
 import { useRoleApi } from '@/api/role/index';
-import { RoleData, RoleListData } from './types';
+import { RoleData, RoleListData, RoleEntityData } from './types';
 import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
 import Search from '@/components/Search';
 
 const { getRole, deleteRole } = useRoleApi();
-
-const userAuthStore = useUserAuthList();
 
 // 表格参数
 const tableState = reactive({
@@ -96,13 +93,6 @@ const tableState = reactive({
       tooltip: true,
       slotName: 'queryHighNight',
     },
-    // { label: '菜单', prop: 'menus', minWidth: 170, tooltip: true },
-    // {
-    //   label: '操作权限',
-    //   prop: 'operationPermissions',
-    //   minWidth: 100,
-    //   tooltip: true,
-    // },
     { label: '更新时间', prop: 'updateTime', minWidth: 200, sort: true },
     { label: '创建时间', prop: 'createTime', minWidth: 200, sort: true },
   ]),
@@ -187,10 +177,13 @@ const deleteRoleById = async (id: number): Promise<boolean> => {
 };
 
 // 处理编辑角色
-const editRow = ref();
+const editRow = ref<RoleEntityData>();
 const EditRoleDrawer = defineAsyncComponent(() => import('./components/EditRole.vue'));
 const editDrawerRef = ref<RefType>(null);
-const handleEditRole = (row: RoleData) => {};
+const handleEditRole = (row: RoleEntityData) => {
+  editRow.value = row;
+  editDrawerRef.value.editDrawerStatus = true;
+};
 
 // 处理添加角色
 const AddRoleDialog = defineAsyncComponent(() => import('./components/AddRole.vue'));
@@ -202,14 +195,11 @@ const handleViewRole = () => {};
 // 更新列表
 const handleUpdate = () => {
   getRoleTableData();
-  userAuthStore.getAllRoleList(true);
 };
 
 // 页面加载时
 onMounted(async () => {
   getRoleTableData();
-  await userAuthStore.getAllMenuList();
-  tableState.menuTreeData = userAuthStore.allMenuList;
 });
 </script>
 

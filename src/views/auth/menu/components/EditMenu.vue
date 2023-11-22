@@ -22,9 +22,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, inject, watch, defineAsyncComponent, computed } from 'vue';
+import { ref, reactive, watch, defineAsyncComponent, computed } from 'vue';
 import { useMenuApi } from '@/api/menu/index';
-import Form, { FormItem, RadioItem } from '@/components/Form';
+import Form, { FormItem } from '@/components/Form';
 import Drawer from '@/components/Drawer';
 import { ElMessage } from 'element-plus';
 import { MenuData, EditMenuType, EditProps } from '../types';

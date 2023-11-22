@@ -39,11 +39,11 @@ export function useRoleApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    updateRole(id: number, params: object) {
+    updateRole<T>(id: number, params: object): TransformedResponse<T> {
       return request({
-        url: `/role/updateRoleInfoById/${id}`,
-        method: 'put',
-        data: params,
+        url: `/role/${id}`,
+        method: 'patch',
+        data: JSON.stringify(params),
       });
     },
     /**

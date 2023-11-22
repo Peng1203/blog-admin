@@ -35,11 +35,17 @@
       </div>
 
       <Table
+        defaultExpandAll
+        operationColumn
+        :operationColumnBtns="['add', 'edit', 'delete']"
         :isNeedPager="false"
         :data="tableState.data"
         :loading="tableState.loading"
         :columns="tableState.tableColumns"
         @columnSort="handleColumnChange"
+        @addBtn="handleAddChildrenMenu"
+        @editBtn="handleEditMenu"
+        @deleteBtn="handleDelMenu"
       >
         <template #queryHighNight="{ row, prop }">
           <span v-html="queryStrHighlight(row[prop], tableState.queryStr)" />
@@ -58,7 +64,6 @@
 
         <!-- 访问路径 -->
         <template #pathSlot="{ row, prop }">
-          <!-- <router-link></router-link> -->
           <el-link type="primary">
             {{ row[prop] }}
           </el-link>
@@ -85,49 +90,6 @@
           />
           <!-- :disabled="row.children.length" -->
         </template>
-
-        <!-- 操作 -->
-        <template #operation="{ row }">
-          <!-- :disabled="row.id === 1" -->
-          <el-button
-            circle
-            title="添加"
-            size="small"
-            type="success"
-            :icon="Plus"
-            @click="handleAddChildrenMenu(row)"
-          />
-
-          <!-- @click="handleEditAuthPermission(row)" -->
-          <el-popconfirm
-            width="auto"
-            icon="DeleteFilled"
-            icon-color="#f56c6c"
-            :title="`是否删除菜单：${row.menuName} ?`"
-            @confirm="handleDelMenu(row)"
-          >
-            <template #reference>
-              <el-button
-                circle
-                title="删除"
-                size="small"
-                type="danger"
-                :icon="Delete"
-              />
-            </template>
-          </el-popconfirm>
-
-          <el-button
-            circle
-            title="修改菜单"
-            size="small"
-            type="primary"
-            :icon="Edit"
-            @click="handleEditMenu(row)"
-          />
-          <!-- @click="handleDeleteAuthPermission(row)" -->
-          <!-- :disabled="row.id === 1" -->
-        </template>
       </Table>
     </el-card>
 
@@ -148,17 +110,19 @@
   </div>
 </template>
 
-<script setup lang="ts" name="SystemMenu">
+<script setup lang="ts" name="Menu">
 import { defineAsyncComponent, ref, onMounted, reactive } from 'vue';
 import { ElMessage } from 'element-plus';
-import { Delete, Edit, Plus } from '@element-plus/icons-vue';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
 import { useMenuApi } from '@/api';
+import { useMenuInfo } from '@/stores/menuList';
 import Table, { ColumnItem, ColumnChangeParams } from '@/components/Table';
 import { MenuData, MenuListData } from './types';
 import Search from '@/components/Search';
 
 const { getMenus, deleteMenu } = useMenuApi();
+
+const menuStore = useMenuInfo();
 
 // 表格参数
 const tableState = reactive({
@@ -212,14 +176,6 @@ const tableState = reactive({
     // { label: '持有角色', prop: 'roles', minWidth: 200, tooltip: true },
     { label: '更新时间', prop: 'updateTime', minWidth: 200, sort: true },
     { label: '创建时间', prop: 'createTime', minWidth: 200, sort: true },
-    {
-      label: '操作',
-      prop: 'operation',
-      width: 125,
-      // minWidth: 125,
-      slotName: 'operation',
-      fixed: 'right',
-    },
   ]),
   column: '',
   order: '',
@@ -261,7 +217,7 @@ const handleColumnChange = ({ column, order }: ColumnChangeParams) => {
 const handleDelMenu = async (row: MenuData) => {
   const delRes = await deleteMenuById(row.id);
   if (!delRes) return;
-  getMenuTableData();
+  handleUpdate();
 };
 
 // 删除菜单
@@ -306,6 +262,7 @@ const addDialogRef = ref<RefType>(null);
 // 处理子组件通知父组件更新列表
 const handleUpdate = () => {
   getMenuTableData();
+  menuStore.getMenuData(true);
 };
 
 // 页面加载时

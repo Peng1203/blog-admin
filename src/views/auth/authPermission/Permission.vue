@@ -25,10 +25,10 @@
       <Table
         defaultExpandAll
         operationColumn
+        isFilterShowColumn
         :operationColumnWidth="45 * 3"
         :operationColumnBtns="['edit', 'delete']"
         :is-need-pager="false"
-        :isFilterShowColumn="true"
         :data="tableState.data"
         :loading="tableState.loading"
         :pagerInfo="tableState.pagerInfo"

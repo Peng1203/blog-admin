@@ -23,17 +23,11 @@
 
 <script lang="ts" setup>
 import { ref, reactive, watch, PropType, computed, onMounted, defineAsyncComponent } from 'vue';
-import { storeToRefs } from 'pinia';
 import { ElMessage } from 'element-plus';
 import { useMenuApi } from '@/api/menu/index';
-import { useRoutesList } from '@/stores/routesList';
 import Dialog from '@/components/Dialog';
-import Form, { FormItem, RadioItem, OperationItem } from '@/components/Form';
+import Form, { FormItem } from '@/components/Form';
 import { MenuData, AddMenuType } from '../types';
-
-const stores = useRoutesList();
-
-const { routesList } = storeToRefs(stores);
 
 const IconSelector = defineAsyncComponent(() => import('@/components/iconSelector/index.vue'));
 
@@ -190,11 +184,6 @@ const preIcon = computed<string>(() => {
 
 // radios 单选框切换
 // const handleRadioChange = ({ newVal, prop, index }) => {};
-
-// 可添加菜单详情数组 用于查找
-const unAddMenus = ref();
-// 下拉筛选数据
-const menuOptions = ref([]);
 
 const resetAddForm = () => {
   addMenuState.data.menuName = '';

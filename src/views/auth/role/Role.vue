@@ -26,55 +26,20 @@
       </div>
 
       <Table
+        operationColumn
+        :operationColumnBtns="['edit', 'delete', 'view']"
         :data="tableState.data"
         :loading="tableState.loading"
         :pagerInfo="tableState.pagerInfo"
         :columns="tableState.tableColumns"
         @columnSort="handleColumnChange"
         @pageNumOrSizeChange="handlePageInfoChange"
+        @editBtn="handleEditRole"
+        @deleteBtn="handleDelRole"
+        @viewBtn="handleViewRole"
       >
         <template #queryHighNight="{ row, prop }">
           <span v-html="queryStrHighlight(row[prop], tableState.queryStr)" />
-        </template>
-
-        <template #operation="{ row }">
-          <el-button
-            circle
-            title="修改信息"
-            size="small"
-            type="primary"
-            :icon="Edit"
-            :disabled="row.id === 1"
-            @click="handleEditRole(row)"
-          />
-
-          <el-popconfirm
-            width="auto"
-            icon="DeleteFilled"
-            icon-color="#f56c6c"
-            :title="`是否删除用户：${row.roleName} ?`"
-            @confirm="handleDelRole(row)"
-          >
-            <template #reference>
-              <el-button
-                circle
-                title="删除"
-                size="small"
-                type="danger"
-                :icon="Delete"
-                :disabled="row.id === 1"
-              />
-            </template>
-          </el-popconfirm>
-
-          <el-button
-            circle
-            title="查询"
-            size="small"
-            type="success"
-            :icon="View"
-            @click="handleEditRole(row)"
-          />
         </template>
       </Table>
     </el-card>
@@ -98,8 +63,7 @@
 
 <script setup lang="ts" name="SystemRole">
 import { defineAsyncComponent, ref, onMounted, reactive } from 'vue';
-import { ElMessageBox, ElMessage } from 'element-plus';
-import { Delete, Edit, View } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus';
 import { useUserAuthList } from '@/stores/userAuthList';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
 import { useRoleApi } from '@/api/role/index';
@@ -141,13 +105,6 @@ const tableState = reactive({
     // },
     { label: '更新时间', prop: 'updateTime', minWidth: 200, sort: true },
     { label: '创建时间', prop: 'createTime', minWidth: 200, sort: true },
-    {
-      label: '操作',
-      prop: 'operation',
-      minWidth: 70,
-      slotName: 'operation',
-      fixed: 'right',
-    },
   ]),
   column: '',
   order: '',
@@ -238,6 +195,9 @@ const handleEditRole = (row: RoleData) => {};
 // 处理添加角色
 const AddRoleDialog = defineAsyncComponent(() => import('./components/AddRole.vue'));
 const addDialogRef = ref<RefType>(null);
+
+// 查看角色
+const handleViewRole = () => {};
 
 // 更新列表
 const handleUpdate = () => {

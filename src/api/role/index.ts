@@ -24,11 +24,11 @@ export function useRoleApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    addRole(params: object) {
+    addRole<T>(params: object): TransformedResponse<T> {
       return request({
-        url: '/role/addRole',
+        url: '/role',
         method: 'post',
-        data: params,
+        data: JSON.stringify(params),
       });
     },
     /**

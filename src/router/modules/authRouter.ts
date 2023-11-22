@@ -20,7 +20,7 @@ const routerRules: Array<RouteRecordRaw> = [
     children: [
       {
         path: '/auth/role',
-        name: 'SystemRole',
+        name: 'Role',
         component: () => import('@/views/auth/role'),
         meta: {
           parentMenuName: 'Auth',
@@ -36,7 +36,7 @@ const routerRules: Array<RouteRecordRaw> = [
       },
       {
         path: '/auth/menu',
-        name: 'SystemMenu',
+        name: 'Menu',
         component: () => import('@/views/auth/menu'),
         meta: {
           parentMenuName: 'Auth',
@@ -52,7 +52,7 @@ const routerRules: Array<RouteRecordRaw> = [
       },
       {
         path: '/auth/authPermission',
-        name: 'SystemAuthPermission',
+        name: 'Permission',
         component: () => import('@/views/auth/authPermission'),
         meta: {
           parentMenuName: 'Auth',

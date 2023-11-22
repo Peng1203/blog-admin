@@ -1,42 +1,44 @@
 <template>
-  <div
-    h300px
-    overflow-y-auto
-  >
-    <!-- {{ data }} -->
+  <div w100>
     <!-- <MenuTree v-model:checked-menu="checkedMenuKeys" /> -->
     <el-input
+      v-if="filter"
       size="small"
       v-model="filterText"
       placeholder="菜单名"
     />
-    <el-tree
-      show-checkbox
-      node-key="id"
-      ref="treeRef"
-      :data="data"
-      :props="defaultProps"
-      :default-checked-keys="checkedKeys"
-      :default-expanded-keys="expandedKeys"
-      :filter-node-method="filterNode"
-      @check="handleCheckboxChange"
+    <el-scrollbar
+      mt5
+      :height="`${height}px`"
     >
-      <template #default="{ node, data }">
-        <Peng-Icon
-          v-if="data.menuIcon"
-          size="20"
-          :name="data.menuIcon"
-        />
-        <span ml5>
-          {{ data.menuName }}
-        </span>
-      </template>
-    </el-tree>
+      <el-tree
+        show-checkbox
+        node-key="id"
+        ref="treeRef"
+        :data="data"
+        :props="defaultProps"
+        :default-checked-keys="checkedKeys"
+        :default-expanded-keys="expandedKeys"
+        :filter-node-method="filterNode"
+        @check="handleCheckboxChange"
+      >
+        <template #default="{ node, data }">
+          <Peng-Icon
+            v-if="data.menuIcon"
+            size="20"
+            :name="data.menuIcon"
+          />
+          <span ml5>
+            {{ data.menuName }}
+          </span>
+        </template>
+      </el-tree>
+    </el-scrollbar>
   </div>
 </template>
 
 <script setup lang="ts" name="">
-import { ref, onMounted, watchEffect, PropType, watch } from 'vue';
+import { ref, onMounted, PropType, watch } from 'vue';
 import { ElTree } from 'element-plus';
 import { useMenuInfo } from '@/stores/menuList';
 import { MenuData } from '../types';
@@ -47,6 +49,14 @@ const props = defineProps({
   checkedMenu: {
     type: Array as PropType<number[]>,
     default: () => [],
+  },
+  filter: {
+    type: Boolean as PropType<boolean>,
+    default: false,
+  },
+  height: {
+    type: Number as PropType<number>,
+    default: 200,
   },
 });
 
@@ -86,9 +96,14 @@ watch(
   { deep: true }
 );
 
-watchEffect(() => {
-  checkedKeys.value = JSON.parse(JSON.stringify(props.checkedMenu));
-});
+watch(
+  () => props.checkedMenu,
+  val => {
+    checkedKeys.value = JSON.parse(JSON.stringify(val));
+    if (!val.length) treeRef.value!.setCheckedKeys([]);
+  },
+  { deep: true }
+);
 
 onMounted(async () => {
   await menuStore.getMenuData();

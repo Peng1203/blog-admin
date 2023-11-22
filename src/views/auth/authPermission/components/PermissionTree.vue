@@ -1,30 +1,33 @@
 <template>
-  <div
-    h300px
-    overflow-y-auto
-  >
-    <!-- <Tree v-model:checked-permission="checkedPermissionKeys" /> -->
+  <div w100>
     <el-input
+      v-if="filter"
       size="small"
       v-model="filterText"
       placeholder="标识名称"
     />
-    <el-tree
-      show-checkbox
-      node-key="id"
-      ref="treeRef"
-      :data="data"
-      :props="defaultProps"
-      :default-checked-keys="checkedKeys"
-      :default-expanded-keys="expandedKeys"
-      :filter-node-method="filterNode"
-      @check="handleCheckboxChange"
-    />
+
+    <el-scrollbar
+      mt5
+      :height="`${height}px`"
+    >
+      <el-tree
+        show-checkbox
+        node-key="id"
+        ref="treeRef"
+        :data="data"
+        :props="defaultProps"
+        :default-checked-keys="checkedKeys"
+        :default-expanded-keys="expandedKeys"
+        :filter-node-method="filterNode"
+        @check="handleCheckboxChange"
+      />
+    </el-scrollbar>
   </div>
 </template>
 
 <script setup lang="ts" name="">
-import { ref, onMounted, watchEffect, PropType, watch } from 'vue';
+import { ref, onMounted, PropType, watch } from 'vue';
 import { ElTree } from 'element-plus';
 import { usePermissionInfo } from '@/stores/permissionList';
 import { PermissionData } from '../types';
@@ -35,6 +38,14 @@ const props = defineProps({
   checkedPermission: {
     type: Array as PropType<number[]>,
     default: () => [],
+  },
+  filter: {
+    type: Boolean as PropType<boolean>,
+    default: false,
+  },
+  height: {
+    type: Number as PropType<number>,
+    default: 200,
   },
 });
 
@@ -74,9 +85,14 @@ watch(
   { deep: true }
 );
 
-watchEffect(() => {
-  checkedKeys.value = JSON.parse(JSON.stringify(props.checkedPermission));
-});
+watch(
+  () => props.checkedPermission,
+  val => {
+    checkedKeys.value = JSON.parse(JSON.stringify(val));
+    if (!val.length) treeRef.value!.setCheckedKeys([]);
+  },
+  { deep: true }
+);
 
 onMounted(async () => {
   await permissionStore.getPermissionData();

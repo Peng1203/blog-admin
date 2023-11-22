@@ -12,3 +12,5 @@ export const resourceMethodOptions: OperationItem[] = [
 ];
 
 export * from './types';
+
+export { default as PermissionTree } from './components/PermissionTree.vue';

@@ -78,9 +78,8 @@ const handleClose = () => {
 
 /** 取消按钮 */
 const handleCancelBtn = () => {
-  drawerStatus.value = false;
-  emits('update:modelValue', drawerStatus.value);
   emits('clickCancel');
+  handleClose();
 };
 
 /** 确认按钮 */

@@ -66,11 +66,14 @@ import { defineAsyncComponent, ref, onMounted, reactive } from 'vue';
 import { ElMessage } from 'element-plus';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
 import { useRoleApi } from '@/api/role/index';
+import { useRolesInfo } from '@/stores/roleList';
 import { RoleData, RoleListData, RoleEntityData } from './types';
 import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
 import Search from '@/components/Search';
 
 const { getRole, deleteRole } = useRoleApi();
+
+const roleStore = useRolesInfo();
 
 // 表格参数
 const tableState = reactive({
@@ -93,8 +96,8 @@ const tableState = reactive({
       tooltip: true,
       slotName: 'queryHighNight',
     },
-    { label: '更新时间', prop: 'updateTime', minWidth: 200, sort: true },
-    { label: '创建时间', prop: 'createTime', minWidth: 200, sort: true },
+    { label: '更新时间', prop: 'updateTime', minWidth: 200, sort: 'custom' },
+    { label: '创建时间', prop: 'createTime', minWidth: 200, sort: 'custom' },
   ]),
   column: '',
   order: '',
@@ -157,17 +160,18 @@ const handleColumnChange = ({ column, order }: ColumnChangeParams) => {
 };
 
 // 处理删除角色
-const handleDelRole = async (row: RoleData) => {};
+const handleDelRole = async (row: RoleData) => {
+  const delRes = await deleteRoleById(row.id);
+  if (!delRes) return;
+  handleUpdate();
+};
 
 // 删除角色
 const deleteRoleById = async (id: number): Promise<boolean> => {
   try {
-    const { data: res } = await deleteRole(id);
-    const { code, data, message } = res;
-    if (code !== 200 || message !== 'Success') {
-      ElMessage.error(data);
-      return false;
-    }
+    const { data: res } = await deleteRole<string>(id);
+    const { code, data, message, success } = res;
+    if (code !== 20000 || !success) return false;
     ElMessage.success(data);
     return true;
   } catch (e) {
@@ -195,6 +199,7 @@ const handleViewRole = () => {};
 // 更新列表
 const handleUpdate = () => {
   getRoleTableData();
+  roleStore.getRoleData(true);
 };
 
 // 页面加载时

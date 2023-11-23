@@ -53,9 +53,9 @@ export function useRoleApi() {
      * @param {any} id:number
      * @returns {any}
      */
-    deleteRole(id: number) {
+    deleteRole<T>(id: number): TransformedResponse<T> {
       return request({
-        url: `/role/deleteRoleById/${id}`,
+        url: `/role/${id}`,
         method: 'delete',
       });
     },

@@ -17,21 +17,26 @@
 
       <slot />
 
-      <template #footer>
+      <template
+        #footer
+        v-if="operationRow"
+      >
         <slot name="footer">
-          <el-button
-            size="small"
-            @click="handleClickCancel"
-          >
-            取消
-          </el-button>
-          <el-button
-            type="primary"
-            size="small"
-            @click="handleClickConfirm"
-          >
-            确认
-          </el-button>
+          <div>
+            <el-button
+              size="small"
+              @click="handleClickCancel"
+            >
+              取消
+            </el-button>
+            <el-button
+              type="primary"
+              size="small"
+              @click="handleClickConfirm"
+            >
+              确认
+            </el-button>
+          </div>
         </slot>
       </template>
     </el-dialog>
@@ -40,18 +45,7 @@
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-// 封装对话框选项抽屉
-interface DialogAttribute {
-  modelValue: boolean;
-  title: string;
-  width?: string | number;
-  fullscreen?: boolean;
-  modal?: boolean;
-  modelClose?: boolean;
-  escClose?: boolean;
-  draggable?: boolean;
-  aCenter?: boolean;
-}
+import { DialogAttribute } from './types';
 
 const props = withDefaults(defineProps<DialogAttribute>(), {
   fullscreen: false,
@@ -61,6 +55,7 @@ const props = withDefaults(defineProps<DialogAttribute>(), {
   escClose: true,
   draggable: true,
   aCenter: false,
+  operationRow: true,
 });
 
 const emits = defineEmits(['update:modelValue', 'dialogClose', 'clickCancel', 'clickConfirm']);

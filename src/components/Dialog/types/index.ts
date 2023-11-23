@@ -8,4 +8,6 @@ export interface DialogAttribute {
   escClose?: boolean;
   draggable?: boolean;
   aCenter?: boolean;
+  /** 底部操作行 */
+  operationRow?: boolean;
 }

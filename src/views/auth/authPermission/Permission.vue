@@ -135,8 +135,8 @@ const tableState = reactive({
       slotName: 'requestMethodSlot',
     },
     { label: '描述', prop: 'description', minWidth: 100, tooltip: true },
-    { label: '更新时间', prop: 'updateTime', width: 200, sort: true },
-    { label: '创建时间', prop: 'createTime', width: 200, sort: true },
+    { label: '更新时间', prop: 'updateTime', width: 200, sort: 'custom' },
+    { label: '创建时间', prop: 'createTime', width: 200, sort: 'custom' },
   ]),
 
   // 分页器信息

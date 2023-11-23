@@ -7,6 +7,7 @@
       :disabled="disabled"
       :label-width="labelW"
       :label-position="labelP"
+      :class="readonly ? 'readonly-form' : ''"
     >
       <el-row :gutter="gutter">
         <!--  -->
@@ -101,6 +102,7 @@
             >
               <el-input
                 :size="size"
+                :readonly="readonly"
                 :placeholder="placeholder"
                 :disabled="disabled || false"
                 :clearable="clearable || true"
@@ -108,9 +110,8 @@
                 aria-autocomplete="none"
                 auto-complete="new-password"
                 v-model="formData[prop]"
-                readonly
-                @focus="(e: any) => e.target.removeAttribute('readonly')"
               >
+                <!-- @focus="(e: any) => e.target.removeAttribute('readonly')" -->
                 <template
                   v-if="args.statrPre"
                   #prepend
@@ -150,6 +151,7 @@
             >
               <el-input-number
                 :size="size"
+                :readonly="readonly"
                 :disabled="disabled || false"
                 :min="args.minVal || 0"
                 :max="args.maxVal || 100"
@@ -186,6 +188,7 @@
                 aria-autocomplete="none"
                 auto-complete="new-password"
                 :size="size"
+                :readonly="readonly"
                 :placeholder="placeholder"
                 :disabled="disabled || false"
                 :clearable="clearable || true"
@@ -395,6 +398,7 @@
               <el-input
                 type="textarea"
                 :size="size"
+                :readonly="readonly"
                 :placeholder="placeholder"
                 :disabled="disabled || false"
                 :clearable="clearable || true"
@@ -485,6 +489,7 @@ const props = withDefaults(defineProps<FormAttribute>(), {
   disabled: false,
   inline: false,
   gutter: 30,
+  readonly: false,
 });
 
 const formData = computed({
@@ -567,6 +572,17 @@ defineExpose({ getRef });
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+  }
+  .readonly-form {
+    :deep(.el-input__wrapper),
+    :deep(.el-textarea__inner) {
+      box-shadow: none;
+      resize: none;
+      .el-input__inner {
+        font-size: 16px;
+        font-weight: 600;
+      }
     }
   }
 }

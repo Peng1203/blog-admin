@@ -33,6 +33,10 @@ export interface FormAttribute {
    * 每行间隔
    */
   gutter?: number;
+  /**
+   * 只读
+   */
+  readonly?: boolean;
 }
 
 export type FormItemEnum =

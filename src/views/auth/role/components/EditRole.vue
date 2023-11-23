@@ -4,7 +4,6 @@
     v-model="editDrawerStatus"
     @clickConfirm="handleSaveEdit"
   >
-    {{ editFormState.data }}
     <Form
       ref="editFormRef"
       label-p="top"

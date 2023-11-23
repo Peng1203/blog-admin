@@ -44,6 +44,13 @@
       </Table>
     </el-card>
 
+    <!-- 添加角色对话框 -->
+    <AddRoleDialog
+      ref="addDialogRef"
+      :menus="tableState.menuTreeData"
+      @updateList="handleUpdate"
+    />
+
     <!-- 编辑角色抽屉 -->
     <EditRoleDrawer
       :editRow="editRow"
@@ -52,11 +59,10 @@
       @updateList="handleUpdate"
     />
 
-    <!-- 添加角色对话框 -->
-    <AddRoleDialog
-      ref="addDialogRef"
-      :menus="tableState.menuTreeData"
-      @updateList="handleUpdate"
+    <!-- 查看角色 -->
+    <ViewRoleDialog
+      :viewRow="viewRow"
+      ref="viewDialogRef"
     />
   </div>
 </template>
@@ -194,7 +200,13 @@ const AddRoleDialog = defineAsyncComponent(() => import('./components/AddRole.vu
 const addDialogRef = ref<RefType>(null);
 
 // 查看角色
-const handleViewRole = () => {};
+const viewRow = ref<RoleEntityData>();
+const ViewRoleDialog = defineAsyncComponent(() => import('./components/ViewRole.vue'));
+const viewDialogRef = ref<RefType>(null);
+const handleViewRole = (row: RoleEntityData) => {
+  viewRow.value = row;
+  viewDialogRef.value.viewRoleDialogStatus = true;
+};
 
 // 更新列表
 const handleUpdate = () => {

@@ -11,7 +11,13 @@
       mt5
       :height="`${height}px`"
     >
+      <el-skeleton
+        :rows="5"
+        animated
+        v-if="!data?.length"
+      />
       <el-tree
+        v-else
         show-checkbox
         node-key="id"
         ref="treeRef"
@@ -80,6 +86,11 @@ const handleCheckboxChange = (checkedNodes: MenuData, checkedInfo: any) => {
   emits('update:checkedMenu', checkedInfo.checkedKeys);
 };
 
+const handleReset = () => {
+  checkedKeys.value = [];
+  treeRef.value!.setCheckedKeys([]);
+};
+
 const filterNode = (value: string, data: any) => {
   if (!value) return true;
   return data.menuName.includes(value);
@@ -102,13 +113,18 @@ watch(
     checkedKeys.value = JSON.parse(JSON.stringify(val));
     if (!val.length) treeRef.value!.setCheckedKeys([]);
   },
-  { deep: true }
+  {
+    deep: true,
+    immediate: true,
+  }
 );
 
 onMounted(async () => {
   await menuStore.getMenuData();
   data.value = menuStore.menuList;
 });
+
+defineExpose({ handleReset });
 </script>
 
 <style scoped lang="scss"></style>

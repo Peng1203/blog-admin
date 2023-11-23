@@ -11,7 +11,14 @@
       mt5
       :height="`${height}px`"
     >
+      <el-skeleton
+        :rows="5"
+        animated
+        v-if="!data?.length"
+      />
+      <!-- :show-checkbox="!readonly" -->
       <el-tree
+        v-else
         show-checkbox
         node-key="id"
         ref="treeRef"
@@ -47,6 +54,10 @@ const props = defineProps({
     type: Number as PropType<number>,
     default: 200,
   },
+  readonly: {
+    type: Boolean as PropType<boolean>,
+    default: false,
+  },
 });
 
 const permissionStore = usePermissionInfo();
@@ -67,6 +78,11 @@ const data = ref<PermissionData[]>();
 
 const handleCheckboxChange = (checkedNodes: PermissionData, checkedInfo: any) => {
   emits('update:checkedPermission', checkedInfo.checkedKeys);
+};
+
+const handleReset = () => {
+  checkedKeys.value = [];
+  treeRef.value!.setCheckedKeys([]);
 };
 
 const filterNode = (value: string, data: any) => {
@@ -91,13 +107,18 @@ watch(
     checkedKeys.value = JSON.parse(JSON.stringify(val));
     if (!val.length) treeRef.value!.setCheckedKeys([]);
   },
-  { deep: true }
+  {
+    deep: true,
+    immediate: true,
+  }
 );
 
 onMounted(async () => {
   await permissionStore.getPermissionData();
   data.value = permissionStore.permissionList;
 });
+
+defineExpose({ handleReset });
 </script>
 
 <style scoped lang="scss"></style>

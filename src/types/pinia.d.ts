@@ -16,6 +16,8 @@ declare interface UserInfosState<T = any> {
     updateTime: string;
     roles: RoleEntityData[];
   };
+  menus: MenuData[];
+  requestMenuNum: number;
 }
 
 // 路由缓存列表

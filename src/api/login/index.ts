@@ -46,5 +46,14 @@ export function useLoginApi() {
         }),
       });
     },
+    /**
+     * @method 获取用户菜单
+     */
+    getUserMenu<T>(id: number): TransformedResponse<T> {
+      return request({
+        url: `/auth/menus/${id}`,
+        method: 'GET',
+      });
+    },
   };
 }

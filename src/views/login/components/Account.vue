@@ -169,7 +169,7 @@ const getLoginCaptcha = async (): Promise<void> => {
 };
 
 // 登录 获取用户信息
-const getLoginUserInfo = async (): Promise<any> => {
+const getLoginUserInfo = async (): Promise<LoginData | undefined> => {
   try {
     const { data: res } = await login<LoginData>(loginState.loginForm);
     const { code, data, success } = res;

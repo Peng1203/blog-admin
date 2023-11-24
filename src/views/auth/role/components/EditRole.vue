@@ -14,6 +14,7 @@
       <!-- 菜单 -->
       <template #menuSlot>
         <MenuTree
+          v-if="editDrawerStatus"
           :height="150"
           v-model:checked-menu="editFormState.data.menus"
         />
@@ -22,6 +23,7 @@
       <!-- 权限标识 -->
       <template #permissionSlot>
         <PermissionTree
+          v-if="editDrawerStatus"
           filter
           :height="150"
           v-model:checked-permission="editFormState.data.permissions"

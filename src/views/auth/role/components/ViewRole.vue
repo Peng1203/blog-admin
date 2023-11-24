@@ -3,7 +3,6 @@
     title="查看角色"
     :operationRow="false"
     v-model="viewRoleDialogStatus"
-    @dialogClose="handleClose"
   >
     <Form
       readonly
@@ -16,7 +15,7 @@
       <template #menuSlot>
         <MenuTree
           :height="200"
-          ref="menuTreeRef"
+          v-if="viewRoleDialogStatus"
           v-model:checked-menu="viewRoleState.data.menus"
         />
       </template>
@@ -25,7 +24,7 @@
       <template #permissionSlot>
         <PermissionTree
           :height="200"
-          ref="permissionTreeRef"
+          v-if="viewRoleDialogStatus"
           v-model:checked-permission="viewRoleState.data.permissions"
         />
       </template>
@@ -88,13 +87,6 @@ const viewRoleState = reactive({
     },
   ]),
 });
-
-const menuTreeRef = ref<RefType>(null);
-const permissionTreeRef = ref<RefType>(null);
-const handleClose = () => {
-  menuTreeRef.value.handleReset();
-  permissionTreeRef.value.handleReset();
-};
 
 watchEffect(() => {
   if (!props.viewRow) return;

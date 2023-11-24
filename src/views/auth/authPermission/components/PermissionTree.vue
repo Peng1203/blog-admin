@@ -103,10 +103,7 @@ watch(
 
 watch(
   () => props.checkedPermission,
-  val => {
-    checkedKeys.value = JSON.parse(JSON.stringify(val));
-    if (!val.length) treeRef.value!.setCheckedKeys([]);
-  },
+  val => (checkedKeys.value = JSON.parse(JSON.stringify(val))),
   {
     deep: true,
     immediate: true,

@@ -15,6 +15,7 @@
       <template #menuSlot>
         <MenuTree
           :height="150"
+          v-if="addRoleDialogStatus"
           v-model:checked-menu="addRoleState.data.menus"
         />
       </template>
@@ -24,6 +25,7 @@
         <PermissionTree
           filter
           :height="150"
+          v-if="addRoleDialogStatus"
           v-model:checked-permission="addRoleState.data.permissions"
         />
       </template>

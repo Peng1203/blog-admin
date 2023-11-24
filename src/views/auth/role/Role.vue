@@ -47,14 +47,12 @@
     <!-- 添加角色对话框 -->
     <AddRoleDialog
       ref="addDialogRef"
-      :menus="tableState.menuTreeData"
       @updateList="handleUpdate"
     />
 
     <!-- 编辑角色抽屉 -->
     <EditRoleDrawer
       :editRow="editRow"
-      :menus="tableState.menuTreeData"
       ref="editDrawerRef"
       @updateList="handleUpdate"
     />
@@ -108,9 +106,6 @@ const tableState = reactive({
   column: '',
   order: '',
   queryStr: '',
-
-  // 菜单树形数据
-  menuTreeData: ref<any[]>([]),
 
   // 分页器信息
   pagerInfo: ref<PageInfo>({

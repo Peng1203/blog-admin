@@ -2,27 +2,27 @@ import { defineStore } from 'pinia';
 import { Session } from '@/utils/storage';
 import { useLoginApi } from '@/api/login';
 import { ElMessage } from 'element-plus';
+import { UserInfosState } from '@/types/pinia';
 
 /**
  * 用户信息
  * @methods setUserInfos 设置用户信息
  */
 
-const { signOut } = useLoginApi();
+const { logout } = useLoginApi();
 
 export const useUserInfo = defineStore('userInfo', {
   state: (): UserInfosState => ({
     userInfos: {
       id: 0,
       userName: '',
-      roleId: 0,
-      roleName: '',
-      avatar: '',
-      menus: [],
-      authBtnList: [],
-      createdTime: '',
+      nickName: '',
+      email: '',
+      userEnabled: 0,
+      userAvatar: '',
+      createTime: '',
       updateTime: '',
-      token: '',
+      roles: [],
     },
   }),
   actions: {
@@ -41,10 +41,10 @@ export const useUserInfo = defineStore('userInfo', {
           userName: this.userInfos.userName,
           // token: this.userInfos.token
         };
-        const { data: res } = await signOut(params);
-        const { code, message, data } = res;
-        if (code !== 200 && message !== 'Success') return;
-        ElMessage.success(data);
+        const { data: res } = await logout<string>(params);
+        const { code, message, data, success } = res;
+        if (code !== 20000 && !success) return;
+        ElMessage.success(message);
         setTimeout(() => {
           Session.clear();
           window.location.reload();

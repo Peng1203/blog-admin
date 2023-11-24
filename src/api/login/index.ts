@@ -21,17 +21,17 @@ export function useLoginApi() {
       return request({
         url: '/login',
         method: 'post',
-        data,
+        data: JSON.parse(JSON.stringify(data)),
       });
     },
     /**
      * @method 退出登录
      */
-    signOut(data: object) {
+    logout<T = string>(data: object): TransformedResponse<T> {
       return request({
-        url: '/user/logout',
+        url: '/logout',
         method: 'post',
-        data,
+        data: JSON.parse(JSON.stringify(data)),
       });
     },
     /**

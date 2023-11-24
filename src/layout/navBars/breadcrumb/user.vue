@@ -10,29 +10,38 @@
       @command="onComponentSizeChange"
     >
       <div class="layout-navbars-breadcrumb-user-icon">
-        <Peng-Icon name="icon-zitidaxiao" title="字体大小" />
+        <Peng-Icon
+          name="icon-zitidaxiao"
+          title="字体大小"
+        />
       </div>
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item
             command="large"
             :disabled="state.disabledSize === 'large'"
-            >大型</el-dropdown-item
           >
+            大型
+          </el-dropdown-item>
           <el-dropdown-item
             command="default"
             :disabled="state.disabledSize === 'default'"
-            >默认</el-dropdown-item
           >
+            默认
+          </el-dropdown-item>
           <el-dropdown-item
             command="small"
             :disabled="state.disabledSize === 'small'"
-            >小型</el-dropdown-item
           >
+            小型
+          </el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>
-    <div class="layout-navbars-breadcrumb-user-icon" @click="onSearchClick">
+    <div
+      class="layout-navbars-breadcrumb-user-icon"
+      @click="onSearchClick"
+    >
       <Peng-Icon name="ele-Search" />
     </div>
     <div
@@ -40,7 +49,10 @@
       @click="onLayoutSetingClick"
     >
       <Peng-Icon name="ele-Setting" />
-      <i class="icon-skin iconfont" title="布局配置"></i>
+      <i
+        class="icon-skin iconfont"
+        title="布局配置"
+      ></i>
     </div>
     <div class="layout-navbars-breadcrumb-user-icon">
       <el-popover
@@ -52,7 +64,10 @@
       >
         <template #reference>
           <el-badge :is-dot="true">
-            <Peng-Icon title="消息" name="ele-Bell" />
+            <Peng-Icon
+              title="消息"
+              name="ele-Bell"
+            />
           </el-badge>
         </template>
         <template #default>
@@ -66,9 +81,7 @@
     >
       <Peng-Icon
         :title="state.isScreenfull ? '退出全屏' : '全屏'"
-        :name="
-          !state.isScreenfull ? 'icon-quanping_o' : 'icon-quxiaoquanping_o'
-        "
+        :name="!state.isScreenfull ? 'icon-quanping_o' : 'icon-quxiaoquanping_o'"
       />
 
       <i class="iconfont"></i>
@@ -81,7 +94,7 @@
     >
       <span class="layout-navbars-breadcrumb-user-link">
         <img
-          :src="userInfos.avatarUrl || ''"
+          :src="userInfos.userAvatar || defaultAvatar"
           class="layout-navbars-breadcrumb-user-link-photo mr5"
         />
         {{ userInfos.userName === '' ? 'common' : userInfos.userName }}
@@ -93,7 +106,12 @@
         <el-dropdown-menu>
           <el-dropdown-item command="/home">首页</el-dropdown-item>
           <!-- @click="stores.userLogout" -->
-          <el-dropdown-item divided command="logOut">退出登录</el-dropdown-item>
+          <el-dropdown-item
+            divided
+            command="logOut"
+          >
+            退出登录
+          </el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>
@@ -102,65 +120,59 @@
 </template>
 
 <script setup lang="ts" name="layoutBreadcrumbUser">
-import { defineAsyncComponent, ref, computed, reactive, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { ElMessageBox, ElMessage } from 'element-plus'
-import screenfull from 'screenfull'
-import { storeToRefs } from 'pinia'
-import { useUserInfo } from '@/stores/userInfo'
-import { useThemeConfig } from '@/stores/themeConfig'
-import mittBus from '@/utils/mitt'
-import { Local } from '@/utils/storage'
+import { defineAsyncComponent, ref, computed, reactive, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { ElMessageBox, ElMessage } from 'element-plus';
+import screenfull from 'screenfull';
+import { storeToRefs } from 'pinia';
+import { useUserInfo } from '@/stores/userInfo';
+import { useThemeConfig } from '@/stores/themeConfig';
+import mittBus from '@/utils/mitt';
+import { Local } from '@/utils/storage';
 
 // 引入组件
-const UserNews = defineAsyncComponent(
-  () => import('@/layout/navBars/breadcrumb/userNews.vue')
-)
-const Search = defineAsyncComponent(
-  () => import('@/layout/navBars/breadcrumb/search.vue')
-)
+const UserNews = defineAsyncComponent(() => import('@/layout/navBars/breadcrumb/userNews.vue'));
+const Search = defineAsyncComponent(() => import('@/layout/navBars/breadcrumb/search.vue'));
 
 // 定义变量内容
-const router = useRouter()
-const stores = useUserInfo()
-const storesThemeConfig = useThemeConfig()
-const { userInfos } = storeToRefs(stores)
-const { themeConfig } = storeToRefs(storesThemeConfig)
-const searchRef = ref()
+const router = useRouter();
+const stores = useUserInfo();
+const storesThemeConfig = useThemeConfig();
+const { userInfos } = storeToRefs(stores);
+const { themeConfig } = storeToRefs(storesThemeConfig);
+const searchRef = ref();
 const state: any = reactive({
   isScreenfull: false,
   disabledSize: 'large',
-})
+});
+
+const defaultAvatar = 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png';
 
 // 设置分割样式
 const layoutUserFlexNum = computed(() => {
-  let num: string | number = ''
-  const { layout, isClassicSplitMenu } = themeConfig.value
-  const layoutArr: string[] = ['defaults', 'columns']
-  if (
-    layoutArr.includes(layout) ||
-    (layout === 'classic' && !isClassicSplitMenu)
-  )
-    num = '1'
-  else num = ''
-  return num
-})
+  let num: string | number = '';
+  const { layout, isClassicSplitMenu } = themeConfig.value;
+  const layoutArr: string[] = ['defaults', 'columns'];
+  if (layoutArr.includes(layout) || (layout === 'classic' && !isClassicSplitMenu)) num = '1';
+  else num = '';
+  return num;
+});
 // 全屏点击时
 const onScreenfullClick = () => {
   if (!screenfull.isEnabled) {
-    ElMessage.warning('暂不不支持全屏')
-    return false
+    ElMessage.warning('暂不不支持全屏');
+    return false;
   }
-  screenfull.toggle()
+  screenfull.toggle();
   screenfull.on('change', () => {
-    if (screenfull.isFullscreen) state.isScreenfull = true
-    else state.isScreenfull = false
-  })
-}
+    if (screenfull.isFullscreen) state.isScreenfull = true;
+    else state.isScreenfull = false;
+  });
+};
 // 布局配置 icon 点击时
 const onLayoutSetingClick = () => {
-  mittBus.emit('openSetingsDrawer')
-}
+  mittBus.emit('openSetingsDrawer');
+};
 // 下拉菜单点击时
 const onHandleCommandClick = (path: string) => {
   if (path === 'logOut') {
@@ -175,52 +187,52 @@ const onHandleCommandClick = (path: string) => {
       buttonSize: 'default',
       beforeClose: (action, instance, done) => {
         if (action === 'confirm') {
-          instance.confirmButtonLoading = true
-          instance.confirmButtonText = '退出中'
-          done()
+          instance.confirmButtonLoading = true;
+          instance.confirmButtonText = '退出中';
+          done();
           setTimeout(() => {
-            instance.confirmButtonLoading = false
-          }, 300)
+            instance.confirmButtonLoading = false;
+          }, 300);
         } else {
-          done()
+          done();
         }
       },
     })
       .then(async () => {
         // 清除缓存/token等
-        await stores.userLogout()
+        await stores.userLogout();
 
         // Session.clear()
         // // 使用 reload 时，不需要调用 resetRoute() 重置路由
         // window.location.reload()
       })
-      .catch(() => {})
+      .catch(() => {});
   } else {
-    router.push(path)
+    router.push(path);
   }
-}
+};
 // 菜单搜索点击
 const onSearchClick = () => {
-  searchRef.value.openSearch()
-}
+  searchRef.value.openSearch();
+};
 // 组件大小改变
 const onComponentSizeChange = (size: string) => {
-  Local.remove('themeConfig')
-  themeConfig.value.globalComponentSize = size
-  Local.set('themeConfig', themeConfig.value)
-  initI18nOrSize('globalComponentSize', 'disabledSize')
-  window.location.reload()
-}
+  Local.remove('themeConfig');
+  themeConfig.value.globalComponentSize = size;
+  Local.set('themeConfig', themeConfig.value);
+  initI18nOrSize('globalComponentSize', 'disabledSize');
+  window.location.reload();
+};
 // 初始化组件大小/i18n
 const initI18nOrSize = (value: string, attr: string) => {
-  state[attr] = Local.get('themeConfig')[value]
-}
+  state[attr] = Local.get('themeConfig')[value];
+};
 // 页面加载时
 onMounted(() => {
   if (Local.get('themeConfig')) {
-    initI18nOrSize('globalComponentSize', 'disabledSize')
+    initI18nOrSize('globalComponentSize', 'disabledSize');
   }
-})
+});
 </script>
 
 <style scoped lang="scss">

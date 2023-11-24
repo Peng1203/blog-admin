@@ -1,105 +1,105 @@
+import { RoleEntityData } from '@/views/auth/role';
 /**
  * pinia 类型定义
  */
 
 // 用户信息
 declare interface UserInfosState<T = any> {
-	userInfos: {
-		authBtnList: string[];
-		menus: string[];
-		userName: string;
-		avatar: string | null;
-		id: number,
-		roleId: number,
-		roleName: string;
-		createdTime: string;
-		updateTime: string;
-		[key: string]: T;
-	};
+  userInfos: {
+    id: number;
+    userName: string;
+    nickName: string | null;
+    email: string | null;
+    userEnabled: 0 | 1;
+    userAvatar: string | null;
+    createTime: string;
+    updateTime: string;
+    roles: RoleEntityData[];
+  };
 }
 
 // 路由缓存列表
 declare interface KeepAliveNamesState {
-	keepAliveNames: string[];
-	cachedViews: string[];
+  keepAliveNames: string[];
+  cachedViews: string[];
 }
 
 // 后端返回原始路由(未处理时)
 declare interface RequestOldRoutesState {
-	requestOldRoutes: string[];
+  requestOldRoutes: string[];
 }
 
 // TagsView 路由列表
 declare interface TagsViewRoutesState<T = any> {
-	tagsViewRoutes: T[];
-	isTagsViewCurrenFull: Boolean;
+  tagsViewRoutes: T[];
+  isTagsViewCurrenFull: Boolean;
 }
 
 // 路由列表
 declare interface RoutesListState<T = any> {
-	routesList: T[];
-	isColumnsMenuHover: Boolean;
-	isColumnsNavHover: Boolean;
+  routesList: T[];
+  isColumnsMenuHover: Boolean;
+  isColumnsNavHover: Boolean;
 }
 
 // 布局配置
 declare interface ThemeConfigState {
-	themeConfig: {
-		isDrawer: boolean;
-		primary: string;
-		topBar: string;
-		topBarColor: string;
-		isTopBarColorGradual: boolean;
-		menuBar: string;
-		menuBarColor: string;
-		menuBarActiveColor: string;
-		isMenuBarColorGradual: boolean;
-		columnsMenuBar: string;
-		columnsMenuBarColor: string;
-		isColumnsMenuBarColorGradual: boolean;
-		isColumnsMenuHoverPreload: boolean;
-		isCollapse: boolean;
-		isUniqueOpened: boolean;
-		isFixedHeader: boolean;
-		isFixedHeaderChange: boolean;
-		isClassicSplitMenu: boolean;
-		isLockScreen: boolean;
-		lockScreenTime: number;
-		isShowLogo: boolean;
-		isShowLogoChange: boolean;
-		isBreadcrumb: boolean;
-		isTagsview: boolean;
-		isBreadcrumbIcon: boolean;
-		isTagsviewIcon: boolean;
-		isCacheTagsView: boolean;
-		isSortableTagsView: boolean;
-		isShareTagsView: boolean;
-		isFooter: boolean;
-		isGrayscale: boolean;
-		isInvert: boolean;
-		isIsDark: boolean;
-		tagsStyle: string;
-		animation: string;
-		columnsAsideStyle: string;
-		columnsAsideLayout: string;
-		layout: string;
-		isRequestRoutes: boolean;
-		globalTitle: string;
-		globalViceTitle: string;
-		// globalI18n: string;
-		globalComponentSize: string;
-	};
+  themeConfig: {
+    isDrawer: boolean;
+    primary: string;
+    topBar: string;
+    topBarColor: string;
+    isTopBarColorGradual: boolean;
+    menuBar: string;
+    menuBarColor: string;
+    menuBarActiveColor: string;
+    isMenuBarColorGradual: boolean;
+    columnsMenuBar: string;
+    columnsMenuBarColor: string;
+    isColumnsMenuBarColorGradual: boolean;
+    isColumnsMenuHoverPreload: boolean;
+    isCollapse: boolean;
+    isUniqueOpened: boolean;
+    isFixedHeader: boolean;
+    isFixedHeaderChange: boolean;
+    isClassicSplitMenu: boolean;
+    isLockScreen: boolean;
+    lockScreenTime: number;
+    isShowLogo: boolean;
+    isShowLogoChange: boolean;
+    isBreadcrumb: boolean;
+    isTagsview: boolean;
+    isBreadcrumbIcon: boolean;
+    isTagsviewIcon: boolean;
+    isCacheTagsView: boolean;
+    isSortableTagsView: boolean;
+    isShareTagsView: boolean;
+    isFooter: boolean;
+    isGrayscale: boolean;
+    isInvert: boolean;
+    isIsDark: boolean;
+    tagsStyle: string;
+    animation: string;
+    columnsAsideStyle: string;
+    columnsAsideLayout: string;
+    layout: string;
+    isRequestRoutes: boolean;
+    globalTitle: string;
+    globalViceTitle: string;
+    // globalI18n: string;
+    globalComponentSize: string;
+  };
 }
 
 // 角色权限相关列表
 
 declare interface UserAuthState<T = any> {
-	allParams: T
-	allRoleList: T[]
-	allMenuList: T[]
-	allAuthPermissionList: T[]
-	allRoleOptions: OperationItem[]
-	allMenuOptions: OperationItem[]
-	allAuthPermissionOptions: OperationItem[]
-	[key: string]: T
+  allParams: T;
+  allRoleList: T[];
+  allMenuList: T[];
+  allAuthPermissionList: T[];
+  allRoleOptions: OperationItem[];
+  allMenuOptions: OperationItem[];
+  allAuthPermissionOptions: OperationItem[];
+  [key: string]: T;
 }

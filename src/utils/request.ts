@@ -54,8 +54,8 @@ service.interceptors.response.use(
     return response;
   },
   async (error: AxiosError<any>) => {
-    console.log('响应拦截器 ------', error);
     const { code, message, response, config } = error;
+    console.log('响应拦截器 ------', error);
     if (code === 'ERR_NETWORK' || message === 'Network Error') return ElMessage.error('服务器连接错误!');
     const { status, data } = response!;
 
@@ -70,6 +70,9 @@ service.interceptors.response.use(
             ElMessage.warning(data.message);
             break;
           case 40104:
+            // 当退出登录接口超时不再从新请求 直接返回登录页
+            if (response?.data.path.includes('logout')) return router.push({ name: 'login' });
+
             // token过期触发的401 存在2种情况 access_token过期 refresh_token过期
             // 根据接口中的 错误信息判断
             // 该情况为 access_token 过期 需要调用刷新token的接口

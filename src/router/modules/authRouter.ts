@@ -5,7 +5,7 @@ const routerRules: Array<RouteRecordRaw> = [
   {
     path: '/auth',
     name: 'Auth',
-    redirect: { name: 'SystemRole' },
+    redirect: { name: 'Role' },
     // component: () => import('@/layout/routerView/parent.vue'),
     meta: {
       title: '权限管理',

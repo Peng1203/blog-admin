@@ -6,9 +6,11 @@ import { storeToRefs } from 'pinia';
 import { useKeepALiveNames } from '@/stores/keepAliveNames';
 import { useRoutesList } from '@/stores/routesList';
 import { useThemeConfig } from '@/stores/themeConfig';
-import { Session } from '@/utils/storage';
+import { Local, Session } from '@/utils/storage';
 import { staticRoutes, notFoundAndNoPower } from './route';
 import { handleUserAuthRouters } from './handleAuthRouter';
+import { useUserInfo } from '@/stores/userInfo';
+
 /**
  * 1、前端控制路由时：isRequestRoutes 为 false，需要写 roles，需要走 setFilterRoute 方法。
  * 2、后端控制路由时：isRequestRoutes 为 true，不需要写 roles，不需要走 setFilterRoute 方法），
@@ -132,7 +134,11 @@ router.beforeEach(async (to, from, next) => {
     const { routesList } = storeToRefs(storesRoutesList);
     // 解决界面刷新路由规则丢失问题
     if (from.name === undefined && !routesList.value.length && token) {
-      handleUserAuthRouters();
+      const userInfoStore = useUserInfo();
+      // 当前用户不是admin时 请求接口获取路由信息
+      const { id, userName } = Local.getUserInfo();
+      if (id !== 1 && userName !== 'admin') await userInfoStore.getMenus();
+      await handleUserAuthRouters();
       next({ path: to.path });
       // next({: to.name })
       // next(`${to.path}`)

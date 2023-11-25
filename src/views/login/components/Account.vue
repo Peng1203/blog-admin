@@ -104,21 +104,19 @@ import { formatAxis } from '@/utils/formatTime';
 import { NextLoading } from '@/utils/loading';
 import { useLoginApi } from '@/api';
 import type { LoginData } from '../';
+import { useUserInfo } from '@/stores/userInfo';
 
 const { getCaptcha, login } = useLoginApi();
 
 const router = useRouter();
+const userInfoStore = useUserInfo();
 
 const loginState = reactive({
   isShowPassword: false,
   // 登录表单
   loginForm: {
-    // userName: '',
-    // password: '',
-    // userName: 'Peng',
-    // password: '123mzp',
-    userName: 'admin',
-    password: '123456',
+    userName: '',
+    password: '',
     captcha: '',
   },
   // 登录表单校验规则
@@ -193,6 +191,8 @@ const handleUserLogin = async () => {
     Local.set('userInfo', user);
     Local.setRFToken(tokens.refresh_token);
     Session.setACToken(tokens.access_token);
+
+    if(user.userName !== 'admin' && user.id !== 1) await userInfoStore.getMenus()
 
     // 处理登录用户角色的路由表
     const showPageName = await handleUserAuthRouters();

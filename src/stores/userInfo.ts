@@ -26,7 +26,6 @@ export const useUserInfo = defineStore('userInfo', {
       roles: [],
     },
     menus: <MenuData[]>[],
-    requestMenuNum: 0,
   }),
   actions: {
     // 更新用户信息
@@ -39,19 +38,13 @@ export const useUserInfo = defineStore('userInfo', {
     // 获取用户菜单
     async getMenus() {
       try {
-        this.requestMenuNum++;
-        if (this.requestMenuNum > 1) return;
         const uId = this.userInfos.id || Local.getUserInfo().id;
-        console.log('uId ------', uId);
         const { data: res } = await getUserMenu<MenuData[]>(uId);
-        console.log('res ------', res);
         const { code, success, data } = res;
         if (code !== 20000 || !success) return;
         this.menus = data;
       } catch (error) {
         console.log('error ------', error);
-      } finally {
-        this.requestMenuNum--;
       }
     },
     // 用户退出登录

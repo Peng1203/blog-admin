@@ -18,6 +18,7 @@
       />
       <el-tree
         v-else
+        check-strictly
         show-checkbox
         node-key="id"
         ref="treeRef"

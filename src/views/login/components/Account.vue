@@ -54,6 +54,7 @@
           clearable
           maxlength="4"
           autocomplete="off"
+          ref="captchaInputRef"
           placeholder="验证码 (不区分大小写)"
           v-model.trim="loginState.loginForm.captcha"
           @keyup.enter="handleUserLogin"
@@ -143,6 +144,8 @@ onMounted(() => {
   getLoginCaptcha();
 });
 
+const captchaInputRef = ref<RefType>(null);
+
 // 刷新 定时器
 const timer = ref<number>(0);
 // 刷新验证码
@@ -151,8 +154,9 @@ const handleRefreshCaptcha = () => {
   // 防抖
   timer.value = setTimeout(() => {
     loginState.loginForm.captcha = '';
+    captchaInputRef.value.focus();
     getLoginCaptcha();
-  }, 500);
+  }, 300);
 };
 
 // 获取登录验证码
@@ -192,7 +196,7 @@ const handleUserLogin = async () => {
     Local.setRFToken(tokens.refresh_token);
     Session.setACToken(tokens.access_token);
 
-    if(user.userName !== 'admin' && user.id !== 1) await userInfoStore.getMenus()
+    if (user.userName !== 'admin' && user.id !== 1) await userInfoStore.getMenus();
 
     // 处理登录用户角色的路由表
     const showPageName = await handleUserAuthRouters();

@@ -166,7 +166,7 @@ const addNewUser = async (): Promise<boolean> => {
     const params = {
       ...other,
       ...(email ? { email } : {}),
-      password: passwordEncryption(password),
+      password: passwordEncryption(password!),
     };
     const { data: res } = await addUser<UserData>(params as any);
     const { code, message, data, success } = res;

@@ -1,4 +1,5 @@
-import request from '@/utils/request'
+import request from '@/utils/request';
+import { TransformedResponse, RequestListParams } from 'Api';
 
 export function useTagApi() {
   return {
@@ -9,26 +10,26 @@ export function useTagApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    getTagList(params: object) {
+    getTags<T>(params: RequestListParams): TransformedResponse<T> {
       return request({
-        url: '/article-tag/getTagList',
+        url: '/tag',
         method: 'get',
         params,
-      })
+      });
     },
     /**
      * 添加标签
      * @author Peng
      * @date 2023-04-28
-     * @param {any} params:object
+     * @param {any} data:object
      * @returns {any}
      */
-    addTag(params: object) {
+    addTag<T>(data: object): TransformedResponse<T> {
       return request({
-        url: '/article-tag/addTag',
+        url: '/tag',
         method: 'post',
-        data: params,
-      })
+        data: JSON.stringify(data),
+      });
     },
     /**
      * 通过ID更新标签信息
@@ -43,7 +44,7 @@ export function useTagApi() {
         url: `/article-tag/updateTagById/${tagId}`,
         method: 'put',
         data: params,
-      })
+      });
     },
     /**
      * 通过ID删除标签
@@ -56,7 +57,7 @@ export function useTagApi() {
       return request({
         url: `/article-tag/deleteTagById/${tagId}`,
         method: 'delete',
-      })
+      });
     },
-  }
+  };
 }

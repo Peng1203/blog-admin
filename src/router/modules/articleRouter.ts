@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from 'vue-router'
+import { RouteRecordRaw } from 'vue-router';
 
 // 文章管理路由规则
 const routerRules: RouteRecordRaw[] = [
@@ -54,7 +54,7 @@ const routerRules: RouteRecordRaw[] = [
       {
         path: '/article/tag',
         name: 'ArticleTag',
-        component: () => import('@/views/article/tag/index.vue'),
+        component: () => import('@/views/article/tag'),
         meta: {
           parentMenuName: 'Article',
           title: '标签管理',
@@ -85,6 +85,6 @@ const routerRules: RouteRecordRaw[] = [
       },
     ],
   },
-]
+];
 
-export default routerRules
+export default routerRules;

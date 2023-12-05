@@ -1,10 +1,12 @@
-import { defineStore } from 'pinia'
-import { useCategoryApi } from '../api/category'
-import { useTagApi } from '../api/tag'
+import { defineStore } from 'pinia';
+import { useCategoryApi } from '../api/category';
+import { useTagApi } from '../api/tag';
+import { ref } from 'vue';
+import { TagData, TagListData } from '@/views/article/tag';
 
-const { getCategoryList } = useCategoryApi()
+const { getCategoryList } = useCategoryApi();
 
-const { getTagList } = useTagApi()
+const { getTags } = useTagApi();
 
 export const useArticleInfo = defineStore('articleInfo', {
   state: () => ({
@@ -16,60 +18,51 @@ export const useArticleInfo = defineStore('articleInfo', {
       pageSize: 9999,
     },
     // 分类全部数据
-    allCategoryList: [],
+    categoryList: [],
     // 分类下拉全部数据
-    allCategoryOptions: [],
+    categoryOption: ref<OptionItem[]>([]),
     // 标签全部数据
-    allTagList: [],
+    tagList: ref<TagData[]>([]),
     // 标签下拉全部数据
-    allTagOptions: [],
+    tagOption: ref<OptionItem[]>([]),
   }),
   actions: {
     // 获取全部文章分类数据
-    async getAllCategoryList(updata?: boolean) {
+    async getCategoryData(updata?: boolean) {
       try {
-        if (
-          this.allCategoryList.length &&
-          this.allCategoryOptions.length &&
-          !updata
-        )
-          return
-        const { data: res } = await getCategoryList(this.allParams)
-        const { code, message, data } = res
+        if (this.categoryList.length && this.categoryOption.length && !updata) return;
+        const { data: res } = await getCategoryList(this.allParams);
+        const { code, message, data } = res;
         if (code !== 200 || message !== 'Success') {
-          this.allCategoryList = []
-          this.allCategoryOptions = []
+          this.categoryList = [];
+          this.categoryOption = [];
         } else {
-          this.allCategoryList = data
-          this.allCategoryOptions = data.map(({ categoryName, id }: any) => ({
+          this.categoryList = data;
+          this.categoryOption = data.map(({ categoryName, id }: any) => ({
             label: categoryName,
             value: id,
-          }))
+          }));
         }
       } catch (e) {
-        console.log(e)
+        console.log(e);
       }
     },
     // 获取全部标签列表
-    async getAllTagList(updata?: boolean) {
+    async getTagData(updata?: boolean) {
       try {
-        if (this.allTagList.length && this.allTagOptions.length && !updata)
-          return
-        const { data: res } = await getTagList(this.allParams)
-        const { code, message, data } = res
-        if (code !== 200 || message !== 'Success') {
-          this.allTagList = []
-          this.allTagOptions = []
-        } else {
-          this.allTagList = data
-          this.allTagOptions = data.map(({ tagName, id }: any) => ({
-            label: tagName,
-            value: id,
-          }))
-        }
+        if (this.tagList.length && this.tagOption.length && !updata) return;
+        const { data: res } = await getTags<TagListData>(this.allParams);
+        const { code, message, data, success } = res;
+        if (code !== 20000 || !success) return;
+
+        this.tagList = data.list;
+        this.tagOption = data.list.map(({ tagName, id }) => ({
+          label: tagName,
+          value: id,
+        }));
       } catch (e) {
-        console.log(e)
+        console.log(e);
       }
     },
   },
-})
+});

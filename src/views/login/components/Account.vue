@@ -106,6 +106,7 @@ import { NextLoading } from '@/utils/loading';
 import { useLoginApi } from '@/api';
 import type { LoginData } from '../';
 import { useUserInfo } from '@/stores/userInfo';
+import { passwordEncryption } from '@/utils/password';
 
 const { getCaptcha, login } = useLoginApi();
 
@@ -173,7 +174,11 @@ const getLoginCaptcha = async (): Promise<void> => {
 // 登录 获取用户信息
 const getLoginUserInfo = async (): Promise<LoginData | undefined> => {
   try {
-    const { data: res } = await login<LoginData>(loginState.loginForm);
+    const params = {
+      ...loginState.loginForm,
+      password: passwordEncryption(loginState.loginForm.password),
+    };
+    const { data: res } = await login<LoginData>(params);
     const { code, data, success } = res;
     if (code !== 20000 || !success) return;
     return data;

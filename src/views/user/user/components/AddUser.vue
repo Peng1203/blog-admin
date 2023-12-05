@@ -26,6 +26,7 @@ import Form, { FormItem } from '@/components/Form';
 import { passwordStrengthLevelDetection } from '@/utils/pwd';
 import { UserData, AddProps, AddEditUserType } from '../types';
 import { UploadRequestOptions } from 'element-plus';
+import { passwordEncryption } from '@/utils/password';
 
 const props = defineProps<AddProps>();
 
@@ -161,10 +162,11 @@ const handleAdd = async () => {
 // 添加用户
 const addNewUser = async (): Promise<boolean> => {
   try {
-    const { email, ...other } = formData.value;
+    const { email, password, ...other } = formData.value;
     const params = {
       ...other,
       ...(email ? { email } : {}),
+      password: passwordEncryption(password),
     };
     const { data: res } = await addUser<UserData>(params as any);
     const { code, message, data, success } = res;

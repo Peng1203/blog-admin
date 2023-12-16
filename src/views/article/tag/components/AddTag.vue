@@ -62,7 +62,7 @@ const addTagState = reactive({
   ]),
 });
 
-const addFormRef = ref<any>(null);
+const addFormRef = ref<RefType>(null);
 // 处理添加操作
 const handleAdd = async () => {
   const validRes = await addFormRef.value
@@ -72,7 +72,7 @@ const handleAdd = async () => {
   if (!validRes) return;
   const addRes = await addNewTag();
   if (!addRes) return;
-  addTagDialogStatus.value = false;
+  handleDialogClose();
   emits('updateList');
 };
 
@@ -106,6 +106,7 @@ const resetAddForm = () => {
 const handleDialogClose = () => {
   resetAddForm();
   addFormRef.value.getRef().resetFields();
+  addTagDialogStatus.value = false;
 };
 
 defineExpose({ addTagDialogStatus });

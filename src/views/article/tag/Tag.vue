@@ -21,7 +21,7 @@
           添加标签
         </el-button>
 
-        <Peng-Search
+        <Search
           placeholder="请输入标签名称"
           :loading="tableState.loading"
           v-model="tableState.queryStr"
@@ -89,9 +89,10 @@
 
 <script setup lang="tsx" name="ArticleTag">
 import { defineAsyncComponent, ref, onMounted, reactive } from 'vue';
-import { ElMessageBox, ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
 import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
+import Search from '@/components/Search';
 import { useTagApi } from '@/api/tag/index';
 import { TagData, TagListData } from './';
 import { useArticleInfo } from '@/stores/articleInfo';

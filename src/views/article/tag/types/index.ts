@@ -4,8 +4,8 @@ export interface TagData {
   id: number;
   tagName: string;
   icon: string;
-  createTime: string | Date;
-  updateTime: string | Date;
+  createTime: string;
+  updateTime: string;
   articles?: any[];
 }
 

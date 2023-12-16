@@ -1,5 +1,5 @@
 <template>
-  <div class="system-user-container layout-padding">
+  <div class="table-container layout-padding">
     <el-card
       shadow="hover"
       class="layout-padding-auto"
@@ -271,22 +271,4 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.system-user-container {
-  :deep(.el-card__body) {
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    overflow: auto;
-    .el-table {
-      flex: 1;
-    }
-  }
-
-  :deep(.expand-row > .cell) {
-    display: flex;
-    align-items: center;
-  }
-}
-</style>
+<style lang="scss" scoped></style>

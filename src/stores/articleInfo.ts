@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia';
-import { useCategoryApi } from '../api/category';
-import { useTagApi } from '../api/tag';
+import { useCategoryApi } from '@/api/category';
+import { useTagApi } from '@/api/tag';
 import { ref } from 'vue';
 import { TagData, TagListData } from '@/views/article/tag';
+import { CategoryData, CategoryListDate } from '@/views/article/category/types';
 
-const { getCategoryList } = useCategoryApi();
-
+const { getCategorys } = useCategoryApi();
 const { getTags } = useTagApi();
 
 export const useArticleInfo = defineStore('articleInfo', {
@@ -18,7 +18,7 @@ export const useArticleInfo = defineStore('articleInfo', {
       pageSize: 9999,
     },
     // 分类全部数据
-    categoryList: [],
+    categoryList: ref<CategoryData[]>([]),
     // 分类下拉全部数据
     categoryOption: ref<OptionItem[]>([]),
     // 标签全部数据
@@ -31,18 +31,15 @@ export const useArticleInfo = defineStore('articleInfo', {
     async getCategoryData(updata?: boolean) {
       try {
         if (this.categoryList.length && this.categoryOption.length && !updata) return;
-        const { data: res } = await getCategoryList(this.allParams);
-        const { code, message, data } = res;
-        if (code !== 200 || message !== 'Success') {
-          this.categoryList = [];
-          this.categoryOption = [];
-        } else {
-          this.categoryList = data;
-          this.categoryOption = data.map(({ categoryName, id }: any) => ({
-            label: categoryName,
-            value: id,
-          }));
-        }
+        const { data: res } = await getCategorys<CategoryListDate>(this.allParams);
+        const { code, message, data, success } = res;
+        if (code !== 20000 || !success) return;
+
+        this.categoryList = data.list;
+        this.categoryOption = data.list.map(({ categoryName, id }) => ({
+          label: categoryName,
+          value: id,
+        }));
       } catch (e) {
         console.log(e);
       }

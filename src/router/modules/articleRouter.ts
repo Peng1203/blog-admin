@@ -15,7 +15,6 @@ const routerRules: RouteRecordRaw[] = [
       isIframe: false,
       // icon: 'iconfont icon-wenzhangfenlei1',
       icon: 'iconfont icon-wenzhangfenlei2',
-      menuType: '1',
     },
     children: [
       {
@@ -32,7 +31,6 @@ const routerRules: RouteRecordRaw[] = [
           isIframe: false,
           // icon: 'iconfont icon-tianchongxing-',
           icon: 'iconfont icon-weibiaoti--',
-          menuType: '4',
         },
       },
       {
@@ -48,7 +46,6 @@ const routerRules: RouteRecordRaw[] = [
           isAffix: false,
           isIframe: false,
           icon: 'iconfont icon-wenzhangguanli',
-          menuType: '4',
         },
       },
       {
@@ -64,13 +61,12 @@ const routerRules: RouteRecordRaw[] = [
           isAffix: false,
           isIframe: false,
           icon: 'iconfont icon-tags',
-          menuType: '4',
         },
       },
       {
         path: '/article/category',
         name: 'ArticleCategory',
-        component: () => import('@/views/article/category/index.vue'),
+        component: () => import('@/views/article/category'),
         meta: {
           parentMenuName: 'Article',
           title: '分类管理',
@@ -80,7 +76,6 @@ const routerRules: RouteRecordRaw[] = [
           isAffix: false,
           isIframe: false,
           icon: 'iconfont icon-fenlei',
-          menuType: '4',
         },
       },
     ],

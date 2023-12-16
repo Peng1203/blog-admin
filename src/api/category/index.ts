@@ -1,4 +1,7 @@
-import request from '@/utils/request'
+import request from '@/utils/request';
+import { TransformedResponse, RequestListParams } from 'Api';
+
+import { Method } from '../types';
 
 export function useCategoryApi() {
   return {
@@ -9,26 +12,26 @@ export function useCategoryApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    getCategoryList(params: object) {
+    getCategorys<T>(params: RequestListParams): TransformedResponse<T> {
       return request({
-        url: '/article-category/getCategoryList',
-        method: 'get',
+        url: '/category',
+        method: Method.GET,
         params,
-      })
+      });
     },
     /**
      * 添加分类
      * @author Peng
      * @date 2023-04-29
-     * @param {any} params:object
+     * @param {any} data:object
      * @returns {any}
      */
-    addCategory(params: object) {
+    addCategory<T>(data: object): TransformedResponse<T> {
       return request({
-        url: '/article-category/addCategory',
-        method: 'post',
-        data: params,
-      })
+        url: '/category',
+        method: Method.POST,
+        data: JSON.stringify(data),
+      });
     },
     /**
      * 通过ID更新分类信息
@@ -38,12 +41,12 @@ export function useCategoryApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    updateCategory(categoryId: number, params: object) {
+    updateCategory<T>(categoryId: number, params: object): TransformedResponse<T> {
       return request({
-        url: `/article-category/updateCategoryById/${categoryId}`,
-        method: 'put',
-        data: params,
-      })
+        url: `/category/${categoryId}`,
+        method: Method.PATCH,
+        data: JSON.stringify(params),
+      });
     },
     /**
      * 通过ID删除分类
@@ -52,11 +55,11 @@ export function useCategoryApi() {
      * @param {any} categoryId:number
      * @returns {any}
      */
-    deleteCategoryById(categoryId: number) {
+    deleteCategory<T>(categoryId: number): TransformedResponse<T> {
       return request({
-        url: `/article-category/deleteCategoryById/${categoryId}`,
-        method: 'delete',
-      })
+        url: `/category/${categoryId}`,
+        method: Method.DELETE,
+      });
     },
-  }
+  };
 }

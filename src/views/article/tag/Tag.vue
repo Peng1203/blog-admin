@@ -96,7 +96,7 @@ import { useTagApi } from '@/api/tag/index';
 import { TagData, TagListData } from './';
 import { useArticleInfo } from '@/stores/articleInfo';
 
-const { getTags, deleteTagById } = useTagApi();
+const { getTags, deleteTag } = useTagApi();
 
 const articleInfoStore = useArticleInfo();
 
@@ -193,26 +193,17 @@ const handleUpdate = () => {
 };
 
 // 处理删除标签
-const handleDelTag = async (row: any) => {
-  const confirmRes = await ElMessageBox.confirm(`此操作将永久删除标签：“${row.tagName}”，是否继续?`, '提示', {
-    confirmButtonText: '确认',
-    cancelButtonText: '取消',
-    type: 'warning',
-  }).catch(() => false);
-  if (!confirmRes) return;
-  const delRes = await deleteTag(row.id);
-  if (delRes) getTagTableData();
+const handleDelTag = async (row: TagData) => {
+  const delRes = await deleteTagById(row.id);
+  if (delRes) handleUpdate();
 };
 
 // 删除标签
-const deleteTag = async (id: number): Promise<boolean> => {
+const deleteTagById = async (id: number): Promise<boolean> => {
   try {
-    const { data: res } = await deleteTagById(id);
-    const { code, data, message } = res;
-    if (code !== 200 || message !== 'Success') {
-      ElMessage.error(data);
-      return false;
-    }
+    const { data: res } = await deleteTag<string>(id);
+    const { code, data, success } = res;
+    if (code !== 20000 || !success) return false;
     ElMessage.success(data);
     return true;
   } catch (e) {

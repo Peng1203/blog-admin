@@ -28,7 +28,7 @@ import { ElMessage } from 'element-plus';
 import { useTagApi } from '@/api/tag/index';
 import Dialog from '@/components/Dialog';
 import Form, { FormItem } from '@/components/Form';
-import { AddTagType } from '../types';
+import { AddTagType, TagData } from '../types';
 
 const IconSelector = defineAsyncComponent(() => import('@/components/iconSelector/index.vue'));
 
@@ -81,15 +81,11 @@ const addNewTag = async (): Promise<boolean> => {
   try {
     const { tagName, icon } = addTagState.data;
     const params = { tagName, icon };
-    const { data: res } = await addTag(params);
-    const { code, data, message } = res;
-    if (code !== 200 || message !== 'Success') {
-      ElMessage.error(data);
-      return false;
-    } else {
-      ElMessage.success(data);
-      return true;
-    }
+    const { data: res } = await addTag<TagData>(params);
+    const { code, message, success } = res;
+    if (code !== 20100 || !success) return false;
+    ElMessage.success(message);
+    return true;
   } catch (e) {
     console.log(e);
     return false;

@@ -39,11 +39,11 @@ export function useTagApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    updataTagInfo(tagId: number, params: object) {
+    updataTag<T>(tagId: number, data: object): TransformedResponse<T> {
       return request({
-        url: `/article-tag/updateTagById/${tagId}`,
-        method: 'put',
-        data: params,
+        url: `/tag/${tagId}`,
+        method: 'patch',
+        data: JSON.stringify(data),
       });
     },
     /**
@@ -53,9 +53,9 @@ export function useTagApi() {
      * @param {any} tagId:number
      * @returns {any}
      */
-    deleteTagById(tagId: number) {
+    deleteTag<T>(tagId: number): TransformedResponse<T> {
       return request({
-        url: `/article-tag/deleteTagById/${tagId}`,
+        url: `/tag/${tagId}`,
         method: 'delete',
       });
     },

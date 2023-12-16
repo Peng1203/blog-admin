@@ -4,12 +4,15 @@ export interface TagData {
   id: number;
   tagName: string;
   icon: string;
-  categoryDesc: string;
   createTime: string | Date;
   updateTime: string | Date;
-  articles: any[];
+  articles?: any[];
 }
 
 export type TagListData = ListApiBaseResponse<TagData>;
 
 export type AddTagType = Partial<TagData>;
+
+export interface EditProps {
+  editRow: TagData;
+}

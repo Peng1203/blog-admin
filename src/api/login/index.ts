@@ -41,7 +41,7 @@ export function useLoginApi() {
     refreshToken(): TransformedResponse<{ access_token: string; refresh_token: string }> {
       return request({
         url: '/auth/refreshAccessToekn',
-        method: Method.POST,
+        method: Method.PATCH,
         data: JSON.stringify({
           refresh_token: Local.getRFToken(),
         }),
@@ -53,7 +53,7 @@ export function useLoginApi() {
     getUserMenu<T>(id: number): TransformedResponse<T> {
       return request({
         url: `/auth/menus/${id}`,
-        method: 'GET',
+        method: Method.GET,
       });
     },
   };

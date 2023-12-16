@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/utils/request';
 
 export function useArticleApi() {
   return {
@@ -12,9 +12,9 @@ export function useArticleApi() {
     getArticleList(params: object) {
       return request({
         url: '/article/getArticleList',
-        method: 'get',
+        method: Method.GET,
         params,
-      })
+      });
     },
     /**
      * 通过文章id获取详情信息
@@ -26,8 +26,8 @@ export function useArticleApi() {
     getArticleDetailById(articleId: number) {
       return request({
         url: `/article/articleDetail/${articleId}`,
-        method: 'get',
-      })
+        method: Method.GET,
+      });
     },
     /**
      * 添加文章
@@ -39,9 +39,9 @@ export function useArticleApi() {
     addArticle(params: object) {
       return request({
         url: '/article/addArticle',
-        method: 'post',
+        method: Method.POST,
         data: params,
-      })
+      });
     },
     /**
      * 通过文章ID更新文章
@@ -56,7 +56,7 @@ export function useArticleApi() {
         url: `/article/updateArticleById/${articleId}`,
         method: 'put',
         data: params,
-      })
+      });
     },
     /**
      * 通过ID删除文章
@@ -68,8 +68,8 @@ export function useArticleApi() {
     delArticleById(articleId: number) {
       return request({
         url: `/article/deleteArticleById/${articleId}`,
-        method: 'delete',
-      })
+        method: Method.DELETE,
+      });
     },
     /**
      * 上传文章头像
@@ -82,13 +82,13 @@ export function useArticleApi() {
     uploadArticleCover(file: FormData) {
       return request({
         url: '/article/upload-resources',
-        method: 'post',
+        method: Method.POST,
         data: file,
         headers: {
           'Content-Type': 'multipart/form-data',
           'resource-classification': 'cover',
         },
-      })
+      });
     },
     /**
      * 上传文章内容图片
@@ -101,13 +101,13 @@ export function useArticleApi() {
     uploadArticleContentResource(file: FormData) {
       return request({
         url: '/article/upload-resources',
-        method: 'post',
+        method: Method.POST,
         data: file,
         headers: {
           'Content-Type': 'multipart/form-data',
           'resource-classification': 'content',
         },
-      })
+      });
     },
-  }
+  };
 }

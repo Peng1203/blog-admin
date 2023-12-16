@@ -13,7 +13,7 @@ export function useTagApi() {
     getTags<T>(params: RequestListParams): TransformedResponse<T> {
       return request({
         url: '/tag',
-        method: 'get',
+        method: Method.GET,
         params,
       });
     },
@@ -27,7 +27,7 @@ export function useTagApi() {
     addTag<T>(data: object): TransformedResponse<T> {
       return request({
         url: '/tag',
-        method: 'post',
+        method: Method.POST,
         data: JSON.stringify(data),
       });
     },
@@ -42,7 +42,7 @@ export function useTagApi() {
     updataTag<T>(tagId: number, data: object): TransformedResponse<T> {
       return request({
         url: `/tag/${tagId}`,
-        method: 'patch',
+        method: Method.POST,
         data: JSON.stringify(data),
       });
     },
@@ -56,7 +56,7 @@ export function useTagApi() {
     deleteTag<T>(tagId: number): TransformedResponse<T> {
       return request({
         url: `/tag/${tagId}`,
-        method: 'delete',
+        method: Method.DELETE,
       });
     },
   };

@@ -14,7 +14,7 @@ export function useUserApi() {
     getUsers<T = any>(params: RequestListParams): TransformedResponse<T> {
       return request({
         url: '/user',
-        method: 'get',
+        method: Method.GET,
         params,
       });
     },
@@ -28,7 +28,7 @@ export function useUserApi() {
     addUser<T>(params: UserParams): TransformedResponse<T> {
       return request({
         url: '/user',
-        method: 'post',
+        method: Method.POST,
         data: JSON.stringify(params),
       });
     },
@@ -50,7 +50,7 @@ export function useUserApi() {
     update<T>(userId: number, params: UserParams): TransformedResponse<T> {
       return request({
         url: `/user/${userId}`,
-        method: 'patch',
+        method: Method.POST,
         data: params,
       });
     },
@@ -64,7 +64,7 @@ export function useUserApi() {
     deleteUserById<T>(userId: number): TransformedResponse<T> {
       return request({
         url: `/user/${userId}`,
-        method: 'delete',
+        method: Method.DELETE,
       });
     },
     /**
@@ -73,7 +73,7 @@ export function useUserApi() {
     deleteUsers(ids: number[]): TransformedResponse<string> {
       return request({
         url: `/user`,
-        method: 'delete',
+        method: Method.DELETE,
         data: JSON.stringify({ ids }),
       });
     },
@@ -88,7 +88,7 @@ export function useUserApi() {
     uploadUserAvatar(userId: number, file: FormData) {
       return request({
         url: `/user/uploadAvatarById/${userId}`,
-        method: 'patch',
+        method: Method.POST,
         data: file,
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -105,7 +105,7 @@ export function useUserApi() {
     getAllUserOptions() {
       return request({
         url: '/user/getAllUserOptions',
-        method: 'get',
+        method: Method.GET,
       });
     },
     /**
@@ -119,7 +119,7 @@ export function useUserApi() {
     changeUserPwd(userId: number, params: object) {
       return request({
         url: `/user/changePasswordById/${userId}`,
-        method: 'post',
+        method: Method.POST,
         data: params,
       });
     },

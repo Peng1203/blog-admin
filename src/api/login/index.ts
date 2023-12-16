@@ -11,7 +11,7 @@ export function useLoginApi() {
     getCaptcha<T>(): RawResponse<T> {
       return request({
         url: '/login/captcha',
-        method: 'get',
+        method: Method.GET,
       });
     },
     /**
@@ -20,7 +20,7 @@ export function useLoginApi() {
     login<T>(data: LoginParams): TransformedResponse<T> {
       return request({
         url: '/login',
-        method: 'post',
+        method: Method.POST,
         data: JSON.parse(JSON.stringify(data)),
       });
     },
@@ -30,7 +30,7 @@ export function useLoginApi() {
     logout<T = string>(data: object): TransformedResponse<T> {
       return request({
         url: '/logout',
-        method: 'post',
+        method: Method.POST,
         data: JSON.parse(JSON.stringify(data)),
       });
     },
@@ -40,7 +40,7 @@ export function useLoginApi() {
     refreshToken(): TransformedResponse<{ access_token: string; refresh_token: string }> {
       return request({
         url: '/auth/refreshAccessToekn',
-        method: 'patch',
+        method: Method.POST,
         data: JSON.stringify({
           refresh_token: Local.getRFToken(),
         }),

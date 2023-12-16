@@ -13,7 +13,7 @@ export function useRoleApi() {
     getRole<T>(params: RequestListParams): TransformedResponse<T> {
       return request({
         url: '/role',
-        method: 'get',
+        method: Method.GET,
         params,
       });
     },
@@ -27,7 +27,7 @@ export function useRoleApi() {
     addRole<T>(params: object): TransformedResponse<T> {
       return request({
         url: '/role',
-        method: 'post',
+        method: Method.POST,
         data: JSON.stringify(params),
       });
     },
@@ -42,7 +42,7 @@ export function useRoleApi() {
     updateRole<T>(id: number, params: object): TransformedResponse<T> {
       return request({
         url: `/role/${id}`,
-        method: 'patch',
+        method: Method.POST,
         data: JSON.stringify(params),
       });
     },
@@ -56,7 +56,7 @@ export function useRoleApi() {
     deleteRole<T>(id: number): TransformedResponse<T> {
       return request({
         url: `/role/${id}`,
-        method: 'delete',
+        method: Method.DELETE,
       });
     },
   };

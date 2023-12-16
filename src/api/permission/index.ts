@@ -18,7 +18,7 @@ export function usePermissionApi() {
     getPermissions<T = any>(params: RequestListParams): TransformedResponse<T> {
       return request({
         url: '/permission',
-        method: 'get',
+        method: Method.GET,
         params,
       });
     },
@@ -32,7 +32,7 @@ export function usePermissionApi() {
     addPermission<T = any>(params: object): TransformedResponse<T> {
       return request({
         url: '/permission',
-        method: 'post',
+        method: Method.POST,
         data: params,
       });
     },
@@ -46,7 +46,7 @@ export function usePermissionApi() {
     delAuthPermission<T = any>(id: number): TransformedResponse<T> {
       return request({
         url: `/permission/${id}`,
-        method: 'delete',
+        method: Method.DELETE,
       });
     },
     /**
@@ -60,7 +60,7 @@ export function usePermissionApi() {
     updateAuthPermInfo<T = any>(id: number, params: object): TransformedResponse<T> {
       return request({
         url: `/permission/${id}`,
-        method: 'patch',
+        method: Method.POST,
         data: params,
       });
     },

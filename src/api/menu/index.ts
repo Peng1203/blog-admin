@@ -14,7 +14,7 @@ export function useMenuApi() {
     getMenus<T = any>(params: RequestNoPageListParams): TransformedResponse<T> {
       return request({
         url: '/menu',
-        method: 'get',
+        method: Method.GET,
         params,
       });
     },
@@ -28,7 +28,7 @@ export function useMenuApi() {
     addMenu<T = any>(data: MenuParams): TransformedResponse<T> {
       return request({
         url: '/menu',
-        method: 'post',
+        method: Method.POST,
         data: JSON.stringify(data),
       });
     },
@@ -42,7 +42,7 @@ export function useMenuApi() {
     deleteMenu<T = string>(id: number): TransformedResponse<T> {
       return request({
         url: `/menu/${id}`,
-        method: 'delete',
+        method: Method.DELETE,
       });
     },
     /**
@@ -70,7 +70,7 @@ export function useMenuApi() {
     addAllDefaultMenu(menus: any[]) {
       return request({
         url: '/menu/addAllDefaultMenus',
-        method: 'post',
+        method: Method.POST,
         data: JSON.stringify(menus),
         headers: {
           'Content-Type': 'application/json',

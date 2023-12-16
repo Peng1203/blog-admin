@@ -6,7 +6,7 @@ export function useResourceApi() {
     getNetdiskDir<T>(params?: Record<'path', string>): TransformedResponse<T> {
       return request({
         url: '/resource/netdisk',
-        method: 'get',
+        method: Method.GET,
         params,
       });
     },

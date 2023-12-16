@@ -135,7 +135,7 @@
     <AddUserDialog
       ref="addDialogRef"
       :roles="roleColumns"
-      @updateList="getUserTableData"
+      @updateList="handleUpdate"
     />
 
     <!-- 编辑用户信息抽屉 -->
@@ -143,7 +143,7 @@
       :editRow="editRow!"
       :roles="roleColumns"
       ref="editDrawerRef"
-      @updateList="getUserTableData"
+      @updateList="handleUpdate"
     />
   </div>
 </template>
@@ -321,8 +321,7 @@ const handleRoleFilter = () => {
 const handleBatchDelUser = async () => {
   const delRes = await batchDel();
   if (!delRes) return;
-  getUserTableData();
-  userStore.getUserData(true);
+  handleUpdate();
 };
 // 批量删除用户
 const batchDel = async (): Promise<boolean> => {
@@ -336,6 +335,11 @@ const batchDel = async (): Promise<boolean> => {
     console.log(e);
     return false;
   }
+};
+
+const handleUpdate = () => {
+  getUserTableData();
+  userStore.getUserData(true);
 };
 
 onMounted(() => {

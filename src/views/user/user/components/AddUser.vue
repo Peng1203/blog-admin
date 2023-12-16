@@ -1,15 +1,13 @@
 <template>
-  <!-- width="40%" -->
   <Dialog
     title="添加用户"
     v-model="addUserDialogStatus"
     @clickConfirm="handleAdd"
-    @clickCancel="addUserDialogStatus = false"
+    @dialogClose="handleDialogClose"
   >
-    <!-- inline -->
     <Form
-      labelW="180"
-      ref="addUserFormRef"
+      ref="addFormRef"
+      :labelW="'120px'"
       v-model="formData"
       :formItems="addUserState.formItemList"
     />
@@ -32,8 +30,6 @@ const props = defineProps<AddProps>();
 
 const emits = defineEmits(['updateList']);
 const { addUser } = useUserApi();
-
-const userStore = useUsersInfo();
 
 // 校验密码强度
 const passwordStrengthDetection = (rule: any, value: any, callback: any): any => {
@@ -143,21 +139,19 @@ function handleUploadAvatar(options: UploadRequestOptions) {
   console.log('options ------', options);
 }
 
-const addUserFormRef = ref<RefType>(null);
+const addFormRef = ref<RefType>(null);
 // 处理添加用户
 const handleAdd = async () => {
   // 校验表单
-  const validataRes = await addUserFormRef.value
+  const validataRes = await addFormRef.value
     .getRef()
     .validate()
     .catch(() => false);
   if (!validataRes) return;
   const addRes = await addNewUser();
   if (!addRes) return;
-  addUserDialogStatus.value = false;
+  handleDialogClose();
   emits('updateList');
-  // 添加成功 更新全局角色数据
-  userStore.getUserData(true);
 };
 // 添加用户
 const addNewUser = async (): Promise<boolean> => {
@@ -179,7 +173,7 @@ const addNewUser = async (): Promise<boolean> => {
   }
 };
 
-const formInit = () => {
+const resetAddForm = () => {
   formData.value.userName = '';
   formData.value.nickName = '';
   formData.value.password = '';
@@ -187,15 +181,15 @@ const formInit = () => {
   formData.value.email = '';
   formData.value.userEnabled = 1;
   formData.value.userAvatar = '';
-
-  addUserFormRef.value.getRef().resetFields();
   const findFormItem = addUserState.formItemList.find(item => item.prop === 'password');
   if (findFormItem) findFormItem.strengthLevel = 0;
 };
 
-watch(addUserDialogStatus, val => {
-  if (!val) return formInit();
-});
+const handleDialogClose = () => {
+  resetAddForm();
+  addFormRef.value.getRef().resetFields();
+  addUserDialogStatus.value = false;
+};
 
 defineExpose({ addUserDialogStatus });
 </script>

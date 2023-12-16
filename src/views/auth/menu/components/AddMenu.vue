@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch, PropType, computed, onMounted, defineAsyncComponent } from 'vue';
+import { ref, reactive, PropType, computed, defineAsyncComponent } from 'vue';
 import { ElMessage } from 'element-plus';
 import { useMenuApi } from '@/api/menu/index';
 import Dialog from '@/components/Dialog';
@@ -141,9 +141,8 @@ const handleAdd = async () => {
   if (!validRes) return;
   const addRes = await addNewMenu();
   if (!addRes) return;
-  resetAddForm();
+  handleDialogClose();
   emits('updateList');
-  addMenuDialogStatus.value = false;
 };
 
 const addNewMenu = async (): Promise<boolean> => {
@@ -201,6 +200,7 @@ const resetAddForm = () => {
 const handleDialogClose = () => {
   resetAddForm();
   addFormRef.value.getRef().resetFields();
+  addMenuDialogStatus.value = false;
 };
 
 defineExpose({ addMenuDialogStatus });

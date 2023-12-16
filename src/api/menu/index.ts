@@ -1,6 +1,7 @@
 import request from '@/utils/request';
 import { TransformedResponse, RequestNoPageListParams } from 'Api';
 import { EditMenuParams, MenuParams } from './params';
+import { Method } from '../types';
 
 export function useMenuApi() {
   return {

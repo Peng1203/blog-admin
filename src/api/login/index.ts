@@ -2,6 +2,7 @@ import request from '@/utils/request';
 import { RawResponse, TransformedResponse } from 'Api';
 import { LoginParams } from './params';
 import { Local } from '@/utils/storage';
+import { Method } from '../types';
 
 export function useLoginApi() {
   return {

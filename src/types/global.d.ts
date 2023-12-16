@@ -157,15 +157,3 @@ interface OptionItem {
 
 // 定义接口 公用类型
 declare module 'Api' {}
-
-declare enum Method {
-  GET = 'GET',
-  POST = 'POST',
-  PUT = 'PUT',
-  DELETE = 'DELETE',
-  PATCH = 'PATCH',
-  HEAD = 'HEAD',
-  OPTIONS = 'OPTIONS',
-  CONNECT = 'CONNECT',
-  TRACE = 'TRACE',
-}

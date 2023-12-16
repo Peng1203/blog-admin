@@ -1,6 +1,7 @@
 import request from '@/utils/request';
 import { TransformedResponse, RequestListParams } from 'Api';
 import { UserParams } from './params';
+import { Method } from '../types';
 
 export function useUserApi() {
   return {

@@ -1,5 +1,6 @@
 import request from '@/utils/request';
 import { TransformedResponse, RequestListParams } from 'Api';
+import { Method } from '../types';
 
 export function useResourceApi() {
   return {

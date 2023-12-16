@@ -1,6 +1,18 @@
 import { AxiosResponse } from 'axios';
 
 declare module 'Api' {
+  export enum Method {
+    GET = 'GET',
+    POST = 'POST',
+    PUT = 'PUT',
+    DELETE = 'DELETE',
+    PATCH = 'PATCH',
+    HEAD = 'HEAD',
+    OPTIONS = 'OPTIONS',
+    CONNECT = 'CONNECT',
+    TRACE = 'TRACE',
+  }
+
   // 请求列表 通用参数
   export type RequestListParams<T = any> = {
     page: number;
@@ -10,6 +22,7 @@ declare module 'Api' {
     order: string;
     [key: string]: T;
   };
+
   export type RequestNoPageListParams<T = any> = {
     queryStr: string;
     column: string;

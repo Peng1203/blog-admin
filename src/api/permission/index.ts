@@ -1,5 +1,7 @@
 import request from '@/utils/request';
 import { TransformedResponse, RequestListParams } from 'Api';
+import { Method } from '../types';
+
 /**
  * 操作权限标识
  * @author Peng

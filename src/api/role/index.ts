@@ -1,5 +1,6 @@
 import request from '@/utils/request';
 import { RequestListParams, TransformedResponse } from 'Api';
+import { Method } from '../types';
 
 export function useRoleApi() {
   return {

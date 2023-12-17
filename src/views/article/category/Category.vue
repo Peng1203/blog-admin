@@ -29,7 +29,7 @@
       <Table
         operationColumn
         :operationColumnBtns="['edit', 'delete']"
-        :isFilterShowColumn="true"
+        :isFilterShowColumn="false"
         :data="tableState.data"
         :loading="tableState.loading"
         :pagerInfo="tableState.pagerInfo"
@@ -47,6 +47,11 @@
               v-html="queryStrHighlight(row[prop], tableState.queryStr)"
             />
           </div>
+        </template>
+
+        <!-- 相关文章数 -->
+        <template #articleSlot="{ row, prop }">
+          {{ row[prop].length || 0 }}
         </template>
       </Table>
     </el-card>
@@ -67,9 +72,8 @@
 </template>
 
 <script setup lang="ts" name="ArticleCategory">
-import { AxiosResponse } from 'axios';
 import { defineAsyncComponent, ref, onMounted, reactive } from 'vue';
-import { ElMessageBox, ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus';
 import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
 import Search from '@/components/Search';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
@@ -93,6 +97,13 @@ const tableState = reactive({
       tooltip: true,
       fixed: 'left',
       slotName: 'queryHighNight',
+    },
+    {
+      label: '文章数',
+      prop: 'articles',
+      width: 130,
+      align: 'center',
+      slotName: 'articleSlot',
     },
     { label: '更新时间', prop: 'updateTime', minWidth: 200, sort: true },
     { label: '创建时间', prop: 'createTime', minWidth: 200, sort: true },
@@ -198,16 +209,4 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.list-container {
-  :deep(.el-card__body) {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    overflow: auto;
-    .el-table {
-      flex: 1;
-    }
-  }
-}
-</style>
+<style lang="scss" scoped></style>

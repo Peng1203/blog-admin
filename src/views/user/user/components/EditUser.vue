@@ -68,7 +68,7 @@ const editFormState = reactive({
       label: '角色',
       multiple: true,
       prop: 'roleIds',
-      options: props.roles,
+      options: [],
       span: 20,
       placeholder: '请输入选择角色',
       rules: [{ required: true, trigger: 'change' }],
@@ -104,14 +104,12 @@ const saveEditUserInfo = async (): Promise<boolean> => {
       userAvatar,
       userEnabled,
       roleIds,
-      email,
+      email: email === '' ? null : email,
     };
     const { data: res } = await updateUser<UserData>(props.editRow.id, params as any);
-    const { code, message } = res;
-    if (code !== 20001 || !message) {
-      ElMessage.error(message);
-      return false;
-    }
+    const { code, message, success } = res;
+    if (code !== 20001 || !success) return false;
+
     ElMessage.success(message);
     return true;
   } catch (e) {
@@ -140,6 +138,7 @@ watch(
 );
 
 watch(editDrawerStatus, async val => {
+  editFormState.formItemList.find(item => item.prop === 'roleIds')!.options = props.roles;
   if (!val) editFormRef.value.getRef().resetFields();
 });
 

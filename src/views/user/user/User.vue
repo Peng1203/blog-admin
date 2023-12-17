@@ -49,10 +49,11 @@
         />
       </div>
       <!-- 用户表格 -->
-      <!-- isFilterShowColumn -->
       <Table
-        border
         isSelection
+        operationColumn
+        :operationColumnBtns="['edit', 'delete']"
+        :isFilterShowColumn="true"
         :data="tableState.data"
         :loading="tableState.loading"
         :pagerInfo="tableState.pagerInfo"
@@ -61,6 +62,8 @@
         @selectionChange="(val: any) => tableState.selectVal = val.map((item: any)=> item.id)"
         @columnSort="handleColumnChange"
         @pageNumOrSizeChange="handlePageInfoChange"
+        @editBtn="handleEditUserInfo"
+        @deleteBtn="handleDelUser"
       >
         <!-- 头像 -->
         <template #userAvatar="{ row, prop }">
@@ -95,39 +98,6 @@
           >
             {{ row[prop!] ? '启用' : '锁定' }}
           </el-tag>
-        </template>
-
-        <!-- 操作 -->
-        <!-- <template #operation>121</template> -->
-        <template #operation="{ row }">
-          <el-button
-            circle
-            title="修改信息"
-            size="small"
-            type="primary"
-            :icon="Edit"
-            :disabled="row.id === 1"
-            @click="handleEditUserInfo(row)"
-          />
-
-          <el-popconfirm
-            width="auto"
-            icon="DeleteFilled"
-            icon-color="#f56c6c"
-            :title="`是否删除用户：${row.userName} ?`"
-            @confirm="handleDelUser(row)"
-          >
-            <template #reference>
-              <el-button
-                circle
-                title="删除"
-                size="small"
-                type="danger"
-                :icon="Delete"
-                :disabled="row.id === 1"
-              />
-            </template>
-          </el-popconfirm>
         </template>
       </Table>
     </el-card>
@@ -205,13 +175,6 @@ const tableState = reactive({
     // { label: '解禁时间', prop: 'unsealTime', minWidth: 200, sort: 'custom' },
     { label: '更新时间', prop: 'updateTime', minWidth: 200, sort: 'custom' },
     { label: '创建时间', prop: 'createTime', minWidth: 200, sort: 'custom' },
-    {
-      label: '操作',
-      prop: 'operation',
-      minWidth: 95,
-      slotName: 'operation',
-      fixed: 'right',
-    },
   ]),
   column: '',
   order: '',

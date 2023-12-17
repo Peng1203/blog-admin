@@ -32,7 +32,7 @@
       <Table
         operationColumn
         :operationColumnBtns="['edit', 'delete']"
-        :isFilterShowColumn="true"
+        :isFilterShowColumn="false"
         :data="tableState.data"
         :loading="tableState.loading"
         :pagerInfo="tableState.pagerInfo"

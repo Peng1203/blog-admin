@@ -57,7 +57,7 @@ export function useMenuApi() {
     updataMenu<T = string>(id: number, params: EditMenuParams): TransformedResponse<T> {
       return request({
         url: `/menu/${id}`,
-        method: 'put',
+        method: Method.PUT,
         data: JSON.stringify(params),
       });
     },

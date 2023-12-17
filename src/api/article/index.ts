@@ -54,7 +54,7 @@ export function useArticleApi() {
     updateArticle(articleId: number, params: object) {
       return request({
         url: `/article/updateArticleById/${articleId}`,
-        method: 'put',
+        method: Method.PUT,
         data: params,
       });
     },

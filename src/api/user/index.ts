@@ -44,15 +44,15 @@ export function useUserApi() {
     updateUser<T>(userId: number, params: UserParams): TransformedResponse<T> {
       return request({
         url: `/user/${userId}`,
-        method: 'put',
-        data: params,
+        method: Method.PUT,
+        data: JSON.stringify(params),
       });
     },
     update<T>(userId: number, params: UserParams): TransformedResponse<T> {
       return request({
         url: `/user/${userId}`,
-        method: Method.POST,
-        data: params,
+        method: Method.PATCH,
+        data: JSON.stringify(params),
       });
     },
     /**

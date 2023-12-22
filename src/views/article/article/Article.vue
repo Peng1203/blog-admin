@@ -19,7 +19,7 @@
             <el-tag
               v-for="{ label, value } in articleListState.categoryList"
               :key="value"
-              :effect="value === articleListState.activeCId ? 'dark' : 'plain'"
+              :effect="value === articleListState.activeCategory ? 'dark' : 'plain'"
               size="small"
               class="ml15 pseudo-link"
               @click="handleFilterByCatagory(value)"
@@ -160,6 +160,7 @@
                   :underline="false"
                   @click="handlePreViewArticle(item.id)"
                 />
+                <!-- v-if="isShowEdit(item.author.id)" -->
                 <el-link
                   v-auth="'EDIT'"
                   type="primary"
@@ -167,9 +168,9 @@
                   title="编辑"
                   class="ml10"
                   :underline="false"
-                  v-if="isShowEdit(item.authorId)"
                   @click="handleEditArticle(item.id)"
                 />
+                <!-- v-if="isShowDelete(item.author.id)" -->
                 <el-link
                   v-auth="'DELETE'"
                   type="danger"
@@ -177,17 +178,14 @@
                   title="删除"
                   class="ml10"
                   :underline="false"
-                  v-if="isShowDelete(item.authorId)"
                   @click="handleDelete(item.id, item.title)"
                 />
               </div>
             </h2>
             <!-- 标签行 -->
             <div class="mb15 flex-s-c">
-              <h4>{{ item.categoryName }}</h4>
+              <h4>{{ item.category.categoryName }}</h4>
             </div>
-            <!-- 简介段落 -->
-            <p class="mb15">{{ item.brief }}</p>
 
             <!-- 作者信息 -->
             <div class="flex-sb-c mb15">
@@ -195,18 +193,18 @@
               <div class="flex-c-c">
                 <el-avatar
                   :size="22"
-                  :src="item.authorAvatar"
+                  :src="item.author.userAvatar"
                 />
                 <span
                   style="font-size: 12px"
                   class="ml5"
                 >
-                  {{ item.authorName }}
+                  {{ item.author.nickName || item.author.userName }}
                 </span>
               </div>
               <span style="font-size: 12px; color: gray">
                 <span>发布于：</span>
-                <span>{{ item.createdTime }}</span>
+                <span>{{ item.createTime }}</span>
               </span>
             </div>
 
@@ -220,7 +218,7 @@
                 >
                   <span class="flex-c-c">
                     <Peng-Icon :name="iconName" />
-                    <span class="ml5">{{ item[prop] }}</span>
+                    <span class="ml5">{{ (item as any)[prop] }}</span>
                   </span>
                   <el-divider
                     direction="vertical"
@@ -242,8 +240,8 @@
                   <Peng-Icon
                     ml3
                     :title="tag.tagName"
-                    :name="tag.tagIcon"
-                    v-if="tag.tagIcon"
+                    :name="tag.icon"
+                    v-if="tag.icon"
                   />
                   <span v-else>{{ tag.tagName }}</span>
                 </template>
@@ -294,23 +292,19 @@
 
 <script lang="ts" setup name="ArticleList">
 import { ref, reactive, onMounted, watch, defineAsyncComponent } from 'vue';
-import { storeToRefs } from 'pinia';
-import { AxiosResponse } from 'axios';
 import { useRouter } from 'vue-router';
-import { useUserApi } from '@/api/user/index';
 import { useArticleApi } from '@/api/article/index';
-import { useUserInfo } from '@/stores/userInfo';
+import { useUsersInfo } from '@/stores/userList';
 import { useArticleInfo } from '@/stores/articleInfo';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import Icon from '@/components/svgIcon/index.vue';
+import { ArticleListData, ArticleData } from './';
+
+const userStore = useUsersInfo();
+const articleInfoStore = useArticleInfo();
 
 const router = useRouter();
-const articleInfoStore: any = useArticleInfo();
-const articleInfoState = storeToRefs(articleInfoStore);
-const userStore = useUserInfo();
-
-const { getAllUserOptions } = useUserApi();
-const { getArticleList, delArticleById } = useArticleApi();
+const { getArticles, delArticle } = useArticleApi();
 
 // 文章统计信息
 const articleStatisticsInfoHashMapping = [
@@ -325,15 +319,15 @@ const articleListState = reactive({
   loading: true,
   filterLoading: false,
   // 选中分类ID
-  activeCId: 0,
+  activeCategory: 0,
   // 分类数据
   categoryList: [{ label: '全部', value: 0 }],
   // 标签数据
   tagList: [{ label: '全部', value: 0 }],
 
   // 选中作者的id
-  authorIds: ref<number[]>([]),
-  authorOptionList: ref<OperationItem[]>([]),
+  author: ref<number>(0),
+  authorOptionList: ref<OptionItem[]>([]),
 
   // 归档日期
   timeVal: ['', ''],
@@ -346,7 +340,7 @@ const articleListState = reactive({
   tagId: 0,
 
   // 文章列表数据
-  articleList: ref<Article[]>([]),
+  articleList: ref<ArticleData[]>([]),
   total: 0,
 });
 
@@ -354,24 +348,28 @@ const articleListState = reactive({
 const getArticleDataList = async () => {
   articleListState.loading = true;
   try {
-    const { queryStr, activeCId, page, pageSize, tagId, order, column, authorIds, timeVal } = articleListState;
+    const { queryStr, activeCategory, page, pageSize, tagId, order, column, author, timeVal } = articleListState;
     const params = {
       page,
       pageSize,
       queryStr,
       column,
       order,
-      cId: activeCId,
+      type: 0,
+      status: 0,
+      categoryId: activeCategory,
       tagId,
-      authorIds: JSON.stringify(authorIds),
-      startTime: timeVal ? timeVal[0] : '',
-      endTime: timeVal ? timeVal[1] : '',
+      authorId: author,
+      startTime: timeVal[0] || null,
+      endTime: timeVal[1] || null,
     };
-    const { data: res }: AxiosResponse<ArticleData> = await getArticleList(params);
-    const { data, message, code, total } = res;
-    if (code !== 200 || message !== 'Success') return;
-    articleListState.articleList = [...articleListState.articleList, ...data];
-    articleListState.total = total;
+    const { data: res } = await getArticles<ArticleListData>(params);
+
+    const { data, message, code, success } = res;
+    if (code !== 20000 || !success) return;
+    console.log('articleListState.articleList ------', articleListState.articleList);
+    articleListState.articleList = data.list;
+    articleListState.total = data.total;
   } catch (e) {
     console.log(e);
   } finally {
@@ -381,8 +379,8 @@ const getArticleDataList = async () => {
 
 // 分类筛选
 const handleFilterByCatagory = (val: number) => {
-  if (articleListState.activeCId === val) return;
-  articleListState.activeCId = val;
+  if (articleListState.activeCategory === val) return;
+  articleListState.activeCategory = val;
   resetFilterGetDataList();
 };
 
@@ -391,18 +389,6 @@ const handleFilterByTag = (val: number) => {
   if (articleListState.tagId === val) return;
   articleListState.tagId = val;
   resetFilterGetDataList();
-};
-
-// 获取用户列表的option数据
-const getUserOptions = async () => {
-  try {
-    const { data: res }: AxiosResponse<UserOptionData> = await getAllUserOptions();
-    const { code, message, data } = res;
-    if (code !== 200 || message !== 'Success') return;
-    articleListState.authorOptionList = data;
-  } catch (e) {
-    console.log(e);
-  }
 };
 
 // 归档日期查询
@@ -451,15 +437,12 @@ const handleDelete = async (id: number, title: string) => {
 // 删除文章
 const deleteArticle = async (id: number): Promise<boolean> => {
   try {
-    const { data: res }: AxiosResponse<ResResponse> = await delArticleById(id);
+    const { data: res } = await delArticle(id);
     const { code, data, message } = res;
-    if (code !== 200 || message !== 'Success') {
-      ElMessage.error(data);
-      return false;
-    } else {
-      ElMessage.success(data);
-      return true;
-    }
+    if (code !== 200 || message !== 'Success') return false;
+
+    // ElMessage.success(data);
+    return true;
   } catch (e) {
     console.log(e);
     return false;
@@ -495,15 +478,17 @@ const isShowDelete = (aId: number): boolean => userStore.userInfos.id === aId ||
 //   (aId: number) => userStore.userInfos.id === aId
 // )
 
-onMounted(async () => {
+const filterDataInit = async () => {
+  const { getCategoryData, getTagData, categoryOption, tagOption } = articleInfoStore;
   articleListState.filterLoading = true;
-  await Promise.all([articleInfoStore.getAllCategoryList(), articleInfoStore.getAllTagList(), getUserOptions()]);
+  await Promise.all([getCategoryData(), getTagData(), userStore.getUserData()]);
+  articleListState.categoryList = [...articleListState.categoryList, ...categoryOption];
+  articleListState.tagList = [...articleListState.tagList, ...tagOption];
   articleListState.filterLoading = false;
+};
 
-  articleListState.categoryList = [...articleListState.categoryList, ...articleInfoState.allCategoryOptions.value];
-
-  articleListState.tagList = [...articleListState.tagList, ...articleInfoState.allTagOptions.value];
-
+onMounted(() => {
+  filterDataInit();
   getArticleDataList();
 });
 </script>

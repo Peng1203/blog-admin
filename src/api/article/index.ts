@@ -1,4 +1,6 @@
 import request from '@/utils/request';
+import { TransformedResponse, RequestListParams } from 'Api';
+import { Method } from '../types';
 
 export function useArticleApi() {
   return {
@@ -9,9 +11,9 @@ export function useArticleApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    getArticleList(params: object) {
+    getArticles<T>(params: object): TransformedResponse<T> {
       return request({
-        url: '/article/getArticleList',
+        url: '/article',
         method: Method.GET,
         params,
       });
@@ -23,9 +25,9 @@ export function useArticleApi() {
      * @param {any} articleId:number
      * @returns {any}
      */
-    getArticleDetailById(articleId: number) {
+    getArticleDetailById<T>(articleId: number): TransformedResponse<T> {
       return request({
-        url: `/article/articleDetail/${articleId}`,
+        url: `/article/${articleId}`,
         method: Method.GET,
       });
     },
@@ -33,14 +35,14 @@ export function useArticleApi() {
      * 添加文章
      * @author Peng
      * @date 2023-04-29
-     * @param {any} params:object
+     * @param {any} data:object
      * @returns {any}
      */
-    addArticle(params: object) {
+    addArticle<T>(data: object): TransformedResponse<T> {
       return request({
-        url: '/article/addArticle',
+        url: '/article',
         method: Method.POST,
-        data: params,
+        data: JSON.stringify(data),
       });
     },
     /**
@@ -48,14 +50,14 @@ export function useArticleApi() {
      * @author Peng
      * @date 2023-04-29
      * @param {any} articleId:number
-     * @param {any} params:object
+     * @param {any} data:object
      * @returns {any}
      */
-    updateArticle(articleId: number, params: object) {
+    updateArticle<T>(articleId: number, data: object): TransformedResponse<T> {
       return request({
-        url: `/article/updateArticleById/${articleId}`,
+        url: `/article/${articleId}`,
         method: Method.PUT,
-        data: params,
+        data: JSON.stringify(data),
       });
     },
     /**
@@ -65,48 +67,10 @@ export function useArticleApi() {
      * @param {any} articleId:number
      * @returns {any}
      */
-    delArticleById(articleId: number) {
+    delArticle<T>(articleId: number): TransformedResponse<T> {
       return request({
         url: `/article/deleteArticleById/${articleId}`,
         method: Method.DELETE,
-      });
-    },
-    /**
-     * 上传文章头像
-     * @author Peng
-     * @date 2023-04-29
-     * @param {any} file:FormData
-     * @param {any} type:string
-     * @returns {any}
-     */
-    uploadArticleCover(file: FormData) {
-      return request({
-        url: '/article/upload-resources',
-        method: Method.POST,
-        data: file,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'resource-classification': 'cover',
-        },
-      });
-    },
-    /**
-     * 上传文章内容图片
-     * @author Peng
-     * @date 2023-06-07
-     * @param {any} file:FormData
-     * @param {any} type:string
-     * @returns {any}
-     */
-    uploadArticleContentResource(file: FormData) {
-      return request({
-        url: '/article/upload-resources',
-        method: Method.POST,
-        data: file,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'resource-classification': 'content',
-        },
       });
     },
   };

@@ -36,7 +36,7 @@ const routerRules: RouteRecordRaw[] = [
       {
         path: '/article/list',
         name: 'ArticleList',
-        component: () => import('@/views/article/article/index.vue'),
+        component: () => import('@/views/article/article'),
         meta: {
           parentMenuName: 'Article',
           title: '文章列表',

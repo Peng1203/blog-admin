@@ -118,6 +118,23 @@ declare interface TableType<T = any> {
   order;
 }
 
+declare enum BolEnum {
+  FALSE = 0,
+  TRUE = 1,
+}
+
+/**
+ * 可选的 TS 泛型工具类
+ *  传入一个类型 和该类型的一些字段 将这些字段转为可选属性
+ **/
+declare type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
+/** 删除指定属性生成新的类型 */
+declare type TypeOmit<T, K extends keyof T> = Omit<T, K>;
+
+/** 将传入的属性生成新的类型 */
+declare type TypePick<T, K extends keyof T> = Pick<T, K>;
+
 interface TableStateType<T = any> {
   loading: boolean;
   data: T[];

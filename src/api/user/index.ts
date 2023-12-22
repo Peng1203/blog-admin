@@ -98,18 +98,6 @@ export function useUserApi() {
       });
     },
     /**
-     * 获取用户下拉筛选数据
-     * @author Peng
-     * @date 2023-04-29
-     * @returns {any}
-     */
-    getAllUserOptions() {
-      return request({
-        url: '/user/getAllUserOptions',
-        method: Method.GET,
-      });
-    },
-    /**
      * 修改用户密码
      * @author Peng
      * @date 2023-05-07

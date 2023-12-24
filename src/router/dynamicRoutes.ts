@@ -3,7 +3,7 @@ import authRouterRules from './modules/authRouter';
 import userRouterRules from './modules/userRouter';
 import articleRouterRules from './modules/articleRouter';
 import resourceRouterRules from './modules/resourceRouter';
-
+import systemConfigRouterRules from './modules/systemConfigRouter';
 /**
  * 需要权限的路由表
  * @author Peng
@@ -42,6 +42,8 @@ export const allDynamicRoutes: Array<RouteRecordRaw> = [
       ...articleRouterRules,
       // 资源管理
       ...resourceRouterRules,
+      // 系统设置
+      ...systemConfigRouterRules,
       // 个人中心
       {
         path: '/personal',

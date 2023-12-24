@@ -20,6 +20,7 @@
     "dayjs": "^1.11.10",
     "echarts": "^5.4.3",
     "element-plus": "^2.4.3",
+    "event-source-polyfill": "^1.0.31",
     "js-cookie": "^3.0.5",
     "md-editor-v3": "^4.8.3",
     "md5": "^2.3.0",
@@ -35,6 +36,7 @@
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
+    "@types/event-source-polyfill": "^1.0.5",
     "@types/md5": "^2.3.5",
     "@types/node": "^18.18.13",
     "@types/nprogress": "^0.2.3",

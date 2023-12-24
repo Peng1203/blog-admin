@@ -6,6 +6,55 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "11494995",
+      "name": "更新",
+      "font_class": "gengxin",
+      "unicode": "e663",
+      "unicode_decimal": 58979
+    },
+    {
+      "icon_id": "20104484",
+      "name": "更新",
+      "font_class": "gengxin1",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "36077738",
+      "name": "系统更新",
+      "font_class": "xitonggengxin1",
+      "unicode": "e675",
+      "unicode_decimal": 58997
+    },
+    {
+      "icon_id": "4119411",
+      "name": "系统管理",
+      "font_class": "xitongguanli3",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "5902996",
+      "name": "设置",
+      "font_class": "shezhi",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "7193680",
+      "name": "系统设置",
+      "font_class": "xitongshezhi",
+      "unicode": "e730",
+      "unicode_decimal": 59184
+    },
+    {
+      "icon_id": "7199868",
+      "name": "系统更新",
+      "font_class": "xitonggengxin",
+      "unicode": "e630",
+      "unicode_decimal": 58928
+    },
+    {
       "icon_id": "4893194",
       "name": "GIF",
       "font_class": "GIF",

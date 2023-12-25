@@ -5,6 +5,12 @@ export function useSystemConfigApi() {
     /**
      * 更新Web服务
      */
+    updateSystem(serveName: string, options: EventSourceOptions) {
+      return eventSourceRequest(`/system/update/${serveName}`, options);
+    },
+    /**
+     * 更新Web服务
+     */
     updateWebSys(options: EventSourceOptions) {
       return eventSourceRequest('/system/update/web', options);
     },

@@ -35,28 +35,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-
-type SizeEnum = 'large' | 'default' | 'small'
-
-interface SelectAttribute {
-  modelValue: any
-  width?: string
-  options: any[]
-  size?: SizeEnum
-  placeholder?: string
-  disabled?: boolean
-  multiple?: boolean
-  // valueKey?: string
-  clearable?: boolean
-  filterable?: boolean
-  // 是否使用虚拟化选择器
-  virtual?: boolean
-}
+import { ref } from 'vue';
+import { SelectAttribute } from './';
 
 // 双向数据绑定值
 // const value = defineModel()
-const emits = defineEmits(['update:modelValue', 'selectChange'])
+const emits = defineEmits(['update:modelValue', 'selectChange']);
 
 const props = withDefaults(defineProps<SelectAttribute>(), {
   width: '100px',
@@ -66,14 +50,14 @@ const props = withDefaults(defineProps<SelectAttribute>(), {
   multiple: false,
   filterable: true,
   virtual: false,
-})
+});
 
-const value = ref(props.modelValue)
+const value = ref(props.modelValue);
 
 const handleSelectChange = (val: any) => {
-  emits('update:modelValue', val)
-  emits('selectChange', val)
-}
+  emits('update:modelValue', val);
+  emits('selectChange', val);
+};
 </script>
 
 <style scoped lang="scss"></style>

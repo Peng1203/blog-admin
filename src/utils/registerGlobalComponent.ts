@@ -4,7 +4,7 @@ import Drawer from '@/components/Drawer';
 import Dialog from '@/components/Dialog';
 import Form from '@/components/Form';
 import Icon from '@/components/SymbolIcon/index.vue';
-import Select from '@/components/Select/index.vue';
+import Select from '@/components/Select';
 
 const commonName = 'Peng';
 

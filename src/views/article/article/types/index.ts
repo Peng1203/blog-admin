@@ -60,3 +60,28 @@ export type AddArticleType = Optional<ArticleData, 'likes' | 'views' | 'createTi
 export interface EditProps {
   editRow: ArticleData;
 }
+
+export interface FilterParamsInfo {
+  queryStr: string;
+  /** 文章类型: 1原创 2转载 3翻译 */
+  type: ArticleTypeEnum | 0;
+  /** 文章状态: 1已发布 2私密 3草稿箱 4已删除 5待审核 6已拒绝 */
+  status: ArticleStatusEnum | 0;
+  /** 作者ID */
+  authorId: number;
+  /** 分类ID */
+  categoryId: number;
+  /** TagId */
+  tagId: number;
+  /** 时间过滤 */
+  timeVal: [string, string];
+}
+
+export interface FilterHeadendProps {
+  modelValue: FilterParamsInfo;
+}
+
+// 文章列表item 组件props
+export interface ArticleItemProps {
+  article: ArticleData;
+}

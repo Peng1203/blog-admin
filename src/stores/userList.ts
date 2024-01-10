@@ -27,7 +27,7 @@ export const useUsersInfo = defineStore('usersInfo', {
         const { code, success, data } = res;
         if (code !== 20000 || !success) return;
         this.userList = data.list;
-        this.userOption = data.list.map(({ userName, id }) => ({ label: userName, value: id }));
+        this.userOption = data.list.map(({ userName, nickName, id }) => ({ label: nickName || userName, value: id }));
       } catch (e) {
         throw e;
       }

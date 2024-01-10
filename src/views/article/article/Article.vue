@@ -208,6 +208,9 @@ onMounted(() => {
   :deep(.el-card__body) {
     overflow-y: auto;
   }
+  :deep(.el-card__body) {
+    padding: 8px 32px 32px;
+  }
 }
 .article-item {
   p {

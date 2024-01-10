@@ -16,7 +16,17 @@
         <span class="row-label">分类：</span>
 
         <div>
-          <el-tag
+          <el-check-tag
+            :key="value"
+            size="small"
+            class="ml15 pseudo-link"
+            :checked="value === filterParams.categoryId"
+            v-for="{ label, value } in filterState.categoryList"
+            @click="handleFilterByCatagory(value)"
+          >
+            {{ label }}
+          </el-check-tag>
+          <!-- <el-tag
             v-for="{ label, value } in filterState.categoryList"
             :key="value"
             :effect="value === filterParams.categoryId ? 'dark' : 'plain'"
@@ -25,7 +35,7 @@
             @click="handleFilterByCatagory(value)"
           >
             {{ label }}
-          </el-tag>
+          </el-tag> -->
         </div>
       </div>
 

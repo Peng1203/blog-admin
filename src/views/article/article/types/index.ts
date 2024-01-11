@@ -40,6 +40,8 @@ export interface ArticleData {
   cover: string;
   likes: number;
   views: number;
+  /** 评论数 */
+  comment: number;
   /** 文章类型: 1原创 2转载 3翻译 */
   type: ArticleTypeEnum;
   /** 文章状态: 1已发布 2私密 3草稿箱 4已删除 5待审核 6已拒绝 */
@@ -84,4 +86,11 @@ export interface FilterHeadendProps {
 // 文章列表item 组件props
 export interface ArticleItemProps {
   article: ArticleData;
+}
+
+// 文章 图标信息映射项
+export interface IconHashMappingItem {
+  name: string;
+  title: string;
+  prop: keyof ArticleData;
 }

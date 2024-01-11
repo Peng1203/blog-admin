@@ -6,7 +6,7 @@
       @search="resetFilterGetDataList"
     />
 
-    {{ filterParams }}
+    <!-- {{ filterParams }} -->
     <!-- 文章列表容器 -->
     <el-card
       shadow="hover"
@@ -209,7 +209,7 @@ onMounted(() => {
     overflow-y: auto;
   }
   :deep(.el-card__body) {
-    padding: 8px 32px 32px;
+    padding: 10px 32px;
   }
 }
 .article-item {

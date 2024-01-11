@@ -2,20 +2,29 @@
   <span :title="title">
     <!-- element 图标 -->
     <span v-if="iconClass.indexOf('ele') !== -1">
-      <component :is="iconClass" :style="{ color: props.color }" />
+      <component
+        :is="iconClass"
+        :style="{ color: props.color }"
+      />
     </span>
     <!-- svg 带彩色 阿里图标 -->
-    <svg v-else-if="type === 'svg'" aria-hidden="true">
+    <svg
+      v-else-if="type === 'svg'"
+      aria-hidden="true"
+    >
       <use :xlink:href="`#${iconClass}`"></use>
     </svg>
     <!-- 无颜色 类名图标 -->
-    <i v-else :class="['iconfont', iconClass]" />
+    <i
+      v-else
+      :class="['iconfont', iconClass]"
+    />
     <!-- <span>{{ iconClass }}</span> -->
   </span>
 </template>
 
 <script lang="ts" setup>
-import { PropType, computed } from 'vue'
+import { PropType, computed } from 'vue';
 const props = defineProps({
   type: {
     type: String as PropType<string>,
@@ -38,22 +47,22 @@ const props = defineProps({
     type: String as PropType<string>,
     default: '',
   },
-})
+});
 
 const iconClass = computed<string>(() => {
-  if (props.name.includes('iconfont')) return props.name.split(' ')[1]
-  return props.name
-})
+  if (props.name.includes('iconfont')) return props.name.split(' ')[1];
+  return props.name;
+});
 
 // 计算出像素变量
 const sizePx = computed<string>(() => {
-  if (typeof props.size === 'number') return `${props.size}px`
+  if (typeof props.size === 'number') return `${props.size}px`;
   if (typeof props.size === 'string') {
-    if (props.size.includes('px')) return `${props.size}`
-    else return `${props.size}px`
+    if (props.size.includes('px')) return `${props.size}`;
+    else return `${props.size}px`;
   }
-  return ''
-})
+  return '';
+});
 /** 
       <Peng-Icon name="" />
 
@@ -83,6 +92,6 @@ i {
   color: v-bind(color);
   // background-color: v-bind(color);
   font-size: v-bind(sizePx);
-  color: rgb(93, 201, 93);
+  // color: rgb(93, 201, 93);
 }
 </style>

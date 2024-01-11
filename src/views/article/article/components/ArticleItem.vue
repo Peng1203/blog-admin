@@ -4,7 +4,12 @@
     <h3 class="title">{{ article.title }}</h3>
     <!-- 分类 -->
     <div class="category">
-      {{ article.category.categoryName }}
+      <el-check-tag
+        checked
+        size="small"
+      >
+        {{ article.category.categoryName }}
+      </el-check-tag>
     </div>
     <!-- 文章内容 -->
     <div class="content-con">
@@ -38,16 +43,48 @@
       </span>
     </div>
 
-    <!-- 统计信息 -->
-    <div></div>
+    <!-- 文章其他信息 -->
+    <div class="other-con">
+      <InfoIcons />
+      <!-- :size="14" -->
+    </div>
     <!-- {{ article }} -->
   </div>
 </template>
 
 <script setup lang="tsx">
 import { ref } from 'vue';
-import { ArticleItemProps } from '../';
-defineProps<ArticleItemProps>();
+import { ArticleData, ArticleItemProps, IconHashMappingItem } from '../';
+import Icon from '@/components/SymbolIcon/index.vue';
+
+const props = defineProps<ArticleItemProps>();
+
+//
+const iconHashMapping: IconHashMappingItem[] = [
+  { name: 'icon-like-fill', title: '点赞数', prop: 'likes' },
+  { name: 'icon-view', title: '浏览量', prop: 'views' },
+  { name: 'icon-pinglun1', title: '评论数', prop: 'comment' },
+];
+
+// 文章uv 数据
+const InfoIcons = () => {
+  return (
+    <div class="icon-con">
+      {iconHashMapping.map(info => (
+        <span class="item">
+          <Icon
+            type="class"
+            size={18}
+            key={info.prop}
+            name={info.name}
+          />
+          <span class="value">{props.article[info.prop] || 0}</span>
+          {/* <span>{props.article[info.prop as keyof ArticleData] || 0}</span> */}
+        </span>
+      ))}
+    </div>
+  );
+};
 </script>
 
 <style scoped lang="scss">
@@ -66,9 +103,11 @@ defineProps<ArticleItemProps>();
   }
 
   .content-con {
-    width: 70%;
+    // width: 70%;
+    max-width: 820px;
     max-height: 100px;
     overflow: hidden;
+    line-height: 20px;
     p {
       white-space: pre-wrap;
       // overflow: hidden; /* 隐藏溢出的文本 */
@@ -83,6 +122,25 @@ defineProps<ArticleItemProps>();
 
     .time {
       color: rgba(0, 0, 0, 0.25);
+    }
+  }
+
+  .other-con {
+    margin-block-start: 16px;
+  }
+
+  .icon-con {
+    display: flex;
+    gap: 10px;
+    :deep(.item) {
+      display: flex;
+      align-items: center;
+
+      // align-items: baseline;
+      // justify-content: center;
+      .value {
+        margin-left: 5px;
+      }
     }
   }
 }

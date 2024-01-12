@@ -108,7 +108,7 @@ const getArticleDataList = async () => {
     const { data: res } = await getArticles<ArticleListData>(params);
     const { data, message, code, success } = res;
     if (code !== 20000 || !success) return;
-    articleListState.articleList = data.list;
+    articleListState.articleList = [...articleListState.articleList, ...data.list];
     articleListState.total = data.total;
   } catch (e) {
     console.log(e);

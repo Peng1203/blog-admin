@@ -1,65 +1,138 @@
 <template>
   <div class="article-item">
-    <!-- 标题 -->
-    <h3 class="title">{{ article.title }}</h3>
-    <!-- 分类 -->
-    <div class="category">
-      <el-check-tag
-        checked
-        size="small"
+    <!-- 文章封面 -->
+    <el-image
+      w350px
+      h200px
+      fit="fit"
+      :src="article.cover || 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'"
+    >
+      <template #error>
+        <div
+          class="err-cover"
+          w350px
+          h200px
+        >
+          <el-icon><icon-picture /></el-icon>
+        </div>
+      </template>
+    </el-image>
+
+    <div class="info-con">
+      <!-- 标题 -->
+      <div flex-sb-c>
+        <h3 class="title">{{ article.title }}</h3>
+
+        <span
+          fz11
+          style="color: rgba(128, 128, 128, 0.466)"
+        >
+          {{ typeMapping[article.type] }}
+        </span>
+      </div>
+      <!-- 分类 -->
+      <div class="category">
+        <el-check-tag
+          checked
+          size="small"
+        >
+          {{ article.category.categoryName }}
+        </el-check-tag>
+
+        <!-- 文章状态 & 类型 -->
+      </div>
+      <!-- 文章内容 -->
+      <div class="content-con">
+        <p>
+          {{ article.content }}
+        </p>
+      </div>
+
+      <!-- 相关信息 -->
+      <div
+        class="about-info-con"
+        flex-sb-c
       >
-        {{ article.category.categoryName }}
-      </el-check-tag>
-    </div>
-    <!-- 文章内容 -->
-    <div class="content-con">
-      <p>
-        {{ article.content }}
-      </p>
+        <div class="user-con">
+          <!-- 头像 -->
+          <el-avatar
+            :size="30"
+            :src="article.author.userAvatar"
+          />
+          <!-- 用户名/昵称 -->
+          <span>{{ article.author.nickName || article.author.userName }}</span>
+          <!-- 发布信息 -->
+          <span fz12>
+            发布于：
+            <span class="time">
+              {{ article.createTime }}
+            </span>
+          </span>
+
+          <span fz12>
+            最近修改：
+            <span class="time">
+              {{ article.updateTime }}
+            </span>
+          </span>
+        </div>
+
+        <div>
+          <span>{{ statusMapping[article.status] }}</span>
+        </div>
+      </div>
+
+      <!-- 文章其他信息 -->
+      <div class="other-con flex-sb-c">
+        <InfoIcons />
+        <!-- :size="14" -->
+        <!-- 状态：{{ article.status }}
+      {{  }} -->
+
+        <div class="tag-con">
+          <el-tag
+            v-for="{ tagName, id } in article.tags"
+            :key="id"
+            :effect="'dark'"
+            size="small"
+            class="ml15 pseudo-link"
+          >
+            {{ tagName }}
+          </el-tag>
+        </div>
+      </div>
     </div>
 
-    <!-- 相关信息 -->
-    <div class="about-info-con">
-      <!-- 头像 -->
-      <el-avatar
-        :size="30"
-        :src="article.author.userAvatar"
-      />
-      <!-- 用户名/昵称 -->
-      <span>{{ article.author.nickName || article.author.userName }}</span>
-      <!-- 发布信息 -->
-      <span fz12>
-        发布于：
-        <span class="time">
-          {{ article.createTime }}
-        </span>
-      </span>
-
-      <span fz12>
-        最近修改：
-        <span class="time">
-          {{ article.updateTime }}
-        </span>
-      </span>
-    </div>
-
-    <!-- 文章其他信息 -->
-    <div class="other-con">
-      <InfoIcons />
-      <!-- :size="14" -->
-    </div>
     <!-- {{ article }} -->
   </div>
 </template>
 
 <script setup lang="tsx">
 import { ref } from 'vue';
-import { ArticleData, ArticleItemProps, IconHashMappingItem } from '../';
+import { ArticleData, ArticleItemProps, IconHashMappingItem, ArticleStatusEnum } from '../';
 import Icon from '@/components/SymbolIcon/index.vue';
+import { Picture as IconPicture } from '@element-plus/icons-vue';
 
 const props = defineProps<ArticleItemProps>();
 
-//
+// 文章状态映射
+const statusMapping = {
+  1: '已发布',
+  2: '私密',
+  3: '草稿箱',
+  4: '已删除',
+  5: '待审核',
+  6: '已拒绝',
+};
+
+// 文章类型映射
+const typeMapping = {
+  1: '原创',
+  2: '转载',
+  3: '翻译',
+};
+
+// 图标信息映射
 const iconHashMapping: IconHashMappingItem[] = [
   { name: 'icon-like-fill', title: '点赞数', prop: 'likes' },
   { name: 'icon-view', title: '浏览量', prop: 'views' },
@@ -89,8 +162,15 @@ const InfoIcons = () => {
 
 <style scoped lang="scss">
 .article-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
   padding: 16px 24px;
   border-block-end: 1px solid rgba(5, 5, 5, 0.06);
+
+  .info-con {
+    flex: 1;
+  }
   .title {
     margin-block-end: 12px;
     color: rgba(0, 0, 0, 0.88);
@@ -115,13 +195,16 @@ const InfoIcons = () => {
     }
   }
   .about-info-con {
-    display: flex;
-    align-items: center;
     margin-top: 16px;
-    gap: 10px;
+    .user-con {
+      display: flex;
+      align-items: center;
 
-    .time {
-      color: rgba(0, 0, 0, 0.25);
+      gap: 10px;
+
+      .time {
+        color: rgba(0, 0, 0, 0.25);
+      }
     }
   }
 
@@ -143,5 +226,14 @@ const InfoIcons = () => {
       }
     }
   }
+}
+
+.err-cover {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--el-fill-color-light);
+  color: var(--el-text-color-secondary);
+  font-size: 30px;
 }
 </style>

@@ -93,4 +93,6 @@ export interface IconHashMappingItem {
   name: string;
   title: string;
   prop: keyof ArticleData;
+  color?: string;
+  size?: number;
 }

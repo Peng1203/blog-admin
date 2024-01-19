@@ -1,6 +1,6 @@
-export interface TableAttribute {
-  data: any[];
-  columns: ColumnItem[];
+export interface TableAttribute<T> {
+  data: T[];
+  columns: ColumnItem<T>[];
   border?: boolean;
   isSelection?: boolean;
   checkBoxIsEnableCallBack?: Function;
@@ -76,4 +76,25 @@ export interface ColumnChangeParams {
 export interface PageChangeParams {
   page: number;
   pageSize: number;
+}
+
+export interface SlotProps<T> {
+  scope: any;
+  row: T;
+  // prop: keyof T | 'operation';
+  prop: keyof T;
+}
+
+export interface SlotOperationProps<T> {
+  scope: any;
+  row: T;
+}
+
+export interface TableAttribute_v2<T> {
+  /** 数据列表 */
+  data: T[];
+  columns: ColumnItem<T>[];
+  loading?: boolean;
+  selection?: boolean;
+  hasFilterColumn?: boolean;
 }

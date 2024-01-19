@@ -6,16 +6,14 @@ import Form from '@/components/Form';
 import Icon from '@/components/SymbolIcon/index.vue';
 import Select from '@/components/Select';
 
-const commonName = 'Peng';
-
 const ComponentHashMap = {
-  [`${commonName}Table`]: Table,
-  [`${commonName}Search`]: Search,
-  [`${commonName}Drawer`]: Drawer,
-  [`${commonName}Dialog`]: Dialog,
-  [`${commonName}Form`]: Form,
-  [`${commonName}Icon`]: Icon,
-  [`${commonName}Select`]: Select,
+  [`Table`]: Table,
+  [`Search`]: Search,
+  [`Drawer`]: Drawer,
+  [`Dialog`]: Dialog,
+  [`Form`]: Form,
+  [`Icon`]: Icon,
+  [`Select`]: Select,
 };
 
 export default ComponentHashMap;

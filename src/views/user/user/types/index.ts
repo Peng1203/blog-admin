@@ -1,10 +1,11 @@
+import { RoleData } from '@/views/auth/role';
 import { ListApiBaseResponse, BooleanEnum } from 'Api';
 
 export interface UserData {
   id: number;
   userName: string;
   password?: string;
-  roles: any[];
+  roles: RoleData[];
   email: string | null;
   nickName: string | null;
   userEnabled: BooleanEnum;

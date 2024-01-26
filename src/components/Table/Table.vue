@@ -221,14 +221,14 @@
   />
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="T">
 import { ref, reactive, watch, onMounted, inject } from 'vue';
 import { ColumnItem, TableAttribute, OperationBtnsType } from './types';
 import { Plus, Edit, Delete, View } from '@element-plus/icons-vue';
 
 const deviceClientType = inject('deviceClientType');
 
-const props = withDefaults(defineProps<TableAttribute>(), {
+const props = withDefaults(defineProps<TableAttribute<T>>(), {
   border: true,
 
   // 是否有复选

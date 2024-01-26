@@ -18,11 +18,10 @@ const routerRules: RouteRecordRaw[] = [
     },
     children: [
       {
-        path: '/article/writeArticle/:aid',
+        path: '/article/writeArticle',
         name: 'WriteArticle',
-        component: () => import('@/views/article/writeArticle/index.vue'),
+        component: () => import('@/views/article/writeArticle'),
         meta: {
-          parentMenuName: 'Article',
           title: '写文章',
           isLink: '',
           isHide: false,
@@ -34,11 +33,19 @@ const routerRules: RouteRecordRaw[] = [
         },
       },
       {
+        path: '/article/writeArticle/:aid',
+        name: 'EditArticle',
+        component: () => import('@/views/article/writeArticle'),
+        meta: {
+          noRender: true,
+          title: '编辑文章',
+        },
+      },
+      {
         path: '/article/list',
         name: 'ArticleList',
         component: () => import('@/views/article/article'),
         meta: {
-          parentMenuName: 'Article',
           title: '文章列表',
           isLink: '',
           isHide: false,
@@ -53,7 +60,6 @@ const routerRules: RouteRecordRaw[] = [
         name: 'ArticleTag',
         component: () => import('@/views/article/tag'),
         meta: {
-          parentMenuName: 'Article',
           title: '标签管理',
           isLink: '',
           isHide: false,
@@ -68,7 +74,6 @@ const routerRules: RouteRecordRaw[] = [
         name: 'ArticleCategory',
         component: () => import('@/views/article/category'),
         meta: {
-          parentMenuName: 'Article',
           title: '分类管理',
           isLink: '',
           isHide: false,

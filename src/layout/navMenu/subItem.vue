@@ -1,6 +1,6 @@
 <!-- 子菜单 -->
 <template>
-  <template v-for="val in chils">
+  <template v-for="val in chils.filter(menu => menu.meta.noRender !== true)">
     <el-sub-menu
       :index="val.path"
       :key="val.path"
@@ -15,15 +15,19 @@
       <sub-item :chil="val.children" />
     </el-sub-menu>
     <template v-else>
-      <el-menu-item :index="val.path" :key="val.path">
-        <template
-          v-if="!val.meta.isLink || (val.meta.isLink && val.meta.isIframe)"
-        >
+      <el-menu-item
+        :index="val.path"
+        :key="val.path"
+      >
+        <template v-if="!val.meta.isLink || (val.meta.isLink && val.meta.isIframe)">
           <SvgIcon :name="val.meta.icon" />
           <span>{{ val.meta.title }}</span>
         </template>
         <template v-else>
-          <a class="w100" @click.prevent="onALinkClick(val)">
+          <a
+            class="w100"
+            @click.prevent="onALinkClick(val)"
+          >
             <SvgIcon :name="val.meta.icon" />
             {{ val.meta.title }}
           </a>
@@ -34,9 +38,9 @@
 </template>
 
 <script setup lang="ts" name="navMenuSubItem">
-import { computed } from 'vue'
-import { RouteRecordRaw } from 'vue-router'
-import other from '@/utils/other'
+import { computed } from 'vue';
+import { RouteRecordRaw } from 'vue-router';
+import other from '@/utils/other';
 
 // 定义父组件传过来的值
 const props = defineProps({
@@ -45,14 +49,14 @@ const props = defineProps({
     type: Array<RouteRecordRaw>,
     default: () => [],
   },
-})
+});
 
 // 获取父级菜单数据
 const chils = computed(() => {
-  return <RouteItems>props.chil
-})
+  return <RouteItems>props.chil;
+});
 // 打开外部链接
 const onALinkClick = (val: RouteItem) => {
-  other.handleOpenLink(val)
-}
+  other.handleOpenLink(val);
+};
 </script>

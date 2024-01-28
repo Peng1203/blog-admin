@@ -14,8 +14,7 @@ export interface MarkdownEditorAttibute {
   codeTheme?: codeTheme;
   // 代码块是否显示行数
   showCodeRowNumber?: boolean;
-  // 提示
-  placeholder?: string;
   // 不展示的工具栏
-  toolbarsExclude?: [];
+  toolbarsExclude?: string[];
+  height?: string;
 }

@@ -1,9 +1,5 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 dependencies:
   '@element-plus/icons-vue':
     specifier: ^2.3.1
@@ -44,6 +40,9 @@ dependencies:
   js-cookie:
     specifier: ^3.0.5
     version: 3.0.5
+  lodash:
+    specifier: ^4.17.21
+    version: 4.17.21
   md-editor-v3:
     specifier: ^4.11.0
     version: 4.11.0(@codemirror/state@6.4.0)(@codemirror/view@6.23.0)(@lezer/common@1.2.1)(vue@3.4.15)
@@ -85,6 +84,9 @@ devDependencies:
   '@types/event-source-polyfill':
     specifier: ^1.0.5
     version: 1.0.5
+  '@types/lodash':
+    specifier: ^4.14.202
+    version: 4.14.202
   '@types/md5':
     specifier: ^2.3.5
     version: 2.3.5
@@ -1702,7 +1704,6 @@ packages:
 
   /@types/lodash@4.14.202:
     resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==}
-    dev: false
 
   /@types/markdown-it@12.2.3:
     resolution: {integrity: sha512-GKMHFfv3458yYy+v/N8gjufHO6MSZKCOXpZc5GXIWWy8uldwfmPn98vp81gZ5f9SVw8YYBctgfJ22a2d7AOMeQ==}
@@ -5016,3 +5017,7 @@ packages:
     dependencies:
       tslib: 2.3.0
     dev: false
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false

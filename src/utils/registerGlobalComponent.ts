@@ -14,6 +14,14 @@ const ComponentHashMap = {
   [`Form`]: Form,
   [`Icon`]: Icon,
   [`Select`]: Select,
+
+  [`Peng-Table`]: Table,
+  [`Peng-Search`]: Search,
+  [`Peng-Drawer`]: Drawer,
+  [`Peng-Dialog`]: Dialog,
+  [`Peng-Form`]: Form,
+  [`Peng-Icon`]: Icon,
+  [`Peng-Select`]: Select,
 };
 
 export default ComponentHashMap;

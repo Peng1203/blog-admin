@@ -33,6 +33,7 @@
               slotName,
               options,
               multiple,
+              multipleLimit,
               tValue,
               fValue,
               tText,
@@ -242,6 +243,7 @@
             >
               <el-select
                 :multiple="multiple"
+                :multiple-limit="multipleLimit"
                 :placeholder="placeholder"
                 :disabled="disabled || false"
                 v-model="formData[prop]"
@@ -288,12 +290,12 @@
                 :inactive-value="fValue"
                 :inactive-icon="fIcon"
                 :inline-prompt="isInline === undefined ? false : isInline"
-                :style="`--el-switch-on-color: ${tBgColor || '#13ce66'} ; --el-switch-off-color: ${
-                  fBgColor || '#ff4949'
-                } `"
                 @change="handleSwitchChange($event, prop, i)"
                 v-model="formData[prop]"
               />
+              <!-- :style="`--el-switch-on-color: ${tBgColor || '#13ce66'} ; --el-switch-off-color: ${
+                  fBgColor || '#ff4949'
+                } `" -->
             </el-form-item>
           </el-col>
 
@@ -479,10 +481,12 @@ import { computed, ref } from 'vue';
 import { FormAttribute, UploadLimit } from './types';
 import { UploadRawFile, ElMessage } from 'element-plus';
 
+const formData = defineModel();
+
 const emits = defineEmits(['update:modelValue', 'switchChange', 'selectChange', 'radioChange']);
 
 const props = withDefaults(defineProps<FormAttribute>(), {
-  formItems: () => [],
+  // formItems: () => [],
   labelW: 'auto',
   labelP: 'right', // left right top
   size: 'default', // large default small
@@ -492,27 +496,31 @@ const props = withDefaults(defineProps<FormAttribute>(), {
   readonly: false,
 });
 
-const formData = computed({
-  get() {
-    return new Proxy(props.modelValue, {
-      get(target, key) {
-        // return target[key];
-        return Reflect.get(target, key);
-      },
-      set(target, key: string, value) {
-        // 通过事件更新父组件表单数据 保持单向数据流原则
-        emits('update:modelValue', {
-          ...target,
-          [key]: value,
-        });
-        return true;
-      },
-    });
-  },
-  set(val) {
-    console.log(val);
-  },
-});
+// const formData = computed({
+//   get() {
+//     return new Proxy(props.modelValue, {
+//       get(target, key) {
+//         // return target[key];
+//         return Reflect.get(target, key);
+//       },
+//       set(target, key: string, value) {
+//         console.log('set ------', {
+//           ...target,
+//           [key]: value,
+//         });
+//         // 通过事件更新父组件表单数据 保持单向数据流原则
+//         emits('update:modelValue', {
+//           ...target,
+//           [key]: value,
+//         });
+//         return true;
+//       },
+//     });
+//   },
+//   set(val) {
+//     console.log(val);
+//   },
+// });
 
 const formRef = ref<any>(null);
 // 获取Form表单的Ref

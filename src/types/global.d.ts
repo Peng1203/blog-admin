@@ -75,7 +75,7 @@ declare interface RouteToFrom<T = any> extends RouteItem {
 declare type RouteItems<T extends RouteItem = any> = T[];
 
 // 声明 ref
-declare type RefType<T = any> = T | null;
+declare type RefType<T = any> = T | Element | null;
 
 // 声明 HTMLElement
 declare type HtmlType = HTMLElement | string | undefined | null;
@@ -134,36 +134,6 @@ declare type TypeOmit<T, K extends keyof T> = Omit<T, K>;
 
 /** 将传入的属性生成新的类型 */
 declare type TypePick<T, K extends keyof T> = Pick<T, K>;
-
-interface TableStateType<T = any> {
-  loading: boolean;
-  data: T[];
-  tableColumns: ColumnItem[];
-
-  column: string;
-  order: OrderEnum;
-  queryStr: string;
-  pagerInfo: PageInfo;
-  [key: string]: any;
-}
-
-type MessageEnum = 'Success' | 'Failed';
-
-// 默认 data 响应结构
-interface ResResponse<T = any> {
-  code: number;
-  message: MessageEnum;
-  data: T;
-  [key: string]: T;
-}
-
-// 表格默认响应数据结构
-interface TableRes<T> {
-  code: number;
-  message: MessageEnum;
-  data: T[];
-  total: number;
-}
 
 type SizeEnum = '' | 'large' | 'default' | 'small';
 

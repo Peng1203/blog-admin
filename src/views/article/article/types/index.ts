@@ -33,21 +33,36 @@ export enum ArticleStatusEnum {
   REJECTED = 6,
 }
 
+/**
+ * 文章内容 模式
+ */
+export enum ContentModelEnum {
+  /** markdown 内容 */
+  MARKDOWN = 0,
+  /** 富文本 内容 */
+  RICHTEXT = 1,
+}
+
 export interface ArticleData {
   id: number;
   title: string;
+  summary: string;
   content: string;
   cover: string;
   likes: number;
   views: number;
   /** 评论数 */
   comment: number;
+  /** 文章内容模式 */
+  contentModel: ContentModelEnum;
   /** 文章类型: 1原创 2转载 3翻译 */
   type: ArticleTypeEnum;
   /** 文章状态: 1已发布 2私密 3草稿箱 4已删除 5待审核 6已拒绝 */
   status: ArticleStatusEnum;
   /** 是否置顶 */
   isTop: BolEnum;
+  /** 访问密码 */
+  accessPassword?: string | null;
   tags: TagData[];
   category: CategoryData;
   author: TypeOmit<UserData, 'password'>;
@@ -55,9 +70,19 @@ export interface ArticleData {
   updateTime: string;
 }
 
+// 表单操作的文章数据类型
+export type OperationArticleData = TypeOmit<ArticleData, 'tags' | 'category' | 'author'> & {
+  tags: number[];
+  category: number;
+  author: number;
+};
+
 export type ArticleListData = ListApiBaseResponse<ArticleData>;
 
-export type AddArticleType = Optional<ArticleData, 'likes' | 'views' | 'createTime' | 'updateTime'>;
+export type AddArticleType = Optional<
+  OperationArticleData,
+  'id' | 'likes' | 'views' | 'comment' | 'createTime' | 'updateTime'
+>;
 
 export interface EditProps {
   editRow: ArticleData;

@@ -1,10 +1,10 @@
 <template>
   <div class="article-item">
     <!-- 文章封面 -->
+    <!-- fit="fit" -->
     <el-image
       w350px
       h200px
-      fit="fit"
       :src="article.cover || 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'"
     >
       <template #error>
@@ -35,10 +35,11 @@
         <el-check-tag
           checked
           size="small"
+          v-if="article.category"
         >
           {{ article.category.categoryName }}
         </el-check-tag>
-
+        <span v-else>暂无分类</span>
         <!-- 文章状态 & 类型 -->
       </div>
       <!-- 文章内容 -->
@@ -57,10 +58,10 @@
           <!-- 头像 -->
           <el-avatar
             :size="30"
-            :src="article.author.userAvatar"
+            :src="article.author?.userAvatar || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"
           />
           <!-- 用户名/昵称 -->
-          <span>{{ article.author.nickName || article.author.userName }}</span>
+          <span>{{ article.author?.nickName || article.author.userName }}</span>
           <!-- 发布信息 -->
           <span fz12>
             发布于：
@@ -84,6 +85,7 @@
 
       <!-- 文章其他信息 -->
       <div class="other-con flex-sb-c">
+        <!-- 文章 相关数据 -->
         <InfoIcons />
         <!-- :size="14" -->
         <!-- 状态：{{ article.status }}
@@ -139,7 +141,7 @@ const iconHashMapping: IconHashMappingItem[] = [
   { name: 'icon-pinglun1', title: '评论数', prop: 'comment' },
 ];
 
-// 文章uv 数据
+// 文章uv 数据组件
 const InfoIcons = () => {
   return (
     <div class="icon-con">

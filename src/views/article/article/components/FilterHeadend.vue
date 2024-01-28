@@ -64,33 +64,33 @@
         <span class="row-label">作者：</span>
         <!-- :multiple-limit="5" -->
         <!-- collapse-tags -->
-        <div>
-          <!-- multiple -->
-          <el-select-v2
-            size="small"
-            class="ml15"
-            style="min-width: 90px"
-            filterable
-            :options="filterState.authorOptions"
-            v-model="filterParams.authorId"
-          />
-          <el-link
-            type="primary"
-            fz11
-            class="ml10"
-            @click="filterParams.authorId = userInfoStore.userInfos.id"
-          >
-            只看我自己
-          </el-link>
-          <el-link
-            type="info"
-            fz11
-            class="ml10"
-            @click="filterParams.authorId = 0"
-          >
-            重置
-          </el-link>
-        </div>
+        <!-- <div> -->
+        <!-- multiple -->
+        <el-select-v2
+          size="small"
+          class="ml15"
+          style="max-width: 180px"
+          filterable
+          :options="filterState.authorOptions"
+          v-model="filterParams.authorId"
+        />
+        <el-link
+          type="primary"
+          fz11
+          class="ml10"
+          @click="filterParams.authorId = userInfoStore.userInfos.id"
+        >
+          只看我自己
+        </el-link>
+        <el-link
+          type="info"
+          fz11
+          class="ml10"
+          @click="filterParams.authorId = 0"
+        >
+          重置
+        </el-link>
+        <!-- </div> -->
       </div>
 
       <el-divider />
@@ -163,6 +163,7 @@ import { useArticleInfo } from '@/stores/articleInfo';
 import Search from '@/components/Search';
 import Icon from '@/components/svgIcon/index.vue';
 import Select from '@/components/Select';
+import { ARTICLE } from '@/constants';
 
 const props = defineProps<FilterHeadendProps>();
 const emits = defineEmits(['update:modelValue', 'resetFilterGetDataList', 'search']);
@@ -185,22 +186,9 @@ const filterState = reactive({
   // 作者筛选数据
   authorOptions: ref<OptionItem[]>([{ label: '全部', value: 0 }]),
   // 文章类型筛选数据
-  typeOptions: [
-    { label: '全部', value: 0 },
-    { label: '原创', value: 1 },
-    { label: '转载', value: 2 },
-    { label: '翻译', value: 3 },
-  ],
+  typeOptions: ARTICLE.typeOptions,
   // 文章状态筛选数据
-  statusOptions: [
-    { label: '全部', value: 0 },
-    { label: '已发布', value: 1 },
-    { label: '私密', value: 2 },
-    { label: '草稿箱', value: 3 },
-    { label: '已删除', value: 4 },
-    { label: '待审核', value: 5 },
-    { label: '已拒绝', value: 6 },
-  ],
+  statusOptions: ARTICLE.statusOptions,
 });
 
 const handleSearch = () => {

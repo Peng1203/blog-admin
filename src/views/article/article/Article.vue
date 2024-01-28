@@ -58,14 +58,6 @@ const userInfoStore = useUserInfo();
 const router = useRouter();
 const { getArticles, delArticle } = useArticleApi();
 
-// 文章统计信息
-const articleStatisticsInfoHashMapping = [
-  { iconName: 'icon-like-fill', prop: 'likeCount' },
-  { iconName: 'icon-unlike-fill', prop: 'dislikeCount' },
-  { iconName: 'icon-view-fill', prop: 'viewCount' },
-  { iconName: 'icon-pinglun1', prop: 'commentCount' },
-];
-
 const filterParams = reactive<FilterParamsInfo>({
   queryStr: '',
   type: 0,
@@ -107,11 +99,13 @@ const getArticleDataList = async () => {
     };
     const { data: res } = await getArticles<ArticleListData>(params);
     const { data, message, code, success } = res;
-    if (code !== 20000 || !success) return;
+    if (code !== 20000 || !success) return (articleListState.loading = false);
+
     articleListState.articleList = [...articleListState.articleList, ...data.list];
     articleListState.total = data.total;
   } catch (e) {
     console.log(e);
+    articleListState.loading = false;
   } finally {
     articleListState.loading = false;
   }

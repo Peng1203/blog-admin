@@ -27,6 +27,7 @@
         v-model:step="activeStep"
         @click-save-draft-box="handleSaveToDraftBox"
       >
+        <!-- @click-next-step="handleNextStep" -->
         <template #titleSlot>
           <!-- <el-input
             class="title-input"
@@ -80,6 +81,7 @@ import StepHeadend from './components/StepHeadend.vue';
 import InfoForm from './components/InfoForm.vue';
 import { useUserInfo } from '@/stores/userInfo';
 import { useArticleApi } from '@/api';
+import { ElMessage } from 'element-plus';
 
 const { addArticle } = useArticleApi();
 
@@ -124,7 +126,7 @@ const articleForm = reactive<AddArticleType | OperationArticleData>({
 const titleFormRef = ref<RefType>();
 const infoFormRef = ref<RefType>();
 
-// 暂存草稿箱
+// 暂存草稿箱 当暂存的文字不存在时 进行创建 当暂存的文字已经存在 则将更新 通过 文章标题来区分
 const handleSaveToDraftBox = async () => {
   const validate = await titleFormRef.value
     .getRef()
@@ -144,7 +146,10 @@ const handleAddArticle = async () => {
       authorId: author,
       summary: args.content.substring(0, 300),
     });
-    console.log('res ------', res);
+
+    if (res.code !== 20100) return ElMessage.error('文章暂存失败!');
+
+    ElMessage.success('文章暂存成功!');
   } catch (e) {
     console.log('e ------', e);
   }

@@ -10,6 +10,7 @@
 
           <el-switch
             inline-prompt
+            v-show="activeStep === 1"
             v-model="articleForm.contentModel"
             style="--el-switch-on-color: #1323ce; --el-switch-off-color: #3ce"
             :active-value="0"
@@ -25,7 +26,6 @@
         size="default"
         v-model:step="activeStep"
         @click-save-draft-box="handleSaveToDraftBox"
-        @click-next-step="handleNextStep"
       >
         <template #titleSlot>
           <!-- <el-input
@@ -50,7 +50,7 @@
       <component
         v-show="activeStep === 1"
         v-model="articleForm.content"
-        height="calc(100% - 190px)"
+        height="calc(100vh - 330px)"
         placeholder="请输入文章内容"
         :is="editorMapping[articleForm.contentModel]"
       />
@@ -149,11 +149,6 @@ const handleAddArticle = async () => {
     console.log('e ------', e);
   }
 };
-
-// 下一步
-const handleNextStep = step => {
-  console.log(`%c step ----`, 'color: #fff;background-color: #000;font-size: 18px', step);
-};
 </script>
 
 <style scoped lang="scss">
@@ -171,8 +166,8 @@ const handleNextStep = step => {
     margin: 10px 0 15px 0;
   }
 
-  :deep(.md-editor) {
-    height: calc(100% - 62px);
+  :deep(.el-card__header) {
+    padding: 5px 20px;
   }
 }
 </style>

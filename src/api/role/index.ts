@@ -43,7 +43,7 @@ export function useRoleApi() {
     updateRole<T>(id: number, params: object): TransformedResponse<T> {
       return request({
         url: `/role/${id}`,
-        method: Method.POST,
+        method: Method.PATCH,
         data: JSON.stringify(params),
       });
     },

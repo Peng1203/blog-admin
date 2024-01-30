@@ -26,6 +26,7 @@
         size="default"
         v-model:step="activeStep"
         @click-save-draft-box="handleSaveToDraftBox"
+        @click-publish="handlePublish"
       >
         <!-- @click-next-step="handleNextStep" -->
         <template #titleSlot>
@@ -84,12 +85,12 @@ import { useUserInfo } from '@/stores/userInfo';
 import { useArticleApi } from '@/api';
 import { ElMessage } from 'element-plus';
 
-const { addArticle } = useArticleApi();
+const { addArticle, updateArticle } = useArticleApi();
 
 const userInfoStore = useUserInfo();
 
 const route = useRoute();
-const Title = () => <h1>{route.name === 'WriteArticle' ? '发布文章' : '编辑文章'}</h1>;
+const Title = () => <h1 className="flex-c-c h40px">{route.name === 'WriteArticle' ? '发布文章' : '编辑文章'}</h1>;
 
 const activeStep = ref(1);
 
@@ -141,12 +142,27 @@ const handleSaveToDraftBox = async () => {
 
   if (!validate) return;
   // 创建 / 更新
-  if (articleForm.id) return;
-  else handleAddArticle();
-  // infoFormRef.value.validateForm();
+  if (articleForm.id) return handleUpdateArticle();
+  else handleAddArticle(0);
 };
 
-const handleAddArticle = async () => {
+// 发布文章
+const handlePublish = async () => {
+  const validate1 = await titleFormRef.value
+    .getRef()
+    .validate()
+    .catch(() => false);
+  const validate2 = await infoFormRef.value.validateForm();
+
+  if (!(validate1 && validate2)) return ElMessage.warning('有必填项未填');
+
+  // 创建 / 更新
+  if (articleForm.id) return handleUpdateArticle();
+  else handleAddArticle(1);
+};
+
+// 添加文章
+const handleAddArticle = async (actionType: 0 | 1) => {
   try {
     const { summary, author, id, category, ...args } = articleForm;
     const { data: res } = await addArticle<ArticleData>({
@@ -155,11 +171,25 @@ const handleAddArticle = async () => {
       authorId: author,
       summary: args.content.substring(0, 300),
     });
-
-    if (res.code !== 20100) return ElMessage.error('暂存失败!');
-    ElMessage.success('暂存成功!');
+    const [errMsg, successMsg] = [
+      ['暂存失败!', '暂存成功!'],
+      ['发布失败', '发布成功'],
+    ][actionType];
+    if (res.code !== 20100) return ElMessage.error(errMsg);
+    ElMessage.success(successMsg);
 
     articleForm.id = res.data.id;
+  } catch (e) {
+    console.log('e ------', e);
+  }
+};
+
+// 更新文章
+const handleUpdateArticle = async () => {
+  try {
+    const { author, id, ...args } = articleForm;
+    const { data: res } = await updateArticle(author, id, args);
+    console.log('res ------', res);
   } catch (e) {
     console.log('e ------', e);
   }

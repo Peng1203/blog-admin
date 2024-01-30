@@ -40,7 +40,7 @@ const formItemList = ref<FormItem<AddArticleType>[]>([
     prop: 'category',
     placeholder: '文章分类',
     options: [],
-    rules: [{ required: true, trigger: 'blur', message: '文章分类不能为空' }],
+    rules: [{ required: true, trigger: 'change', message: '文章分类不能为空' }],
   },
   {
     span: 16,
@@ -106,19 +106,16 @@ const infoFormRef = ref<RefType>();
 
 // 校验表单
 const validateForm = async (): Promise<boolean> => {
-  console.log(`%c articleForm.va ----`, 'color: #fff;background-color: #000;font-size: 18px', articleForm.value);
-  const { status, ...args } = articleForm.value;
+  const { status, accessPassword, ...args } = articleForm.value;
   // 当为私密文章时 调用整个表单校验 否则调用 局部校验
   const [validateMethod, validateProps] = status === 2 ? ['validate', undefined] : ['validateField', Object.keys(args)];
 
-  // return await infoFormRef.value.va;
   const validateStatus = await infoFormRef.value
     .getRef()
     [validateMethod](validateProps)
     .catch(() => false);
-
   console.log(`%c validateStatus ----`, 'color: #fff;background-color: #000;font-size: 18px', validateStatus);
-  return false;
+  return validateStatus;
 };
 
 // 重置表单校验规则

@@ -49,14 +49,15 @@ export function useArticleApi() {
      * 通过文章ID更新文章
      * @author Peng
      * @date 2023-04-29
+     * @param {any} authorId:number
      * @param {any} articleId:number
      * @param {any} data:object
      * @returns {any}
      */
-    updateArticle<T>(articleId: number, data: object): TransformedResponse<T> {
+    updateArticle<T>(authorId: number, articleId: number, data: object): TransformedResponse<T> {
       return request({
-        url: `/article/${articleId}`,
-        method: Method.PUT,
+        url: `/article/${authorId}/${articleId}`,
+        method: Method.PATCH,
         data: JSON.stringify(data),
       });
     },
@@ -64,12 +65,13 @@ export function useArticleApi() {
      * 通过ID删除文章
      * @author Peng
      * @date 2023-04-29
+     * @param {any} authorId:number
      * @param {any} articleId:number
      * @returns {any}
      */
-    delArticle<T>(articleId: number): TransformedResponse<T> {
+    delArticle<T>(authorId: number, articleId: number): TransformedResponse<T> {
       return request({
-        url: `/article/deleteArticleById/${articleId}`,
+        url: `/article/${authorId}/${articleId}`,
         method: Method.DELETE,
       });
     },

@@ -46,8 +46,9 @@
       </StepHeadend>
       <!-- {{ articleForm }} -->
 
-      <!-- 文章内容 编辑器 -->
       <!-- flex-1 -->
+      <!-- 动态切换 文章内容 编辑器 -->
+
       <component
         v-show="activeStep === 1"
         v-model="articleForm.content"
@@ -74,7 +75,7 @@
 import { ref, reactive } from 'vue';
 import MarkdownEditor, { Preview } from '@/components/MarkdownEditor';
 import { useRoute } from 'vue-router';
-import { AddArticleType, OperationArticleData } from '../article/types';
+import { AddArticleType, OperationArticleData, ArticleData } from '../article/types';
 import { FormItem } from '@/components/Form';
 import AiEditor from '@/components/AiEditor';
 import StepHeadend from './components/StepHeadend.vue';
@@ -109,6 +110,7 @@ const formItemList = ref<FormItem<AddArticleType>[]>([
 ]);
 
 const articleForm = reactive<AddArticleType | OperationArticleData>({
+  id: 0,
   content: '',
   title: '',
   cover: '',
@@ -116,7 +118,7 @@ const articleForm = reactive<AddArticleType | OperationArticleData>({
   status: 3,
   isTop: 0,
   tags: [],
-  category: 0,
+  category: '',
   author: userInfoStore.userInfos.id,
   contentModel: 0,
   summary: '',
@@ -126,7 +128,11 @@ const articleForm = reactive<AddArticleType | OperationArticleData>({
 const titleFormRef = ref<RefType>();
 const infoFormRef = ref<RefType>();
 
-// 暂存草稿箱 当暂存的文字不存在时 进行创建 当暂存的文字已经存在 则将更新 通过 文章标题来区分
+/**
+ * 暂存草稿箱
+ *  暂存成功时 为当前form对象赋值 文章id
+ *  根据该 文章的id 来判断进行后续操作 更新/创建
+ **/
 const handleSaveToDraftBox = async () => {
   const validate = await titleFormRef.value
     .getRef()
@@ -134,22 +140,26 @@ const handleSaveToDraftBox = async () => {
     .catch(() => false);
 
   if (!validate) return;
-  handleAddArticle();
+  // 创建 / 更新
+  if (articleForm.id) return;
+  else handleAddArticle();
   // infoFormRef.value.validateForm();
 };
 
 const handleAddArticle = async () => {
   try {
-    const { summary, author, ...args } = articleForm;
-    const { data: res } = await addArticle({
+    const { summary, author, id, category, ...args } = articleForm;
+    const { data: res } = await addArticle<ArticleData>({
       ...args,
+      category: category || 0,
       authorId: author,
       summary: args.content.substring(0, 300),
     });
 
-    if (res.code !== 20100) return ElMessage.error('文章暂存失败!');
+    if (res.code !== 20100) return ElMessage.error('暂存失败!');
+    ElMessage.success('暂存成功!');
 
-    ElMessage.success('文章暂存成功!');
+    articleForm.id = res.data.id;
   } catch (e) {
     console.log('e ------', e);
   }

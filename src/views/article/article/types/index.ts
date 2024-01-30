@@ -73,7 +73,7 @@ export interface ArticleData {
 // 表单操作的文章数据类型
 export type OperationArticleData = TypeOmit<ArticleData, 'tags' | 'category' | 'author'> & {
   tags: number[];
-  category: number;
+  category: number | '';
   author: number;
 };
 

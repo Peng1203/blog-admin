@@ -40,6 +40,7 @@
           :size="size"
           v-show="activeStep === 2"
           v-if="route.name === 'WriteArticle'"
+          @click="handlePublishArticle"
         >
           发 布
         </el-button>
@@ -99,7 +100,7 @@ const stepData = [
 //   type: Object as PropType<AddArticleType>,
 // });
 
-const emit = defineEmits(['clickSaveDraftBox', 'clickNextStep']);
+const emit = defineEmits(['clickSaveDraftBox', 'clickNextStep', 'clickPublish']);
 
 defineProps({
   size: {
@@ -126,6 +127,8 @@ const handleNextStep = () => {
 };
 
 const handleSaveDraftBox = () => emit('clickSaveDraftBox');
+
+const handlePublishArticle = () => emit('clickPublish');
 
 // 操作快捷键
 const handleKeyDown = (e: KeyboardEvent) => {

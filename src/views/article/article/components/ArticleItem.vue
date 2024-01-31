@@ -168,6 +168,7 @@ const InfoIcons = () => {
   align-items: center;
   gap: 20px;
   padding: 16px 24px;
+  margin: 0 20px;
   border-block-end: 1px solid rgba(5, 5, 5, 0.06);
 
   .info-con {

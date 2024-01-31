@@ -10,37 +10,39 @@
     <!-- 文章列表容器 -->
     <el-card
       shadow="hover"
-      class="layout-padding-auto mt15"
+      class="layout-padding-auto article-list mt15"
       v-loading="articleListState.loading"
     >
-      <div
-        v-infinite-scroll="load"
-        infinite-scroll-immediate
-        :infinite-scroll-disabled="articleListState.articleList.length === articleListState.total"
-      >
-        <template
-          :key="item.id"
-          v-for="item in articleListState.articleList"
+      <el-scrollbar>
+        <div
+          v-infinite-scroll="load"
+          infinite-scroll-immediate
+          :infinite-scroll-disabled="articleListState.articleList.length === articleListState.total"
         >
-          <ArticleItem :article="item" />
-        </template>
-      </div>
+          <template
+            :key="item.id"
+            v-for="item in articleListState.articleList"
+          >
+            <ArticleItem :article="item" />
+          </template>
+        </div>
 
-      <!-- 加载完毕 -->
-      <p
-        class="flex-c-c"
-        v-if="!articleListState.loading && articleListState.articleList.length === articleListState.total"
-      >
-        加载完毕
-      </p>
-      <el-backtop
-        :right="100"
-        :bottom="100"
-      />
-
-      <!-- 预览 -->
-      <PreviewArticleDialog ref="previewDialogRef" />
+        <el-backtop
+          :right="100"
+          :bottom="100"
+        />
+        <!-- 加载完毕 -->
+        <p
+          class="flex-c-c"
+          v-if="!articleListState.loading && articleListState.articleList.length === articleListState.total"
+        >
+          加载完毕
+        </p>
+      </el-scrollbar>
     </el-card>
+
+    <!-- 预览 -->
+    <PreviewArticleDialog ref="previewDialogRef" />
   </div>
 </template>
 
@@ -199,11 +201,12 @@ onMounted(() => {
   :deep(.el-date-editor) {
     max-width: 200px;
   }
-  :deep(.el-card__body) {
-    overflow-y: auto;
-  }
-  :deep(.el-card__body) {
-    padding: 10px 32px;
+  .article-list {
+    :deep(.el-card__body) {
+      height: 100%;
+      padding: 0 !important;
+      // overflow-y: auto;
+    }
   }
 }
 .article-item {

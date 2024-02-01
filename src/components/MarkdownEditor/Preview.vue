@@ -2,7 +2,7 @@
   <div
     ref="previewRef"
     class="preview-con"
-    style="height: 400px"
+    :style="{ height }"
   >
     <!-- 文章内容 -->
     <MdPreview
@@ -35,10 +35,15 @@
 import { ref, reactive } from 'vue';
 import { MdPreview, MdCatalog } from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
+import { PreviewAttibute } from './types';
 
 const emits = defineEmits(['catalogClick']);
 
 const model = defineModel({ type: String });
+
+const props = withDefaults(defineProps<PreviewAttibute>(), {
+  height: '400px',
+});
 
 const state = reactive({
   id: 'my-editor',

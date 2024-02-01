@@ -18,3 +18,7 @@ export interface MarkdownEditorAttibute {
   toolbarsExclude?: string[];
   height?: string;
 }
+
+export interface PreviewAttibute {
+  height?: string;
+}

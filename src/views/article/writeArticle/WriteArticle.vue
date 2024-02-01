@@ -73,8 +73,8 @@
 </template>
 
 <script setup lang="tsx" name="WriteArticle">
-import { ref, reactive } from 'vue';
-import MarkdownEditor, { Preview } from '@/components/MarkdownEditor';
+import { ref, reactive, onMounted } from 'vue';
+import MarkdownEditor from '@/components/MarkdownEditor';
 import { useRoute } from 'vue-router';
 import { AddArticleType, OperationArticleData, ArticleData } from '../article/types';
 import { FormItem } from '@/components/Form';
@@ -85,7 +85,7 @@ import { useUserInfo } from '@/stores/userInfo';
 import { useArticleApi } from '@/api';
 import { ElMessage } from 'element-plus';
 
-const { addArticle, updateArticle } = useArticleApi();
+const { addArticle, updateArticle, getArticleDetailById } = useArticleApi();
 
 const userInfoStore = useUserInfo();
 
@@ -110,7 +110,7 @@ const formItemList = ref<FormItem<AddArticleType>[]>([
   },
 ]);
 
-const articleForm = reactive<AddArticleType | OperationArticleData>({
+let articleForm = reactive<AddArticleType | OperationArticleData>({
   id: 0,
   content: '',
   title: '',
@@ -187,13 +187,34 @@ const handleAddArticle = async (actionType: 0 | 1) => {
 // 更新文章
 const handleUpdateArticle = async () => {
   try {
-    const { author, id, ...args } = articleForm;
-    const { data: res } = await updateArticle(author, id, args);
-    console.log('res ------', res);
+    const { author, id, category, updateTime, createTime, ...args } = articleForm;
+    const params = {
+      category: category || 0,
+      ...args,
+    };
+    const { data: res } = await updateArticle<ArticleData>(author, id, params);
+    const { code, message, success, data } = res;
+    if (code !== 20001 && success) return;
+    ElMessage.success(message);
   } catch (e) {
     console.log('e ------', e);
   }
 };
+
+// 编辑文章 获取文章详情
+const getArticleDetail = async () => {
+  try {
+    const { data: res } = await getArticleDetailById(Number(route.params.aid));
+    console.log(route);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+onMounted(() => {
+  if (!Number(route.params.aid)) return ElMessage.warning('文章ID参数有误');
+  route.name === 'EditArticle' && getArticleDetail();
+});
 </script>
 
 <style scoped lang="scss">

@@ -19,6 +19,50 @@
     </el-image>
 
     <div class="info-con">
+      <!-- 操作行 -->
+      <div flex-e-c>
+        <el-icon
+          pseudo-c-p
+          :size="20"
+          title="预览"
+          color="#CCCCCC"
+          @click="handleClickActionBnt('clickViewBtn')"
+        >
+          <View />
+        </el-icon>
+
+        <el-icon
+          mg0_10
+          pseudo-c-p
+          :size="20"
+          title="编辑"
+          color="#6495ED"
+          @click="handleClickActionBnt('clickEditBtn')"
+        >
+          <!-- style="margin: 0 5px" -->
+          <Edit />
+        </el-icon>
+
+        <el-popconfirm
+          width="auto"
+          icon="DeleteFilled"
+          icon-color="#f56c6c"
+          :title="`是否删除当前文章 ?`"
+          @confirm="handleClickActionBnt('clickDeleteDtn')"
+        >
+          <template #reference>
+            <el-icon
+              :size="20"
+              pseudo-c-p
+              title="删除"
+              color="#FF0000"
+            >
+              <Delete />
+            </el-icon>
+          </template>
+        </el-popconfirm>
+      </div>
+
       <!-- 标题 -->
       <div flex-sb-c>
         <h3 class="title">{{ article.title }}</h3>
@@ -113,7 +157,9 @@
 import { ref } from 'vue';
 import { ArticleData, ArticleItemProps, IconHashMappingItem, ArticleStatusEnum } from '../';
 import Icon from '@/components/SymbolIcon/index.vue';
-import { Picture as IconPicture } from '@element-plus/icons-vue';
+import { Picture as IconPicture, View, Delete, Edit } from '@element-plus/icons-vue';
+
+const emits = defineEmits(['clickViewBtn', 'clickEditBtn', 'clickDeleteDtn']);
 
 const props = defineProps<ArticleItemProps>();
 
@@ -140,6 +186,9 @@ const iconHashMapping: IconHashMappingItem[] = [
   { name: 'icon-view', title: '浏览量', prop: 'views' },
   { name: 'icon-pinglun1', title: '评论数', prop: 'comment' },
 ];
+
+// 点击顶部操作行按钮
+const handleClickActionBnt = event => emits(event, props.article);
 
 // 文章uv 数据组件
 const InfoIcons = () => {

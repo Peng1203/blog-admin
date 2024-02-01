@@ -23,7 +23,12 @@
             :key="item.id"
             v-for="item in articleListState.articleList"
           >
-            <ArticleItem :article="item" />
+            <ArticleItem
+              :article="item"
+              @click-delete-dtn="handleDelete"
+              @click-edit-btn="handleEditArticle"
+              @click-view-btn="handlePreviewArticle"
+            />
           </template>
         </div>
 
@@ -42,7 +47,11 @@
     </el-card>
 
     <!-- 预览 -->
-    <PreviewArticleDialog ref="previewDialogRef" />
+    <PreviewArticleDialog
+      v-model="previewDialogStatus"
+      v-model:row="previewRow"
+      ref="previewDialogRef"
+    />
   </div>
 </template>
 
@@ -128,15 +137,8 @@ const load = () => {
 };
 
 // 处理删除文章
-const handleDelete = async (id: number, title: string) => {
-  const confirmRes = await ElMessageBox.confirm(`此操作将永久文章：“${title}”，是否继续?`, '提示', {
-    confirmButtonText: '确认',
-    cancelButtonText: '取消',
-    type: 'warning',
-  }).catch(() => false);
-  if (!confirmRes) return;
-  const delRes = await deleteArticle(id);
-  if (delRes) resetFilterGetDataList();
+const handleDelete = async (row: ArticleData) => {
+  console.log('row ------', row);
 };
 
 // 删除文章
@@ -155,23 +157,25 @@ const deleteArticle = async (id: number): Promise<boolean> => {
 };
 
 // 编辑文章
-const handleEditArticle = (aid: number) => {
+const handleEditArticle = (row: ArticleData) => {
   router.push({
-    name: 'WriteArticle',
-    params: { aid },
+    name: 'EditArticle',
+    params: { aid: row.id },
   });
 };
 
 // 预览组件
+const previewDialogStatus = ref<boolean>(false);
+const previewRow = ref<ArticleData>();
 const PreviewArticleDialog = defineAsyncComponent(() => import('./components/PreviewArticle.vue'));
-
-const previewDialogRef = ref<RefType>(null);
 // 处理预览操作
-const handlePreViewArticle = async (aid: number) => {
-  await previewDialogRef.value.getArticleDetailById(aid);
-  setTimeout(() => {
-    previewDialogRef.value.previewDialogStatus = true;
-  }, 500);
+const handlePreviewArticle = async (row: ArticleData) => {
+  previewRow.value = row;
+  previewDialogStatus.value = true;
+  // await previewDialogRef.value.getArticleDetailById(aid);
+  // setTimeout(() => {
+  //   previewDialogRef.value.previewDialogStatus = true;
+  // }, 500);
 };
 
 // 根据 登录用户 判断 是否展示编辑按钮

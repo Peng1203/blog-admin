@@ -9,6 +9,7 @@
       :close-on-press-escape="escClose"
       :draggable="draggable"
       :align-center="aCenter"
+      v-bind="$attrs"
       v-model="dialogStatus"
     >
       <template #header>
@@ -46,11 +47,13 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 import { DialogAttribute } from './types';
+import { computed } from 'vue';
 
 const props = withDefaults(defineProps<DialogAttribute>(), {
   fullscreen: false,
   modal: true,
   width: '770px',
+  height: '70vh',
   modelClose: false,
   escClose: true,
   draggable: true,
@@ -80,6 +83,10 @@ const handleClickCancel = () => {
   emits('clickCancel');
   handleClose();
 };
+/** 计算滚动区域内的最大高度 */
+const bodyMaxHeight = computed(() => {
+  return `${props.height} - ${props.operationRow ? '111px' : '0px'}`;
+});
 
 const handleClickConfirm = () => emits('clickConfirm');
 </script>
@@ -87,7 +94,7 @@ const handleClickConfirm = () => emits('clickConfirm');
 <style lang="scss" scoped>
 .peng-dialog {
   :deep(.el-dialog) {
-    max-height: 70vh;
+    max-height: v-bind('$props.height');
     border-radius: 8px;
   }
   :deep(.el-dialog__header) {
@@ -96,7 +103,7 @@ const handleClickConfirm = () => emits('clickConfirm');
     border-bottom: 1px solid rgb(180, 169, 169);
   }
   :deep(.el-dialog__body) {
-    max-height: calc(70vh - 111px) !important;
+    max-height: calc(v-bind('bodyMaxHeight')) !important;
   }
   :deep(.el-dialog__headerbtn) {
     top: 0px;

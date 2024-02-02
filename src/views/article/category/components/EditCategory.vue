@@ -69,10 +69,10 @@ const handleSaveEdit = async () => {
 const saveEditCategory = async (): Promise<boolean> => {
   try {
     const { id, categoryName } = editFormState.data;
-    const { data: res } = await updateCategory<CategoryData>(id, { categoryName });
-    const { code, message, success } = res;
-    if (code !== 20000 || !success) return false;
-    ElMessage.success(message);
+    const { data: res } = await updateCategory<string>(id, { categoryName });
+    const { code, message, data, success } = res;
+    if (code !== 20001 || !success) return false;
+    ElMessage.success(data);
     return true;
   } catch (e) {
     console.log(e);

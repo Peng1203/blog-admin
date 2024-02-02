@@ -6,6 +6,34 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "996990",
+      "name": "置顶",
+      "font_class": "zhiding",
+      "unicode": "e684",
+      "unicode_decimal": 59012
+    },
+    {
+      "icon_id": "9627002",
+      "name": "置顶",
+      "font_class": "zhiding1",
+      "unicode": "e891",
+      "unicode_decimal": 59537
+    },
+    {
+      "icon_id": "2076262",
+      "name": "目录",
+      "font_class": "mulu",
+      "unicode": "e890",
+      "unicode_decimal": 59536
+    },
+    {
+      "icon_id": "11372768",
+      "name": "评论",
+      "font_class": "pinglun2",
+      "unicode": "e8c5",
+      "unicode_decimal": 59589
+    },
+    {
       "icon_id": "11494995",
       "name": "更新",
       "font_class": "gengxin",

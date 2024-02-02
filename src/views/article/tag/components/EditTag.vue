@@ -90,10 +90,10 @@ const handleSaveEdit = async () => {
 const saveEditTag = async (): Promise<boolean> => {
   try {
     const { id, tagName, icon } = editFormState.data;
-    const { data: res } = await updataTag<TagData>(id, { tagName, icon });
-    const { code, message, success } = res;
-    if (code !== 20000 || !success) return false;
-    ElMessage.success(message);
+    const { data: res } = await updataTag<string>(id, { tagName, icon });
+    const { code, message, data, success } = res;
+    if (code !== 20001 || !success) return false;
+    ElMessage.success(data);
     return true;
   } catch (e) {
     console.log(e);

@@ -123,10 +123,10 @@ const saveEditRole = async (): Promise<boolean> => {
       ...args,
       permissions,
     };
-    const { data: res } = await updateRole<RoleEntityData>(id!, params);
+    const { data: res } = await updateRole<string>(id!, params);
     const { code, data, message, success } = res;
-    if (code !== 20000 || !success) return false;
-    ElMessage.success(message);
+    if (code !== 20001 || !success) return false;
+    ElMessage.success(data);
     return true;
   } catch (e) {
     console.log(e);

@@ -43,7 +43,7 @@ export function useTagApi() {
     updataTag<T>(tagId: number, data: object): TransformedResponse<T> {
       return request({
         url: `/tag/${tagId}`,
-        method: Method.POST,
+        method: Method.PATCH,
         data: JSON.stringify(data),
       });
     },

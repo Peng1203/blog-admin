@@ -66,25 +66,20 @@ const formItemList = ref<FormItem<AddArticleType>[]>([
     type: 'radio',
     label: '类型',
     prop: 'type',
-    options: ARTICLE.typeOptions.splice(1),
+    options: ARTICLE.radioTypeOptions,
   },
   {
     type: 'radio',
     label: '状态',
     prop: 'status',
-    // options: ARTICLE.statusOptions.splice(1),
-    options: [
-      { label: '公开', value: 1 },
-      { label: '私密', value: 2 },
-      { label: '草稿箱', value: 3 },
-    ],
+    options: ARTICLE.radioStatusOptions,
   },
   {
     span: 13,
     type: 'pwd',
     label: '访问密码',
     prop: 'accessPassword',
-    isShow: false,
+    isShow: articleForm.value.status === 2,
     rules: [{ required: true, trigger: 'blur', message: '私密文章 访问不能为空' }],
   },
   {
@@ -114,7 +109,6 @@ const validateForm = async (): Promise<boolean> => {
     .getRef()
     [validateMethod](validateProps)
     .catch(() => false);
-  console.log(`%c validateStatus ----`, 'color: #fff;background-color: #000;font-size: 18px', validateStatus);
   return validateStatus;
 };
 

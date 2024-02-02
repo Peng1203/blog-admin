@@ -50,6 +50,7 @@
           :size="size"
           v-show="activeStep === 2"
           v-if="route.name === 'EditArticle'"
+          @click="handleSaveEdit"
         >
           保 存
         </el-button>
@@ -100,7 +101,7 @@ const stepData = [
 //   type: Object as PropType<AddArticleType>,
 // });
 
-const emit = defineEmits(['clickSaveDraftBox', 'clickNextStep', 'clickPublish']);
+const emit = defineEmits(['clickSaveDraftBox', 'clickNextStep', 'clickPublish', 'clickSave']);
 
 defineProps({
   size: {
@@ -129,6 +130,8 @@ const handleNextStep = () => {
 const handleSaveDraftBox = () => emit('clickSaveDraftBox');
 
 const handlePublishArticle = () => emit('clickPublish');
+
+const handleSaveEdit = () => emit('clickSave');
 
 // 操作快捷键
 const handleKeyDown = (e: KeyboardEvent) => {

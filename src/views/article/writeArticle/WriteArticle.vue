@@ -20,54 +20,50 @@
           />
         </div>
       </template>
-
       <!-- v-model="articleForm" -->
-      <StepHeadend
-        size="default"
-        v-model:step="activeStep"
-        @click-save-draft-box="handleSaveToDraftBox"
-        @click-publish="handlePublish"
+      <Peng-Skeleton
+        height="30px"
+        :rows="15"
+        :throttle="1000"
+        :loading="loadingStatus"
       >
-        <!-- @click-next-step="handleNextStep" -->
-        <template #titleSlot>
-          <!-- <el-input
-            class="title-input"
-            size="default"
-            v-model="articleForm.title"
-            placeholder="文章标题"
-          /> -->
+        <StepHeadend
+          size="default"
+          v-model:step="activeStep"
+          @click-save-draft-box="handleSaveToDraftBox"
+          @click-publish="handlePublish"
+          @click-save="handlePublish"
+        >
+          <!-- @click-next-step="handleNextStep" -->
+          <template #titleSlot>
+            <Peng-Form
+              v-show="activeStep === 1"
+              ref="titleFormRef"
+              v-model="articleForm"
+              :formItems="formItemList.slice(0, 1)"
+            />
+          </template>
+        </StepHeadend>
+        <!-- {{ articleForm }} -->
 
-          <Peng-Form
-            v-show="activeStep === 1"
-            ref="titleFormRef"
-            v-model="articleForm"
-            :formItems="formItemList.slice(0, 1)"
-          />
-        </template>
-      </StepHeadend>
-      <!-- {{ articleForm }} -->
+        <!-- flex-1 -->
+        <!-- 动态切换 文章内容 编辑器 -->
+        <component
+          v-show="activeStep === 1"
+          v-model="articleForm.content"
+          height="calc(100vh - 330px)"
+          placeholder="请输入文章内容"
+          :is="editorMapping[articleForm.contentModel]"
+        />
 
-      <!-- flex-1 -->
-      <!-- 动态切换 文章内容 编辑器 -->
-
-      <component
-        v-show="activeStep === 1"
-        v-model="articleForm.content"
-        height="calc(100vh - 330px)"
-        placeholder="请输入文章内容"
-        :is="editorMapping[articleForm.contentModel]"
-      />
-
-      <!-- 文章信息表单 -->
-      <InfoForm
-        ref="infoFormRef"
-        v-show="activeStep === 2"
-        v-model="articleForm"
-        :formItemList="formItemList"
-      />
-      <!-- <AiEditor v-model="articleForm.content" />
-
-      <MarkdownEditor v-model="articleForm.content" /> -->
+        <!-- 文章信息表单 -->
+        <InfoForm
+          ref="infoFormRef"
+          v-show="activeStep === 2"
+          v-model="articleForm"
+          :formItemList="formItemList"
+        />
+      </Peng-Skeleton>
     </el-card>
   </div>
 </template>
@@ -201,19 +197,39 @@ const handleUpdateArticle = async () => {
   }
 };
 
+const loadingStatus = ref<boolean>(route.name === 'EditArticle');
 // 编辑文章 获取文章详情
 const getArticleDetail = async () => {
   try {
-    const { data: res } = await getArticleDetailById(Number(route.params.aid));
-    console.log(route);
+    loadingStatus.value = true;
+    const { data: res } = await getArticleDetailById<ArticleData>(Number(route.params.aid));
+    const { code, success, data } = res;
+    if (code !== 20000 && success) return;
+    const { tags, category, author, ...args } = data;
+    for (const key in articleForm) {
+      articleForm[key] = args[key];
+    }
+
+    articleForm.tags = tags.map(({ id }) => id);
+    articleForm.category = category?.id || '';
+    articleForm.author = author.id;
   } catch (error) {
     console.log(error);
+  } finally {
+    loadingStatus.value = false;
+  }
+};
+
+// 编辑文章初始化操作
+const editArticleInit = () => {
+  if (route.name === 'EditArticle') {
+    if (!Number(route.params.aid)) return ElMessage.warning('文章ID参数有误');
+    getArticleDetail();
   }
 };
 
 onMounted(() => {
-  if (!Number(route.params.aid)) return ElMessage.warning('文章ID参数有误');
-  route.name === 'EditArticle' && getArticleDetail();
+  editArticleInit();
 });
 </script>
 

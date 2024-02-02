@@ -7,6 +7,11 @@ export const ARTICLE = {
     { label: '转载', value: 2 },
     { label: '翻译', value: 3 },
   ],
+  radioTypeOptions: [
+    { label: '原创', value: 1 },
+    { label: '转载', value: 2 },
+    { label: '翻译', value: 3 },
+  ],
 
   // 文章状态筛选数据
   statusOptions: [
@@ -18,4 +23,9 @@ export const ARTICLE = {
     { label: '待审核', value: 5 },
     { label: '已拒绝', value: 6 },
   ],
-}
+  radioStatusOptions: [
+    { label: '公开', value: 1 },
+    { label: '私密', value: 2 },
+    { label: '草稿箱', value: 3 },
+  ],
+};

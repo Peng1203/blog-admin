@@ -61,6 +61,8 @@
             </el-icon>
           </template>
         </el-popconfirm>
+
+        {{ article.isTop }}
       </div>
 
       <!-- 标题 -->
@@ -89,7 +91,7 @@
       <!-- 文章内容 -->
       <div class="content-con">
         <p>
-          {{ article.content }}
+          {{ article.summary || article.content }}
         </p>
       </div>
 

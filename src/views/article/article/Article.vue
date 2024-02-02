@@ -19,17 +19,19 @@
           infinite-scroll-immediate
           :infinite-scroll-disabled="articleListState.articleList.length === articleListState.total"
         >
-          <template
-            :key="item.id"
-            v-for="item in articleListState.articleList"
-          >
-            <ArticleItem
-              :article="item"
-              @click-delete-dtn="handleDelete"
-              @click-edit-btn="handleEditArticle"
-              @click-view-btn="handlePreviewArticle"
-            />
-          </template>
+          <TransitionGroup name="list">
+            <template
+              :key="item.id"
+              v-for="item in articleListState.articleList"
+            >
+              <ArticleItem
+                :article="item"
+                @click-delete-dtn="handleDelete"
+                @click-edit-btn="handleEditArticle"
+                @click-view-btn="handlePreviewArticle"
+              />
+            </template>
+          </TransitionGroup>
         </div>
 
         <el-backtop
@@ -60,10 +62,11 @@ import { ref, reactive, onMounted, defineAsyncComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import { useArticleApi } from '@/api/article/index';
 import { useUserInfo } from '@/stores/userInfo';
-import { ElMessageBox } from 'element-plus';
 import { ArticleListData, ArticleData, FilterParamsInfo } from './';
 import FilterHeadend from './components/FilterHeadend.vue';
 import ArticleItem from './components/ArticleItem.vue';
+import { ElNotification } from 'element-plus';
+
 const userInfoStore = useUserInfo();
 
 const router = useRouter();
@@ -138,22 +141,35 @@ const load = () => {
 
 // 处理删除文章
 const handleDelete = async (row: ArticleData) => {
-  console.log('row ------', row);
+  const delRes = await deleteArticle(row.author.id, row.id);
+  if (!delRes) return;
+  // 从文章列表数据中找到对应数据 删除 而不是从新调用列表接口
+  removeArticleFromList(row.id);
 };
 
 // 删除文章
-const deleteArticle = async (id: number): Promise<boolean> => {
+const deleteArticle = async (uid: number, aid: number): Promise<boolean> => {
   try {
-    const { data: res } = await delArticle(id);
-    const { code, data, message } = res;
-    if (code !== 200 || message !== 'Success') return false;
+    const { data: res } = await delArticle<string>(uid, aid);
+    const { code, data, message, success } = res;
+    if (code !== 20000 || !success) return false;
+    ElNotification({
+      title: message,
+      message: data,
+      type: 'success',
+    });
 
-    // ElMessage.success(data);
     return true;
   } catch (e) {
     console.log(e);
     return false;
   }
+};
+
+const removeArticleFromList = (aid: number) => {
+  const findItemIndex = articleListState.articleList.findIndex(({ id }) => id === aid);
+  if (findItemIndex === -1) return;
+  articleListState.articleList.splice(findItemIndex, 1);
 };
 
 // 编辑文章
@@ -226,5 +242,23 @@ onMounted(() => {
 }
 .article-statistics {
   color: rgba(0, 0, 0, 0.45);
+}
+
+.list-move, /* 对移动中的元素应用的过渡 */
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* 确保将离开的元素从布局流中删除
+  以便能够正确地计算移动的动画。 */
+.list-leave-active {
+  position: absolute;
 }
 </style>

@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@element-plus/icons-vue':
     specifier: ^2.3.1
@@ -76,6 +80,9 @@ dependencies:
   vue-clipboard3:
     specifier: ^2.0.0
     version: 2.0.0
+  vue-cropper:
+    specifier: ^1.1.1
+    version: 1.1.1
   vue-router:
     specifier: ^4.2.5
     version: 4.2.5(vue@3.4.15)
@@ -4908,6 +4915,10 @@ packages:
       clipboard: 2.0.11
     dev: false
 
+  /vue-cropper@1.1.1:
+    resolution: {integrity: sha512-WsqKMpaBf9Osi1LQlE/5AKdD0nHWOy1asLXocaG8NomOWO07jiZi968+/PbMmnD0QbPJOumDQaGuGa13qys85A==}
+    dev: false
+
   /vue-demi@0.14.6(vue@3.4.15):
     resolution: {integrity: sha512-8QA7wrYSHKaYgUxDA5ZC24w+eHm3sYCbp0EzcDwKqN3p6HqtTCGR/GVsPyZW92unff4UlcSh++lmqDWN3ZIq4w==}
     engines: {node: '>=12'}
@@ -5017,7 +5028,3 @@ packages:
     dependencies:
       tslib: 2.3.0
     dev: false
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false

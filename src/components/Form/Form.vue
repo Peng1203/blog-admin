@@ -477,9 +477,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { FormAttribute, UploadLimit } from './types';
-import { UploadRawFile, ElMessage } from 'element-plus';
+import { UploadRawFile, ElMessage, ElForm, FormInstance } from 'element-plus';
 
 const formData = defineModel();
 
@@ -522,7 +522,7 @@ const props = withDefaults(defineProps<FormAttribute>(), {
 //   },
 // });
 
-const formRef = ref<any>(null);
+const formRef = ref<InstanceType<typeof ElForm>>();
 // 获取Form表单的Ref
 const getRef = () => formRef.value;
 

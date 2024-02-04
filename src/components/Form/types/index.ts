@@ -16,7 +16,7 @@ export interface FormAttribute {
   /**
    * label 定位
    */
-  labelP?: string;
+  labelP?: 'right' | 'top' | 'left';
   /**
    * 表单组件尺寸 大小
    */

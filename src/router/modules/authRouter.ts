@@ -15,7 +15,7 @@ const routerRules: Array<RouteRecordRaw> = [
       isAffix: false,
       isIframe: false,
       icon: 'iconfont icon-auth',
-      menuType: '1',
+      orderNum: 2,
     },
     children: [
       {
@@ -31,7 +31,7 @@ const routerRules: Array<RouteRecordRaw> = [
           isAffix: false,
           isIframe: false,
           icon: 'iconfont icon-jiaoseguanli1',
-          menuType: '4',
+          orderNum: 1,
         },
       },
       {
@@ -47,7 +47,7 @@ const routerRules: Array<RouteRecordRaw> = [
           isAffix: false,
           isIframe: false,
           icon: 'ele-Menu',
-          menuType: '4',
+          orderNum: 2,
         },
       },
       {
@@ -63,7 +63,7 @@ const routerRules: Array<RouteRecordRaw> = [
           isAffix: false,
           isIframe: false,
           icon: 'ele-Key',
-          menuType: '4',
+          orderNum: 3,
         },
       },
     ],

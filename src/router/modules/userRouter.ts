@@ -15,7 +15,7 @@ const routerRules: RouteRecordRaw[] = [
       isAffix: false,
       isIframe: false,
       icon: 'iconfont icon-jiaoseguanli',
-      menuType: '1',
+      orderNum: 3,
     },
     children: [
       {
@@ -31,7 +31,7 @@ const routerRules: RouteRecordRaw[] = [
           isAffix: false,
           isIframe: false,
           icon: 'iconfont icon-yonghuguanli',
-          menuType: '4',
+          orderNum: 1,
         },
       },
     ],

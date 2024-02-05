@@ -9,6 +9,9 @@ const routerRules: RouteRecordRaw[] = [
     meta: {
       title: '系统设置',
       icon: 'iconfont icon-xitongshezhi',
+      orderNum: 7,
+      isHide: false,
+      isKeepAlive: false,
     },
     children: [
       {
@@ -19,6 +22,8 @@ const routerRules: RouteRecordRaw[] = [
           title: '系统更新',
           icon: 'iconfont icon-xitonggengxin1',
           isKeepAlive: false,
+          orderNum: 1,
+          isHide: false,
         },
       },
     ],

@@ -15,6 +15,7 @@ const routerRules: RouteRecordRaw[] = [
       isIframe: false,
       // icon: 'iconfont icon-wenzhangfenlei1',
       icon: 'iconfont icon-wenzhangfenlei2',
+      orderNum: 4,
     },
     children: [
       {
@@ -30,6 +31,7 @@ const routerRules: RouteRecordRaw[] = [
           isIframe: false,
           // icon: 'iconfont icon-tianchongxing-',
           icon: 'iconfont icon-weibiaoti--',
+          orderNum: 1,
         },
       },
       {
@@ -39,6 +41,9 @@ const routerRules: RouteRecordRaw[] = [
         meta: {
           noRender: true,
           title: '编辑文章',
+          orderNum: 0,
+          isHide: false,
+          isKeepAlive: false,
         },
       },
       {
@@ -53,6 +58,7 @@ const routerRules: RouteRecordRaw[] = [
           isAffix: false,
           isIframe: false,
           icon: 'iconfont icon-wenzhangguanli',
+          orderNum: 2,
         },
       },
       {
@@ -67,6 +73,7 @@ const routerRules: RouteRecordRaw[] = [
           isAffix: false,
           isIframe: false,
           icon: 'iconfont icon-tags',
+          orderNum: 3,
         },
       },
       {
@@ -81,6 +88,7 @@ const routerRules: RouteRecordRaw[] = [
           isAffix: false,
           isIframe: false,
           icon: 'iconfont icon-fenlei',
+          orderNum: 4,
         },
       },
     ],

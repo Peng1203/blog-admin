@@ -7,6 +7,7 @@ const routerRules: RouteRecordRaw[] = [
     component: () => import('@/views/test/Test.vue'),
     meta: {
       title: '测试页面',
+      orderNum: 6,
       isLink: '',
       isHide: false,
       isKeepAlive: false,

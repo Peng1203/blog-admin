@@ -10,6 +10,8 @@ const routerRules: RouteRecordRaw[] = [
       title: '资源管理',
       icon: 'iconfont icon-ziyuan-resources',
       isKeepAlive: false,
+      orderNum: 5,
+      isHide: false,
     },
     children: [
       {
@@ -20,6 +22,8 @@ const routerRules: RouteRecordRaw[] = [
           title: '网盘',
           icon: 'iconfont icon-wangpan',
           isKeepAlive: false,
+          orderNum: 1,
+          isHide: false,
         },
       },
     ],

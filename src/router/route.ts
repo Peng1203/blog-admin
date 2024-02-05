@@ -19,16 +19,18 @@ import { RouteRecordRaw } from 'vue-router';
 // 扩展 RouteMeta 接口
 declare module 'vue-router' {
   interface RouteMeta {
-    title?: string;
+    title: string;
+    orderNum: number;
+    isHide: boolean;
+    isKeepAlive: boolean;
     isLink?: string;
-    isHide?: boolean;
-    isKeepAlive?: boolean;
     isAffix?: boolean;
     isIframe?: boolean;
     // roles?: string[]
     icon?: string;
     parentMenuName?: string;
-    menuType?: '1' | '2' | '3' | '4';
+    /** 不渲染到页面和菜单中 */
+    noRender?: boolean;
   }
 }
 
@@ -79,6 +81,9 @@ export const staticRoutes: Array<RouteRecordRaw> = [
     component: () => import('@/views/login'),
     meta: {
       title: '登录',
+      orderNum: 0,
+      isHide: false,
+      isKeepAlive: false,
     },
   },
 ];

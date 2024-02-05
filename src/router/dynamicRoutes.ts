@@ -32,7 +32,7 @@ export const allDynamicRoutes: Array<RouteRecordRaw> = [
           isKeepAlive: false,
           // roles: ['admin', 'common'],
           icon: 'ele-HomeFilled',
-          menuType: '3',
+          orderNum: 1,
         },
       },
       // 权限管理
@@ -60,7 +60,7 @@ export const allDynamicRoutes: Array<RouteRecordRaw> = [
           isAffix: false,
           isIframe: false,
           icon: 'ele-UserFilled',
-          menuType: '3',
+          orderNum: 20,
         },
       },
     ],

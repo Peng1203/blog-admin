@@ -24,9 +24,12 @@
             </el-icon>
             添加菜单
           </el-button>
+
+          <!-- 初始化菜单操作 -->
+          <InitMenu />
         </div>
 
-        <Search
+        <Peng-Search
           placeholder="菜单名称"
           :loading="tableState.loading"
           v-model="tableState.queryStr"
@@ -34,7 +37,7 @@
         />
       </div>
 
-      <Table
+      <Peng-Table
         defaultExpandAll
         operationColumn
         :operationColumnBtns="['add', 'edit', 'delete']"
@@ -90,7 +93,7 @@
           />
           <!-- :disabled="row.children.length" -->
         </template>
-      </Table>
+      </Peng-Table>
     </el-card>
 
     <!-- 编辑菜单抽屉 -->
@@ -116,9 +119,9 @@ import { ElMessage } from 'element-plus';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
 import { useMenuApi } from '@/api';
 import { useMenuInfo } from '@/stores/menuList';
-import Table, { ColumnItem, ColumnChangeParams } from '@/components/Table';
+import { ColumnItem, ColumnChangeParams } from '@/components/Table';
 import { MenuData, MenuListData } from './types';
-import Search from '@/components/Search';
+import InitMenu from './components/InitMenu.vue';
 
 const { getMenus, deleteMenu } = useMenuApi();
 

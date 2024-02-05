@@ -14,7 +14,7 @@
       <el-skeleton
         :rows="5"
         animated
-        v-if="!data?.length"
+        v-if="!data?.length && loading"
       />
       <!-- :show-checkbox="!readonly" -->
       <el-tree
@@ -59,6 +59,8 @@ const props = defineProps({
     default: false,
   },
 });
+
+const loading = ref<boolean>(false);
 
 const permissionStore = usePermissionInfo();
 
@@ -111,7 +113,8 @@ watch(
 );
 
 onMounted(async () => {
-  await permissionStore.getPermissionData();
+  loading.value = true;
+  await permissionStore.getPermissionData().finally(() => (loading.value = false));
   data.value = permissionStore.permissionList;
 });
 

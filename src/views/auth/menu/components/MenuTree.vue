@@ -14,7 +14,7 @@
       <el-skeleton
         :rows="5"
         animated
-        v-if="!data?.length"
+        v-if="!data?.length && loading"
       />
       <el-tree
         v-else
@@ -67,6 +67,8 @@ const props = defineProps({
   },
 });
 
+const loading = ref<boolean>(false);
+
 const menuStore = useMenuInfo();
 
 const defaultProps = {
@@ -118,7 +120,8 @@ watch(
 );
 
 onMounted(async () => {
-  await menuStore.getMenuData();
+  loading.value = true;
+  await menuStore.getMenuData().finally(() => (loading.value = false));
   data.value = menuStore.menuList;
 });
 

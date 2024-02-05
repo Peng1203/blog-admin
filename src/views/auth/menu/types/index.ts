@@ -10,14 +10,14 @@ export interface MenuData {
   parentId: number;
   isHidden: BooleanEnum;
   isKeepalive: BooleanEnum;
-  createTime: string | Date;
-  updateTime: string | Date;
+  createTime: string;
+  updateTime: string;
   children: MenuData[];
 }
 
 export type MenuListData = ListApiBaseResponse<MenuData>;
 
-export type AddMenuType = Partial<MenuData & { menuType: 0 | 1 }>;
+export type AddMenuType = Partial<MenuData>;
 
 export type EditMenuType = AddMenuType;
 

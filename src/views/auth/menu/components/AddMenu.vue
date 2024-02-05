@@ -54,22 +54,12 @@ const addMenuState = reactive({
     menuUri: '',
     menuPath: '',
     menuIcon: '',
-    menuType: 0,
     parentId: 0,
     orderNum: 0,
     isKeepalive: 0,
     isHidden: 0,
   }),
   formItemList: ref<FormItem<AddMenuType>[]>([
-    // {
-    //   type: 'radio',
-    //   label: '类型',
-    //   prop: 'menuType',
-    //   options: ref<RadioItem[]>([
-    //     { label: '目录', value: 0 },
-    //     { label: '菜单', value: 1 },
-    //   ]),
-    // },
     {
       type: 'input',
       label: '菜单名',
@@ -85,7 +75,7 @@ const addMenuState = reactive({
       prop: 'menuUri',
       rules: [
         { required: true, trigger: 'blur' },
-        { min: 2, max: 8, trigger: 'blur' },
+        { min: 4, max: 16, trigger: 'blur' },
       ],
     },
     {
@@ -190,7 +180,6 @@ const resetAddForm = () => {
   addMenuState.data.menuUri = '';
   addMenuState.data.menuIcon = '';
   addMenuState.data.parentId = 0;
-  addMenuState.data.menuType = 1;
   addMenuState.data.updateTime = '';
   addMenuState.data.createTime = '';
   addMenuState.data.isKeepalive = 0;

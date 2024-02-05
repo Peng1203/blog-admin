@@ -45,7 +45,6 @@ const formData = ref<EditMenuType>({
   menuUri: '',
   menuPath: '',
   menuIcon: '',
-  menuType: 0,
   parentId: 0,
   orderNum: 0,
   isKeepalive: 0,
@@ -53,16 +52,6 @@ const formData = ref<EditMenuType>({
 });
 const editFormState = reactive({
   formItemList: ref<FormItem<EditMenuType>[]>([
-    // {
-    //   type: 'radio',
-    //   label: '类型',
-    //   prop: 'menuType',
-    //   span: 24,
-    //   options: ref<RadioItem[]>([
-    //     { label: '目录', value: 0 },
-    //     { label: '菜单', value: 1 },
-    //   ]),
-    // },
     {
       type: 'input',
       label: '菜单名',
@@ -78,7 +67,7 @@ const editFormState = reactive({
       prop: 'menuUri',
       rules: [
         { required: true, trigger: 'blur' },
-        { min: 2, max: 8, trigger: 'blur' },
+        { min: 4, max: 16, trigger: 'blur' },
       ],
     },
     {

@@ -19,6 +19,7 @@
           infinite-scroll-immediate
           :infinite-scroll-disabled="articleListState.articleList.length === articleListState.total"
         >
+          <!-- 文章删除过渡效果 -->
           <TransitionGroup name="list">
             <template
               :key="item.id"
@@ -40,7 +41,8 @@
         />
         <!-- 加载完毕 -->
         <p
-          class="flex-c-c"
+          flex-c-c
+          pd20_0
           v-if="!articleListState.loading && articleListState.articleList.length === articleListState.total"
         >
           加载完毕
@@ -260,5 +262,11 @@ onMounted(() => {
   以便能够正确地计算移动的动画。 */
 .list-leave-active {
   position: absolute;
+}
+
+::v-deep .is-horizontal {
+  height: 0px;
+  left: 0px;
+  display: none;
 }
 </style>

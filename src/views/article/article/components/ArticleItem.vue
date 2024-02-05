@@ -20,7 +20,10 @@
 
     <div class="info-con">
       <!-- 操作行 -->
-      <div flex-e-c>
+      <div
+        flex-e-c
+        relative
+      >
         <el-icon
           pseudo-c-p
           :size="20"
@@ -62,7 +65,12 @@
           </template>
         </el-popconfirm>
 
-        {{ article.isTop }}
+        <i
+          absolute
+          style="right: -30px"
+          v-if="article.isTop"
+          class="iconfont icon-zhiding1"
+        />
       </div>
 
       <!-- 标题 -->

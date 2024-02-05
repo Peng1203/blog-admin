@@ -62,20 +62,17 @@ export function useMenuApi() {
       });
     },
     /**
-     * 添加全部默认菜单
+     * 初始化菜单
      * @author Peng
      * @date 2023-06-12
-     * @param {any} menus:any[]
+     * @param {any} data:object
      * @returns {any}
      */
-    addAllDefaultMenu(menus: any[]) {
+    initMenus<T>(data: object): TransformedResponse<T> {
       return request({
-        url: '/menu/addAllDefaultMenus',
+        url: '/menu/init',
         method: Method.POST,
-        data: JSON.stringify(menus),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        data: JSON.stringify(data),
       });
     },
   };

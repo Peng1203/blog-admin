@@ -143,7 +143,7 @@
         </div>
 
         <!-- 搜索框 -->
-        <Search
+        <Peng-Search
           size="small"
           placeholder="文章标题/内容简介"
           v-model="filterParams.queryStr"
@@ -160,7 +160,6 @@ import { FilterHeadendProps } from '../types';
 import { useUsersInfo } from '@/stores/userList';
 import { useUserInfo } from '@/stores/userInfo';
 import { useArticleInfo } from '@/stores/articleInfo';
-import Search from '@/components/Search';
 import Icon from '@/components/svgIcon/index.vue';
 import Select from '@/components/Select';
 import { ARTICLE } from '@/constants';

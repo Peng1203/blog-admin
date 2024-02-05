@@ -8,15 +8,6 @@ import Select from '@/components/Select';
 import Skeleton from '@/components/Skeleton';
 
 const ComponentHashMap = {
-  [`Table`]: Table,
-  [`Search`]: Search,
-  [`Drawer`]: Drawer,
-  [`Dialog`]: Dialog,
-  [`Form`]: Form,
-  [`Icon`]: Icon,
-  [`Select`]: Select,
-  [`Skeleton`]: Skeleton,
-
   [`Peng-Table`]: Table,
   [`Peng-Search`]: Search,
   [`Peng-Drawer`]: Drawer,

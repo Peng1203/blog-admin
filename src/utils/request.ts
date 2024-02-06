@@ -4,6 +4,7 @@ import { ElMessage, ElMessageBox, ElLoading } from 'element-plus';
 import { Session, Local } from '@/utils/storage';
 import { handleRefreshACToken } from './refreshToken';
 import router from '@/router';
+import { useNotificationMsg } from './notificationMsg';
 
 // 配置新建一个 axios 实例
 const service: AxiosInstance = axios.create({
@@ -31,11 +32,17 @@ service.interceptors.request.use(
     config.cancelToken = new axios.CancelToken(cancel => {
       window.httpRequestList.push(cancel); //存储cancle
     });
+
     // 是否开启全屏loading
-    if ((<any>config)?.fullscreenLoading) {
+    if ((<any>config)?.headers.fullscreenLoading) {
       // 第一个需要开启全屏loading的请求
       if (!fullscreenLoadingCounter) {
-        loading = ElLoading.service({ fullscreen: true });
+        loading = ElLoading.service({
+          lock: true,
+          text: 'Loading',
+          fullscreen: true,
+          background: 'rgba(0, 0, 0, 0.7)',
+        });
       }
       fullscreenLoadingCounter++;
     }
@@ -51,11 +58,21 @@ service.interceptors.request.use(
 // 添加响应拦截器
 service.interceptors.response.use(
   (response: AxiosResponse) => {
+    if (response.config.headers.fullscreenLoading) {
+      fullscreenLoadingCounter--;
+      // 全屏loading 响应完成关闭
+      !fullscreenLoadingCounter && loading.close();
+    }
     return response;
   },
   async (error: AxiosError<any>) => {
     const { code, message, response, config } = error;
-    console.log('响应拦截器 ------', error);
+    if (config.headers.fullscreenLoading) {
+      fullscreenLoadingCounter--;
+      // 全屏loading 响应完成关闭
+      !fullscreenLoadingCounter && loading.close();
+    }
+
     if (code === 'ERR_NETWORK' || message === 'Network Error') return ElMessage.error('服务器连接错误!');
     const { status, data } = response!;
 
@@ -66,8 +83,9 @@ service.interceptors.response.use(
       case 401:
         const apiCode = response?.data.code;
         switch (apiCode) {
+          case 40101:
           case 40102:
-            ElMessage.warning(data.message);
+            useNotificationMsg('登录失败', data.message, 'warning');
             break;
           case 40104:
             // 当退出登录接口超时不再从新请求 直接返回登录页
@@ -85,15 +103,32 @@ service.interceptors.response.use(
             return service.request(error.config!);
           case 40105:
             // 该情况为 refresh_token 过期 直接返回登录页
-            ElMessage.error(data.message);
+            useNotificationMsg('身份信息失效', data.message, 'error');
+            // ElMessage.error(data.message);
+            return router.push({ name: 'login' });
+          case 40106:
+            useNotificationMsg('登录失败!', data.message, 'error');
+            // ElMessage.error(data.message);
             return router.push({ name: 'login' });
           default:
-            ElMessage.error(data.message);
+            // ElMessage.error(data.message);
+            useNotificationMsg(data.error || '', data.message, 'error');
+            break;
+        }
+        break;
+      case 403:
+        switch (response?.data.code) {
+          case 40301:
+            useNotificationMsg('权限不足!', data.message, 'error');
+            break;
+          default:
+            useNotificationMsg(data.error || '', data.message, 'error');
             break;
         }
         break;
       default:
-        ElMessage.error(data.message);
+        useNotificationMsg(data.error || '', data.message, 'error');
+        // ElMessage.error(data.message);
         break;
     }
     return Promise.reject(error.response?.data);

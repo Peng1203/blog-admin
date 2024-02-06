@@ -26,7 +26,7 @@
           </el-button>
 
           <!-- 初始化菜单操作 -->
-          <InitMenu />
+          <InitMenu @updateList="handleUpdate" />
         </div>
 
         <Peng-Search
@@ -37,8 +37,8 @@
         />
       </div>
 
+      <!-- defaultExpandAll -->
       <Peng-Table
-        defaultExpandAll
         operationColumn
         :operationColumnBtns="['add', 'edit', 'delete']"
         :isNeedPager="false"

@@ -73,6 +73,9 @@ export function useMenuApi() {
         url: '/menu/init',
         method: Method.POST,
         data: JSON.stringify(data),
+        headers: {
+          fullscreenLoading: true,
+        },
       });
     },
   };

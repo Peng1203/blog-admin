@@ -12,23 +12,34 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useMenuApi } from '@/api/menu';
-
-const { initMenus } = useMenuApi();
+import { useNotificationMsg } from '@/utils/notificationMsg';
 import { allDynamicRoutes } from '@/router/dynamicRoutes';
 
+const { initMenus } = useMenuApi();
+
+const emits = defineEmits(['updateList']);
+
 const handleInitMenus = async () => {
+  const addStatus = await addInitMenu();
+  if (!addStatus) return;
+  emits('updateList');
+};
+
+const addInitMenu = async (): Promise<boolean> => {
   try {
-    const menus = getInitMenuData();
-    console.log(`%c menus ----`, 'color: #fff;background-color: #000;font-size: 18px', menus);
-    const { data: res } = await initMenus<string>(menus);
-    console.log('res ------', res);
+    const params = getInitMenuData();
+    const { data: res } = await initMenus<string>(params);
     const { data, success, message, code } = res;
     if (code !== 20100 || !success) return false;
+    useNotificationMsg(message, data);
+    return true;
   } catch (e) {
     console.log('e', e);
+    return false;
   }
 };
 
+// 处理提交菜单数据
 const getInitMenuData = () => {
   return allDynamicRoutes[0].children.reduce(
     (prev, cur) => {

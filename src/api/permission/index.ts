@@ -66,5 +66,12 @@ export function usePermissionApi() {
         data: params,
       });
     },
+
+    getPermCodeOptions<T = any>(): TransformedResponse<T> {
+      return request({
+        url: '/permission/code/options',
+        method: Method.GET,
+      });
+    },
   };
 }

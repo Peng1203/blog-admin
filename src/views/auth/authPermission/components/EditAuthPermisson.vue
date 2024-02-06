@@ -29,6 +29,9 @@ const props = defineProps({
     type: Object as PropType<PermissionData>,
     require: true,
   },
+  permissionCodeOptions: {
+    type: Array as PropType<OptionItem[]>,
+  },
 });
 const emits = defineEmits(['updateList']);
 
@@ -57,14 +60,12 @@ const editFormState = reactive({
       rules: [{ required: true, trigger: 'blur' }],
     },
     {
-      type: 'input',
+      type: 'select',
       label: '标识CODE',
       prop: 'permissionCode',
       isShow: false,
-      rules: [
-        { required: true, trigger: 'blur' },
-        { min: 2, trigger: 'blur' },
-      ],
+      options: props.permissionCodeOptions,
+      rules: [{ required: true, trigger: 'blur' }],
     },
     {
       type: 'input',

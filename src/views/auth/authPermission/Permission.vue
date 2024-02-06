@@ -22,7 +22,7 @@
           @search="handleSearch"
         />
       </div>
-      <Table
+      <Peng-Table
         defaultExpandAll
         operationColumn
         isFilterShowColumn
@@ -68,13 +68,14 @@
             @click="handleAddPermission(row)"
           />
         </template>
-      </Table>
+      </Peng-Table>
     </el-card>
 
     <!-- 修改权限标识信息 -->
     <EditAuthPermissonDrawer
       ref="editAuthDrawerRef"
       :editRow="editAuthRowInfo"
+      :permissionCodeOptions="permissionCodeOptions"
       @updateList="handleUpdate"
     />
 
@@ -82,6 +83,7 @@
     <AddAuthPermissonDialog
       ref="addAuthDialogRef"
       :parentId="parentId"
+      :permissionCodeOptions="permissionCodeOptions"
       @updateList="handleUpdate"
     />
   </div>
@@ -93,14 +95,14 @@ import { ref, reactive, onMounted, defineAsyncComponent } from 'vue';
 import { usePermissionInfo } from '@/stores/permissionList';
 import { usePermissionApi } from '@/api';
 import { Plus } from '@element-plus/icons-vue';
-import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
+import { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
 import { PermissionData, PermissionListData } from './types';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
 import { resourceMethodOptions } from './';
 
 const permissionStore = usePermissionInfo();
 
-const { getPermissions, delAuthPermission } = usePermissionApi();
+const { getPermissions, delAuthPermission, getPermCodeOptions } = usePermissionApi();
 // 表格参数
 const tableState = reactive({
   loading: false,
@@ -247,10 +249,22 @@ const handleAddPermission = (row?: PermissionData | number) => {
   addAuthDialogRef.value.addAuthPermissonDialogStatus = true;
 };
 
-const Tree = defineAsyncComponent(() => import('./components/PermissionTree.vue'));
+const permissionCodeOptions = ref<OptionItem[]>([]);
+const getPermissionCodeOptions = async () => {
+  try {
+    const { data: res } = await getPermCodeOptions<OptionItem[]>();
+    console.log('res ------', res);
+    const { code, success, data } = res;
+    if (code !== 20000 || !success) return;
+    permissionCodeOptions.value = data;
+  } catch (e) {
+    console.log('e', e);
+  }
+};
 
 onMounted(() => {
   getAuthPermissionTableData();
+  getPermissionCodeOptions();
 });
 </script>
 

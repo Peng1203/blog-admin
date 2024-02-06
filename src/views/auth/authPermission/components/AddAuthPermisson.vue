@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watchEffect } from 'vue';
+import { ref, reactive, watchEffect, PropType } from 'vue';
 import { usePermissionApi } from '@/api';
 import { ElMessage } from 'element-plus';
 import Dialog from '@/components/Dialog';
@@ -28,6 +28,9 @@ const props = defineProps({
   parentId: {
     type: Number,
     default: 0,
+  },
+  permissionCodeOptions: {
+    type: Array as PropType<OptionItem[]>,
   },
 });
 
@@ -53,14 +56,12 @@ const addAuthState = reactive({
       rules: [{ required: true, trigger: 'blur' }],
     },
     {
-      type: 'input',
+      type: 'select',
       label: '标识CODE',
       prop: 'permissionCode',
       isShow: false,
-      rules: [
-        { required: true, trigger: 'blur' },
-        { min: 2, trigger: 'blur' },
-      ],
+      options: props.permissionCodeOptions,
+      rules: [{ required: true, trigger: 'change' }],
     },
     {
       type: 'input',

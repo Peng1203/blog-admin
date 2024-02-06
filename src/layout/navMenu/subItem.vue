@@ -1,6 +1,6 @@
 <!-- 子菜单 -->
 <template>
-  <template v-for="val in chils.filter(menu => menu.meta.noRender !== true)">
+  <template v-for="val in chils">
     <el-sub-menu
       :index="val.path"
       :key="val.path"

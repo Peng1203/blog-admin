@@ -39,10 +39,11 @@ const routerRules: RouteRecordRaw[] = [
         name: 'EditArticle',
         component: () => import('@/views/article/writeArticle'),
         meta: {
-          noRender: true,
           title: '编辑文章',
           orderNum: 0,
-          isHide: false,
+          // isHide: true,
+          icon: 'iconfont icon-weibiaoti--',
+          isHide: true,
           isKeepAlive: false,
         },
       },

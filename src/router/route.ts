@@ -29,8 +29,6 @@ declare module 'vue-router' {
     // roles?: string[]
     icon?: string;
     parentMenuName?: string;
-    /** 不渲染到页面和菜单中 */
-    noRender?: boolean;
   }
 }
 

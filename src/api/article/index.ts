@@ -59,6 +59,9 @@ export function useArticleApi() {
         url: `/article/${authorId}/${articleId}`,
         method: Method.PATCH,
         data: JSON.stringify(data),
+        headers: {
+          fullscreenLoading: true,
+        },
       });
     },
     /**

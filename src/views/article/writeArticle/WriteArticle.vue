@@ -51,7 +51,7 @@
         <component
           v-show="activeStep === 1"
           v-model="articleForm.content"
-          height="calc(100vh - 330px)"
+          height="calc(100vh - 333px)"
           placeholder="请输入文章内容"
           :is="editorMapping[articleForm.contentModel]"
         />
@@ -80,6 +80,7 @@ import InfoForm from './components/InfoForm.vue';
 import { useUserInfo } from '@/stores/userInfo';
 import { useArticleApi } from '@/api';
 import { ElMessage } from 'element-plus';
+import { useNotificationMsg } from '@/utils/notificationMsg';
 
 const { addArticle, updateArticle, getArticleDetailById } = useArticleApi();
 
@@ -171,9 +172,9 @@ const handleAddArticle = async (actionType: 0 | 1) => {
       ['暂存失败!', '暂存成功!'],
       ['发布失败', '发布成功'],
     ][actionType];
-    if (res.code !== 20100) return ElMessage.error(errMsg);
-    ElMessage.success(successMsg);
-
+    if (res.code !== 20100) return useNotificationMsg('', errMsg, 'error');
+    // ElMessage.success(successMsg);
+    useNotificationMsg('', successMsg);
     articleForm.id = res.data.id;
   } catch (e) {
     console.log('e ------', e);
@@ -191,7 +192,8 @@ const handleUpdateArticle = async () => {
     const { data: res } = await updateArticle<ArticleData>(author, id, params);
     const { code, message, success, data } = res;
     if (code !== 20001 && success) return;
-    ElMessage.success(message);
+    // ElMessage.success(message);
+    useNotificationMsg('更新成功', message);
   } catch (e) {
     console.log('e ------', e);
   }
@@ -223,7 +225,11 @@ const getArticleDetail = async () => {
 // 编辑文章初始化操作
 const editArticleInit = () => {
   if (route.name === 'EditArticle') {
-    if (!Number(route.params.aid)) return ElMessage.warning('文章ID参数有误');
+    if (!Number(route.params.aid)) {
+      loadingStatus.value = false;
+      ElMessage.warning('文章ID参数有误');
+      return;
+    }
     getArticleDetail();
   }
 };
@@ -239,7 +245,7 @@ onMounted(() => {
     height: 100%;
     display: flex;
     flex-direction: column;
-    // overflow-y: auto;
+    overflow-y: auto;
     .peng-editor-container {
       flex: 1;
     }

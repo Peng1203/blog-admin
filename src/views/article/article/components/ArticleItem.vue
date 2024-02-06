@@ -25,6 +25,7 @@
         relative
       >
         <el-icon
+          mr10
           pseudo-c-p
           :size="20"
           title="预览"
@@ -35,11 +36,12 @@
         </el-icon>
 
         <el-icon
-          mg0_10
+          mr10
           pseudo-c-p
           :size="20"
           title="编辑"
           color="#6495ED"
+          v-if="userInfoStore.userInfos.id === article.author.id"
           @click="handleClickActionBnt('clickEditBtn')"
         >
           <!-- style="margin: 0 5px" -->
@@ -47,10 +49,12 @@
         </el-icon>
 
         <el-popconfirm
+          mr10
           width="auto"
           icon="DeleteFilled"
           icon-color="#f56c6c"
           :title="`是否删除当前文章 ?`"
+          v-if="userInfoStore.userInfos.id === article.author.id"
           @confirm="handleClickActionBnt('clickDeleteDtn')"
         >
           <template #reference>
@@ -133,7 +137,9 @@
         </div>
 
         <div>
-          <span>{{ statusMapping[article.status] }}</span>
+          <span :style="{ color: statusMapping[article.status][1] }">
+            {{ statusMapping[article.status][0] }}
+          </span>
         </div>
       </div>
 
@@ -164,10 +170,12 @@
 </template>
 
 <script setup lang="tsx">
-import { ref } from 'vue';
-import { ArticleData, ArticleItemProps, IconHashMappingItem, ArticleStatusEnum } from '../';
+import { ArticleItemProps, IconHashMappingItem } from '../';
+import { useUserInfo } from '@/stores/userInfo';
 import Icon from '@/components/SymbolIcon/index.vue';
 import { Picture as IconPicture, View, Delete, Edit } from '@element-plus/icons-vue';
+
+const userInfoStore = useUserInfo();
 
 const emits = defineEmits(['clickViewBtn', 'clickEditBtn', 'clickDeleteDtn']);
 
@@ -175,12 +183,12 @@ const props = defineProps<ArticleItemProps>();
 
 // 文章状态映射
 const statusMapping = {
-  1: '已发布',
-  2: '私密',
-  3: '草稿箱',
-  4: '已删除',
-  5: '待审核',
-  6: '已拒绝',
+  1: ['已发布', '#00FF00'],
+  2: ['私密', '#0000FF'],
+  3: ['草稿箱', ' #FFA500'],
+  4: ['已删除', '#FF0000'],
+  5: ['待审核', '#808080'],
+  6: ['已拒绝', '#800080'],
 };
 
 // 文章类型映射

@@ -1,6 +1,6 @@
 <template>
   <Drawer
-    :title="'修改用户信息'"
+    :title="'修改权限标识信息'"
     v-model="editDrawerStatus"
     @clickConfirm="handleSaveEdit"
   >

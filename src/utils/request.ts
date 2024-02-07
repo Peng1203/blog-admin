@@ -1,6 +1,6 @@
 import qs from 'qs';
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
-import { ElMessage, ElMessageBox, ElLoading } from 'element-plus';
+import { ElLoading } from 'element-plus';
 import { Session, Local } from '@/utils/storage';
 import { handleRefreshACToken } from './refreshToken';
 import router from '@/router';
@@ -10,7 +10,7 @@ import { useNotificationMsg } from './notificationMsg';
 const service: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
-  timeout: 5000,
+  timeout: 60000,
   headers: { 'Content-Type': 'application/json' },
   paramsSerializer: {
     serialize(params) {
@@ -73,12 +73,17 @@ service.interceptors.response.use(
       !fullscreenLoadingCounter && loading.close();
     }
 
-    if (code === 'ERR_NETWORK' || message === 'Network Error') return ElMessage.error('服务器连接错误!');
+    // 请求超时 取消请求
+    if (code === 'ECONNABORTED') return useNotificationMsg('', '请求超时', 'error');
+    else if (code === 'ERR_NETWORK' || message === 'Network Error')
+      return useNotificationMsg('', '服务器连接错误!', 'error', 2);
+
     const { status, data } = response!;
 
     switch (status) {
       case 400:
-        ElMessage.error(data.message);
+        // ElMessage.error(data.message);
+        useNotificationMsg('参数有误', data.message, 'error', 2);
         break;
       case 401:
         const apiCode = response?.data.code;

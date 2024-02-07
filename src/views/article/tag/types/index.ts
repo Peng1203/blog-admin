@@ -6,7 +6,7 @@ export interface TagData {
   icon: string;
   createTime: string;
   updateTime: string;
-  articles?: any[];
+  articles?: number;
 }
 
 export type TagListData = ListApiBaseResponse<TagData>;

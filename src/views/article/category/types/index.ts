@@ -5,7 +5,7 @@ export interface CategoryData {
   categoryName: string;
   createTime: string;
   updateTime: string;
-  articles?: any[];
+  articles?: number;
 }
 
 export type CategoryListDate = ListApiBaseResponse<CategoryData>;

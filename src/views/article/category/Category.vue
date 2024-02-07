@@ -48,11 +48,6 @@
             />
           </div>
         </template>
-
-        <!-- 相关文章数 -->
-        <template #articleSlot="{ row, prop }">
-          {{ row[prop].length || 0 }}
-        </template>
       </Table>
     </el-card>
 
@@ -103,7 +98,6 @@ const tableState = reactive({
       prop: 'articles',
       width: 130,
       align: 'center',
-      slotName: 'articleSlot',
     },
     { label: '更新时间', prop: 'updateTime', minWidth: 200, sort: true },
     { label: '创建时间', prop: 'createTime', minWidth: 200, sort: true },

@@ -35,10 +35,6 @@
           </TransitionGroup>
         </div>
 
-        <el-backtop
-          :right="100"
-          :bottom="100"
-        />
         <!-- 加载完毕 -->
         <p
           flex-c-c
@@ -190,20 +186,7 @@ const PreviewArticleDialog = defineAsyncComponent(() => import('./components/Pre
 const handlePreviewArticle = async (row: ArticleData) => {
   previewRow.value = row;
   previewDialogStatus.value = true;
-  // await previewDialogRef.value.getArticleDetailById(aid);
-  // setTimeout(() => {
-  //   previewDialogRef.value.previewDialogStatus = true;
-  // }, 500);
 };
-
-// 根据 登录用户 判断 是否展示编辑按钮
-const isShowEdit = (aId: number): boolean => userInfoStore.userInfos.id === aId;
-
-const isShowDelete = (aId: number): boolean => userInfoStore.userInfos.id === aId || userInfoStore.userInfos.id === 1;
-// 根据 登录用户 判断是否展示删除按钮 admin 默认可以删除任何
-// const isShowEdit = computed<boolean>(
-//   (aId: number) => userStore.userInfos.id === aId
-// )
 
 onMounted(() => {
   getArticleDataList();

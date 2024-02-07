@@ -224,7 +224,12 @@ watch(
 
 const optionsInit = async () => {
   filterState.loading = true;
-  await Promise.all([articleInfoStore.getCategoryData(), articleInfoStore.getTagData(), usersStore.getUserData()]);
+  await Promise.all([
+    articleInfoStore.getCategoryData(),
+    articleInfoStore.getTagData(),
+    usersStore.getUserData(),
+  ]).catch(() => (filterState.loading = false));
+
   nextTick(() => {
     filterState.categoryList = [...filterState.categoryList, ...articleInfoStore.categoryOption];
     filterState.tagList = [...filterState.tagList, ...articleInfoStore.tagOption];

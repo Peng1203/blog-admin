@@ -22,6 +22,8 @@
       autoCrop
       :img="img"
     />
+    <button @click="handlePostMsg">send</button>
+    {{ resMsg }}
   </div>
 </template>
 
@@ -29,6 +31,39 @@
 import { ref, reactive } from 'vue';
 import 'vue-cropper/dist/index.css';
 import Cropper from '@/components/Cropper';
+import { useChatApi } from '@/api/chat';
+
+const { postChatContent } = useChatApi();
+
+const resMsg = ref<string>('121');
+
+const inputStr = ref<string>('你好');
+
+const handlePostMsg = async () => {
+  // const { data: res } = await postChatContent({
+  //   content: inputStr.value,
+  // });
+  // console.log('res ------', JSON.parse(`{${res}}`));
+
+  fetch('http://localhost:3000/openai/chat', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ content: inputStr.value }),
+  }).then(async res => {
+    const reader = res.body.getReader();
+    const textDecoder = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const data = textDecoder.decode(value);
+      console.log('done ------', done);
+      console.log('data ------', data);
+    }
+  });
+};
 
 const img = ref();
 

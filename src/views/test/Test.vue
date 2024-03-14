@@ -22,46 +22,76 @@
       autoCrop
       :img="img"
     />
-    <button @click="handlePostMsg">send</button>
-    {{ resMsg }}
+    <div mt400>
+      <Preview
+        height="600px"
+        :catalogVisible="false"
+        v-model="responseMsg"
+      />
+
+      <div flex-sb-c>
+        <textarea v-model="inputStr"></textarea>
+        <el-button @click="handlePostMsg">send</el-button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts" name="Test">
 import { ref, reactive } from 'vue';
 import 'vue-cropper/dist/index.css';
+import { Preview } from '@/components/MarkdownEditor';
 import Cropper from '@/components/Cropper';
 import { useChatApi } from '@/api/chat';
+
+import { MdPreview } from 'md-editor-v3';
 
 const { postChatContent } = useChatApi();
 
 const resMsg = ref<string>('121');
 
 const inputStr = ref<string>('你好');
+const responseMsg = ref<string>('');
 
 const handlePostMsg = async () => {
+  responseMsg.value = '';
   // const { data: res } = await postChatContent({
   //   content: inputStr.value,
   // });
   // console.log('res ------', JSON.parse(`{${res}}`));
-
-  fetch('http://localhost:3000/openai/chat', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ content: inputStr.value }),
-  }).then(async res => {
+  const params = {
+    messages: [{ role: 'user', content: inputStr.value }],
+  };
+  postChatContent(params, async (res: Response) => {
     const reader = res.body.getReader();
     const textDecoder = new TextDecoder();
+
+    // 响应信息对象
+    const responseMessage = {
+      role: '',
+      content: '',
+    };
 
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
       const data = textDecoder.decode(value);
-      console.log('done ------', done);
-      console.log('data ------', data);
+      const jsonData = data
+        .split('\n')
+        .filter(item => item !== '')
+        .map(item => JSON.parse(item));
+
+      jsonData.forEach(item => {
+        const { role, content } = item.choices[0].delta;
+        role && (responseMessage.role = role);
+        if (!content) return;
+        responseMessage.content += content;
+        responseMsg.value += content;
+      });
     }
+
+    console.log('responseMessage ------', responseMessage);
+    inputStr.value = '';
   });
 };
 

@@ -11,7 +11,10 @@
       v-bind="$attrs"
     />
 
-    <el-aside class="catalog-container">
+    <el-aside
+      v-if="catalogVisible"
+      class="catalog-container"
+    >
       <div
         flex-c-c
         class="catalog-headend"
@@ -41,8 +44,9 @@ const emits = defineEmits(['catalogClick']);
 
 const model = defineModel({ type: String });
 
-const props = withDefaults(defineProps<PreviewAttibute>(), {
+withDefaults(defineProps<PreviewAttibute>(), {
   height: '400px',
+  catalogVisible: true,
 });
 
 const state = reactive({

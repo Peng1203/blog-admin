@@ -21,4 +21,5 @@ export interface MarkdownEditorAttibute {
 
 export interface PreviewAttibute {
   height?: string;
+  catalogVisible?: boolean;
 }

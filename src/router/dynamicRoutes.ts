@@ -5,6 +5,7 @@ import articleRouterRules from './modules/articleRouter';
 import resourceRouterRules from './modules/resourceRouter';
 import testRouterRules from './modules/testRouter';
 import systemConfigRouterRules from './modules/systemConfigRouter';
+import chatRouterRules from './modules/chatRouter';
 /**
  * 需要权限的路由表
  * @author Peng
@@ -47,6 +48,8 @@ export const allDynamicRoutes: Array<RouteRecordRaw> = [
       ...testRouterRules,
       // 系统设置
       ...systemConfigRouterRules,
+      // ChatGPT
+      ...chatRouterRules,
       // 个人中心
       {
         path: '/personal',

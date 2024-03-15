@@ -6,6 +6,62 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "136676",
+      "name": "回车",
+      "font_class": "huiche",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "9974864",
+      "name": "回车提交",
+      "font_class": "huichetijiao",
+      "unicode": "e724",
+      "unicode_decimal": 59172
+    },
+    {
+      "icon_id": "36677847",
+      "name": "Chatgpt 4",
+      "font_class": "a-Chatgpt4",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "37305472",
+      "name": "ChatGPT",
+      "font_class": "ChatGPT",
+      "unicode": "e6a5",
+      "unicode_decimal": 59045
+    },
+    {
+      "icon_id": "38106861",
+      "name": "chatGPT",
+      "font_class": "chatGPT",
+      "unicode": "e6e2",
+      "unicode_decimal": 59106
+    },
+    {
+      "icon_id": "39053232",
+      "name": "Chatgpt",
+      "font_class": "Chatgpt",
+      "unicode": "e801",
+      "unicode_decimal": 59393
+    },
+    {
+      "icon_id": "32911653",
+      "name": "初始化",
+      "font_class": "chushihua",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "11372649",
+      "name": "测试",
+      "font_class": "ceshi",
+      "unicode": "e8ad",
+      "unicode_decimal": 59565
+    },
+    {
       "icon_id": "996990",
       "name": "置顶",
       "font_class": "zhiding",

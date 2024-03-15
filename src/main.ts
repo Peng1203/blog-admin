@@ -9,8 +9,8 @@ import ElementPlus from 'element-plus';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 // import locale from 'element-plus/lib/locale/lang/zh-cn'
 import ComponentHashMap from '@/utils/registerGlobalComponent';
-// import '@/assets/icons/iconfont.css'
-// import '@/assets/icons/iconfont.js'
+import '@/assets/icons/iconfont.css';
+import '@/assets/icons/iconfont.js';
 import 'element-plus/dist/index.css';
 import '@/theme/index.scss';
 import '@/assets/global.css';

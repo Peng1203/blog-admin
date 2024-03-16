@@ -81,9 +81,13 @@
             type="info"
             class="send-btn"
             :readonly="loading"
+            :loading="loading"
             @click.stop="handleSubmitForm"
           >
-            <i class="iconfont icon-huichetijiao" />
+            <i
+              v-if="!loading"
+              class="iconfont icon-huichetijiao"
+            />
           </el-button>
         </el-form-item>
       </el-form>
@@ -101,6 +105,13 @@ import Icon from '@/components/SymbolIcon/index.vue';
 import { useChatApi } from '@/api/chat';
 import { dateTimeFormat } from '@/utils/moment';
 import 'md-editor-v3/lib/preview.css';
+import { useNotificationMsg } from '@/utils/notificationMsg';
+import { handleRefreshACToken } from '@/utils/refreshToken';
+import { useChatCPTStore } from '@/stores/chatGPT';
+import { storeToRefs } from 'pinia';
+
+const chatGPTStore = useChatCPTStore();
+const { chatList } = storeToRefs(chatGPTStore);
 
 const { userInfos } = useUserInfo();
 const { postChatContent } = useChatApi();
@@ -114,7 +125,7 @@ const MAX_MESSAGE_TO_SEND = 5;
 const loading = ref<boolean>(false);
 
 // 对话消息列表
-const chatList = ref<ChatItem[]>([]);
+// const chatList = ref<ChatItem[]>([]);
 
 const chatListConScrollRef = ref<InstanceType<typeof ElScrollbar>>(null);
 
@@ -150,6 +161,8 @@ const handlePostMessage = () => {
   form.sendMessage = '';
 
   postChatContent(params, async (res: Response) => {
+    if (res.status !== 201) return handleErrorResponse(res);
+
     const reader = res.body.getReader();
     const textDecoder = new TextDecoder();
 
@@ -168,6 +181,12 @@ const handlePostMessage = () => {
       const { done, value } = await reader.read();
       if (done) break;
       const data = textDecoder.decode(value);
+
+      // const jsonData = data
+      //   .split('\n')
+      //   .filter(item => item !== '')
+      //   .map(valStr => JSON.parse(valStr.replace('data: ', '')));
+
       const jsonData = data
         .split('\n')
         .filter(item => item !== '')
@@ -192,7 +211,20 @@ const scrollToBottom = () => {
   });
 };
 
-onMounted(() => {});
+const handleErrorResponse = async (res: Response) => {
+  if (res.status === 401) {
+    useNotificationMsg(res.statusText, '身份信息失效, 正在尝试重新认证...', 'error');
+    const refreshIsSuccess = await handleRefreshACToken();
+    if (!refreshIsSuccess) return;
+    useNotificationMsg('成功', '身份重新认证成功');
+
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  scrollToBottom();
+});
 </script>
 
 <style scoped lang="scss">

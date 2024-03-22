@@ -9,6 +9,7 @@ import { useTagsViewRoutes } from '@/stores/tagsViewRoutes';
 import { NextLoading } from '@/utils/loading';
 // import Cookies from 'js-cookie';
 import { MenuData } from '@/views/auth/menu';
+import { notFoundAndNoPower } from './route';
 
 /**
  * 处理 登录用户的路由表
@@ -41,11 +42,14 @@ export async function handleUserAuthRouters(): Promise<any> {
 
     // 返回第一个跳转后第一个展示的菜单展示
     NextLoading.done();
+    notFoundAndNoPower.forEach((route: any) => router.addRoute(route));
     return (allDynamicRoutes[0].children as any)[0].name;
   } else {
     return generateUserMenu(userInfoStore.menus);
   }
 }
+
+async function generateAdminMenu() {}
 
 /**
  * 处理非 admin 用户菜单

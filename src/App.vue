@@ -14,7 +14,17 @@
 </template>
 
 <script setup lang="ts" name="app">
-import { defineAsyncComponent, computed, ref, onBeforeMount, onMounted, onUnmounted, nextTick, watch, provide } from 'vue';
+import {
+  defineAsyncComponent,
+  computed,
+  ref,
+  onBeforeMount,
+  onMounted,
+  onUnmounted,
+  nextTick,
+  watch,
+  provide,
+} from 'vue';
 import { useRoute } from 'vue-router';
 import zhCn from 'element-plus/es/locale/lang/zh-cn';
 import { storeToRefs } from 'pinia';
@@ -64,8 +74,6 @@ onBeforeMount(() => {
   // 在 beforeunload 事件中，无法直接判断是刷新窗口还是关闭窗口，因为这两个操作都会触发 beforeunload 事件。不过，可以通过一些技巧来区分它们。
   // 当用户关闭窗口时，beforeunload 事件会在 unload 事件之前触发，而在刷新窗口时，beforeunload 事件会在 unload 事件之后触发。因此，可以在 beforeunload 事件中记录当前时间戳，然后在 unload 事件中再次记录时间戳，并计算两个时间戳之间的差值。如果差值小于等于某个阈值（例如 100ms），就可以认为是关闭窗口了；否则就是刷新窗口
 
-  var beginTime = 0; //执行onbeforeunload的开始时间
-  var differTime = 0; //时间差
   // window.onunload = async function () {
   // 	console.log('onunload 执行-----')
   // 	differTime = new Date().getTime() - beginTime
@@ -93,22 +101,11 @@ onBeforeMount(() => {
   });
 
   window.addEventListener('unload', async function () {
-    differTime = new Date().getTime() - beginTime;
-    if (differTime <= 5) {
-      // 刷新时有概率执行
-      // axios.get('http://127.0.0.1:3000/index?info=关闭')
-      if (Session.get('token')) {
-        Session.clear();
-        await userInfoStores.userLogout();
-      }
-    } else {
-      console.log('浏览器刷新');
-      // axios.get('http://127.0.0.1:3000/index?info=刷新')
-    }
+    console.log(`%c unload ----`, 'color: #fff;background-color: #000;font-size: 18px');
   });
 
   window.addEventListener('beforeunload', function () {
-    beginTime = new Date().getTime();
+    console.log(`%c beforeunload ----`, 'color: #fff;background-color: #000;font-size: 18px');
   });
 
   // let unloadTime: any

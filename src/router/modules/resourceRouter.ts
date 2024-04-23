@@ -5,7 +5,7 @@ const routerRules: RouteRecordRaw[] = [
   {
     path: '/resource',
     name: 'Resource',
-    redirect: { name: '' },
+    component: () => import('@/views/resource/index.vue'),
     meta: {
       title: '资源管理',
       icon: 'iconfont icon-ziyuan-resources',
@@ -13,20 +13,6 @@ const routerRules: RouteRecordRaw[] = [
       orderNum: 5,
       isHide: false,
     },
-    children: [
-      {
-        path: '/resource/netdisk',
-        name: 'Netdisk',
-        component: () => import('@/views/resource/netdisk'),
-        meta: {
-          title: '网盘',
-          icon: 'iconfont icon-wangpan',
-          isKeepAlive: false,
-          orderNum: 1,
-          isHide: false,
-        },
-      },
-    ],
   },
 ];
 

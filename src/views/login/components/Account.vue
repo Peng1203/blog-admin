@@ -144,7 +144,7 @@ const loginState = reactive({
 onMounted(() => {
   getLoginCaptcha();
 });
-
+console.log('121 ------', 121);
 const captchaInputRef = ref<RefType>(null);
 
 // 刷新 定时器

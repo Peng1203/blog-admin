@@ -4,14 +4,14 @@ import { LoginParams } from './params';
 import { Local } from '@/utils/storage';
 import { Method } from '../types';
 
-export function useLoginApi() {
+export function useAuthApi() {
   return {
     /**
      * @method 获取验证码
      */
     getCaptcha<T>(): RawResponse<T> {
       return request({
-        url: '/login/captcha',
+        url: '/login/v2/captcha',
         method: Method.GET,
       });
     },
@@ -53,6 +53,15 @@ export function useLoginApi() {
     getUserMenu<T>(id: number): TransformedResponse<T> {
       return request({
         url: `/auth/menus/${id}`,
+        method: Method.GET,
+      });
+    },
+    /**
+     * @method 获取用户权限标识
+     */
+    getUserPermission<T>(id: number): TransformedResponse<T> {
+      return request({
+        url: `/auth/permissions/${id}`,
         method: Method.GET,
       });
     },

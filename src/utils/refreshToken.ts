@@ -1,7 +1,7 @@
-import { useLoginApi } from '@/api';
+import { useAuthApi } from '@/api';
 import { Local, Session } from './storage';
 
-const { refreshToken } = useLoginApi();
+const { refreshToken } = useAuthApi();
 
 // 定义一个 promise 变量
 let promise: null | Promise<any> = null;

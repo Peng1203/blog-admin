@@ -103,12 +103,12 @@ import { handleUserAuthRouters } from '@/router/handleAuthRouter';
 import { Local, Session } from '@/utils/storage';
 import { formatAxis } from '@/utils/formatTime';
 import { NextLoading } from '@/utils/loading';
-import { useLoginApi } from '@/api';
+import { useAuthApi } from '@/api';
 import type { LoginData } from '../';
 import { useUserInfo } from '@/stores/userInfo';
 import { passwordEncryption } from '@/utils/password';
 
-const { getCaptcha, login } = useLoginApi();
+const { getCaptcha, login } = useAuthApi();
 
 const router = useRouter();
 const userInfoStore = useUserInfo();
@@ -133,7 +133,7 @@ const loginState = reactive({
     ],
     captcha: [
       { required: true, message: '验证码不能为空', trigger: 'blur' },
-      { min: 4, max: 4, message: '验证码长度为 4 位', trigger: 'blur' },
+      { min: 1, max: 4, message: '验证码长度为 1 ~ 4 位', trigger: 'blur' },
     ],
   }),
   loading: {
@@ -144,7 +144,6 @@ const loginState = reactive({
 onMounted(() => {
   getLoginCaptcha();
 });
-console.log('121 ------', 121);
 const captchaInputRef = ref<RefType>(null);
 
 // 刷新 定时器
@@ -172,7 +171,7 @@ const getLoginCaptcha = async (): Promise<void> => {
 };
 
 // 登录 获取用户信息
-const getLoginUserInfo = async (): Promise<LoginData | undefined> => {
+const getLoginUserInfo = async (): Promise<LoginData> => {
   try {
     const params = {
       ...loginState.loginForm,
@@ -184,7 +183,7 @@ const getLoginUserInfo = async (): Promise<LoginData | undefined> => {
     return data;
   } catch (error: any) {
     if (error.code === 40101) handleRefreshCaptcha();
-    throw error;
+    console.log('error ------', error);
   }
 };
 
@@ -195,13 +194,19 @@ const handleUserLogin = async () => {
     await loginFormRef.value.validate();
     loginState.loading.signIn = true;
     // 调用后端验证码校验接口
-    const { user, tokens } = (await getLoginUserInfo()) as LoginData;
+    const { user, tokens, clientInfo } = await getLoginUserInfo();
     if (!user || !tokens) return;
     Local.set('userInfo', user);
+    Local.set('clientInfo', clientInfo);
     Local.setRFToken(tokens.refresh_token);
     Session.setACToken(tokens.access_token);
 
-    if (user.userName !== 'admin' && user.id !== 1) await userInfoStore.getMenus();
+    // 获取角色持有菜单
+    if (user.userName !== 'admin' && user.id !== 1) {
+      await userInfoStore.getMenus();
+      await userInfoStore.getPermissions();
+    }
+    // 获取角色持有的权限标识
 
     // 处理登录用户角色的路由表
     const showPageName = await handleUserAuthRouters();

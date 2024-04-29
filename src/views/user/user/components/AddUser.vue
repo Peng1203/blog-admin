@@ -24,7 +24,7 @@ import Form, { FormItem } from '@/components/Form';
 import { passwordStrengthLevelDetection } from '@/utils/pwd';
 import { UserData, AddProps, AddEditUserType } from '../types';
 import { UploadRequestOptions } from 'element-plus';
-import { passwordEncryption } from '@/utils/password';
+import { passwordEncryption } from '@/utils/encryption';
 
 const props = defineProps<AddProps>();
 

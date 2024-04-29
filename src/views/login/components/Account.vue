@@ -49,13 +49,14 @@
       class="login-animation3"
     >
       <el-col :span="15">
+        <!-- placeholder="验证码 (不区分大小写)" -->
         <el-input
           text
           clearable
           maxlength="4"
           autocomplete="off"
           ref="captchaInputRef"
-          placeholder="验证码 (不区分大小写)"
+          placeholder=""
           v-model.trim="loginState.loginForm.captcha"
           @keyup.enter="handleUserLogin"
         >
@@ -106,7 +107,7 @@ import { NextLoading } from '@/utils/loading';
 import { useAuthApi } from '@/api';
 import type { LoginData } from '../';
 import { useUserInfo } from '@/stores/userInfo';
-import { passwordEncryption } from '@/utils/password';
+import { passwordEncryption } from '@/utils/encryption';
 
 const { getCaptcha, login } = useAuthApi();
 

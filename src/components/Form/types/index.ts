@@ -62,7 +62,7 @@ export interface BaseFormItem<T = any> {
   // type: string // slot input select
   type: FormItemEnum; // slot input select
   label: string;
-  prop: keyof T | T;
+  prop: keyof T | '';
   size?: string;
   placeholder?: string;
   labelItemW?: string | number;

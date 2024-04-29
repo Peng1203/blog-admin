@@ -2,17 +2,20 @@
   <div class="personal layout-pd">
     <el-row>
       <!-- 个人信息 -->
-      <el-col :xs="24" :sm="16">
-        <el-card shadow="hover" header="个人信息">
+      <el-col
+        :xs="24"
+        :sm="16"
+      >
+        <el-card
+          shadow="hover"
+          header="个人信息"
+        >
           <!-- 暂未用上 -->
-          <div class="user-info-skeleton-container flex-sb-c" v-if="loading">
-            <el-skeleton
-              style="
-                --el-skeleton-circle-size: 140px;
-                width: auto;
-                margin-right: 10px;
-              "
-            >
+          <div
+            class="user-info-skeleton-container flex-sb-c"
+            v-if="loading"
+          >
+            <el-skeleton style="--el-skeleton-circle-size: 140px; width: auto; margin-right: 10px">
               <template #template>
                 <el-skeleton-item variant="circle" />
               </template>
@@ -20,20 +23,11 @@
             <el-skeleton />
           </div>
 
-          <div class="personal-user" v-else>
+          <div
+            class="personal-user"
+            v-else
+          >
             <div class="personal-user-left">
-              <el-upload
-                class="avatar-uploader"
-                :show-file-list="false"
-                :before-upload="beforeAvatarUpload"
-                :http-request="handleUploadUserAvatar"
-                :on-success="handleAvatarSuccess"
-              >
-                <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-                <el-icon v-else class="avatar-uploader-icon">
-                  <Plus />
-                </el-icon>
-              </el-upload>
               <!-- <el-upload
                 class="h100 personal-user-left-upload"
                 action="https://jsonplaceholder.typicode.com/posts/"
@@ -45,52 +39,85 @@
             </div>
             <div class="personal-user-right">
               <el-row>
-                <el-col :span="24" class="personal-title mb18">
+                <el-col
+                  :span="24"
+                  class="personal-title mb18"
+                >
                   {{ currentTime }}，
-                  {{ userInfoStores.userInfos.userName }}
+                  {{ userInfos.nickName || userInfos.userName }}
                   ，生活变的再糟糕，也不妨碍我变得更好！
                 </el-col>
                 <el-col :span="24">
                   <el-row>
-                    <el-col :xs="24" :sm="8" class="personal-item mb6">
+                    <el-col
+                      :xs="24"
+                      :sm="8"
+                      class="personal-item mb6"
+                    >
                       <div class="personal-item-label">昵称：</div>
                       <div class="personal-item-value">
-                        {{ userInfoStores.userInfos.userName }}
+                        {{ userInfos.nickName || userInfos.userName }}
                       </div>
                     </el-col>
-                    <el-col :xs="24" :sm="16" class="personal-item mb6">
+                    <el-col
+                      :xs="24"
+                      :sm="16"
+                      class="personal-item mb6"
+                    >
                       <div class="personal-item-label">身份：</div>
                       <div class="personal-item-value">
-                        {{ userInfoStores.userInfos.roleName }}
+                        <el-tag
+                          ml5
+                          size="small"
+                          :key="role.id"
+                          v-for="role of userInfos.roles"
+                        >
+                          {{ role.roleName }}
+                        </el-tag>
                       </div>
                     </el-col>
                   </el-row>
                 </el-col>
                 <el-col :span="24">
                   <el-row>
-                    <el-col :xs="24" :sm="8" class="personal-item mb6">
+                    <el-col
+                      :xs="24"
+                      :sm="8"
+                      class="personal-item mb6"
+                    >
                       <div class="personal-item-label">登录IP：</div>
-                      <div class="personal-item-value">{{ clientInfo.ip }}</div>
+                      <!-- <div class="personal-item-value">{{ clientInfo.ip }}</div> -->
+                      <div class="personal-item-value">{{ '--' }}</div>
                     </el-col>
-                    <el-col :xs="24" :sm="16" class="personal-item mb6">
+                    <el-col
+                      :xs="24"
+                      :sm="16"
+                      class="personal-item mb6"
+                    >
                       <div class="personal-item-label">登录时间：</div>
                       <div class="personal-item-value">
-                        {{ clientInfo.loginTime }}
+                        {{ '--' }}
                       </div>
                     </el-col>
                   </el-row>
                 </el-col>
                 <el-col :span="24">
                   <el-row>
-                    <el-col :xs="24" :sm="8" class="personal-item mb6">
+                    <el-col
+                      :xs="24"
+                      :sm="8"
+                      class="personal-item mb6"
+                    >
                       <div class="personal-item-label">浏览器信息：</div>
                       <div class="personal-item-value">
-                        {{
-                          `${clientInfo.brower.name} ${clientInfo.brower.version}`
-                        }}
+                        {{ `${clientInfo.browser} ${clientInfo.version}` }}
                       </div>
                     </el-col>
-                    <el-col :xs="24" :sm="16" class="personal-item mb6">
+                    <el-col
+                      :xs="24"
+                      :sm="16"
+                      class="personal-item mb6"
+                    >
                       <div class="personal-item-label">操作系统：</div>
                       <div class="personal-item-value">
                         {{ clientInfo.os }}
@@ -105,28 +132,17 @@
       </el-col>
 
       <!-- 消息通知 -->
-      <el-col :xs="24" :sm="8" class="pl15 personal-info">
+      <el-col
+        :xs="24"
+        :sm="8"
+        class="pl15 personal-info"
+      >
         <el-card shadow="hover">
           <template #header>
             <span>消息通知</span>
             <span class="personal-info-more">更多</span>
           </template>
-          <div class="personal-info-box">
-            <ul class="personal-info-ul">
-              <li
-                v-for="(v, k) in state.newsInfoList"
-                :key="k"
-                class="personal-info-li"
-              >
-                <a
-                  :href="v.link"
-                  target="_block"
-                  class="personal-info-li-title"
-                  >{{ v.title }}</a
-                >
-              </li>
-            </ul>
-          </div>
+          <div class="personal-info-box"></div>
         </el-card>
       </el-col>
 
@@ -161,10 +177,17 @@
 
       <!-- 更新信息 -->
       <el-col :span="24">
-        <el-card shadow="hover" class="mt15 personal-edit" header="更新信息">
+        <el-card
+          shadow="hover"
+          class="mt15 personal-edit"
+          header="更新信息"
+        >
           <div class="personal-edit-title">基本信息</div>
           <!-- 表单信息 -->
-          <el-skeleton :loading="loading" animated>
+          <el-skeleton
+            :loading="loading"
+            animated
+          >
             <template #template>
               <el-skeleton-item
                 variant="p"
@@ -189,11 +212,14 @@
                 :gutter="35"
                 :labelW="80"
                 :labelP="'right'"
-                :formData="state.userInfoForm"
-                :formItemList="state.userInfoFormItems"
+                v-model="state.userInfoForm"
+                :formItems="state.userInfoFormItems"
               >
                 <template #updata>
-                  <el-button type="primary" @click="handleUpdatePersonalInfo">
+                  <el-button
+                    type="primary"
+                    @click="handleUpdatePersonalInfo"
+                  >
                     <el-icon>
                       <ele-Position />
                     </el-icon>
@@ -209,30 +235,32 @@
             <div class="personal-edit-safe-item">
               <div class="personal-edit-safe-item-left">
                 <div class="personal-edit-safe-item-left-label">账户密码</div>
-                <div class="personal-edit-safe-item-left-value">
-                  当前密码强度：强
-                </div>
+                <div class="personal-edit-safe-item-left-value">当前密码强度：强</div>
               </div>
               <div class="personal-edit-safe-item-right">
                 <el-button
                   text
                   type="primary"
                   @click="changePwdState.dialogState = true"
-                  >立即修改</el-button
                 >
+                  立即修改
+                </el-button>
               </div>
             </div>
           </div>
-          <div class="personal-edit-safe-box">
+          <!-- <div class="personal-edit-safe-box">
             <div class="personal-edit-safe-item">
               <div class="personal-edit-safe-item-left">
                 <div class="personal-edit-safe-item-left-label">密保手机</div>
-                <div class="personal-edit-safe-item-left-value">
-                  已绑定手机：132****4108
-                </div>
+                <div class="personal-edit-safe-item-left-value">已绑定手机：132****4108</div>
               </div>
               <div class="personal-edit-safe-item-right">
-                <el-button text type="primary">立即修改</el-button>
+                <el-button
+                  text
+                  type="primary"
+                >
+                  立即修改
+                </el-button>
               </div>
             </div>
           </div>
@@ -240,12 +268,15 @@
             <div class="personal-edit-safe-item">
               <div class="personal-edit-safe-item-left">
                 <div class="personal-edit-safe-item-left-label">密保问题</div>
-                <div class="personal-edit-safe-item-left-value">
-                  已设置密保问题，账号安全大幅度提升
-                </div>
+                <div class="personal-edit-safe-item-left-value">已设置密保问题，账号安全大幅度提升</div>
               </div>
               <div class="personal-edit-safe-item-right">
-                <el-button text type="primary">立即设置</el-button>
+                <el-button
+                  text
+                  type="primary"
+                >
+                  立即设置
+                </el-button>
               </div>
             </div>
           </div>
@@ -253,15 +284,18 @@
             <div class="personal-edit-safe-item">
               <div class="personal-edit-safe-item-left">
                 <div class="personal-edit-safe-item-left-label">绑定QQ</div>
-                <div class="personal-edit-safe-item-left-value">
-                  已绑定QQ：110****566
-                </div>
+                <div class="personal-edit-safe-item-left-value">已绑定QQ：110****566</div>
               </div>
               <div class="personal-edit-safe-item-right">
-                <el-button text type="primary">立即设置</el-button>
+                <el-button
+                  text
+                  type="primary"
+                >
+                  立即设置
+                </el-button>
               </div>
             </div>
-          </div>
+          </div> -->
         </el-card>
       </el-col>
     </el-row>
@@ -275,18 +309,24 @@
         <Peng-Form
           labelW="150px"
           ref="changePwdFormRef"
-          :formData="changePwdState.dataForm"
-          :formItemList="changePwdState.formItems"
-        >
-        </Peng-Form>
+          v-model="changePwdState.dataForm"
+          :formItems="changePwdState.formItems"
+        />
       </template>
 
       <!-- 操作 -->
       <template #footer>
-        <el-button size="default" @click="changePwdState.dialogState = false">
+        <el-button
+          size="default"
+          @click="changePwdState.dialogState = false"
+        >
           取 消
         </el-button>
-        <el-button type="primary" size="default" @click="handleChangePwd">
+        <el-button
+          type="primary"
+          size="default"
+          @click="handleChangePwd"
+        >
           确 认
         </el-button>
       </template>
@@ -295,51 +335,30 @@
 </template>
 
 <script setup lang="ts" name="personal">
-import { ref, reactive, computed, onMounted, watch } from 'vue'
-import { formatAxis } from '@/utils/formatTime'
-import { newsInfoList, recommendList } from './mock'
-import { Plus } from '@element-plus/icons-vue'
-import { ElMessage, UploadProps } from 'element-plus'
-import { useUserApi } from '@/api/user'
-import { useUserInfo } from '@/stores/userInfo'
-import { Session } from '@/utils/storage'
-import { useUserAuthList } from '@/stores/userAuthList'
-import { storeToRefs } from 'pinia'
-import { AxiosResponse } from 'axios'
+import { ref, reactive, computed, onMounted, watch } from 'vue';
+import { formatAxis } from '@/utils/formatTime';
+// import { Plus } from '@element-plus/icons-vue'
+import { useUserInfo } from '@/stores/userInfo';
+import { Local } from '@/utils/storage';
+import { FormItem } from '@/components/Form';
+import { ClientInfo } from '@/views/login';
+import { AddEditUserType } from '../user/user';
 
-const userAuthListStore = useUserAuthList()
-const userAuthList = storeToRefs(userAuthListStore)
-
-const { uploadUserAvatar, updateUserInfo, changeUserPwd } = useUserApi()
-
-const userInfoStores = useUserInfo()
+const { userInfos, userLogout } = useUserInfo();
 
 // 登录客户端信息
-const clientInfo = Session.get('clientInfo')
+const clientInfo: ClientInfo = Local.get('clientInfo');
 
 // 定义变量内容
-const state = reactive<PersonalState>({
-  newsInfoList,
-  recommendList,
-  personalForm: {
-    name: '',
-    email: '',
-    autograph: '',
-    occupation: '',
-    phone: '',
-    sex: '',
-  },
-  userInfoForm: {
-    id: 0,
-    roleId: 0,
-    userName: '',
+const state = reactive({
+  userInfoForm: <AddEditUserType>{
+    nickName: '',
+    roleIds: [],
     state: 0,
     email: '',
-    unsealTime: '',
-    updateTime: '',
-    createdTime: '',
+    userEnabled: 1,
   },
-  userInfoFormItems: ref<FormItem[]>([
+  userInfoFormItems: ref<FormItem<AddEditUserType>[]>([
     {
       xs: 24,
       sm: 12,
@@ -347,8 +366,8 @@ const state = reactive<PersonalState>({
       lg: 6,
       xl: 4,
       type: 'input',
-      label: '用户名',
-      prop: 'userName',
+      label: '用户昵称',
+      prop: 'nickName',
       placeholder: '请输入昵称',
     },
     {
@@ -359,7 +378,8 @@ const state = reactive<PersonalState>({
       xl: 4,
       type: 'select',
       label: '角色',
-      prop: 'roleId',
+      prop: 'roleIds',
+      multiple: true,
       options: [],
       placeholder: '请选择角色',
     },
@@ -382,7 +402,7 @@ const state = reactive<PersonalState>({
       xl: 4,
       type: 'switch',
       label: '用户状态',
-      prop: 'state',
+      prop: 'userEnabled',
       tValue: 1,
       fValue: 0,
       tText: '启用',
@@ -401,78 +421,21 @@ const state = reactive<PersonalState>({
       label: '',
     },
   ]),
-})
+});
 
-const loading = ref<boolean>(false)
+const loading = ref<boolean>(false);
 
-const imageUrl = ref('')
-// 上传用户头像
-const handleUploadUserAvatar = async (fileInfo: any) => {
-  try {
-    const file = new FormData()
-    file.append('file', fileInfo.file)
-    const { data: res } = await uploadUserAvatar(
-      userInfoStores.userInfos.id,
-      file
-    )
-    const { code, data, message, img } = res
-    if (code !== 200 || message !== 'Success') return ElMessage.error(data)
-    ElMessage.success(data)
-    userInfoStores.userInfos.avatarUrl = img
-    Session.set(
-      'userInfo',
-      JSON.parse(JSON.stringify(userInfoStores.userInfos))
-    )
-  } catch (e) {
-    throw e
-  }
-}
-// 限制 上传文件
-const beforeAvatarUpload = () => {}
-const handleAvatarSuccess: UploadProps['onSuccess'] = (
-  response,
-  uploadFile
-) => {
-  imageUrl.value = URL.createObjectURL(uploadFile.raw!)
-}
 // 当前时间提示语
 const currentTime = computed(() => {
-  return formatAxis(new Date())
-})
+  return formatAxis(new Date());
+});
 
 // 处理更新个人信息操作
 const handleUpdatePersonalInfo = () => {
-  saveEditUserInfo()
-}
+  saveEditUserInfo();
+};
 // 更新用户个人信息
-const saveEditUserInfo = async () => {
-  try {
-    const {
-      id,
-      roleId,
-      userName,
-      state: userState,
-      email,
-      // unsealTime,
-      // updateTime,
-      // createdTime,
-    } = state.userInfoForm
-    const params = {
-      roleId,
-      userName,
-      state: userState,
-      email,
-    }
-
-    const { data: res }: AxiosResponse = await updateUserInfo(id, params)
-    const { data, code, message } = res
-    if (code !== 200 || message !== 'Success') return ElMessage.error(data)
-    ElMessage.success(data)
-  } catch (e) {
-    ElMessage.error('更新失败')
-    console.log(e)
-  }
-}
+const saveEditUserInfo = async () => {};
 
 const changePwdState = reactive({
   dialogState: ref<boolean>(false),
@@ -514,73 +477,37 @@ const changePwdState = reactive({
       slotName: 'updataPwd',
     },
   ]),
-})
-const changePwdFormRef = ref<any>(null)
+});
+const changePwdFormRef = ref<any>(null);
 // 处理修改密码
 const handleChangePwd = async () => {
   const validRes = await changePwdFormRef.value
     .getRef()
     .validate()
-    .catch(() => false)
-  if (!validRes) return
-  const changeRes = await changePwd()
-  if (!changeRes) return
-  changePwdState.dialogState = false
+    .catch(() => false);
+  if (!validRes) return;
+  // const changeRes = await changePwd()
+  // if (!changeRes) return
+  changePwdState.dialogState = false;
 
   setTimeout(() => {
-    userInfoStores.userLogout()
-  }, 2000)
-}
+    userLogout();
+  }, 2000);
+};
 watch(
   () => changePwdState.dialogState,
-  (val) => {
-    if (val) return
-    changePwdFormRef.value.getRef().resetFields()
+  val => {
+    if (val) return;
+    changePwdFormRef.value.getRef().resetFields();
     changePwdState.dataForm = {
       oldPassword: '',
       newPassword: '',
       confirmNewPassword: '',
-    }
+    };
   }
-)
-const changePwd = async (): Promise<boolean> => {
-  try {
-    const params = {
-      ...changePwdState.dataForm,
-      userName: userInfoStores.userInfos.userName,
-    }
-    const { data: res } = await changeUserPwd(
-      userInfoStores.userInfos.id,
-      params
-    )
-    const { code, data, message } = res
-    if (code !== 200 || message !== 'Success') {
-      ElMessage.error(data)
-      return false
-    }
-    ElMessage.success(`${data}, 2 秒后将自动退出登录!`)
-    return true
-  } catch (e) {
-    console.log(e)
-    return false
-  }
-}
+);
 
-onMounted(async () => {
-  loading.value = true
-  // 获取角色下拉列表
-  await userAuthListStore.getAllRoleList()
-  state.userInfoFormItems[1].options = userAuthList.allRoleOptions.value
-
-  imageUrl.value = userInfoStores.userInfos.avatarUrl || ''
-
-  state.userInfoForm.id = userInfoStores.userInfos.id
-  state.userInfoForm.roleId = userInfoStores.userInfos.roleId
-  state.userInfoForm.userName = userInfoStores.userInfos.userName
-  state.userInfoForm.email = userInfoStores.userInfos.email
-  state.userInfoForm.state = userInfoStores.userInfos.state
-  loading.value = false
-})
+onMounted(async () => {});
 </script>
 
 <style scoped lang="scss">

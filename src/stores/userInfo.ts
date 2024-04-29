@@ -4,6 +4,7 @@ import { useAuthApi } from '@/api/auth';
 import { ElMessage } from 'element-plus';
 import { UserInfosState } from '@/types/pinia';
 import { MenuData } from '@/views/auth/menu';
+import { UserData } from '@/views/user/user';
 
 /**
  * 用户信息
@@ -14,17 +15,7 @@ const { logout, getUserMenu, getUserPermission } = useAuthApi();
 
 export const useUserInfo = defineStore('userInfo', {
   state: (): UserInfosState => ({
-    userInfos: {
-      id: 0,
-      userName: '',
-      nickName: '',
-      email: '',
-      userEnabled: 0,
-      userAvatar: '',
-      createTime: '',
-      updateTime: '',
-      roles: [],
-    },
+    userInfos: <UserData>{},
     menus: <MenuData[]>[],
     permissions: <string[]>[],
   }),

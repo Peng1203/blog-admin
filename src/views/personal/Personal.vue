@@ -28,14 +28,14 @@
             v-else
           >
             <div class="personal-user-left">
-              <!-- <el-upload
-                class="h100 personal-user-left-upload"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                multiple
-                :limit="1"
-              >
-                <img src="https://img2.baidu.com/it/u=1978192862,2048448374&fm=253&fmt=auto&app=138&f=JPEG?w=504&h=500" />
-              </el-upload> -->
+              <el-avatar
+                pseudo-c-p
+                alt="用户头像"
+                shape="square"
+                :size="130"
+                :src="userInfos.userAvatar || defaultAvatar"
+                @click="handleShowChangeAvatarDialog"
+              />
             </div>
             <div class="personal-user-right">
               <el-row>
@@ -45,7 +45,7 @@
                 >
                   {{ currentTime }}，
                   {{ userInfos.nickName || userInfos.userName }}
-                  ，生活变的再糟糕，也不妨碍我变得更好！
+                  <!-- ，生活变的再糟糕，也不妨碍我变得更好！ -->
                 </el-col>
                 <el-col :span="24">
                   <el-row>
@@ -331,11 +331,13 @@
         </el-button>
       </template>
     </Peng-Dialog>
+
+    <UploadAvatarDialog ref="uploadAvatarDialogRef" />
   </div>
 </template>
 
 <script setup lang="ts" name="personal">
-import { ref, reactive, computed, onMounted, watch } from 'vue';
+import { ref, reactive, computed, onMounted, watch, defineAsyncComponent } from 'vue';
 import { formatAxis } from '@/utils/formatTime';
 // import { Plus } from '@element-plus/icons-vue'
 import { useUserInfo } from '@/stores/userInfo';
@@ -345,6 +347,8 @@ import { ClientInfo } from '@/views/login';
 import { AddEditUserType } from '../user/user';
 
 const { userInfos, userLogout } = useUserInfo();
+
+const defaultAvatar = 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png';
 
 // 登录客户端信息
 const clientInfo: ClientInfo = Local.get('clientInfo');
@@ -506,6 +510,12 @@ watch(
     };
   }
 );
+
+const UploadAvatarDialog = defineAsyncComponent(() => import('./components/UploadAvatarDialog.vue'));
+const uploadAvatarDialogRef = ref<RefType>();
+const handleShowChangeAvatarDialog = () => {
+  uploadAvatarDialogRef.value.dialogState = true;
+};
 
 onMounted(async () => {});
 </script>
@@ -734,9 +744,5 @@ onMounted(async () => {});
   width: 178px;
   height: 178px;
   text-align: center;
-}
-
-.user-info-skeleton-container {
-  /* width: auto; */
 }
 </style>

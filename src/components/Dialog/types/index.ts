@@ -11,4 +11,6 @@ export interface DialogAttribute {
   aCenter?: boolean;
   /** 底部操作行 */
   operationRow?: boolean;
+  cancleBtnText?: string;
+  confirmBtnText?: string;
 }

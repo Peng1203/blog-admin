@@ -11,6 +11,7 @@
       :align-center="aCenter"
       v-bind="$attrs"
       v-model="dialogStatus"
+      @open="() => $emit('open')"
     >
       <template #header>
         <slot name="header" />
@@ -28,14 +29,14 @@
               size="small"
               @click="handleClickCancel"
             >
-              取消
+              {{ cancleBtnText }}
             </el-button>
             <el-button
               type="primary"
               size="small"
               @click="handleClickConfirm"
             >
-              确认
+              {{ confirmBtnText }}
             </el-button>
           </div>
         </slot>
@@ -59,9 +60,11 @@ const props = withDefaults(defineProps<DialogAttribute>(), {
   draggable: true,
   aCenter: false,
   operationRow: true,
+  cancleBtnText: '取消',
+  confirmBtnText: '确认',
 });
 
-const emits = defineEmits(['update:modelValue', 'dialogClose', 'clickCancel', 'clickConfirm']);
+const emits = defineEmits(['update:modelValue', 'dialogClose', 'clickCancel', 'clickConfirm', 'open']);
 
 const dialogStatus = ref<boolean>(true);
 

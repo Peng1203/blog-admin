@@ -8,3 +8,8 @@ export interface CropperAttribute {
   width?: string;
   height?: string;
 }
+
+export interface CropperData {
+  dateUrl: string;
+  blobData: Blob;
+}

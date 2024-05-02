@@ -10,22 +10,35 @@
       @realTime="handleRealPreview"
     />
 
-    <el-avatar
-      :size="100"
-      :src="previewInfo.base64"
-    />
-    <el-avatar
-      :size="50"
-      :src="previewInfo.base64"
-    />
+    <div
+      flex1
+      flex-sb-c
+    >
+      <el-avatar
+        :size="25"
+        :src="previewInfo.base64"
+      />
 
-    <div v-html="previewInfo?.html" />
-    <el-button
+      <el-avatar
+        :size="50"
+        :src="previewInfo.base64"
+      />
+
+      <el-avatar
+        :size="120"
+        :src="previewInfo.base64"
+      />
+    </div>
+
+    <!-- <div v-html="previewInfo?.html" /> -->
+    <!-- <el-button
       :disabled="!img"
       @click="handleUpload"
     >
       上 传
-    </el-button>
+    </el-button> -->
+
+    <slot></slot>
   </div>
 </template>
 
@@ -35,6 +48,10 @@ import 'vue-cropper/dist/index.css';
 import { VueCropper } from 'vue-cropper';
 import { CropperAttribute } from './types';
 import _ from 'lodash';
+
+const model = defineModel({ type: Blob });
+
+const emits = defineEmits(['change']);
 
 withDefaults(defineProps<CropperAttribute>(), {
   outputSize: 0.8,
@@ -52,13 +69,13 @@ const previewInfo = ref({
 });
 /** 实时预览 */
 const handleRealPreview = _.debounce(async data => {
-  console.log('data ------', data);
   previewInfo.value = data;
 
   const [base64_data, blob_data] = await Promise.all([getCropData(), getCropBlob()]);
-  console.log('base64_data ------', base64_data);
-  console.log('blob_data ------', blob_data);
   previewInfo.value.base64 = base64_data;
+
+  model.value = blob_data;
+  emits('change', { dateUrl: base64_data, blobData: blob_data });
 }, 300);
 
 /** 获取裁剪之后图片的base64 */
@@ -75,11 +92,11 @@ const getCropBlob = (): Promise<Blob> => {
   });
 };
 
-const handleUpload = async () => {
-  const [base64_data, blob_data] = await Promise.all([getCropData(), getCropBlob()]);
-  console.log('base64_data ------', base64_data);
-  console.log('blob_data ------', blob_data);
-};
+// const handleUpload = async () => {
+//   const [base64_data, blob_data] = await Promise.all([getCropData(), getCropBlob()]);
+//   console.log('base64_data ------', base64_data);
+//   console.log('blob_data ------', blob_data);
+// };
 </script>
 
 <style scoped lang="scss"></style>

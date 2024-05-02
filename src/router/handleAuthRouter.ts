@@ -28,7 +28,7 @@ export async function handleUserAuthRouters(): Promise<any> {
   const userInfo = Local.getUserInfo();
 
   const userInfoStore = useUserInfo(pinia);
-  userInfoStore.setUserInfos({ ...userInfo, token: Local.get('token') });
+  // userInfoStore.setUserInfos({ ...userInfo, token: Local.get('token') });
 
   const { id, userName } = userInfo;
 

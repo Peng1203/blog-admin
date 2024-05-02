@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import { Local, Session } from '@/utils/storage';
 import { useAuthApi } from '@/api/auth';
 import { ElMessage } from 'element-plus';
-import { UserInfosState } from '@/types/pinia';
 import { MenuData } from '@/views/auth/menu';
 import { UserData } from '@/views/user/user';
 
@@ -14,7 +13,7 @@ import { UserData } from '@/views/user/user';
 const { logout, getUserMenu, getUserPermission } = useAuthApi();
 
 export const useUserInfo = defineStore('userInfo', {
-  state: (): UserInfosState => ({
+  state: () => ({
     userInfos: <UserData>{},
     menus: <MenuData[]>[],
     permissions: <string[]>[],
@@ -24,6 +23,7 @@ export const useUserInfo = defineStore('userInfo', {
     updataUserInfo() {},
     /** 设置用户信息 */
     async setUserInfos(data: any) {
+      console.log('执行了 ------');
       // 存储用户信息到浏览器缓存
       this.userInfos = data;
     },
@@ -67,5 +67,9 @@ export const useUserInfo = defineStore('userInfo', {
         console.log('e ------', e);
       }
     },
+  },
+  persist: {
+    key: 'userInfo',
+    storage: window.sessionStorage,
   },
 });

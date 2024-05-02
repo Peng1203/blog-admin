@@ -197,7 +197,8 @@ const handleUserLogin = async () => {
     // 调用后端验证码校验接口
     const { user, tokens, clientInfo } = await getLoginUserInfo();
     if (!user || !tokens) return;
-    Local.set('userInfo', user);
+
+    userInfoStore.userInfos = user;
     Local.set('clientInfo', clientInfo);
     Local.setRFToken(tokens.refresh_token);
     Session.setACToken(tokens.access_token);

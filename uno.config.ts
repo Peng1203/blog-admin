@@ -69,7 +69,7 @@ export default defineConfig({
         'align-items': 'center',
       },
     ],
-    [/^flex(\d+)$/, match => ({ padding: `flex: ${match[1]}` })],
+    [/^flex(\d+)$/, match => ({ flex: `${match[1]}` })],
     // 伪光标
     [
       'pseudo-c-p',

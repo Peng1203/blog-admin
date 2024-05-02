@@ -51,8 +51,8 @@
     "@vitejs/plugin-vue": "^4.6.2",
     "@vitejs/plugin-vue-jsx": "^3.1.0",
     "cz-git": "^1.8.0",
-    "eslint": "^8.56.0",
-    "eslint-plugin-vue": "^9.20.1",
+    "eslint": "^9.1.1",
+    "eslint-plugin-vue": "^9.25.0",
     "prettier": "^2.8.8",
     "sass": "^1.70.0",
     "typescript": "^5.3.3",
@@ -60,7 +60,7 @@
     "unplugin-vue-define-options": "^1.4.1",
     "vite": "^4.5.1",
     "vite-plugin-compression": "^0.5.1",
-    "vue-eslint-parser": "^9.4.0"
+    "vue-eslint-parser": "^9.4.2"
   },
   "browserslist": [
     "> 1%",

@@ -54,6 +54,7 @@
           height="calc(100vh - 333px)"
           placeholder="请输入文章内容"
           :is="editorMapping[articleForm.contentModel]"
+          @fastSave="handleFastSave"
         />
 
         <!-- 文章信息表单 -->
@@ -197,6 +198,10 @@ const handleUpdateArticle = async () => {
   } catch (e) {
     console.log('e ------', e);
   }
+};
+
+const handleFastSave = () => {
+  handleUpdateArticle();
 };
 
 const loadingStatus = ref<boolean>(route.name === 'EditArticle');

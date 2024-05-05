@@ -86,8 +86,8 @@ const articleListState = reactive({
   loading: false,
   page: 1,
   pageSize: 10,
-  column: '',
-  order: '',
+  column: 'createTime',
+  order: 'DESC',
   // 文章列表数据
   articleList: ref<ArticleData[]>([]),
   total: 0,

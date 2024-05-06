@@ -7,7 +7,6 @@ import pinia from '@/stores/index';
 import { useUserInfo } from '@/stores/userInfo';
 import { useTagsViewRoutes } from '@/stores/tagsViewRoutes';
 import { NextLoading } from '@/utils/loading';
-// import Cookies from 'js-cookie';
 import { MenuData } from '@/views/auth/menu';
 import { notFoundAndNoPower } from './route';
 
@@ -25,12 +24,9 @@ const allRouterRules = formatFlatteningRoutes(allDynamicRoutes[0].children);
 
 export async function handleUserAuthRouters(): Promise<any> {
   if (window.nextLoading === undefined) NextLoading.start();
-  const userInfo = Local.getUserInfo();
+  const { userInfos, menus } = useUserInfo();
 
-  const userInfoStore = useUserInfo(pinia);
-  // userInfoStore.setUserInfos({ ...userInfo, token: Local.get('token') });
-
-  const { id, userName } = userInfo;
+  const { id, userName } = userInfos;
 
   // 当登录 用户为 admin 用户 不进行菜单处理直接添加全部权限路由
   if (id === 1 && userName === 'admin') {
@@ -45,7 +41,7 @@ export async function handleUserAuthRouters(): Promise<any> {
     notFoundAndNoPower.forEach((route: any) => router.addRoute(route));
     return (allDynamicRoutes[0].children as any)[0].name;
   } else {
-    return generateUserMenu(userInfoStore.menus);
+    return generateUserMenu(menus);
   }
 }
 

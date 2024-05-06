@@ -10,6 +10,8 @@ import { Local, Session } from '@/utils/storage';
 import { staticRoutes, notFoundAndNoPower } from './route';
 import { handleUserAuthRouters } from './handleAuthRouter';
 import { useUserInfo } from '@/stores/userInfo';
+import { LAST_VISITED_PAGE_PATH_STORAGE_KEY } from '@/utils/recordLastVisitedPage';
+import { handleRefreshACToken } from '@/utils/refreshToken';
 
 /**
  * 1、前端控制路由时：isRequestRoutes 为 false，需要写 roles，需要走 setFilterRoute 方法。
@@ -108,22 +110,40 @@ export function formatTwoStageRoutes(arr: any) {
 // 路由加载前
 router.beforeEach(async (to, from, next) => {
   NProgress.configure({ showSpinner: false });
+
+  const userInfoStore = useUserInfo();
   if (to.meta.title) NProgress.start();
+
   // 切换页面时取消未响应的请求
   if (!from.meta.isKeepAlive && window.httpRequestList.length > 0) {
     window.httpRequestList.forEach(c => c());
     window.httpRequestList = [];
   }
-  if (to.path === '/login' && !sessionStorage.getItem('PengBlogAdmin:token')) {
-    next();
+  const token = Session.getACToken();
+
+  // 去登录页
+  if (to.path === '/login' && !token) {
+    if (window.performance.navigation.type || to.query.code) next();
+    else {
+      /**
+       * 页面为新进来的情况下 返回上次关闭时预览的界面
+       *  1. 刷新 并 获取 ac token
+       *  2. 获取用户个人信息
+       */
+      const lastVPage = Local.get(LAST_VISITED_PAGE_PATH_STORAGE_KEY);
+      //
+      // console.log('页面首次进来 ------', lastVPage);
+      const refreshStatus = await handleRefreshACToken();
+      if (!refreshStatus) return next();
+      await userInfoStore.getUserInfos();
+      next(lastVPage);
+    }
     NProgress.done();
     return;
   }
 
-  const token = Session.getACToken();
   if (!token) {
     next(`/login`);
-    Session.clear();
     NProgress.done();
   } else if (token && to.path === '/login') {
     // next()
@@ -134,9 +154,8 @@ router.beforeEach(async (to, from, next) => {
     const { routesList } = storeToRefs(storesRoutesList);
     // 解决界面刷新路由规则丢失问题
     if (from.name === undefined && !routesList.value.length && token) {
-      const userInfoStore = useUserInfo();
       // 当前用户不是admin时 请求接口获取路由信息
-      const { id, userName } = Local.getUserInfo();
+      const { id, userName } = userInfoStore.userInfos;
       if (id !== 1 && userName !== 'admin') await userInfoStore.getMenus();
       await handleUserAuthRouters();
       next({ path: to.path });

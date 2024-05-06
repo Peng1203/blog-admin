@@ -65,5 +65,12 @@ export function useAuthApi() {
         method: Method.GET,
       });
     },
+    /** 获取用户信息 */
+    getUserInfo<T>(): TransformedResponse<T> {
+      return request({
+        url: 'auth/userInfo',
+        method: Method.GET,
+      });
+    },
   };
 }

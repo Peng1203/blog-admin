@@ -10,7 +10,7 @@ import { UserData } from '@/views/user/user';
  * @methods setUserInfos 设置用户信息
  */
 
-const { logout, getUserMenu, getUserPermission } = useAuthApi();
+const { logout, getUserMenu, getUserPermission, getUserInfo } = useAuthApi();
 
 export const useUserInfo = defineStore('userInfo', {
   state: () => ({
@@ -19,6 +19,17 @@ export const useUserInfo = defineStore('userInfo', {
     permissions: <string[]>[],
   }),
   actions: {
+    // 根据 ac token 获取用户信息
+    async getUserInfos() {
+      try {
+        const { data: res } = await getUserInfo<UserData>();
+        const { code, success, data } = res;
+        if (code !== 20000 || !success) return;
+        this.userInfos = data;
+      } catch (e) {
+        console.log('e', e);
+      }
+    },
     // 更新用户信息
     updataUserInfo() {},
     /** 设置用户信息 */

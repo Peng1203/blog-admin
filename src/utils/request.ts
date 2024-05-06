@@ -110,7 +110,7 @@ service.interceptors.response.use(
             // 该情况为 refresh_token 过期 直接返回登录页
             useNotificationMsg('身份信息失效', data.message, 'error');
             // ElMessage.error(data.message);
-            return router.push({ name: 'login' });
+            return router.push({ name: 'login', query: { code: 40105 } });
           case 40106:
             useNotificationMsg('登录失败!', data.message, 'error');
             // ElMessage.error(data.message);

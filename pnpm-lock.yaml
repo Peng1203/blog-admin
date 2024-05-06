@@ -44,9 +44,6 @@ dependencies:
   element-plus:
     specifier: ^2.5.1
     version: 2.5.1(vue@3.4.15)
-  event-source-polyfill:
-    specifier: ^1.0.31
-    version: 1.0.31
   js-cookie:
     specifier: ^3.0.5
     version: 3.0.5
@@ -3323,10 +3320,6 @@ packages:
     dependencies:
       d: 1.0.1
       es5-ext: 0.10.62
-    dev: false
-
-  /event-source-polyfill@1.0.31:
-    resolution: {integrity: sha512-4IJSItgS/41IxN5UVAVuAyczwZF7ZIEsM1XAoUzIHA6A+xzusEZUutdXz2Nr+MQPLxfTiCvqE79/C8HT8fKFvA==}
     dev: false
 
   /execa@5.1.1:

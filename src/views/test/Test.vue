@@ -31,7 +31,6 @@
 
       <div flex-sb-c>
         <textarea v-model="inputStr"></textarea>
-        <el-button @click="handlePostMsg">send</el-button>
       </div>
     </div>
   </div>
@@ -42,58 +41,13 @@ import { ref, reactive } from 'vue';
 import 'vue-cropper/dist/index.css';
 import { Preview } from '@/components/MarkdownEditor';
 import Cropper from '@/components/Cropper';
-import { useChatApi } from '@/api/chat';
 
 import { MdPreview } from 'md-editor-v3';
-
-const { postChatContent } = useChatApi();
 
 const resMsg = ref<string>('121');
 
 const inputStr = ref<string>('你好');
 const responseMsg = ref<string>('');
-
-const handlePostMsg = async () => {
-  responseMsg.value = '';
-  // const { data: res } = await postChatContent({
-  //   content: inputStr.value,
-  // });
-  // console.log('res ------', JSON.parse(`{${res}}`));
-  const params = {
-    messages: [{ role: 'user', content: inputStr.value }],
-  };
-  postChatContent(params, async (res: Response) => {
-    const reader = res.body.getReader();
-    const textDecoder = new TextDecoder();
-
-    // 响应信息对象
-    const responseMessage = {
-      role: '',
-      content: '',
-    };
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      const data = textDecoder.decode(value);
-      const jsonData = data
-        .split('\n')
-        .filter(item => item !== '')
-        .map(item => JSON.parse(item));
-
-      jsonData.forEach(item => {
-        const { role, content } = item.choices[0].delta;
-        role && (responseMessage.role = role);
-        if (!content) return;
-        responseMessage.content += content;
-        responseMsg.value += content;
-      });
-    }
-
-    console.log('responseMessage ------', responseMessage);
-    inputStr.value = '';
-  });
-};
 
 const img = ref();
 

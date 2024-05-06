@@ -69,80 +69,12 @@ provide('deviceClientType', deviceClientType);
 
 // 设置初始化，防止刷新时恢复默认
 onBeforeMount(() => {
-  // console.log(`%c window.performance.navigation.type ----`, 'color: #fff;background-color: black;font-size: 18px', window.performance.navigation.type)
-  // 在关闭访问窗口前 调用退出登录方法
-  // 在 beforeunload 事件中，无法直接判断是刷新窗口还是关闭窗口，因为这两个操作都会触发 beforeunload 事件。不过，可以通过一些技巧来区分它们。
-  // 当用户关闭窗口时，beforeunload 事件会在 unload 事件之前触发，而在刷新窗口时，beforeunload 事件会在 unload 事件之后触发。因此，可以在 beforeunload 事件中记录当前时间戳，然后在 unload 事件中再次记录时间戳，并计算两个时间戳之间的差值。如果差值小于等于某个阈值（例如 100ms），就可以认为是关闭窗口了；否则就是刷新窗口
-
-  // window.onunload = async function () {
-  // 	console.log('onunload 执行-----')
-  // 	differTime = new Date().getTime() - beginTime
-  // 	if (differTime <= 5) {
-  // 		// 刷新时有概率执行
-  // 		console.log('浏览器关闭')
-  // 		axios.get('http://127.0.0.1:3000/index?info=关闭')
-  // 		if (Session.get('token')) {
-  // 			Session.clear()
-  // 			await userInfoStores.userLogout()
-  // 		}
-  // 	} else {
-  // 		console.log('浏览器刷新')
-  // 		axios.get('http://127.0.0.1:3000/index?info=刷新')
-  // 	}
-  // }
-  // window.onbeforeunload = function () {
-  // 	beginTime = new Date().getTime()
-  // }
   // 客户端设备类型
   // 添加全局属性 返回设备类类型
   window.clientType = getClientType();
   window.addEventListener('resize', () => {
     deviceClientType.value = getClientType();
   });
-
-  window.addEventListener('unload', async function () {
-    console.log(`%c unload ----`, 'color: #fff;background-color: #000;font-size: 18px');
-  });
-
-  window.addEventListener('beforeunload', function () {
-    console.log(`%c beforeunload ----`, 'color: #fff;background-color: #000;font-size: 18px');
-  });
-
-  // let unloadTime: any
-  // window.addEventListener('beforeunload', function (event: any) {
-  // 	// 记录当前时间戳
-  // 	// unloadTime = Date.now()
-  // 	// 如果有未保存的数据，可以提示用户
-  // 	// event.preventDefault()
-  // 	// event.returnValue = ''
-
-  // 	console.log(' -----')
-  // 	window.localStorage.setItem(`${Date.now()}`, `${window.performance.navigation.type}`)
-
-  // 	console.log('event.currentTarget.performance.navigation.type -----')
-  // 	if (event.currentTarget.performance.navigation.type === 1) {
-  // 		// 关闭页面操作
-  // 		axios.get('http://127.0.0.1:3000/index?info=关闭')
-  // 	} else if (event.currentTarget.performance.navigation.type === 2) {
-  // 		// 刷新页面操作
-  // 		axios.get('http://127.0.0.1:3000/index?info=刷新')
-  // 	}
-  // })
-
-  // window.addEventListener('unload', async () => {
-  // 	// 计算时间差
-  // 	const diff = Date.now() - unloadTime
-  // 	if (diff <= 100) {
-  // 		console.log('关闭窗口')
-  // 		axios.get('http://127.0.0.1:3000/index')
-  // 		if (Session.get('token')) {
-  // 			Session.remove('token')
-  // 			await userInfoStores.userLogout()
-  // 		}
-  // 	} else {
-  // 		console.log('刷新窗口')
-  // 	}
-  // })
 
   // 全局捕获Promise错误
   window.addEventListener('unhandledrejection', handlePromiseError);
@@ -180,8 +112,6 @@ watch(
   () => {
     other.useTitle();
   },
-  {
-    deep: true,
-  }
+  { deep: true }
 );
 </script>

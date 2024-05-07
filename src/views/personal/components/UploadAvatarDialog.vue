@@ -32,15 +32,23 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import Cropper, { CropperData } from '@/components/Cropper';
-import { ElUpload, UploadFile, UploadInstance, UploadProps, UploadRawFile, genFileId } from 'element-plus';
+import {
+  ElUpload,
+  UploadFile,
+  UploadInstance,
+  UploadProps,
+  UploadRawFile,
+  genFileId,
+} from 'element-plus';
 import { useNotificationMsg } from '@/utils/notificationMsg';
 import { useUserInfo } from '@/stores/userInfo';
 import { useUserApi } from '@/api';
 
 const { userInfos } = useUserInfo();
-const { uploadAvatar } = useUserApi();
+const { uploadUserAvatar } = useUserApi();
 
-const defaultAvatar = 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png';
+const defaultAvatar =
+  'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png';
 
 const MAX_SIZE = 1024 * 1024 * 2;
 const dialogState = ref<boolean>(false);
@@ -54,8 +62,7 @@ const handleUpload = async () => {
 
     formData.append('file', croppedData.value);
 
-    const { data: res } = await uploadAvatar(userInfos.id, formData);
-    console.log('res ------', res);
+    const { data: res } = await uploadUserAvatar(userInfos.id, formData);
     const { data, message, code, success } = res;
     if (!success || code !== 20100) return;
     useNotificationMsg('操作成功', message);
@@ -72,8 +79,10 @@ const updateAvater = (url: string) => {
 
 const handleFileChange = (uploadFile: UploadFile) => {
   const { type, size } = uploadFile.raw;
-  if (!type.includes('image')) return useNotificationMsg('', '请选择图片类型的文件', 'warning', 2);
-  if (size > MAX_SIZE) return useNotificationMsg('', '请选择小于2MB的图片', 'warning', 2);
+  if (!type.includes('image'))
+    return useNotificationMsg('', '请选择图片类型的文件', 'warning', 2);
+  if (size > MAX_SIZE)
+    return useNotificationMsg('', '请选择小于2MB的图片', 'warning', 2);
 
   const reader = new FileReader();
   reader.readAsDataURL(uploadFile.raw);
@@ -90,7 +99,8 @@ const handleExceed: UploadProps['onExceed'] = files => {
 
 const handleCropperChange = (data: CropperData) => {};
 
-const handleOpenDialog = () => (imgDateUrl.value = userInfos.userAvatar || defaultAvatar);
+const handleOpenDialog = () =>
+  (imgDateUrl.value = userInfos.userAvatar || defaultAvatar);
 
 defineExpose({ dialogState });
 </script>

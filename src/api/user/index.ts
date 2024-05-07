@@ -64,7 +64,23 @@ export function useUserApi() {
     /**
      * 上传用户头像
      */
-    uploadAvatar(userId: number, file: FormData): TransformedResponse<string> {
+    uploadAvatar(file: FormData): TransformedResponse<string> {
+      return request({
+        url: '/user/avater',
+        method: Method.POST,
+        data: file,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    },
+    /**
+     * 上传用户头像
+     */
+    uploadUserAvatar(
+      userId: number,
+      file: FormData
+    ): TransformedResponse<string> {
       return request({
         url: `/user/avater/${userId}`,
         method: Method.POST,

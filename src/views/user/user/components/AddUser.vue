@@ -1,26 +1,24 @@
 <template>
-  <Dialog
+  <Peng-Dialog
     title="添加用户"
     v-model="addUserDialogStatus"
     @clickConfirm="handleAdd"
     @dialogClose="handleDialogClose"
   >
-    <Form
+    <Peng-Form
       ref="addFormRef"
       :labelW="'120px'"
       v-model="formData"
       :formItems="addUserState.formItemList"
     />
-  </Dialog>
+  </Peng-Dialog>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch } from 'vue';
+import { ref, reactive } from 'vue';
 import { useUserApi } from '@/api/user';
-import { ElMessage } from 'element-plus';
-import { useUsersInfo } from '@/stores/userList';
-import Dialog from '@/components/Dialog';
-import Form, { FormItem } from '@/components/Form';
+import { ElMessage, UploadRawFile } from 'element-plus';
+import { FormItem } from '@/components/Form';
 import { passwordStrengthLevelDetection } from '@/utils/pwd';
 import { UserData, AddProps, AddEditUserType } from '../types';
 import { UploadRequestOptions } from 'element-plus';
@@ -29,14 +27,22 @@ import { passwordEncryption } from '@/utils/encryption';
 const props = defineProps<AddProps>();
 
 const emits = defineEmits(['updateList']);
-const { addUser } = useUserApi();
+const { addUser, uploadAvatar } = useUserApi();
 
 // 校验密码强度
-const passwordStrengthDetection = (rule: any, value: any, callback: any): any => {
-  const findFormItem = addUserState.formItemList.find(item => item.prop === 'password');
+const passwordStrengthDetection = (
+  rule: any,
+  value: any,
+  callback: any
+): any => {
+  const findFormItem = addUserState.formItemList.find(
+    item => item.prop === 'password'
+  );
+
   if (!value) return findFormItem && (findFormItem.strengthLevel = 0);
 
   let level = passwordStrengthLevelDetection(value);
+  if (level === -1) callback(new Error('密码不能包括出现特殊字符'));
   if (findFormItem) findFormItem.strengthLevel = level as any;
   callback();
 };
@@ -125,19 +131,17 @@ const addUserState = reactive({
       label: '头像',
       prop: 'userAvatar',
       span: 20,
-      multiple: true,
-      // fsShow: true,
-      fileMaxSize: 3,
+      multiple: false,
+      fsShow: false,
+      fileMaxSize: 2,
       // autoUpload: false,
-      customUploadCb: handleUploadAvatar,
-      accept: ['.gif', '.jpeg', '.png', '.jpg', '.gif', '.webp'],
+      customUploadCb(options: UploadRequestOptions) {
+        handleUploadAvatar(options.file);
+      },
+      accept: ['.gif', '.jpeg', '.jpg', '.png', '.webp'],
     },
   ]),
 });
-
-function handleUploadAvatar(options: UploadRequestOptions) {
-  console.log('options ------', options);
-}
 
 const addFormRef = ref<RefType>(null);
 // 处理添加用户
@@ -173,6 +177,20 @@ const addNewUser = async (): Promise<boolean> => {
   }
 };
 
+const handleUploadAvatar = async (file: UploadRawFile) => {
+  try {
+    const fileFormData = new FormData();
+
+    fileFormData.append('file', file);
+
+    const { data: res } = await uploadAvatar(fileFormData);
+    console.log('res ------', res);
+    formData.value.userAvatar = res.data;
+  } catch (e) {
+    console.log('e', e);
+  }
+};
+
 const resetAddForm = () => {
   formData.value.userName = '';
   formData.value.nickName = '';
@@ -181,7 +199,9 @@ const resetAddForm = () => {
   formData.value.email = '';
   formData.value.userEnabled = 1;
   formData.value.userAvatar = '';
-  const findFormItem = addUserState.formItemList.find(item => item.prop === 'password');
+  const findFormItem = addUserState.formItemList.find(
+    item => item.prop === 'password'
+  );
   if (findFormItem) findFormItem.strengthLevel = 0;
 };
 

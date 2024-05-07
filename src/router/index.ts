@@ -131,12 +131,14 @@ router.beforeEach(async (to, from, next) => {
        *  2. 获取用户个人信息
        */
       const lastVPage = Local.get(LAST_VISITED_PAGE_PATH_STORAGE_KEY);
-      //
-      // console.log('页面首次进来 ------', lastVPage);
-      const refreshStatus = await handleRefreshACToken();
-      if (!refreshStatus) return next();
-      await userInfoStore.getUserInfos();
-      next(lastVPage);
+      // 当页面首次进来时 则直接返回登录页
+      if (!Local.getRFToken()) next();
+      else {
+        const refreshStatus = await handleRefreshACToken();
+        if (!refreshStatus) return next();
+        await userInfoStore.getUserInfos();
+        next(lastVPage);
+      }
     }
     NProgress.done();
     return;

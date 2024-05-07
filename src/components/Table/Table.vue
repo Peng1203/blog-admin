@@ -223,7 +223,7 @@
 
 <script lang="ts" setup generic="T">
 import { ref, reactive, watch, onMounted, inject } from 'vue';
-import { ColumnItem, TableAttribute, OperationBtnsType } from './types';
+import { ColumnItem, TableAttribute } from './types';
 import { Plus, Edit, Delete, View } from '@element-plus/icons-vue';
 
 const deviceClientType = inject('deviceClientType');

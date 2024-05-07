@@ -30,7 +30,6 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn';
 import { storeToRefs } from 'pinia';
 import { useTagsViewRoutes } from '@/stores/tagsViewRoutes';
 import { useThemeConfig } from '@/stores/themeConfig';
-import { useUserInfo } from '@/stores/userInfo';
 import other from '@/utils/other';
 import { Local, Session } from '@/utils/storage';
 import mittBus from '@/utils/mitt';
@@ -45,7 +44,6 @@ const CloseFull = defineAsyncComponent(() => import('@/layout/navBars/breadcrumb
 // 定义变量内容
 const setingsRef = ref();
 const route = useRoute();
-const userInfoStores = useUserInfo();
 
 const stores = useTagsViewRoutes();
 const storesThemeConfig = useThemeConfig();

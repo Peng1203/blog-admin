@@ -16,13 +16,10 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue';
 import { MdEditor } from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 // 引入公共库中的预览主题
 import '@vavt/md-editor-extension/dist/previewTheme/arknights.css';
-// 引入公共库中的语言配置
-import ZH_TW from '@vavt/md-editor-extension/dist/locale/zh-TW';
 import { allToolbars, commonToolbars } from './config/index';
 import { MarkdownEditorAttibute } from './types';
 

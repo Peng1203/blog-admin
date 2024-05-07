@@ -20,7 +20,6 @@
 
 <script setup lang="ts">
 import { ButtonAttribute } from './index';
-import { Delete, Edit } from '@element-plus/icons-vue';
 
 const emits = defineEmits(['click']);
 
@@ -45,12 +44,6 @@ const props = withDefaults(defineProps<ButtonAttribute>(), {
 
 const handleBtnClick = () => emits('click');
 
-const iconClassHashMapping = () => {
-  if (props.iconClass === 'Delete') return Delete;
-  else if (props.iconClass === 'Edit') return Edit;
-};
-
-console.log('props ------', props);
 const attrType = () => {
   if (props.type) return props.type;
   if (props.primary) return 'primary';

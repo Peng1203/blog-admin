@@ -69,7 +69,12 @@
 <script setup lang="ts" name="ArticleCategory">
 import { defineAsyncComponent, ref, onMounted, reactive } from 'vue';
 import { ElMessage } from 'element-plus';
-import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
+import Table, {
+  ColumnItem,
+  PageInfo,
+  PageChangeParams,
+  ColumnChangeParams,
+} from '@/components/Table';
 import Search from '@/components/Search';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
 import { useCategoryApi } from '@/api/category/index';
@@ -181,7 +186,9 @@ const deleteCategoryById = async (id: number): Promise<boolean> => {
 
 // 处理编辑分类
 const editRow = ref<CategoryData>();
-const EditCategoryDrawer = defineAsyncComponent(() => import('./components/EditCategory.vue'));
+const EditCategoryDrawer = defineAsyncComponent(
+  () => import('./components/EditCategory.vue')
+);
 const editDrawerRef = ref<RefType>(null);
 const handleEditCategory = (row: CategoryData) => {
   editRow.value = JSON.parse(JSON.stringify(row));
@@ -189,7 +196,9 @@ const handleEditCategory = (row: CategoryData) => {
 };
 
 // 处理添加分类
-const AddCategoryDialog = defineAsyncComponent(() => import('./components/AddCategory.vue'));
+const AddCategoryDialog = defineAsyncComponent(
+  () => import('./components/AddCategory.vue')
+);
 const addDialogRef = ref<RefType>(null);
 
 const handleUpdate = () => {

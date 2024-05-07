@@ -40,7 +40,7 @@ import { MdPreview, MdCatalog } from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
 import { PreviewAttibute } from './types';
 
-const emits = defineEmits(['catalogClick']);
+defineEmits(['catalogClick']);
 
 const model = defineModel({ type: String });
 

@@ -90,19 +90,26 @@
 </template>
 
 <script lang="ts" setup name="SystemAuthPermission">
-import { ElMessage } from 'element-plus';
 import { ref, reactive, onMounted, defineAsyncComponent } from 'vue';
 import { usePermissionInfo } from '@/stores/permissionList';
 import { usePermissionApi } from '@/api';
 import { Plus } from '@element-plus/icons-vue';
-import { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
+import {
+  ColumnItem,
+  PageInfo,
+  PageChangeParams,
+  ColumnChangeParams,
+} from '@/components/Table';
 import { PermissionData, PermissionListData } from './types';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
 import { resourceMethodOptions } from './';
+import { SelectOptionItem } from '@/components/Select';
+import { useNotificationMsg } from '@/utils/notificationMsg';
 
 const permissionStore = usePermissionInfo();
 
-const { getPermissions, delAuthPermission, getPermCodeOptions } = usePermissionApi();
+const { getPermissions, delAuthPermission, getPermCodeOptions } =
+  usePermissionApi();
 // 表格参数
 const tableState = reactive({
   loading: false,
@@ -114,13 +121,13 @@ const tableState = reactive({
     {
       label: '标识名称',
       prop: 'permissionName',
-      minWidth: 130,
+      minWidth: 160,
       slotName: 'queryHighlight',
     },
     {
       label: '标识CODE',
       prop: 'permissionCode',
-      minWidth: 130,
+      minWidth: 160,
       tooltip: true,
       slotName: 'queryHighlight',
     },
@@ -204,7 +211,7 @@ const delAuthPermissionById = async (id: number): Promise<boolean> => {
     const { data: res } = await delAuthPermission<string>(id);
     const { code, data, success } = res;
     if (code !== 20000 || !success) return false;
-    ElMessage.success(data);
+    useNotificationMsg('', data);
     return true;
   } catch (e) {
     console.log(e);
@@ -213,7 +220,9 @@ const delAuthPermissionById = async (id: number): Promise<boolean> => {
 };
 
 // 编辑权限标识
-const EditAuthPermissonDrawer = defineAsyncComponent(() => import('./components/EditAuthPermisson.vue'));
+const EditAuthPermissonDrawer = defineAsyncComponent(
+  () => import('./components/EditAuthPermisson.vue')
+);
 
 const editAuthDrawerRef = ref<RefType>(null);
 const editAuthRowInfo = ref<PermissionData>();
@@ -224,11 +233,15 @@ const handleEditAuthPermission = (row: PermissionData) => {
 };
 
 // 添加权限标识
-const AddAuthPermissonDialog = defineAsyncComponent(() => import('./components/AddAuthPermisson.vue'));
+const AddAuthPermissonDialog = defineAsyncComponent(
+  () => import('./components/AddAuthPermisson.vue')
+);
 const addAuthDialogRef = ref<RefType>(null);
 
 const handleUpdate = () => {
   getAuthPermissionTableData();
+  // 更新下拉数据的 禁用状态
+  getPermissionCodeOptions();
   permissionStore.getPermissionData(true);
 };
 
@@ -249,21 +262,39 @@ const handleAddPermission = (row?: PermissionData | number) => {
   addAuthDialogRef.value.addAuthPermissonDialogStatus = true;
 };
 
-const permissionCodeOptions = ref<OptionItem[]>([]);
+const permissionCodeOptions = ref<SelectOptionItem[]>([]);
 const getPermissionCodeOptions = async () => {
   try {
     const { data: res } = await getPermCodeOptions<OptionItem[]>();
-    console.log('res ------', res);
     const { code, success, data } = res;
     if (code !== 20000 || !success) return;
-    permissionCodeOptions.value = data;
+    permissionCodeOptions.value = data.map(item => {
+      return {
+        ...item,
+        disabled: optionItemIsDisabled(item.value, tableState.data),
+      };
+    });
   } catch (e) {
     console.log('e', e);
   }
 };
 
-onMounted(() => {
-  getAuthPermissionTableData();
+const optionItemIsDisabled = (
+  value: string,
+  PermissionData: PermissionData[]
+): boolean => {
+  for (let i = 0; i < PermissionData.length; i++) {
+    if (PermissionData[i].permissionCode === value) return true;
+
+    if (PermissionData[i].children.length) {
+      if (optionItemIsDisabled(value, PermissionData[i].children)) return true;
+    }
+  }
+  return false;
+};
+
+onMounted(async () => {
+  await getAuthPermissionTableData();
   getPermissionCodeOptions();
 });
 </script>

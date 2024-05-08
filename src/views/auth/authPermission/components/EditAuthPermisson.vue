@@ -4,7 +4,7 @@
     v-model="editDrawerStatus"
     @clickConfirm="handleSaveEdit"
   >
-    <Form
+    <Peng-Form
       ref="editFormRef"
       label-p="top"
       :labelW="80"
@@ -17,10 +17,11 @@
 <script lang="ts" setup>
 import { ref, reactive, PropType, watch, watchEffect } from 'vue';
 import { usePermissionApi } from '@/api';
-import { ElMessage } from 'element-plus';
-import Form, { FormItem } from '@/components/Form';
+import { FormItem } from '@/components/Form';
 import Drawer from '@/components/Drawer';
 import { PermissionData, resourceMethodOptions } from '../';
+import { SelectOptionItem } from '@/components/Select';
+import { useNotificationMsg } from '@/utils/notificationMsg';
 
 const { updateAuthPermInfo } = usePermissionApi();
 
@@ -30,7 +31,7 @@ const props = defineProps({
     require: true,
   },
   permissionCodeOptions: {
-    type: Array as PropType<OptionItem[]>,
+    type: Array as PropType<SelectOptionItem[]>,
   },
 });
 const emits = defineEmits(['updateList']);
@@ -99,25 +100,27 @@ const handleSaveEdit = async () => {
   const [validateMethod, validateProps] = props.editRow!.parentId
     ? ['validate', undefined]
     : ['validateField', ['permissionName']];
+  // prettier-ignore
   const isValidatePass = await editFormRef.value
-    .getRef()
-    [validateMethod](validateProps)
+    .getRef()[validateMethod](validateProps)
     .catch(() => false);
   if (!isValidatePass) return;
   const editRes = await saveEditAuthPermisson();
   if (!editRes) return;
-  editDrawerStatus.value = false;
   emits('updateList');
+  editDrawerStatus.value = false;
 };
 
 // 保存修改数据
 const saveEditAuthPermisson = async (): Promise<boolean> => {
   try {
-    const { id, updateTime, createTime, children, ...params } = editFormState.data;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+    const { id, updateTime, createTime, children, ...params } =
+      editFormState.data;
     const { data: res } = await updateAuthPermInfo<string>(id, params);
     const { code, data, success } = res;
     if (code !== 20001 || !success) return false;
-    ElMessage.success(data);
+    useNotificationMsg('', data);
     return true;
   } catch (e) {
     console.log(e);
@@ -126,11 +129,18 @@ const saveEditAuthPermisson = async (): Promise<boolean> => {
 };
 
 watchEffect(() => {
-  const isEditParent = ['', null, undefined].includes(props.editRow?.permissionCode);
+  const isEditParent = ['', null, undefined].includes(
+    props.editRow?.permissionCode
+  );
 
-  editFormState.formItemList.find(item => item.prop === 'permissionCode')!.isShow = !isEditParent;
-  editFormState.formItemList.find(item => item.prop === 'resourceUrl')!.isShow = !isEditParent;
-  editFormState.formItemList.find(item => item.prop === 'resourceMethod')!.isShow = !isEditParent;
+  editFormState.formItemList.find(
+    item => item.prop === 'permissionCode'
+  )!.isShow = !isEditParent;
+  editFormState.formItemList.find(item => item.prop === 'resourceUrl')!.isShow =
+    !isEditParent;
+  editFormState.formItemList.find(
+    item => item.prop === 'resourceMethod'
+  )!.isShow = !isEditParent;
 });
 
 watch(

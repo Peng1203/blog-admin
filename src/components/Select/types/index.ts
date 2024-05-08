@@ -1,7 +1,12 @@
+export interface SelectOptionItem {
+  label: string | number;
+  value: string | number | boolean | object;
+  disabled?: boolean;
+}
 export interface SelectAttribute {
   modelValue: any;
   width?: string;
-  options: any[];
+  options: SelectOptionItem[];
   size?: SizeEnum;
   placeholder?: string;
   disabled?: boolean;

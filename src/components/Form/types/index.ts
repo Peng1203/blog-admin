@@ -1,3 +1,4 @@
+import { SelectOptionItem } from '@/components/Select';
 import { UploadRequestOptions } from 'element-plus';
 
 export interface FormAttribute {
@@ -52,10 +53,22 @@ export type FormItemEnum =
   | 'upload'
   | 'inputNum';
 
-export type AcceptEnum = '.png' | '.jpg' | '.jpeg' | '.gif' | '.webp' | '.txt' | '.mp3' | '.mp4';
+export type AcceptEnum =
+  | '.png'
+  | '.jpg'
+  | '.jpeg'
+  | '.gif'
+  | '.webp'
+  | '.txt'
+  | '.mp3'
+  | '.mp4';
 
 // 封装表单formItem属性
-export type FormItem<T = any> = BaseFormItem<T> & UploadLimit & InputAttr & SwitchAttr & InputNumAttr;
+export type FormItem<T = any> = BaseFormItem<T> &
+  UploadLimit &
+  InputAttr &
+  SwitchAttr &
+  InputNumAttr;
 
 /** 封装表单formItem基础属性 */
 export interface BaseFormItem<T = any> {
@@ -79,7 +92,7 @@ export interface BaseFormItem<T = any> {
   isShow?: boolean;
   slotName?: string;
   /** 下拉框的数据 复选框数据 */
-  options?: OperationItem[] | RadioItem[];
+  options?: OperationItem[] | RadioItem[] | SelectOptionItem[];
   /** 开启多选 */
   multiple?: boolean;
   /** 宽度 */

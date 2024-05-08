@@ -271,22 +271,16 @@
               :required="required"
               v-show="isShow === undefined ? true : isShow"
             >
-              <el-select
+              <Peng-Select
+                :width="'100%'"
                 :multiple="multiple"
                 :multiple-limit="multipleLimit"
                 :placeholder="placeholder"
                 :disabled="disabled || false"
+                :options="options"
                 v-model="formData[prop]"
-                @change="handleSelectChange($event, prop, i)"
-              >
-                <el-option
-                  v-for="item in options"
-                  :size="size"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
+                @change="$event => handleSelectChange($event, prop, i)"
+              />
             </el-form-item>
           </el-col>
 
@@ -326,7 +320,7 @@
                 :inactive-value="fValue"
                 :inactive-icon="fIcon"
                 :inline-prompt="isInline === undefined ? false : isInline"
-                @change="handleSwitchChange($event, prop, i)"
+                @change="$event => handleSwitchChange($event, prop, i)"
                 v-model="formData[prop]"
               />
               <!-- :style="`--el-switch-on-color: ${tBgColor || '#13ce66'} ; --el-switch-off-color: ${
@@ -606,7 +600,11 @@ const handleSwitchChange = (newVal: any, prop: string, index: number) => {
 };
 
 // 下拉框 切换
-const handleSelectChange = (newVal: any, prop: string, index: number) => {
+const handleSelectChange = (
+  newVal: any,
+  prop: string | number | symbol,
+  index: number
+) => {
   // console.log('switch切换 -----', newVal, prop, index)
   emits('selectChange', { newVal, prop, index });
 };

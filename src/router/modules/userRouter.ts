@@ -23,7 +23,6 @@ const routerRules: RouteRecordRaw[] = [
         name: 'UserList',
         component: () => import('@/views/user/user'),
         meta: {
-          parentMenuName: 'User',
           title: '用户列表',
           isLink: '',
           isHide: false,

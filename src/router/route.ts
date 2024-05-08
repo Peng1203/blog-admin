@@ -28,7 +28,6 @@ declare module 'vue-router' {
     isIframe?: boolean;
     // roles?: string[]
     icon?: string;
-    parentMenuName?: string;
   }
 }
 

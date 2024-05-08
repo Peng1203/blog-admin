@@ -23,7 +23,6 @@ const routerRules: Array<RouteRecordRaw> = [
         name: 'Role',
         component: () => import('@/views/auth/role'),
         meta: {
-          parentMenuName: 'Auth',
           title: '角色管理',
           isLink: '',
           isHide: false,
@@ -39,7 +38,6 @@ const routerRules: Array<RouteRecordRaw> = [
         name: 'Menu',
         component: () => import('@/views/auth/menu'),
         meta: {
-          parentMenuName: 'Auth',
           title: '菜单管理',
           isLink: '',
           isHide: false,
@@ -55,7 +53,6 @@ const routerRules: Array<RouteRecordRaw> = [
         name: 'Permission',
         component: () => import('@/views/auth/authPermission'),
         meta: {
-          parentMenuName: 'Auth',
           title: '权限标识',
           isLink: '',
           isHide: false,

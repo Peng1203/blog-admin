@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3925744 */
-  src: url('iconfont.woff2?t=1710482410267') format('woff2'),
-       url('iconfont.woff?t=1710482410267') format('woff'),
-       url('iconfont.ttf?t=1710482410267') format('truetype');
+  src: url('iconfont.woff2?t=1715139267710') format('woff2'),
+       url('iconfont.woff?t=1715139267710') format('woff'),
+       url('iconfont.ttf?t=1715139267710') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,26 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-jurassic_log:before {
+  content: "\e69e";
+}
+
+.icon-denglurizhi:before {
+  content: "\e679";
+}
+
+.icon-guanlidenglurizhi:before {
+  content: "\ea45";
+}
+
+.icon-a-denglurizhi2:before {
+  content: "\e625";
+}
+
+.icon-audit:before {
+  content: "\eabe";
 }
 
 .icon-huiche:before {

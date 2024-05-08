@@ -7,6 +7,7 @@ import testRouterRules from './modules/testRouter';
 import systemConfigRouterRules from './modules/configRouter';
 import personalRouterRules from './modules/personalRouter';
 import homeRouterRules from './modules/homeRouter';
+import logRouterRules from './modules/logRouter';
 
 /**
  * 需要权限的路由表
@@ -37,6 +38,8 @@ export const allDynamicRoutes: Array<RouteRecordRaw> = [
       ...testRouterRules,
       // 系统设置
       ...systemConfigRouterRules,
+      // 日志
+      ...logRouterRules,
       // 个人中心
       ...personalRouterRules,
     ],

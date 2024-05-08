@@ -5,9 +5,15 @@ type MsgTypeEnum = 'success' | 'warning' | 'info' | 'error';
 type NotificationTypeEnum = 1 | 2;
 
 /**
- * notificationType
- *  1 为ElNotification 通知组件
- *  2 为ElMessage 消息提示组件
+ * @author Peng
+ *
+ * @param {string} title
+ * @param {string} message
+ * @param {MsgTypeEnum} [msgType='success']
+ * @param {NotificationTypeEnum} [notificationType=1]
+ * 1 为ElNotification 通知组件
+ * 2 为ElMessage 消息提示组件
+ * @param {number} [duration=3000]
  */
 export const useNotificationMsg = (
   title: string,

@@ -7,5 +7,6 @@ export * from './role';
 export * from './tag';
 export * from './user';
 export * from './resource';
+export * from './audit';
 
 export * from './types';

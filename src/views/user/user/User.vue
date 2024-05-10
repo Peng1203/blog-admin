@@ -83,6 +83,7 @@
           <el-tag
             ml5
             size="small"
+            :key="role.id"
             v-for="role in row[prop!]"
           >
             {{ role.roleName }}
@@ -126,7 +127,12 @@ import { ElMessage } from 'element-plus';
 import { Delete, Edit } from '@element-plus/icons-vue';
 import { useUserApi } from '@/api/user';
 import { UserData, UserListData } from './types';
-import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
+import Table, {
+  ColumnItem,
+  PageInfo,
+  PageChangeParams,
+  ColumnChangeParams,
+} from '@/components/Table';
 import Search from '@/components/Search';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
 
@@ -233,7 +239,7 @@ const getUserTableData = async () => {
     tableState.data = data.list;
     tableState.pagerInfo.total = data.total;
   } catch (e) {
-    throw e;
+    console.log('e ------', e);
   } finally {
     tableState.loading = false;
   }
@@ -261,7 +267,9 @@ const deleteUser = async (id: number): Promise<boolean> => {
 };
 
 // 引入编辑用户抽屉组件
-const EditUserDrawer = defineAsyncComponent(() => import('./components/EditUser.vue'));
+const EditUserDrawer = defineAsyncComponent(
+  () => import('./components/EditUser.vue')
+);
 const editDrawerRef = ref<RefType>(null);
 const editRow = ref<UserData>();
 // 打开编辑用户信息抽屉
@@ -271,7 +279,9 @@ const handleEditUserInfo = (row: UserData) => {
 };
 
 // 引入添加用户对话框组件
-const AddUserDialog = defineAsyncComponent(() => import('./components/AddUser.vue'));
+const AddUserDialog = defineAsyncComponent(
+  () => import('./components/AddUser.vue')
+);
 const addDialogRef = ref<RefType>(null);
 
 // 按角色过滤
@@ -306,7 +316,9 @@ const handleUpdate = () => {
 };
 
 onMounted(() => {
-  roleStore.getRoleData().then(() => (roleColumns.value = roleStore.roleOption));
+  roleStore
+    .getRoleData()
+    .then(() => (roleColumns.value = roleStore.roleOption));
   getUserTableData();
   // userAuthStore.getAllRoleList();
 });

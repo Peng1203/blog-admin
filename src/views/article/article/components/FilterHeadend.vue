@@ -66,14 +66,9 @@
         <!-- collapse-tags -->
         <!-- <div> -->
         <!-- multiple -->
-        <el-select-v2
-          size="small"
-          class="ml15"
-          style="max-width: 180px"
-          filterable
-          :options="filterState.authorOptions"
-          v-model="filterParams.authorId"
-        />
+
+        <UserSelect v-model="filterParams.authorId" />
+
         <el-link
           type="primary"
           fz11
@@ -107,15 +102,12 @@
               >
                 归档：
               </span> -->
-            <el-date-picker
-              size="small"
-              type="datetimerange"
+            <!-- :key="filterParams.timeVal" -->
+            <DatePicker
+              :type="2"
+              width="200px"
+              format="YYYY-MM-DD"
               range-separator="到"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              style="max-width: 200px"
-              format="YYYY-MM-DD hh:mm:ss"
-              value-format="YYYY-MM-DD hh:mm:ss"
               v-model="filterParams.timeVal"
               @change="handleDateRangeChange"
             />
@@ -157,17 +149,21 @@
 <script setup lang="ts" name="">
 import { ref, reactive, nextTick, onMounted, computed, watch } from 'vue';
 import { FilterHeadendProps } from '../types';
-import { useUsersInfo } from '@/stores/userList';
 import { useUserInfo } from '@/stores/userInfo';
 import { useArticleInfo } from '@/stores/articleInfo';
 import Icon from '@/components/svgIcon/index.vue';
 import Select from '@/components/Select';
 import { ARTICLE } from '@/constants';
+import { UserSelect } from '@/views/user/user';
+import DatePicker from '@/components/Date';
 
 const props = defineProps<FilterHeadendProps>();
-const emits = defineEmits(['update:modelValue', 'resetFilterGetDataList', 'search']);
+const emits = defineEmits([
+  'update:modelValue',
+  'resetFilterGetDataList',
+  'search',
+]);
 
-const usersStore = useUsersInfo();
 const userInfoStore = useUserInfo();
 const articleInfoStore = useArticleInfo();
 
@@ -183,7 +179,7 @@ const filterState = reactive({
   // 标签筛选数据
   tagList: ref<OptionItem[]>([{ label: '全部', value: 0 }]),
   // 作者筛选数据
-  authorOptions: ref<OptionItem[]>([{ label: '全部', value: 0 }]),
+  // authorOptions: ref<OptionItem[]>([{ label: '全部', value: 0 }]),
   // 文章类型筛选数据
   typeOptions: ARTICLE.typeOptions,
   // 文章状态筛选数据
@@ -227,13 +223,17 @@ const optionsInit = async () => {
   await Promise.all([
     articleInfoStore.getCategoryData(),
     articleInfoStore.getTagData(),
-    usersStore.getUserData(),
   ]).catch(() => (filterState.loading = false));
 
   nextTick(() => {
-    filterState.categoryList = [...filterState.categoryList, ...articleInfoStore.categoryOption];
-    filterState.tagList = [...filterState.tagList, ...articleInfoStore.tagOption];
-    filterState.authorOptions = [...filterState.authorOptions, ...usersStore.userOption];
+    filterState.categoryList = [
+      ...filterState.categoryList,
+      ...articleInfoStore.categoryOption,
+    ];
+    filterState.tagList = [
+      ...filterState.tagList,
+      ...articleInfoStore.tagOption,
+    ];
     filterState.loading = false;
   });
 };

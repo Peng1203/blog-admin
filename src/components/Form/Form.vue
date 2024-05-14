@@ -76,6 +76,7 @@
             <!-- 自定义插槽 -->
             <el-form-item
               :prop="prop"
+              :rules="rules"
               :label="label"
               :required="required"
               v-show="isShow === undefined ? true : isShow"
@@ -278,6 +279,7 @@
                 :placeholder="placeholder"
                 :disabled="disabled || false"
                 :options="options"
+                v-bind="args"
                 v-model="formData[prop]"
                 @change="$event => handleSelectChange($event, prop, i)"
               />

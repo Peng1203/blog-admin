@@ -4,7 +4,6 @@ export interface SelectOptionItem {
   disabled?: boolean;
 }
 export interface SelectAttribute {
-  modelValue: any;
   width?: string;
   options: SelectOptionItem[];
   size?: SizeEnum;

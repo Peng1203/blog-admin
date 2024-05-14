@@ -60,5 +60,13 @@ export function useTagApi() {
         method: Method.DELETE,
       });
     },
+    /** 批量删除标签 */
+    batchDeleteTag<T = string>(tagIds: number[]): TransformedResponse<T> {
+      return request({
+        url: '/tag',
+        method: Method.DELETE,
+        data: JSON.stringify({ tagIds }),
+      });
+    },
   };
 }

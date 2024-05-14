@@ -7,29 +7,43 @@
       <!-- 顶部 -->
       <!-- <IconSelector v-model="test" /> -->
       <div class="mb15 flex-sb-c">
-        <el-button
-          size="default"
-          type="success"
-          @click="addDialogRef.addTagDialogStatus = true"
-        >
-          <!-- @click="addAuthDialogRef.addAuthPermissonDialogStatus = true" -->
+        <div>
+          <el-button
+            size="default"
+            type="success"
+            @click="addDialogRef.addTagDialogStatus = true"
+          >
+            <!-- @click="addAuthDialogRef.addAuthPermissonDialogStatus = true" -->
 
-          <Peng-Icon
-            name="icon-tags"
-            class="mr5"
-          />
-          添加标签
-        </el-button>
+            <Peng-Icon
+              name="icon-tags"
+              class="mr5"
+            />
+            添加标签
+          </el-button>
 
-        <Search
+          <el-button
+            size="default"
+            type="danger"
+            :disabled="!tableState.selectVal.length"
+            @click="handleBatchDelete"
+          >
+            <el-icon>
+              <Delete />
+            </el-icon>
+            删 除
+          </el-button>
+        </div>
+
+        <Peng-Search
           placeholder="请输入标签名称"
           :loading="tableState.loading"
           v-model="tableState.queryStr"
           @search="handleSearch"
         />
       </div>
-
-      <Table
+      <Peng-Table
+        is-selection
         operationColumn
         :operationColumnBtns="['edit', 'delete']"
         :isFilterShowColumn="false"
@@ -41,6 +55,7 @@
         @pageNumOrSizeChange="handlePageInfoChange"
         @editBtn="handleEditTag"
         @deleteBtn="handleDelTag"
+        @selectionChange="(value: TagData[]) => (tableState.selectVal = value)"
       >
         <!-- 权限标识名称 权限标识代码 查询高亮 -->
         <template #queryHighNight="{ row, prop }">
@@ -64,7 +79,7 @@
             {{ '未设置图标' }}
           </span>
         </template>
-      </Table>
+      </Peng-Table>
     </el-card>
 
     <!-- 编辑标签抽屉 -->
@@ -84,20 +99,25 @@
 
 <script setup lang="tsx" name="ArticleTag">
 import { defineAsyncComponent, ref, onMounted, reactive } from 'vue';
-import { ElMessage } from 'element-plus';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
-import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
-import Search from '@/components/Search';
+import {
+  ColumnItem,
+  PageInfo,
+  PageChangeParams,
+  ColumnChangeParams,
+} from '@/components/Table';
 import { useTagApi } from '@/api/tag/index';
 import { TagData, TagListData } from './';
 import { useArticleInfo } from '@/stores/articleInfo';
+import { useNotificationMsg } from '@/utils/notificationMsg';
 
-const { getTags, deleteTag } = useTagApi();
+const { getTags, deleteTag, batchDeleteTag } = useTagApi();
 
 const articleInfoStore = useArticleInfo();
 
 // 表格参数
 const tableState = reactive({
+  selectVal: ref<TagData[]>([]),
   loading: false,
   data: ref<TagData[]>([]),
   tableColumns: ref<ColumnItem<TagData>[]>([
@@ -151,7 +171,7 @@ const getTagTableData = async () => {
       pageSize: pagerInfo.pageSize,
     };
     const { data: res } = await getTags<TagListData>(params);
-    const { code, message, data, success } = res;
+    const { code, data, success } = res;
     if (code !== 20000 || !success) return;
     tableState.data = data.list;
     tableState.pagerInfo.total = data.total;
@@ -199,7 +219,7 @@ const deleteTagById = async (id: number): Promise<boolean> => {
     const { data: res } = await deleteTag<string>(id);
     const { code, data, success } = res;
     if (code !== 20000 || !success) return false;
-    ElMessage.success(data);
+    useNotificationMsg('成功', data);
     return true;
   } catch (e) {
     console.log(e);
@@ -207,9 +227,31 @@ const deleteTagById = async (id: number): Promise<boolean> => {
   }
 };
 
+// 批量删除标签
+const deleteTags = async () => {
+  try {
+    const ids = tableState.selectVal.map(tag => tag.id);
+    const { data: res } = await batchDeleteTag<string>(ids);
+    const { code, data, success } = res;
+    if (code !== 20000 || !success) return false;
+    useNotificationMsg('成功', data);
+    return true;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+};
+
+const handleBatchDelete = async () => {
+  const delRes = await deleteTags();
+  if (delRes) handleUpdate();
+};
+
 // 处理编辑标签
 const editRow = ref();
-const EditTagDrawer = defineAsyncComponent(() => import('./components/EditTag.vue'));
+const EditTagDrawer = defineAsyncComponent(
+  () => import('./components/EditTag.vue')
+);
 const editDrawerRef = ref<any>(null);
 const handleEditTag = (row: any) => {
   editRow.value = JSON.parse(JSON.stringify(row));
@@ -217,7 +259,9 @@ const handleEditTag = (row: any) => {
 };
 
 // 处理添加标签
-const AddTagDialog = defineAsyncComponent(() => import('./components/AddTag.vue'));
+const AddTagDialog = defineAsyncComponent(
+  () => import('./components/AddTag.vue')
+);
 const addDialogRef = ref<any>(null);
 
 // 页面加载时

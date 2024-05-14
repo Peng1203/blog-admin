@@ -40,7 +40,7 @@
               v-show="activeStep === 1"
               ref="titleFormRef"
               v-model="articleForm"
-              :formItems="formItemList.slice(0, 1)"
+              :formItems="formItemList"
             />
           </template>
         </StepHeadend>
@@ -62,8 +62,8 @@
           ref="infoFormRef"
           v-show="activeStep === 2"
           v-model="articleForm"
-          :formItemList="formItemList"
         />
+        <!-- :formItemList="formItemList" -->
       </Peng-Skeleton>
     </el-card>
   </div>
@@ -73,7 +73,11 @@
 import { ref, reactive, onMounted } from 'vue';
 import MarkdownEditor from '@/components/MarkdownEditor';
 import { useRoute } from 'vue-router';
-import { AddArticleType, OperationArticleData, ArticleData } from '../article/types';
+import {
+  AddArticleType,
+  OperationArticleData,
+  ArticleData,
+} from '../article/types';
 import { FormItem } from '@/components/Form';
 import AiEditor from '@/components/AiEditor';
 import StepHeadend from './components/StepHeadend.vue';
@@ -88,7 +92,11 @@ const { addArticle, updateArticle, getArticleDetailById } = useArticleApi();
 const userInfoStore = useUserInfo();
 
 const route = useRoute();
-const Title = () => <h1 className="flex-c-c h40px">{route.name === 'WriteArticle' ? '发布文章' : '编辑文章'}</h1>;
+const Title = () => (
+  <h1 className="flex-c-c h40px">
+    {route.name === 'WriteArticle' ? '发布文章' : '编辑文章'}
+  </h1>
+);
 
 const activeStep = ref(1);
 
@@ -185,7 +193,8 @@ const handleAddArticle = async (actionType: 0 | 1) => {
 // 更新文章
 const handleUpdateArticle = async () => {
   try {
-    const { author, id, category, updateTime, createTime, ...args } = articleForm;
+    const { author, id, category, updateTime, createTime, ...args } =
+      articleForm;
     const params = {
       category: category || 0,
       ...args,
@@ -209,7 +218,9 @@ const loadingStatus = ref<boolean>(route.name === 'EditArticle');
 const getArticleDetail = async () => {
   try {
     loadingStatus.value = true;
-    const { data: res } = await getArticleDetailById<ArticleData>(Number(route.params.aid));
+    const { data: res } = await getArticleDetailById<ArticleData>(
+      Number(route.params.aid)
+    );
     const { code, success, data } = res;
     if (code !== 20000 && success) return;
     const { tags, category, author, ...args } = data;

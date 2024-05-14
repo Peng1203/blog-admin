@@ -8,19 +8,19 @@
     <Form
       ref="addFormRef"
       :labelW="'120px'"
-      v-model="addCategoryState.data"
       :formItems="addCategoryState.formItemList"
+      v-model="addCategoryState.data"
     />
   </Dialog>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch } from 'vue';
-import { ElMessage } from 'element-plus';
+import { ref, reactive } from 'vue';
 import Dialog from '@/components/Dialog';
 import Form, { FormItem } from '@/components/Form';
 import { useCategoryApi } from '@/api/category/index';
 import { CategoryData } from '../types';
+import { useNotificationMsg } from '@/utils/notificationMsg';
 
 const { addCategory } = useCategoryApi();
 
@@ -60,14 +60,14 @@ const handleAdd = async () => {
   emits('updateList');
 };
 
-// 添加权限标识
+// 添加分类
 const addNewCategory = async (): Promise<boolean> => {
   try {
     const { categoryName } = addCategoryState.data;
     const { data: res } = await addCategory<CategoryData>({ categoryName });
     const { code, message, success } = res;
     if (code !== 20100 || !success) return false;
-    ElMessage.success(message);
+    useNotificationMsg('成功', message);
     return true;
   } catch (e) {
     console.log(e);

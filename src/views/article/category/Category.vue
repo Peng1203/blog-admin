@@ -132,7 +132,7 @@ const getCategoryTableData = async () => {
       pageSize: pagerInfo.pageSize,
     };
     const { data: res } = await getCategorys<CategoryListDate>(params);
-    const { code, message, data, success } = res;
+    const { code, data, success } = res;
 
     if (code !== 20000 || !success) return;
     tableState.data = data.list;

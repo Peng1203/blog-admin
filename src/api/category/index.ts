@@ -41,7 +41,10 @@ export function useCategoryApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    updateCategory<T>(categoryId: number, params: object): TransformedResponse<T> {
+    updateCategory<T>(
+      categoryId: number,
+      params: object
+    ): TransformedResponse<T> {
       return request({
         url: `/category/${categoryId}`,
         method: Method.PATCH,
@@ -59,6 +62,14 @@ export function useCategoryApi() {
       return request({
         url: `/category/${categoryId}`,
         method: Method.DELETE,
+      });
+    },
+    /** 批量删除标签 */
+    batchDelete<T = string>(categoryIds: number[]): TransformedResponse<T> {
+      return request({
+        url: '/category',
+        method: Method.DELETE,
+        data: JSON.stringify({ categoryIds }),
       });
     },
   };

@@ -6,19 +6,33 @@
     >
       <!-- 顶部 -->
       <div class="mb15 flex-sb-c">
-        <el-button
-          size="default"
-          type="success"
-          @click="addDialogRef.addCategoryDialogStatus = true"
-        >
-          <Peng-Icon
-            name="icon-fenlei"
-            class="mr5"
-          />
-          添加分类
-        </el-button>
+        <div>
+          <el-button
+            size="default"
+            type="success"
+            @click="addDialogRef.addCategoryDialogStatus = true"
+          >
+            <Peng-Icon
+              name="icon-fenlei"
+              class="mr5"
+            />
+            添加分类
+          </el-button>
 
-        <Search
+          <el-button
+            size="default"
+            type="danger"
+            :disabled="!tableState.selectVal.length"
+            @click="handleBatchDelete"
+          >
+            <el-icon>
+              <Delete />
+            </el-icon>
+            删 除
+          </el-button>
+        </div>
+
+        <Peng-Search
           placeholder="请输入分类名称"
           :loading="tableState.loading"
           v-model="tableState.queryStr"
@@ -26,7 +40,8 @@
         />
       </div>
 
-      <Table
+      <Peng-Table
+        is-selection
         operationColumn
         :operationColumnBtns="['edit', 'delete']"
         :isFilterShowColumn="false"
@@ -38,6 +53,7 @@
         @pageNumOrSizeChange="handlePageInfoChange"
         @editBtn="handleEditCategory"
         @deleteBtn="handleDelCategory"
+        @selectionChange="value => (tableState.selectVal = value)"
       >
         <!-- 权限标识名称 权限标识代码 查询高亮 -->
         <template #queryHighNight="{ row, prop }">
@@ -48,7 +64,7 @@
             />
           </div>
         </template>
-      </Table>
+      </Peng-Table>
     </el-card>
 
     <!-- 编辑分类抽屉 -->
@@ -68,25 +84,25 @@
 
 <script setup lang="ts" name="ArticleCategory">
 import { defineAsyncComponent, ref, onMounted, reactive } from 'vue';
-import { ElMessage } from 'element-plus';
-import Table, {
+import {
   ColumnItem,
   PageInfo,
   PageChangeParams,
   ColumnChangeParams,
 } from '@/components/Table';
-import Search from '@/components/Search';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
 import { useCategoryApi } from '@/api/category/index';
 import { CategoryData, CategoryListDate } from './types';
 import { useArticleInfo } from '@/stores/articleInfo';
+import { useNotificationMsg } from '@/utils/notificationMsg';
 
-const { getCategorys, deleteCategory } = useCategoryApi();
+const { getCategorys, deleteCategory, batchDelete } = useCategoryApi();
 
 const articleInfoStore = useArticleInfo();
 
 // 表格参数
 const tableState = reactive({
+  selectVal: ref<CategoryData[]>([]),
   loading: false,
   data: ref<CategoryData[]>([]),
   tableColumns: ref<ColumnItem<CategoryData>[]>([
@@ -167,7 +183,7 @@ const handleColumnChange = ({ column, order }: ColumnChangeParams) => {
 // 处理删除分类
 const handleDelCategory = async (row: CategoryData) => {
   const delRes = await deleteCategoryById(row.id);
-  if (delRes) getCategoryTableData();
+  if (delRes) handleUpdate();
 };
 
 // 删除分类
@@ -176,12 +192,31 @@ const deleteCategoryById = async (id: number): Promise<boolean> => {
     const { data: res } = await deleteCategory<string>(id);
     const { code, data, success } = res;
     if (code !== 20000 || !success) return false;
-    ElMessage.success(data);
+    useNotificationMsg('成功', data);
     return true;
   } catch (e) {
     console.log(e);
     return false;
   }
+};
+
+const deleteCategorys = async () => {
+  try {
+    const ids = tableState.selectVal.map(({ id }) => id);
+    const { data: res } = await batchDelete<string>(ids);
+    const { code, data, success } = res;
+    if (code !== 20000 || !success) return false;
+    useNotificationMsg('成功', data);
+    return true;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+};
+
+const handleBatchDelete = async () => {
+  const delRes = await deleteCategorys();
+  if (delRes) handleUpdate();
 };
 
 // 处理编辑分类

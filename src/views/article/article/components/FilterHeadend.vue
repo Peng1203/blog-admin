@@ -167,7 +167,7 @@ const emits = defineEmits([
 const userInfoStore = useUserInfo();
 const articleInfoStore = useArticleInfo();
 
-const filterParams = computed({
+let filterParams = computed({
   get: () => props.modelValue,
   set: (val: any) => emits('update:modelValue', val),
 });

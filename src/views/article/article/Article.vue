@@ -72,7 +72,7 @@ import { ElNotification } from 'element-plus';
 const router = useRouter();
 const { getArticles, delArticle } = useArticleApi();
 
-const filterParams = reactive<FilterParamsInfo>({
+let filterParams = reactive<FilterParamsInfo>({
   queryStr: '',
   type: 0,
   status: 0,
@@ -256,7 +256,7 @@ onMounted(() => {
   position: absolute;
 }
 
-::v-deep .is-horizontal {
+:deep(.is-horizontal) {
   height: 0px;
   left: 0px;
   display: none;

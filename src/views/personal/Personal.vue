@@ -15,7 +15,13 @@
             class="user-info-skeleton-container flex-sb-c"
             v-if="loading"
           >
-            <el-skeleton style="--el-skeleton-circle-size: 140px; width: auto; margin-right: 10px">
+            <el-skeleton
+              style="
+                --el-skeleton-circle-size: 140px;
+                width: auto;
+                margin-right: 10px;
+              "
+            >
               <template #template>
                 <el-skeleton-item variant="circle" />
               </template>
@@ -235,7 +241,9 @@
             <div class="personal-edit-safe-item">
               <div class="personal-edit-safe-item-left">
                 <div class="personal-edit-safe-item-left-label">账户密码</div>
-                <div class="personal-edit-safe-item-left-value">当前密码强度：强</div>
+                <div class="personal-edit-safe-item-left-value">
+                  当前密码强度：强
+                </div>
               </div>
               <div class="personal-edit-safe-item-right">
                 <el-button
@@ -337,7 +345,14 @@
 </template>
 
 <script setup lang="ts" name="personal">
-import { ref, reactive, computed, onMounted, watch, defineAsyncComponent } from 'vue';
+import {
+  ref,
+  reactive,
+  computed,
+  onMounted,
+  watch,
+  defineAsyncComponent,
+} from 'vue';
 import { formatAxis } from '@/utils/formatTime';
 // import { Plus } from '@element-plus/icons-vue'
 import { useUserInfo } from '@/stores/userInfo';
@@ -348,7 +363,8 @@ import { AddEditUserType } from '../user/user';
 
 const { userInfos, userLogout } = useUserInfo();
 
-const defaultAvatar = 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png';
+const defaultAvatar =
+  'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png';
 
 // 登录客户端信息
 const clientInfo: ClientInfo = Local.get('clientInfo');
@@ -511,7 +527,9 @@ watch(
   }
 );
 
-const UploadAvatarDialog = defineAsyncComponent(() => import('./components/UploadAvatarDialog.vue'));
+const UploadAvatarDialog = defineAsyncComponent(
+  () => import('./components/UploadAvatarDialog.vue')
+);
 const uploadAvatarDialogRef = ref<RefType>();
 const handleShowChangeAvatarDialog = () => {
   uploadAvatarDialogRef.value.dialogState = true;
@@ -529,7 +547,7 @@ onMounted(async () => {});
   display: block;
 }
 
-.personal ::v-deep .avatar-uploader-icon {
+.personal :deep(.avatar-uploader-icon) {
   width: 130px;
   height: 130px;
 }

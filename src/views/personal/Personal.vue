@@ -249,7 +249,7 @@
                 <el-button
                   text
                   type="primary"
-                  @click="changePwdState.dialogState = true"
+                  @click="handleShowChangePasswordDialog"
                 >
                   立即修改
                 </el-button>
@@ -308,60 +308,22 @@
       </el-col>
     </el-row>
 
-    <Peng-Dialog
-      title="修改密码"
-      width="40%"
-      v-model="changePwdState.dialogState"
-    >
-      <template #main>
-        <Peng-Form
-          labelW="150px"
-          ref="changePwdFormRef"
-          v-model="changePwdState.dataForm"
-          :formItems="changePwdState.formItems"
-        />
-      </template>
-
-      <!-- 操作 -->
-      <template #footer>
-        <el-button
-          size="default"
-          @click="changePwdState.dialogState = false"
-        >
-          取 消
-        </el-button>
-        <el-button
-          type="primary"
-          size="default"
-          @click="handleChangePwd"
-        >
-          确 认
-        </el-button>
-      </template>
-    </Peng-Dialog>
+    <ChangePasswordDialog ref="changePasswordDialogRef" />
 
     <UploadAvatarDialog ref="uploadAvatarDialogRef" />
   </div>
 </template>
 
 <script setup lang="ts" name="personal">
-import {
-  ref,
-  reactive,
-  computed,
-  onMounted,
-  watch,
-  defineAsyncComponent,
-} from 'vue';
+import { ref, reactive, computed, defineAsyncComponent } from 'vue';
 import { formatAxis } from '@/utils/formatTime';
-// import { Plus } from '@element-plus/icons-vue'
 import { useUserInfo } from '@/stores/userInfo';
 import { Local } from '@/utils/storage';
 import { FormItem } from '@/components/Form';
 import { ClientInfo } from '@/views/login';
 import { AddEditUserType } from '../user/user';
 
-const { userInfos, userLogout } = useUserInfo();
+const { userInfos } = useUserInfo();
 
 const defaultAvatar =
   'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png';
@@ -457,76 +419,7 @@ const handleUpdatePersonalInfo = () => {
 // 更新用户个人信息
 const saveEditUserInfo = async () => {};
 
-const changePwdState = reactive({
-  dialogState: ref<boolean>(false),
-  dataForm: {
-    oldPassword: '',
-    newPassword: '',
-    confirmNewPassword: '',
-  },
-  formItems: ref<FormItem[]>([
-    {
-      span: 20,
-      type: 'pwd',
-      label: '旧密码',
-      prop: 'oldPassword',
-      placeholder: '请输入旧密码',
-      rules: [{ required: true, trigger: 'blur', min: 6, max: 15 }],
-    },
-    {
-      span: 20,
-      type: 'pwd',
-      label: '新密码',
-      prop: 'newPassword',
-      placeholder: '请输入输入新密码',
-      rules: [{ required: true, trigger: 'blur', min: 6, max: 15 }],
-    },
-    {
-      span: 20,
-      type: 'pwd',
-      label: '确认密码',
-      prop: 'confirmNewPassword',
-      placeholder: '请输入再一次输入新密码',
-      rules: [{ required: true, trigger: 'blur', min: 6, max: 15 }],
-    },
-    {
-      span: 20,
-      type: 'slot',
-      label: '',
-      prop: '',
-      slotName: 'updataPwd',
-    },
-  ]),
-});
-const changePwdFormRef = ref<any>(null);
-// 处理修改密码
-const handleChangePwd = async () => {
-  const validRes = await changePwdFormRef.value
-    .getRef()
-    .validate()
-    .catch(() => false);
-  if (!validRes) return;
-  // const changeRes = await changePwd()
-  // if (!changeRes) return
-  changePwdState.dialogState = false;
-
-  setTimeout(() => {
-    userLogout();
-  }, 2000);
-};
-watch(
-  () => changePwdState.dialogState,
-  val => {
-    if (val) return;
-    changePwdFormRef.value.getRef().resetFields();
-    changePwdState.dataForm = {
-      oldPassword: '',
-      newPassword: '',
-      confirmNewPassword: '',
-    };
-  }
-);
-
+// 更新用户头像
 const UploadAvatarDialog = defineAsyncComponent(
   () => import('./components/UploadAvatarDialog.vue')
 );
@@ -535,7 +428,14 @@ const handleShowChangeAvatarDialog = () => {
   uploadAvatarDialogRef.value.dialogState = true;
 };
 
-onMounted(async () => {});
+// 修改密码
+const ChangePasswordDialog = defineAsyncComponent(
+  () => import('./components/ChangePasswordDialog.vue')
+);
+const changePasswordDialogRef = ref<RefType>();
+const handleShowChangePasswordDialog = () => {
+  changePasswordDialogRef.value.dialogState = true;
+};
 </script>
 
 <style scoped lang="scss">

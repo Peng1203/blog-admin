@@ -82,7 +82,7 @@ export function useUserApi() {
       file: FormData
     ): TransformedResponse<string> {
       return request({
-        url: `/user/avater/${userId}`,
+        url: `/user/${userId}/avater`,
         method: Method.POST,
         data: file,
         headers: {
@@ -93,10 +93,13 @@ export function useUserApi() {
     /**
      * 修改用户密码
      */
-    changeUserPwd(userId: number, params: object) {
+    changePassword(
+      userId: number,
+      params: object
+    ): TransformedResponse<string> {
       return request({
-        url: `/user/changePasswordById/${userId}`,
-        method: Method.POST,
+        url: `/user/${userId}/password`,
+        method: Method.PUT,
         data: params,
       });
     },

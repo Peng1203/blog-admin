@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import Cropper, { CropperData } from '@/components/Cropper';
+import Cropper from '@/components/Cropper';
 import {
   ElUpload,
   UploadFile,
@@ -96,8 +96,6 @@ const handleExceed: UploadProps['onExceed'] = files => {
   file.uid = genFileId();
   uploadRef.value!.handleStart(file);
 };
-
-const handleCropperChange = (data: CropperData) => {};
 
 const handleOpenDialog = () =>
   (imgDateUrl.value = userInfos.userAvatar || defaultAvatar);

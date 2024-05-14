@@ -124,7 +124,6 @@ import { defineAsyncComponent, reactive, onMounted, ref } from 'vue';
 import { useRolesInfo } from '@/stores/roleList';
 import { useUsersInfo } from '@/stores/userList';
 import { ElMessage } from 'element-plus';
-import { Delete, Edit } from '@element-plus/icons-vue';
 import { useUserApi } from '@/api/user';
 import { UserData, UserListData } from './types';
 import Table, {

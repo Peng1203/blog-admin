@@ -17,12 +17,13 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue';
 import { useUserApi } from '@/api/user';
-import { ElMessage, UploadRawFile } from 'element-plus';
+import { UploadRawFile } from 'element-plus';
 import { FormItem } from '@/components/Form';
 import { passwordStrengthLevelDetection } from '@/utils/pwd';
 import { UserData, AddProps, AddEditUserType } from '../types';
 import { UploadRequestOptions } from 'element-plus';
 import { passwordEncryption } from '@/utils/encryption';
+import { useNotificationMsg } from '@/utils/notificationMsg';
 
 const props = defineProps<AddProps>();
 
@@ -167,9 +168,9 @@ const addNewUser = async (): Promise<boolean> => {
       password: passwordEncryption(password!),
     };
     const { data: res } = await addUser<UserData>(params as any);
-    const { code, message, data, success } = res;
+    const { code, message, success } = res;
     if (code !== 20100 || !success) return false;
-    ElMessage.success(message);
+    useNotificationMsg('', message);
     return true;
   } catch (e) {
     console.log(e);
@@ -184,7 +185,6 @@ const handleUploadAvatar = async (file: UploadRawFile) => {
     fileFormData.append('file', file);
 
     const { data: res } = await uploadAvatar(fileFormData);
-    console.log('res ------', res);
     formData.value.userAvatar = res.data;
   } catch (e) {
     console.log('e', e);

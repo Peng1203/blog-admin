@@ -541,9 +541,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
 import { FormAttribute, UploadLimit } from './types';
 import { UploadRawFile, ElMessage, ElForm } from 'element-plus';
+import { useComponentRef } from '@/composables/useComponentRef';
 // FormInstance
 const formData = defineModel();
 
@@ -591,7 +591,9 @@ withDefaults(defineProps<FormAttribute>(), {
 //   },
 // });
 
-const formRef = ref<InstanceType<typeof ElForm>>();
+// const formRef = ref<InstanceType<typeof ElForm>>();
+const formRef = useComponentRef(ElForm);
+
 // 获取Form表单的Ref
 const getRef = () => formRef.value;
 

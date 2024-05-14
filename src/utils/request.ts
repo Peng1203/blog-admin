@@ -1,7 +1,12 @@
 import qs from 'qs';
-import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
+import axios, {
+  AxiosInstance,
+  InternalAxiosRequestConfig,
+  AxiosError,
+  AxiosResponse,
+} from 'axios';
 import { ElLoading } from 'element-plus';
-import { Session, Local } from '@/utils/storage';
+import { Session } from '@/utils/storage';
 import { handleRefreshACToken } from './refreshToken';
 import router from '@/router';
 import { useNotificationMsg } from './notificationMsg';
@@ -74,7 +79,8 @@ service.interceptors.response.use(
     }
 
     // 请求超时 取消请求
-    if (code === 'ECONNABORTED') return useNotificationMsg('', '请求超时', 'error');
+    if (code === 'ECONNABORTED')
+      return useNotificationMsg('', '请求超时', 'error');
     else if (code === 'ERR_NETWORK' || message === 'Network Error')
       return useNotificationMsg('', '服务器连接错误!', 'error', 2);
 
@@ -94,7 +100,8 @@ service.interceptors.response.use(
             break;
           case 40104:
             // 当退出登录接口超时不再从新请求 直接返回登录页
-            if (response?.data.path.includes('logout')) return router.push({ name: 'login' });
+            if (response?.data.path.includes('logout'))
+              return router.push({ name: 'login' });
 
             // token过期触发的401 存在2种情况 access_token过期 refresh_token过期
             // 根据接口中的 错误信息判断
@@ -112,6 +119,7 @@ service.interceptors.response.use(
             // ElMessage.error(data.message);
             return router.push({ name: 'login', query: { code: 40105 } });
           case 40106:
+            // 密码不正确
             useNotificationMsg('登录失败!', data.message, 'error');
             // ElMessage.error(data.message);
             return router.push({ name: 'login' });

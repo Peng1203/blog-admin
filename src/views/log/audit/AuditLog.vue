@@ -18,9 +18,11 @@
         />
       </div>
       <Peng-Table
+        :stripe="false"
         isFilterShowColumn
         :data="tableState.data"
         :loading="tableState.loading"
+        :row-class-name="tableRowStatus"
         :pagerInfo="tableState.pagerInfo"
         :columns="tableState.tableColumns"
         @pageNumOrSizeChange="handlePagerChange"
@@ -93,7 +95,7 @@ const tableState = reactive({
     {
       label: '请求资源',
       prop: 'router',
-      minWidth: 100,
+      minWidth: 130,
       fixed: 'left',
       tooltip: true,
     },
@@ -104,12 +106,12 @@ const tableState = reactive({
       fixed: 'left',
       slotName: 'methodSlot',
     },
-    {
-      label: '操作状态',
-      prop: 'operationStatus',
-      minWidth: 100,
-      slotName: 'operStatusSlot',
-    },
+    // {
+    //   label: '操作状态',
+    //   prop: 'operationStatus',
+    //   minWidth: 100,
+    //   slotName: 'operStatusSlot',
+    // },
     {
       label: '状态码',
       prop: 'statusCode',
@@ -154,7 +156,7 @@ const tableState = reactive({
     {
       label: 'IP',
       prop: 'ip',
-      minWidth: 100,
+      minWidth: 130,
     },
     // {
     //   label: '用户ID',
@@ -227,9 +229,11 @@ const handleMethodTagText = (value: any) => {
   return resourceMethodOptions.find(item => item.value === value)!.label;
 };
 
+const tableRowStatus = ({ row }: { row: AuditLogData }) => {
+  return row.operationStatus ? 'success-row' : 'fail-row';
+};
+
 onMounted(() => {
   getDataList();
 });
 </script>
-
-<style scoped lang="scss"></style>

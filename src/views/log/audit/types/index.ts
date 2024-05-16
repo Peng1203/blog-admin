@@ -9,7 +9,7 @@ export interface AuditLogData {
   responseTime: string;
   requestQueryParams: string;
   requestBodyParams: string;
-  operationStatus: number;
+  operationStatus: 0 | 1;
   errMessage?: any;
   description: string;
   createTime: string;

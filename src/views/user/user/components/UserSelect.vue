@@ -2,7 +2,6 @@
   <!-- 绑定key 用于通知视图更新 -->
   <Peng-Select
     width="120px"
-    size="small"
     :key="userId"
     :options="userOptions"
     v-model="userId"
@@ -13,6 +12,7 @@
 <script setup lang="ts">
 import { PropType, computed, onMounted, ref } from 'vue';
 import { useUsersInfo } from '@/stores/userList';
+import { storeToRefs } from 'pinia';
 
 const model = defineModel({ required: true, type: Number as PropType<number> });
 
@@ -30,13 +30,15 @@ const props = defineProps({
   },
 });
 
-const { getUserData, userOption } = useUsersInfo();
+const store = useUsersInfo();
+
+const { userOption } = storeToRefs(store);
 
 const userOptions = ref<OptionItem[]>([{ label: '全部', value: 0 }]);
 const getUserOptions = async () => {
   try {
-    await getUserData();
-    userOptions.value = [...userOptions.value, ...userOption];
+    await store.getUserData();
+    userOptions.value = [...userOptions.value, ...userOption.value];
   } catch (e) {
     console.log('e', e);
   }

@@ -41,7 +41,7 @@
           />
         </div>
 
-        <Search
+        <Peng-Search
           placeholder="用户名 / 昵称"
           v-model="tableState.queryStr"
           :loading="tableState.loading"
@@ -49,7 +49,7 @@
         />
       </div>
       <!-- 用户表格 -->
-      <Table
+      <Peng-Table
         isSelection
         operationColumn
         :operationColumnBtns="['edit', 'delete']"
@@ -100,7 +100,7 @@
             {{ row[prop!] ? '启用' : '锁定' }}
           </el-tag>
         </template>
-      </Table>
+      </Peng-Table>
     </el-card>
     <!-- 添加用户对话框 -->
     <AddUserDialog
@@ -123,17 +123,16 @@
 import { defineAsyncComponent, reactive, onMounted, ref } from 'vue';
 import { useRolesInfo } from '@/stores/roleList';
 import { useUsersInfo } from '@/stores/userList';
-import { ElMessage } from 'element-plus';
 import { useUserApi } from '@/api/user';
 import { UserData, UserListData } from './types';
-import Table, {
+import {
   ColumnItem,
   PageInfo,
   PageChangeParams,
   ColumnChangeParams,
 } from '@/components/Table';
-import Search from '@/components/Search';
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
+import { useNotificationMsg } from '@/utils/notificationMsg';
 
 const { getUsers, deleteUserById, deleteUsers } = useUserApi();
 
@@ -257,7 +256,7 @@ const deleteUser = async (id: number): Promise<boolean> => {
     const { data: res } = await deleteUserById<string>(id);
     const { code, message, data, success } = res;
     if (code !== 20000 || !success) return false;
-    ElMessage.success(data);
+    useNotificationMsg(message, data);
     return true;
   } catch (e) {
     console.log(e);
@@ -301,7 +300,7 @@ const batchDel = async (): Promise<boolean> => {
     const { data: res } = await deleteUsers(tableState.selectVal);
     const { code, message, data, success } = res;
     if (code !== 20000 || !success) return false;
-    ElMessage.success(message);
+    useNotificationMsg(message, data);
     return true;
   } catch (e) {
     console.log(e);

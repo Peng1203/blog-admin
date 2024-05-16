@@ -1,12 +1,14 @@
 <template>
   <el-table
+    ref="tableRef"
     style="width: 100%"
+    v-bind="$attrs"
     v-loading="props.loading"
     row-key="id"
     :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
     :stripe="props.stripe"
     :border="props.border"
-    :data="props.data"
+    :data="tableData"
     :size="props.size"
     :empty-text="props.emptyText"
     :default-expand-all="props.defaultExpandAll"
@@ -29,7 +31,20 @@
     <template
       :key="i"
       v-for="(
-        { label, prop, width, minWidth, sort, tooltip, fixed, align, slotName, childrenColumns, classNname }, i
+        {
+          label,
+          prop,
+          width,
+          minWidth,
+          sort,
+          tooltip,
+          fixed,
+          align,
+          slotName,
+          childrenColumns,
+          classNname,
+        },
+        i
       ) in tableColumns"
     >
       <!-- 自定义某列 -->
@@ -42,7 +57,9 @@
         :min-width="minWidth"
         :class-name="classNname"
         :show-overflow-tooltip="tooltip"
-        :fixed="deviceClientType === 'pc' ? fixed : fixed === 'left' ? false : fixed"
+        :fixed="
+          deviceClientType === 'pc' ? fixed : fixed === 'left' ? false : fixed
+        "
         :align="align || 'left'"
       >
         <template #default="scope">
@@ -222,9 +239,11 @@
 </template>
 
 <script lang="ts" setup generic="T">
-import { ref, reactive, watch, onMounted, inject } from 'vue';
+import { ref, reactive, watch, onMounted, inject, computed } from 'vue';
 import { ColumnItem, TableAttribute } from './types';
 import { Plus, Edit, Delete, View } from '@element-plus/icons-vue';
+import { useComponentRef } from '@/composables/useComponentRef';
+import { ElTable } from 'element-plus';
 
 const deviceClientType = inject('deviceClientType');
 
@@ -274,6 +293,8 @@ const emits = defineEmits([
   'viewBtn',
 ]);
 
+const tableRef = useComponentRef(ElTable);
+
 // 表格展示的 columns
 let tableColumns = ref<ColumnItem[]>([]);
 
@@ -287,7 +308,9 @@ watch(
   () => props.isFilterShowColumn,
   val => {
     if (!val) return;
-    props.columns.forEach(({ label, prop }) => prop && filterList.push({ text: label, value: prop }));
+    props.columns.forEach(
+      ({ label, prop }) => prop && filterList.push({ text: label, value: prop })
+    );
   },
   {
     deep: true,
@@ -295,12 +318,20 @@ watch(
   }
 );
 
+const tableData = computed(() => props.data);
+
 // column排序
 type OrderProp = {
   ascending: string;
   descending: string;
 };
-const handleColumnSort = ({ prop, order }: { prop: string; order: keyof OrderProp }) => {
+const handleColumnSort = ({
+  prop,
+  order,
+}: {
+  prop: string;
+  order: keyof OrderProp;
+}) => {
   const orderProp: OrderProp = {
     ascending: 'ASC',
     descending: 'DESC',
@@ -316,12 +347,14 @@ const handleColumnSort = ({ prop, order }: { prop: string; order: keyof OrderPro
  * 分页器
  */
 // 默认可选的page大小列表
-const defaultPageSizeList = [10, 30, 50, 100, 200];
+const defaultPageSizeList = [1, 5, 10, 30, 50, 100, 200];
 const handleFilterTable = (filters: any) => {
   const { filter } = filters;
 
   if (!filter.length) return (tableColumns.value = props.columns);
-  tableColumns.value = props.columns.filter((column: ColumnItem) => !filter.includes(column.prop));
+  tableColumns.value = props.columns.filter(
+    (column: ColumnItem) => !filter.includes(column.prop)
+  );
 };
 const Page = ref<number>(0);
 const PageSize = ref<number>(0);
@@ -376,8 +409,67 @@ const handleEditBtn = (row: any) => emits('editBtn', row);
 const handleDelBtn = (row: any) => emits('deleteBtn', row);
 const handleView = (row: any) => emits('viewBtn', row);
 
+const tableContenDom = ref<RefType<HTMLDivElement>>();
+// 设置滚轮控制表格x轴滚动 (当不存在y轴滚动条时)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+const setXScrollWhell = () => {
+  tableContenDom.value = document.querySelector<HTMLDivElement>(
+    '.blog-table .el-table__inner-wrapper .el-table__body-wrapper'
+  );
+  tableContenDom.value.addEventListener('wheel', handleWhell);
+};
+const xScorllToValue = ref<number>(0);
+const handleWhell = (event: WheelEvent) => {
+  // console.log('event ------', event, event.deltaY);
+  const dom = tableContenDom.value;
+
+  // 实际内容的容器
+  const dateContentDom = document.querySelector('.el-table__body');
+  const { clientWidth, clientHeight } = dateContentDom;
+
+  // 当没有出现横向滚动条时 则不生效
+  if (clientWidth <= dom.clientWidth) return;
+
+  // 当容器存在x轴滚动条时 则不生效
+  if (clientHeight > dom.clientHeight) return;
+
+  // event.deltaY 滚轮下滚动 为 100 上滚动为 -100
+  // 当横向滚动 处于最右侧 只能接收负值
+  if (xScorllToValue.value >= clientWidth - fixedTotalWidth.value) {
+    if (event.deltaY < 0) {
+      xScorllToValue.value += event.deltaY;
+    }
+  } else if (xScorllToValue.value <= 0) {
+    // 只能接收正值
+    if (event.deltaY > 0) {
+      xScorllToValue.value += event.deltaY;
+    }
+  } else {
+    xScorllToValue.value += event.deltaY;
+  }
+
+  tableRef.value.setScrollLeft(xScorllToValue.value);
+};
+// 计算出表格 fixed 的列 宽总和
+const fixedTotalWidth = computed({
+  get: () => {
+    let totalWidth = 0;
+    tableColumns.value.forEach(item => {
+      if (item.fixed) {
+        const width = item?.minWidth || item.width;
+        totalWidth += Number(width);
+      }
+    });
+
+    return totalWidth + 120;
+  },
+  set: () => {},
+});
+
 onMounted(() => {
   tableColumns.value = props.columns;
+
+  // setXScrollWhell();
 });
 </script>
 
@@ -387,3 +479,12 @@ onMounted(() => {
     <template #default="props"> {{ props.row }} </template>
   </el-table-column>
 </template> -->
+
+<style lang="scss">
+.el-table .fail-row {
+  --el-table-tr-bg-color: rgba(244, 67, 54, 0.1);
+}
+.el-table .success-row {
+  --el-table-tr-bg-color: rgba(76, 175, 80, 0.1);
+}
+</style>

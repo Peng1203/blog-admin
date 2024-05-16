@@ -12,5 +12,20 @@ export function useAuditApi() {
         params,
       });
     },
+    /** 通过ID删除审计记录 */
+    deleteById<T = string>(id: number): TransformedResponse<T> {
+      return request({
+        url: `/audit/${id}`,
+        method: Method.DELETE,
+      });
+    },
+    /** 批量删除审计记录 */
+    deletes<T = string>(ids: number[]): TransformedResponse<T> {
+      return request({
+        url: `/audit`,
+        method: Method.DELETE,
+        data: JSON.stringify({ ids }),
+      });
+    },
   };
 }

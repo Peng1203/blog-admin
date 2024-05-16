@@ -5,11 +5,26 @@
       class="layout-padding-auto"
     >
       <div class="mb15 flex-sb-c">
-        <UserSelect
-          v-model="tableState.userId"
-          :otherOptions="[{ label: '未知', value: -1 }]"
-          @change="getDataList"
-        />
+        <div>
+          <UserSelect
+            v-model="tableState.userId"
+            :otherOptions="[{ label: '未知', value: -1 }]"
+            @change="getDataList"
+          />
+
+          <el-button
+            ml10
+            size="default"
+            type="danger"
+            :disabled="!tableState.selectVal.length"
+            @click="handleDelete({} as any, 2)"
+          >
+            <el-icon>
+              <Delete />
+            </el-icon>
+            删 除
+          </el-button>
+        </div>
 
         <DatePicker
           :type="2"
@@ -18,14 +33,20 @@
         />
       </div>
       <Peng-Table
-        :stripe="false"
+        isSelection
+        operationColumn
         isFilterShowColumn
+        :stripe="false"
         :data="tableState.data"
         :loading="tableState.loading"
         :row-class-name="tableRowStatus"
         :pagerInfo="tableState.pagerInfo"
         :columns="tableState.tableColumns"
+        :operationColumnWidth="60"
+        :operationColumnBtns="['delete']"
+        @deleteBtn="row => handleDelete(row, 1)"
         @pageNumOrSizeChange="handlePagerChange"
+        @selectionChange="(val: any) => tableState.selectVal = val.map((item: any)=> item.id)"
       >
         <!-- 请求方式 -->
         <template #methodSlot="{ row, prop }">
@@ -80,10 +101,12 @@ import DatePicker from '@/components/Date';
 import { AuditLogData, AuditLogListData } from './types';
 import { resourceMethodOptions } from '@/views/auth/authPermission';
 import UserSelect from '@/views/user/user/components/UserSelect.vue';
+import { useNotificationMsg } from '@/utils/notificationMsg';
 
-const { getAuditLogs } = useAuditApi();
+const { getAuditLogs, deleteById, deletes } = useAuditApi();
 
 const tableState = reactive({
+  selectVal: ref<number[]>([]),
   loading: false,
   data: <AuditLogData[]>[],
   tableColumns: ref<ColumnItem<AuditLogData>[]>([
@@ -231,6 +254,39 @@ const handleMethodTagText = (value: any) => {
 
 const tableRowStatus = ({ row }: { row: AuditLogData }) => {
   return row.operationStatus ? 'success-row' : 'fail-row';
+};
+
+const handleDelete = async (row: AuditLogData, type: 1 | 2) => {
+  const delRes = type === 1 ? await deleteAudit(row.id) : await batchDelete();
+  if (!delRes) return;
+  getDataList();
+};
+
+const deleteAudit = async (id: number) => {
+  try {
+    const { data: res } = await deleteById(id);
+    const { code, message, data, success } = res;
+
+    if (code !== 20000 || !success) return false;
+    useNotificationMsg(message, data);
+    return true;
+  } catch (e) {
+    console.log('e', e);
+    return false;
+  }
+};
+
+const batchDelete = async () => {
+  try {
+    const { data: res } = await deletes(tableState.selectVal);
+    const { code, message, data, success } = res;
+    if (code !== 20000 || !success) return false;
+    useNotificationMsg(message, data);
+    return true;
+  } catch (e) {
+    console.log('e', e);
+    return false;
+  }
 };
 
 onMounted(() => {

@@ -42,7 +42,6 @@
         :row-class-name="tableRowStatus"
         :pagerInfo="tableState.pagerInfo"
         :columns="tableState.tableColumns"
-        :operationColumnWidth="60"
         :operationColumnBtns="['delete']"
         @deleteBtn="row => handleDelete(row, 1)"
         @pageNumOrSizeChange="handlePagerChange"

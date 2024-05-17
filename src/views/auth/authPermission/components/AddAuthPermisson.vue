@@ -1,6 +1,6 @@
 <template>
   <Dialog
-    title="添加权限标识"
+    :title="props.parentId ? '添加权限标识' : '创建权限分组'"
     v-model="addAuthPermissonDialogStatus"
     @clickConfirm="handleAdd"
     @dialogClose="handleDialogClose"
@@ -51,9 +51,9 @@ const addAuthState = reactive({
   formItemList: ref<FormItem<PermissionData>[]>([
     {
       type: 'input',
-      label: '标识名称',
+      label: '名称',
       prop: 'permissionName',
-      placeholder: '请输入权限标识名称',
+      placeholder: '',
       rules: [{ required: true, trigger: 'blur' }],
     },
     {
@@ -154,6 +154,11 @@ watchEffect(() => {
   addAuthState.formItemList.find(
     item => item.prop === 'resourceMethod'
   )!.isShow = props.parentId !== 0;
+
+  addAuthPermissonDialogStatus.value &&
+    (addAuthState.formItemList.find(
+      item => item.prop === 'permissionCode'
+    ).options = props.permissionCodeOptions);
 });
 
 defineExpose({ addAuthPermissonDialogStatus });

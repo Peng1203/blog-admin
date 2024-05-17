@@ -1,6 +1,6 @@
 <template>
   <Drawer
-    :title="'修改权限标识信息'"
+    :title="editRow.parentId ? '修改权限标识信息' : '修改权限分组信息'"
     v-model="editDrawerStatus"
     @clickConfirm="handleSaveEdit"
   >
@@ -55,9 +55,9 @@ const editFormState = reactive({
   formItemList: ref<FormItem<PermissionData>[]>([
     {
       type: 'input',
-      label: '标识名称',
+      label: '名称',
       prop: 'permissionName',
-      placeholder: '请输入权限标识名称',
+      placeholder: '',
       rules: [{ required: true, trigger: 'blur' }],
     },
     {
@@ -141,6 +141,11 @@ watchEffect(() => {
   editFormState.formItemList.find(
     item => item.prop === 'resourceMethod'
   )!.isShow = !isEditParent;
+
+  editDrawerStatus.value &&
+    (editFormState.formItemList.find(
+      item => item.prop === 'permissionCode'
+    ).options = props.permissionCodeOptions);
 });
 
 watch(

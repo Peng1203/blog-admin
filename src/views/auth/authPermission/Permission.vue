@@ -12,7 +12,7 @@
           @click="handleAddPermission(0)"
         >
           <i class="iconfont icon-permissions-o" />
-          添加权限标识
+          创建权限分组
         </el-button>
 
         <Peng-Search
@@ -238,11 +238,11 @@ const AddAuthPermissonDialog = defineAsyncComponent(
 );
 const addAuthDialogRef = ref<RefType>(null);
 
-const handleUpdate = () => {
-  getAuthPermissionTableData();
+const handleUpdate = async () => {
+  permissionStore.getPermissionData(true);
+  await getAuthPermissionTableData();
   // 更新下拉数据的 禁用状态
   getPermissionCodeOptions();
-  permissionStore.getPermissionData(true);
 };
 
 const handleMethodTagColor = (value: any) => {

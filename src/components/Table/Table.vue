@@ -1,7 +1,6 @@
 <template>
   <el-table
     ref="tableRef"
-    style="width: 100%"
     v-bind="$attrs"
     v-loading="props.loading"
     row-key="id"
@@ -136,7 +135,7 @@
       label="操作"
       fixed="right"
       align="center"
-      :width="props.operationColumnWidth || 45 * operationColumnBtns.length"
+      :width="operationColumnWidth"
       v-if="props.operationColumn"
     >
       <template #default="scope">
@@ -238,8 +237,16 @@
   />
 </template>
 
-<script lang="ts" setup generic="T">
-import { ref, reactive, watch, onMounted, inject, computed } from 'vue';
+<script setup lang="ts" generic="T">
+import {
+  ref,
+  reactive,
+  watch,
+  onMounted,
+  inject,
+  computed,
+  onUnmounted,
+} from 'vue';
 import { ColumnItem, TableAttribute } from './types';
 import { Plus, Edit, Delete, View } from '@element-plus/icons-vue';
 import { useComponentRef } from '@/composables/useComponentRef';
@@ -298,6 +305,13 @@ const tableRef = useComponentRef(ElTable);
 // 表格展示的 columns
 let tableColumns = ref<ColumnItem[]>([]);
 
+// 操作列的宽度
+const operationColumnWidth = computed<number>(() => {
+  const width =
+    props.operationColumnWidth || 45 * props.operationColumnBtns.length;
+  return width > 60 ? width : 60;
+});
+
 // 过滤数据
 interface filterItem {
   text: string;
@@ -347,7 +361,7 @@ const handleColumnSort = ({
  * 分页器
  */
 // 默认可选的page大小列表
-const defaultPageSizeList = [1, 5, 10, 30, 50, 100, 200];
+const defaultPageSizeList = [5, 10, 30, 50, 100, 200];
 const handleFilterTable = (filters: any) => {
   const { filter } = filters;
 
@@ -410,14 +424,41 @@ const handleDelBtn = (row: any) => emits('deleteBtn', row);
 const handleView = (row: any) => emits('viewBtn', row);
 
 const tableContenDom = ref<RefType<HTMLDivElement>>();
+// 计算出表格 fixed 的列 宽总和
+const fixedTotalWidth = computed<number>({
+  get: () => {
+    let totalWidth = 0;
+    tableColumns.value.forEach(item => {
+      if (item.fixed) {
+        const width = item?.minWidth || item.width;
+        totalWidth += Number(width);
+      }
+    });
+
+    return (
+      totalWidth +
+      (props.isSelection ? 45 : 0) +
+      (props.isFilterShowColumn ? 30 : 0) +
+      operationColumnWidth.value
+    );
+  },
+  set: () => {},
+});
 // 设置滚轮控制表格x轴滚动 (当不存在y轴滚动条时)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+const WHEEL_EVENT = 'wheel';
 const setXScrollWhell = () => {
-  tableContenDom.value = document.querySelector<HTMLDivElement>(
-    '.blog-table .el-table__inner-wrapper .el-table__body-wrapper'
+  const rootDom = tableRef.value.$el as HTMLDivElement;
+  tableContenDom.value = rootDom.querySelector<HTMLDivElement>(
+    '.el-table__inner-wrapper .el-table__body-wrapper'
   );
-  tableContenDom.value.addEventListener('wheel', handleWhell);
+
+  tableContenDom.value.addEventListener(WHEEL_EVENT, handleWhell);
 };
+
+const clearXScrollWhell = () =>
+  tableContenDom.value.removeEventListener(WHEEL_EVENT, handleWhell);
+
 const xScorllToValue = ref<number>(0);
 const handleWhell = (event: WheelEvent) => {
   // console.log('event ------', event, event.deltaY);
@@ -450,27 +491,13 @@ const handleWhell = (event: WheelEvent) => {
 
   tableRef.value.setScrollLeft(xScorllToValue.value);
 };
-// 计算出表格 fixed 的列 宽总和
-const fixedTotalWidth = computed({
-  get: () => {
-    let totalWidth = 0;
-    tableColumns.value.forEach(item => {
-      if (item.fixed) {
-        const width = item?.minWidth || item.width;
-        totalWidth += Number(width);
-      }
-    });
-
-    return totalWidth + 120;
-  },
-  set: () => {},
-});
 
 onMounted(() => {
   tableColumns.value = props.columns;
-
-  // setXScrollWhell();
+  setXScrollWhell();
 });
+
+onUnmounted(() => clearXScrollWhell());
 </script>
 
 <!-- expand 展开column 插槽 -->

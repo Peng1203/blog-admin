@@ -44,6 +44,9 @@ dependencies:
   element-plus:
     specifier: ^2.5.1
     version: 2.5.1(vue@3.4.27)
+  file-saver:
+    specifier: ^2.0.5
+    version: 2.0.5
   js-cookie:
     specifier: ^3.0.5
     version: 3.0.5
@@ -94,6 +97,9 @@ devDependencies:
   '@types/event-source-polyfill':
     specifier: ^1.0.5
     version: 1.0.5
+  '@types/file-saver':
+    specifier: ^2.0.7
+    version: 2.0.7
   '@types/lodash':
     specifier: ^4.14.202
     version: 4.14.202
@@ -1769,6 +1775,10 @@ packages:
     resolution: {integrity: sha512-iaiDuDI2aIFft7XkcwMzDWLqo7LVDixd2sR6B4wxJut9xcp/Ev9bO4EFg4rm6S9QxATLBj5OPxdeocgmhjwKaw==}
     dev: true
 
+  /@types/file-saver@2.0.7:
+    resolution: {integrity: sha512-dNKVfHd/jk0SkR/exKGj2ggkB45MAkzvWCaqLUUgkyjITkGNzH8H+yUwr+BLJUBjZOe9w8X3wgmXhZDRg1ED6A==}
+    dev: true
+
   /@types/hast@3.0.3:
     resolution: {integrity: sha512-2fYGlaDy/qyLlhidX42wAH0KBi2TCjKMH8CHmBXgRlJ3Y+OXTiqsPQ6IWarZKwF1JoUcAJdPogv1d4b0COTpmQ==}
     dependencies:
@@ -3418,6 +3428,10 @@ packages:
     dependencies:
       flat-cache: 3.2.0
     dev: true
+
+  /file-saver@2.0.5:
+    resolution: {integrity: sha512-P9bmyZ3h/PRG+Nzga+rbdI4OEpNDzAVyy74uVO9ATgzLK6VtAsYybF/+TOCvrc0MO793d6+42lLyZTw7/ArVzA==}
+    dev: false
 
   /fill-range@7.0.1:
     resolution: {integrity: sha512-qOo9F+dMUmC2Lcb4BbVvnKJxTPjCm+RRpe4gDuGrzkL7mEVl/djYSu2OdQ2Pa302N4oqkSg9ir6jaLWJ2USVpQ==}

@@ -23,6 +23,7 @@
     "dayjs": "^1.11.10",
     "echarts": "^5.4.3",
     "element-plus": "^2.5.1",
+    "file-saver": "^2.0.5",
     "js-cookie": "^3.0.5",
     "lodash": "^4.17.21",
     "md-editor-v3": "^4.11.0",
@@ -41,6 +42,7 @@
   },
   "devDependencies": {
     "@types/event-source-polyfill": "^1.0.5",
+    "@types/file-saver": "^2.0.7",
     "@types/lodash": "^4.14.202",
     "@types/node": "^18.19.8",
     "@types/nprogress": "^0.2.3",

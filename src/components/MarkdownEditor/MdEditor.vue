@@ -24,8 +24,8 @@ import '@vavt/md-editor-extension/dist/previewTheme/arknights.css';
 import { allToolbars, commonToolbars } from './config/index';
 import { MarkdownEditorAttibute } from './types';
 import { useComponentRef } from '@/composables/useComponentRef';
-import { onMounted, nextTick } from 'vue';
-import { compressImage, imageToBase64 } from '@/utils/file';
+import { onMounted, onUnmounted, ref } from 'vue';
+import { blobToFile, compressImage } from '@/utils/file';
 
 const model = defineModel({ type: String });
 
@@ -36,7 +36,12 @@ const toolbarConfigHashMapping = {
   common: commonToolbars,
 };
 
-const emit = defineEmits(['update:modelValue', 'uploadImg', 'fastSave']);
+const emit = defineEmits([
+  'update:modelValue',
+  'uploadImg',
+  'fastSave',
+  'pasteUploadImg',
+]);
 
 const props = withDefaults(defineProps<MarkdownEditorAttibute>(), {
   toolbarModel: 'common',
@@ -48,54 +53,92 @@ const props = withDefaults(defineProps<MarkdownEditorAttibute>(), {
   height: '400px',
 });
 
-// 上传图片事件
-const handleUploadImg = async (
-  files: File[],
-  cb: (urls: Array<string>) => void
-) => emit('uploadImg', files, cb);
+// 工具栏上传图片事件
+// cb: (urls: Array<string>) => void
+const handleUploadImg = async (files: File[]) => {
+  console.log(
+    `%c files ----`,
+    'color: #fff;background-color: #000;font-size: 18px',
+    files
+  );
+  // emit('uploadImg', files, cb);
+  for (let i = 0; i < files.length; i++) {
+    handlePasteUploadImg(files[i], ['Files']);
+  }
+};
 
 // ctrl + s 保存事件
 const handleDownSave = async (val: string, html: Promise<string>) =>
   html.then(htmlVal => emit('fastSave', val, htmlVal));
 
+const inputEl = ref<RefType<HTMLDivElement>>();
+const PASTE_EVENT = 'paste';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 const addPasteUploadImg = () => {
-  const inputEl = mdEditorRef.value.$el.querySelector(
+  inputEl.value = mdEditorRef.value.$el.querySelector(
     '.md-editor-input-wrapper'
   );
 
-  inputEl.addEventListener('paste', (event: ClipboardEvent) => {
-    console.log('触发了 paste 事件------', event);
-    const { clipboardData } = event;
-    const { types, files, items } = clipboardData;
-    console.log('types ------', types);
-    console.log('files ------', files);
-    console.log('items ------', items);
+  if (!inputEl.value) return;
 
-    // 粘贴内容是否为文件
-    if (!types.includes('Files')) return;
-    // 粘贴文件是否为图片
-    if (!files[0].type.includes('image')) return;
+  inputEl.value.addEventListener(PASTE_EVENT, pasteUploadImgCb);
+};
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+const removePasteUploadImg = () => {
+  if (!inputEl.value) return;
+  inputEl.value.removeEventListener(PASTE_EVENT, pasteUploadImgCb);
+};
 
-    handlePasteUploadImg(files[0]);
+// 粘贴事件回调处理
+const pasteUploadImgCb = async (event: ClipboardEvent) => {
+  const { clipboardData } = event;
+  const { types, files } = clipboardData;
+  // console.log('types ------', types);
+  // console.log('files ------', files);
+  // console.log('items ------', items);
+
+  for (let i = 0; i < files.length; i++) {
+    handlePasteUploadImg(files[i], types);
+  }
+};
+
+// 触发通知父组件上传图片
+const handlePasteUploadImg = async (file: File, types: readonly string[]) => {
+  // 粘贴内容是否为文件
+  if (!types.includes('Files')) return;
+  // 粘贴文件是否为图片
+  if (!file.type.includes('image')) return;
+
+  // 压缩图片
+  const compressFile = (await compressImage(file)) as Blob;
+  // blob转换为file
+  const newFile = blobToFile(compressFile);
+
+  emit('pasteUploadImg', {
+    file: newFile,
+    cb: (imgUrl: string) => insterImageContent(imgUrl),
   });
 };
 
-const handlePasteUploadImg = async (file: File) => {
-  console.log(
-    `%c 粘贴文件信息 ----`,
-    'color: #fff;background-color: #000;font-size: 18px',
-    file
-  );
-  compressImage(file);
-
-  console.time('转换耗时');
-  const base64Img = await imageToBase64(file);
-  // console.log('base64Img ------', base64Img);
-  console.timeEnd('转换耗时');
+// 在光标处插入图片
+const insterImageContent = content => {
+  (mdEditorRef.value as any).insert(() => {
+    return {
+      targetValue: `![](${content})\n`,
+      select: false,
+      deviationStart: 0,
+      deviationEnd: 0,
+    };
+  });
 };
 
 onMounted(() => {
-  addPasteUploadImg();
+  // addPasteUploadImg();
+});
+
+onUnmounted(() => {
+  // removePasteUploadImg();
 });
 </script>
 

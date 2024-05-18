@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import { TransformedResponse, RequestListParams } from 'Api';
+import { TransformedResponse } from 'Api';
 import { Method } from '../types';
 
 export function useArticleApi() {
@@ -54,7 +54,11 @@ export function useArticleApi() {
      * @param {any} data:object
      * @returns {any}
      */
-    updateArticle<T>(authorId: number, articleId: number, data: object): TransformedResponse<T> {
+    updateArticle<T>(
+      authorId: number,
+      articleId: number,
+      data: object
+    ): TransformedResponse<T> {
       return request({
         url: `/article/${authorId}/${articleId}`,
         method: Method.PATCH,
@@ -76,6 +80,19 @@ export function useArticleApi() {
       return request({
         url: `/article/${authorId}/${articleId}`,
         method: Method.DELETE,
+      });
+    },
+    /**
+     * 上传文章图片资源
+     */
+    uploadImage<T = string>(file: FormData): TransformedResponse<T> {
+      return request({
+        url: `/article/image`,
+        method: Method.POST,
+        data: file,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
     },
   };

@@ -55,6 +55,7 @@
           placeholder="请输入文章内容"
           :is="editorMapping[articleForm.contentModel]"
           @fastSave="handleFastSave"
+          @pasteUploadImg="handlePasteUploadImg"
         />
 
         <!-- 文章信息表单 -->
@@ -70,7 +71,7 @@
 </template>
 
 <script setup lang="tsx" name="WriteArticle">
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, computed } from 'vue';
 import MarkdownEditor from '@/components/MarkdownEditor';
 import { useRoute } from 'vue-router';
 import {
@@ -87,15 +88,17 @@ import { useArticleApi } from '@/api';
 import { ElMessage } from 'element-plus';
 import { useNotificationMsg } from '@/utils/notificationMsg';
 
-const { addArticle, updateArticle, getArticleDetailById } = useArticleApi();
+const { addArticle, updateArticle, getArticleDetailById, uploadImage } =
+  useArticleApi();
 
 const userInfoStore = useUserInfo();
 
 const route = useRoute();
+
+// 是否是编辑模式
+const isEdit = computed<boolean>(() => route.name !== 'WriteArticle');
 const Title = () => (
-  <h1 className="flex-c-c h40px">
-    {route.name === 'WriteArticle' ? '发布文章' : '编辑文章'}
-  </h1>
+  <h1 className="flex-c-c h40px">{isEdit.value ? '编辑文章' : '发布文章'}</h1>
 );
 
 const activeStep = ref(1);
@@ -209,8 +212,9 @@ const handleUpdateArticle = async () => {
   }
 };
 
+// ctrl + s 快捷更新 只针对于 已创建文章 编辑时生效
 const handleFastSave = () => {
-  handleUpdateArticle();
+  if (isEdit.value) handleUpdateArticle();
 };
 
 const loadingStatus = ref<boolean>(route.name === 'EditArticle');
@@ -247,6 +251,33 @@ const editArticleInit = () => {
       return;
     }
     getArticleDetail();
+  }
+};
+
+const handlePasteUploadImg = async ({
+  file,
+  cb,
+}: {
+  file: File;
+  cb: Function;
+}) => {
+  const imgUrl = await handleUploadImage(file);
+  if (!imgUrl) return;
+  cb(imgUrl);
+};
+
+const handleUploadImage = async (file: File): Promise<string> => {
+  try {
+    const formData = new FormData();
+
+    formData.append('file', file);
+    const { data: res } = await uploadImage(formData);
+    const { data, message, code, success } = res;
+    if (!success || code !== 20100) return;
+    return data;
+  } catch (e) {
+    console.log('e', e);
+    return '';
   }
 };
 

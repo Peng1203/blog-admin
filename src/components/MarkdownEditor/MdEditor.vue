@@ -12,12 +12,16 @@
       v-bind="$attrs"
       @onUploadImg="handleUploadImg"
       @onSave="handleDownSave"
-    />
+    >
+      <template #defToolbars>
+        <EmojiExtension :onInsert="insert" />
+      </template>
+    </MdEditor>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { MdEditor } from 'md-editor-v3';
+import { InsertContentGenerator, MdEditor } from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 // 引入公共库中的预览主题
 import '@vavt/md-editor-extension/dist/previewTheme/arknights.css';
@@ -26,6 +30,7 @@ import { MarkdownEditorAttibute } from './types';
 import { useComponentRef } from '@/composables/useComponentRef';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { blobToFile, compressImage } from '@/utils/file';
+import EmojiExtension from './components/Emoji';
 
 const model = defineModel({ type: String });
 
@@ -42,6 +47,10 @@ const emit = defineEmits([
   'fastSave',
   'pasteUploadImg',
 ]);
+
+const insert = (generator: InsertContentGenerator) => {
+  (<any>mdEditorRef.value).insert(generator);
+};
 
 const props = withDefaults(defineProps<MarkdownEditorAttibute>(), {
   toolbarModel: 'common',

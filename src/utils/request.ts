@@ -6,7 +6,7 @@ import axios, {
   AxiosResponse,
 } from 'axios';
 import { ElLoading } from 'element-plus';
-import { Session } from '@/utils/storage';
+import { Local, Session } from '@/utils/storage';
 import { handleRefreshACToken } from './refreshToken';
 import router from '@/router';
 import { useNotificationMsg } from './notificationMsg';
@@ -100,8 +100,8 @@ service.interceptors.response.use(
             break;
           case 40104:
             // 当退出登录接口超时不再从新请求 直接返回登录页
-            if (response?.data.path.includes('logout'))
-              return router.push({ name: 'login' });
+            // prettier-ignore
+            if (response?.data.path.includes('logout')) return router.push({ name: 'login' });
 
             // token过期触发的401 存在2种情况 access_token过期 refresh_token过期
             // 根据接口中的 错误信息判断
@@ -116,6 +116,9 @@ service.interceptors.response.use(
           case 40105:
             // 该情况为 refresh_token 过期 直接返回登录页
             useNotificationMsg('身份信息失效', data.message, 'error');
+            // 清除 token 信息
+            Local.clearRFToken();
+            Session.clearACToken();
             // ElMessage.error(data.message);
             return router.push({ name: 'login', query: { code: 40105 } });
           case 40106:

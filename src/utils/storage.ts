@@ -51,6 +51,10 @@ export const Local = {
   setRFToken(rf_token: string): void {
     Local.set('refresh_token', rf_token);
   },
+  /** 清除刷新token */
+  clearRFToken() {
+    Local.remove('refresh_token');
+  },
   /**
    * 获取 用户信息
    */
@@ -104,6 +108,9 @@ export const Session = {
    */
   setACToken(ac_token: string): void {
     Session.set('access_token', ac_token);
+  },
+  clearACToken(): void {
+    Session.remove('access_token');
   },
 };
 

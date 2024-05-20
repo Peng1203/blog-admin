@@ -8,5 +8,6 @@ export * from './tag';
 export * from './user';
 export * from './resource';
 export * from './audit';
+export * from './log';
 
 export * from './types';

@@ -38,7 +38,11 @@
         <template #suffix>
           <i
             class="iconfont el-input__icon login-content-password"
-            :class="loginState.isShowPassword ? 'icon-yincangmima' : 'icon-xianshimima'"
+            :class="
+              loginState.isShowPassword
+                ? 'icon-yincangmima'
+                : 'icon-xianshimima'
+            "
             @click="loginState.isShowPassword = !loginState.isShowPassword"
           ></i>
         </template>
@@ -195,10 +199,20 @@ const handleUserLogin = async () => {
     await loginFormRef.value.validate();
     loginState.loading.signIn = true;
     // 调用后端验证码校验接口
-    const { user, tokens, clientInfo } = await getLoginUserInfo();
+    const {
+      user,
+      tokens,
+      clientInfo,
+      loginTime,
+      ip,
+      location: locationInfo,
+    } = await getLoginUserInfo();
     if (!user || !tokens) return;
 
     userInfoStore.userInfos = user;
+    Local.set('ip', ip);
+    Local.set('locationInfo', JSON.parse(locationInfo));
+    Local.set('loginTime', loginTime);
     Local.set('clientInfo', clientInfo);
     Local.setRFToken(tokens.refresh_token);
     Session.setACToken(tokens.access_token);

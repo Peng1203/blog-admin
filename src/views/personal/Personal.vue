@@ -53,80 +53,32 @@
                   {{ userInfos.nickName || userInfos.userName }}
                   <!-- ，生活变的再糟糕，也不妨碍我变得更好！ -->
                 </el-col>
-                <el-col :span="24">
+
+                <!-- <el-tag
+                  ml5
+                  size="small"
+                  :key="role.id"
+                  v-for="role of userInfos.roles"
+                >
+                  {{ role.roleName }}
+                </el-tag> -->
+
+                <el-col
+                  :span="24"
+                  :key="i"
+                  v-for="(itemRow, i) of personalInfoItemMapping"
+                >
                   <el-row>
                     <el-col
                       :xs="24"
                       :sm="8"
+                      :key="i + j"
                       class="personal-item mb6"
+                      v-for="(item, j) of itemRow"
                     >
-                      <div class="personal-item-label">昵称：</div>
+                      <div class="personal-item-label">{{ item.label }}：</div>
                       <div class="personal-item-value">
-                        {{ userInfos.nickName || userInfos.userName }}
-                      </div>
-                    </el-col>
-                    <el-col
-                      :xs="24"
-                      :sm="16"
-                      class="personal-item mb6"
-                    >
-                      <div class="personal-item-label">身份：</div>
-                      <div class="personal-item-value">
-                        <el-tag
-                          ml5
-                          size="small"
-                          :key="role.id"
-                          v-for="role of userInfos.roles"
-                        >
-                          {{ role.roleName }}
-                        </el-tag>
-                      </div>
-                    </el-col>
-                  </el-row>
-                </el-col>
-                <el-col :span="24">
-                  <el-row>
-                    <el-col
-                      :xs="24"
-                      :sm="8"
-                      class="personal-item mb6"
-                    >
-                      <div class="personal-item-label">登录IP：</div>
-                      <!-- <div class="personal-item-value">{{ clientInfo.ip }}</div> -->
-                      <div class="personal-item-value">{{ '--' }}</div>
-                    </el-col>
-                    <el-col
-                      :xs="24"
-                      :sm="16"
-                      class="personal-item mb6"
-                    >
-                      <div class="personal-item-label">登录时间：</div>
-                      <div class="personal-item-value">
-                        {{ '--' }}
-                      </div>
-                    </el-col>
-                  </el-row>
-                </el-col>
-                <el-col :span="24">
-                  <el-row>
-                    <el-col
-                      :xs="24"
-                      :sm="8"
-                      class="personal-item mb6"
-                    >
-                      <div class="personal-item-label">浏览器信息：</div>
-                      <div class="personal-item-value">
-                        {{ `${clientInfo.browser} ${clientInfo.version}` }}
-                      </div>
-                    </el-col>
-                    <el-col
-                      :xs="24"
-                      :sm="16"
-                      class="personal-item mb6"
-                    >
-                      <div class="personal-item-label">操作系统：</div>
-                      <div class="personal-item-value">
-                        {{ clientInfo.os }}
+                        <span v-html="item.value()" />
                       </div>
                     </el-col>
                   </el-row>
@@ -328,8 +280,41 @@ const { userInfos } = useUserInfo();
 const defaultAvatar =
   'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png';
 
+//
+//
+const personalInfoItemMapping = [
+  [
+    { label: '用户名', value: () => userInfos.userName || '--' },
+    { label: '昵称', value: () => userInfos.nickName || userInfos.userName },
+    {
+      label: '身份',
+      value: () => userInfos.roles.map(role => role.roleName),
+    },
+  ],
+  [
+    {
+      label: '位置信息',
+      value: () =>
+        `${locationInfo.country}${locationInfo.province}${locationInfo.city}`,
+    },
+    { label: '登录IP', value: () => ip },
+    { label: '登录时间', value: () => loginTime || '--' },
+  ],
+  [
+    { label: '设备信息', value: () => clientInfo.deviceTypes },
+    { label: '操作系统', value: () => clientInfo.os },
+    {
+      label: '浏览器信息',
+      value: () => `${clientInfo.browser} ${clientInfo.version}`,
+    },
+  ],
+];
+
 // 登录客户端信息
 const clientInfo: ClientInfo = Local.get('clientInfo');
+const ip = Local.get('ip');
+const locationInfo = Local.get('locationInfo');
+const loginTime = Local.get('loginTime');
 
 // 定义变量内容
 const state = reactive({
@@ -664,3 +649,4 @@ const handleShowChangePasswordDialog = () => {
   text-align: center;
 }
 </style>
+{'}'}{'>'}{'}'}

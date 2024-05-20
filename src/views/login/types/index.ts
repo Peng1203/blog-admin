@@ -11,9 +11,12 @@ export interface ClientInfo {
 }
 export interface LoginData {
   user: UserData;
+  ip: string;
+  location: string;
+  loginTime: string;
+  clientInfo: ClientInfo;
   tokens: {
     access_token: string;
     refresh_token: string;
   };
-  clientInfo: ClientInfo;
 }

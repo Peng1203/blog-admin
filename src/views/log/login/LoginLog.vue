@@ -97,7 +97,7 @@ import { useLoginAuditApi } from '@/api';
 import { getFromNow } from '@/utils/date';
 import { ColumnItem, PageChangeParams, PageInfo } from '@/components/Table';
 import DatePicker from '@/components/Date';
-import { AuditLogData, AuditLogListData } from './types';
+import { LoginAuditLogData, LoginAuditLogListData } from './types';
 import { resourceMethodOptions } from '@/views/auth/authPermission';
 import UserSelect from '@/views/user/user/components/UserSelect.vue';
 import { useNotificationMsg } from '@/utils/notificationMsg';
@@ -107,64 +107,60 @@ const { getLoginAuditLogs, deleteById, deletes } = useLoginAuditApi();
 const tableState = reactive({
   selectVal: ref<number[]>([]),
   loading: false,
-  data: <AuditLogData[]>[],
-  tableColumns: ref<ColumnItem<AuditLogData>[]>([
+  data: <LoginAuditLogData[]>[],
+  tableColumns: ref<ColumnItem<LoginAuditLogData>[]>([
     // {
     //   label: 'ID',
     //   prop: 'id',
     //   minWidth: 100,
     // },
     {
-      label: '请求资源',
-      prop: 'router',
+      label: '用户名',
+      prop: 'userName',
       minWidth: 130,
-      fixed: 'left',
       tooltip: true,
     },
     {
-      label: '请求方式',
-      prop: 'method',
+      label: '设备',
+      prop: 'device',
       minWidth: 100,
-      fixed: 'left',
-      slotName: 'methodSlot',
     },
-    // {
-    //   label: '操作状态',
-    //   prop: 'operationStatus',
-    //   minWidth: 100,
-    //   slotName: 'operStatusSlot',
-    // },
     {
       label: '状态码',
-      prop: 'statusCode',
+      prop: 'loginStatus',
       minWidth: 100,
     },
     {
-      label: '响应耗时 (ms)',
-      prop: 'responseTime',
+      label: '失败原因',
+      prop: 'failureReason',
+      minWidth: 150,
+    },
+    {
+      label: '登录时长',
+      prop: 'loginDuration',
       minWidth: 120,
     },
     {
-      label: '请求查询参数',
-      prop: 'requestQueryParams',
+      label: '登录地点',
+      prop: 'location',
       minWidth: 120,
       tooltip: true,
     },
     {
-      label: '请求主体参数',
-      prop: 'requestBodyParams',
+      label: '登录方式',
+      prop: 'loginMethod',
       minWidth: 120,
       tooltip: true,
     },
     {
-      label: '错误消息',
-      prop: 'errMessage',
+      label: '浏览器',
+      prop: 'browser',
       width: 130,
       tooltip: true,
     },
     {
-      label: '描述',
-      prop: 'description',
+      label: '操作系统',
+      prop: 'os',
       width: 130,
       tooltip: true,
     },
@@ -180,20 +176,14 @@ const tableState = reactive({
       prop: 'ip',
       minWidth: 130,
     },
-    // {
-    //   label: '用户ID',
-    //   prop: 'userId',
-    //   minWidth: 100,
-    // },
     {
-      label: '用户',
-      prop: 'userName',
-      minWidth: 80,
-      fixed: 'right',
+      label: '用户ID',
+      prop: 'userId',
+      minWidth: 100,
     },
     {
-      label: '请求于',
-      prop: 'createTime',
+      label: '登录时间',
+      prop: 'loginTime',
       minWidth: 100,
       slotName: 'requestTimeSlot',
       fixed: 'right',
@@ -225,7 +215,9 @@ const getDataList = async () => {
       startTime,
       endTime,
     };
-    const { data: res } = await getLoginAuditLogs<AuditLogListData>(params);
+    const { data: res } = await getLoginAuditLogs<LoginAuditLogListData>(
+      params
+    );
     const { code, data, success } = res;
     if (code !== 20000 || !success) return;
     tableState.data = data.list;
@@ -251,11 +243,11 @@ const handleMethodTagText = (value: any) => {
   return resourceMethodOptions.find(item => item.value === value)!.label;
 };
 
-const tableRowStatus = ({ row }: { row: AuditLogData }) => {
-  return row.operationStatus ? 'success-row' : 'fail-row';
+const tableRowStatus = ({ row }: { row: LoginAuditLogData }) => {
+  return row.loginStatus === 1 ? 'success-row' : 'fail-row';
 };
 
-const handleDelete = async (row: AuditLogData, type: 1 | 2) => {
+const handleDelete = async (row: LoginAuditLogData, type: 1 | 2) => {
   const delRes = type === 1 ? await deleteAudit(row.id) : await batchDelete();
   if (!delRes) return;
   getDataList();

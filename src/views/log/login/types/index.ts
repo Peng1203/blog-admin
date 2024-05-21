@@ -1,20 +1,20 @@
 import { ListApiBaseResponse } from 'Api';
-export interface AuditLogData {
+export interface LoginAuditLogData {
   id: number;
-  method: RequestMethodEnum;
-  router: string;
-  ip: string;
+  userName: string;
+  userId?: any;
+  device: string;
+  location: string;
+  loginStatus: number;
+  failureReason: string;
   userAgent: string;
-  statusCode: number;
-  responseTime: string;
-  requestQueryParams: string;
-  requestBodyParams: string;
-  operationStatus: 0 | 1;
-  errMessage?: any;
-  description: string;
-  createTime: string;
-  userId: number | null;
-  userName: string | null;
+  loginDuration: string;
+  loginMethod: string;
+  browser: string;
+  os: string;
+  loginTime: string;
+  logoutTime: string;
+  ip: string;
 }
 
 export enum RequestMethodEnum {
@@ -25,4 +25,4 @@ export enum RequestMethodEnum {
   PATCH = 5,
 }
 
-export type AuditLogListData = ListApiBaseResponse<AuditLogData>;
+export type LoginAuditLogListData = ListApiBaseResponse<LoginAuditLogData>;

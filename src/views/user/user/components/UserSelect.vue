@@ -16,6 +16,19 @@ import { storeToRefs } from 'pinia';
 
 const model = defineModel({ required: true, type: Number as PropType<number> });
 
+type BindValue = 'id' | 'name';
+
+const props = defineProps({
+  otherOptions: {
+    type: Array as PropType<OptionItem[]>,
+    default: () => [],
+  },
+  bindValue: {
+    type: String as PropType<BindValue>,
+    default: 'id',
+  },
+});
+
 const emit = defineEmits(['change']);
 
 const userId = computed({
@@ -23,22 +36,25 @@ const userId = computed({
   set: newVal => (model.value = newVal),
 });
 
-const props = defineProps({
-  otherOptions: {
-    type: Array as PropType<OptionItem[]>,
-    default: () => [],
-  },
-});
-
 const store = useUsersInfo();
 
-const { userOption } = storeToRefs(store);
+const { userOption, userList } = storeToRefs(store);
 
 const userOptions = ref<OptionItem[]>([{ label: '全部', value: 0 }]);
 const getUserOptions = async () => {
   try {
     await store.getUserData();
-    userOptions.value = [...userOptions.value, ...userOption.value];
+    if (props.bindValue === 'id') {
+      userOptions.value = [...userOptions.value, ...userOption.value];
+    } else {
+      userOptions.value = [
+        ...userOptions.value,
+        ...userList.value.map(user => ({
+          label: user.userName,
+          value: user.userName,
+        })),
+      ];
+    }
   } catch (e) {
     console.log('e', e);
   }

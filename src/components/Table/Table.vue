@@ -42,6 +42,7 @@
           slotName,
           childrenColumns,
           classNname,
+          ...args
         },
         i
       ) in tableColumns"
@@ -60,6 +61,7 @@
           deviceClientType === 'pc' ? fixed : fixed === 'left' ? false : fixed
         "
         :align="align || 'left'"
+        v-bind="args"
       >
         <template #default="scope">
           <slot
@@ -118,6 +120,7 @@
 
       <el-table-column
         v-else
+        v-bind="args"
         :prop="prop"
         :label="label"
         :width="width"

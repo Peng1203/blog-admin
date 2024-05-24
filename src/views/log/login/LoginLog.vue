@@ -6,9 +6,9 @@
     >
       <div class="mb15 flex-sb-c">
         <div>
+          <!-- bindValue="name" -->
           <UserSelect
             v-model="tableState.userId"
-            :otherOptions="[{ label: '未知', value: -1 }]"
             @change="getDataList"
           />
 
@@ -129,6 +129,10 @@ const tableState = reactive({
       label: '状态码',
       prop: 'loginStatus',
       minWidth: 100,
+      formatter: (row: LoginAuditLogData) => {
+        if (row.loginStatus === 1) return '成功';
+        return row.loginStatus;
+      },
     },
     {
       label: '失败原因',
@@ -186,7 +190,6 @@ const tableState = reactive({
       prop: 'loginTime',
       minWidth: 100,
       slotName: 'requestTimeSlot',
-      fixed: 'right',
     },
   ]),
   timeVal: <string[]>[],

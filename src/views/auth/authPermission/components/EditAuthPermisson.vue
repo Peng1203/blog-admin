@@ -28,7 +28,7 @@ const { updateAuthPermInfo } = usePermissionApi();
 const props = defineProps({
   editRow: {
     type: Object as PropType<PermissionData>,
-    require: true,
+    default: () => ({}),
   },
   permissionCodeOptions: {
     type: Array as PropType<SelectOptionItem[]>,
@@ -129,6 +129,7 @@ const saveEditAuthPermisson = async (): Promise<boolean> => {
 };
 
 watchEffect(() => {
+  if (!Object.keys(props.editRow).length) return;
   const isEditParent = ['', null, undefined].includes(
     props.editRow?.permissionCode
   );
@@ -150,7 +151,9 @@ watchEffect(() => {
 
 watch(
   () => props.editRow,
-  val => (editFormState.data = JSON.parse(JSON.stringify(val))),
+  val =>
+    !Object.keys(val).length &&
+    (editFormState.data = JSON.parse(JSON.stringify(val))),
   { deep: true }
 );
 

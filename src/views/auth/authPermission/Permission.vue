@@ -105,6 +105,7 @@ import { queryStrHighlight } from '@/utils/queryStrHighlight';
 import { resourceMethodOptions } from './';
 import { SelectOptionItem } from '@/components/Select';
 import { useNotificationMsg } from '@/utils/notificationMsg';
+import { isObject } from 'lodash';
 
 const permissionStore = usePermissionInfo();
 
@@ -225,7 +226,18 @@ const EditAuthPermissonDrawer = defineAsyncComponent(
 );
 
 const editAuthDrawerRef = ref<RefType>(null);
-const editAuthRowInfo = ref<PermissionData>();
+const editAuthRowInfo = ref<PermissionData>({
+  id: 0,
+  permissionName: '',
+  permissionCode: '',
+  resourceMethod: 1,
+  resourceUrl: '',
+  parentId: 0,
+  description: '',
+  updateTime: '',
+  createTime: '',
+  children: [],
+});
 // 编辑权限标识
 const handleEditAuthPermission = (row: PermissionData) => {
   editAuthRowInfo.value = JSON.parse(JSON.stringify(row));
@@ -257,7 +269,7 @@ const handleMethodTagText = (value: any) => {
 const parentId = ref<number>();
 
 const handleAddPermission = (row?: PermissionData | number) => {
-  if (typeof row !== 'number') parentId.value = row?.id;
+  if (isObject(row)) parentId.value = row?.id;
   else parentId.value = 0;
   addAuthDialogRef.value.addAuthPermissonDialogStatus = true;
 };

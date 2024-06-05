@@ -8,6 +8,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx';
 
 const viteConfig = defineConfig((mode: ConfigEnv) => {
   const env = loadEnv(mode.mode, process.cwd());
+  console.log('env', env);
   return {
     // vueSetupExtend(),
     plugins: [vue(), DefineOptions(), viteCompression(), UnoCSS(), vueJsx()],

@@ -6,28 +6,28 @@
 </template>
 
 <script setup lang="ts" name="layoutNavBars">
-import { defineAsyncComponent, computed } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useThemeConfig } from '@/stores/themeConfig'
+import { defineAsyncComponent, computed } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useThemeConfig } from '@/stores/themeConfig';
 
 // 引入组件
-import BreadcrumbIndex from '@/layout/navBars/breadcrumb/index.vue'
-import TagsView from '@/layout/navBars/tagsView/tagsView.vue'
-// const BreadcrumbIndex = defineAsyncComponent(() => import('@/layout/navBars/breadcrumb/index.vue'))
+const BreadcrumbIndex = defineAsyncComponent(
+  () => import('@/layout/navBars/breadcrumb/index.vue')
+);
 
-// const TagsView = defineAsyncComponent(
-//   () => import('@/layout/navBars/tagsView/tagsView.vue')
-// )
+const TagsView = defineAsyncComponent(
+  () => import('@/layout/navBars/tagsView/tagsView.vue')
+);
 
 // 定义变量内容
-const storesThemeConfig = useThemeConfig()
-const { themeConfig } = storeToRefs(storesThemeConfig)
+const storesThemeConfig = useThemeConfig();
+const { themeConfig } = storeToRefs(storesThemeConfig);
 
 // 是否显示 tagsView
 const setShowTagsView = computed(() => {
-  let { layout, isTagsview } = themeConfig.value
-  return layout !== 'classic' && isTagsview
-})
+  let { layout, isTagsview } = themeConfig.value;
+  return layout !== 'classic' && isTagsview;
+});
 </script>
 
 <style scoped lang="scss">

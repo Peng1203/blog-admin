@@ -8,7 +8,6 @@ import vueJsx from '@vitejs/plugin-vue-jsx';
 
 const viteConfig = defineConfig((mode: ConfigEnv) => {
   const env = loadEnv(mode.mode, process.cwd());
-  console.log('env', env);
   return {
     // vueSetupExtend(),
     plugins: [vue(), DefineOptions(), viteCompression(), UnoCSS(), vueJsx()],
@@ -44,10 +43,10 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
       },
     },
     css: { preprocessorOptions: { css: { charset: false } } },
-    // define: {
-    //   __NEXT_VERSION__: JSON.stringify(process.env.npm_package_version),
-    //   __NEXT_NAME__: JSON.stringify(process.env.npm_package_name),
-    // },
+    define: {
+      __NEXT_VERSION__: JSON.stringify(process.env.npm_package_version),
+      __NEXT_NAME__: JSON.stringify(process.env.npm_package_name),
+    },
   };
 });
 

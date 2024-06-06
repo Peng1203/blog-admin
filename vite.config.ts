@@ -10,7 +10,13 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
   const env = loadEnv(mode.mode, process.cwd());
   return {
     // vueSetupExtend(),
-    plugins: [vue(), DefineOptions(), viteCompression(), UnoCSS(), vueJsx()],
+    plugins: [
+      vue(),
+      DefineOptions(),
+      viteCompression(),
+      UnoCSS({ presets: [] }),
+      vueJsx(),
+    ],
     root: process.cwd(),
     resolve: {
       alias: {
@@ -35,6 +41,10 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
           chunkFileNames: `assets/[name].[hash].js`,
           assetFileNames: `assets/[name].[hash].[ext]`,
           compact: true,
+          manualChunks: {
+            vue: ['vue', 'vue-router', 'pinia'],
+            echarts: ['echarts'],
+          },
         },
       },
     },

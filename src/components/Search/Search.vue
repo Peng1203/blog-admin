@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, PropType, defineEmits } from 'vue';
+import { ref, watch, PropType } from 'vue';
 import { Search } from '@element-plus/icons-vue';
 
 const props = defineProps({

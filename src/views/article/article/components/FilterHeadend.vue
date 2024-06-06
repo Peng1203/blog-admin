@@ -200,7 +200,6 @@ const handleDateRangeChange = () => {
 const handleFilterByCatagory = (val: number) => {
   if (filterParams.value.categoryId === val) return;
   filterParams.value.categoryId = val;
-  emits('update:modelValue', filterParams);
   handleSearch();
 };
 

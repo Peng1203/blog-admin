@@ -35,10 +35,6 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
           chunkFileNames: `assets/[name].[hash].js`,
           assetFileNames: `assets/[name].[hash].[ext]`,
           compact: true,
-          manualChunks: {
-            vue: ['vue', 'vue-router', 'pinia'],
-            echarts: ['echarts'],
-          },
         },
       },
     },

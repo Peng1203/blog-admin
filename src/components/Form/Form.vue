@@ -8,6 +8,7 @@
       :label-width="labelW"
       :label-position="labelP"
       :class="readonly ? 'readonly-form' : ''"
+      @submit.prevent
     >
       <el-row :gutter="gutter">
         <!--  -->
@@ -368,7 +369,7 @@
                   :key="item.value"
                   :label="item.value"
                   :value="item.value"
-                  :size="item.size || size"
+                  :size="item?.size || size"
                 >
                   {{ item.label }}
                 </el-radio>
@@ -563,6 +564,7 @@ withDefaults(defineProps<FormAttribute>(), {
   inline: false,
   gutter: 30,
   readonly: false,
+  submitPrevent: true,
 });
 
 // const formData = computed({
@@ -598,7 +600,11 @@ const formRef = useComponentRef(ElForm);
 const getRef = () => formRef.value;
 
 // switch 切换
-const handleSwitchChange = (newVal: any, prop: string, index: number) => {
+const handleSwitchChange = (
+  newVal: any,
+  prop: string | number | symbol,
+  index: number
+) => {
   // console.log('switch切换 -----', newVal, prop, index)
   emits('switchChange', { newVal, prop, index });
 };
@@ -616,7 +622,7 @@ const handleSelectChange = (
 // 单选框切换
 const handleRadioChange = (
   newVal: string | number | boolean,
-  prop: string,
+  prop: string | number | symbol,
   index: number
 ) => {
   emits('radioChange', { newVal, prop, index });

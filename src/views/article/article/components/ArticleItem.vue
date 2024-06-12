@@ -5,7 +5,10 @@
     <el-image
       w350px
       h200px
-      :src="article.cover || 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'"
+      :src="
+        article.cover ||
+        'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
+      "
     >
       <template #error>
         <div
@@ -116,7 +119,10 @@
           <!-- 头像 -->
           <el-avatar
             :size="30"
-            :src="article.author?.userAvatar || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"
+            :src="
+              article.author?.userAvatar ||
+              'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+            "
           />
           <!-- 用户名/昵称 -->
           <span>{{ article.author?.nickName || article.author.userName }}</span>
@@ -173,7 +179,12 @@
 import { ArticleItemProps, IconHashMappingItem } from '../';
 import { useUserInfo } from '@/stores/userInfo';
 import Icon from '@/components/SymbolIcon/index.vue';
-import { Picture as IconPicture, View, Delete, Edit } from '@element-plus/icons-vue';
+import {
+  Picture as IconPicture,
+  View,
+  Delete,
+  Edit,
+} from '@element-plus/icons-vue';
 
 const userInfoStore = useUserInfo();
 
@@ -221,7 +232,6 @@ const InfoIcons = () => {
             name={info.name}
           />
           <span class="value">{props.article[info.prop] || 0}</span>
-          {/* <span>{props.article[info.prop as keyof ArticleData] || 0}</span> */}
         </span>
       ))}
     </div>

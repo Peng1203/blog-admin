@@ -20,14 +20,13 @@ export function useArticleApi() {
     },
     /**
      * 通过文章id获取详情信息
-     * @author Peng
-     * @date 2023-05-03
-     * @param {any} articleId:number
-     * @returns {any}
      */
-    getArticleDetailById<T>(articleId: number): TransformedResponse<T> {
+    getArticleDetailById<T>(
+      uid: number,
+      articleId: number
+    ): TransformedResponse<T> {
       return request({
-        url: `/article/${articleId}`,
+        url: `/article/${uid}/${articleId}`,
         method: Method.GET,
       });
     },
@@ -93,6 +92,13 @@ export function useArticleApi() {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+      });
+    },
+    getUserArticles<T>(uid, params): TransformedResponse<T> {
+      return request({
+        url: `/article/${uid}`,
+        method: Method.GET,
+        params,
       });
     },
   };

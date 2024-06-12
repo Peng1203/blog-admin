@@ -6,18 +6,25 @@
     >
       <template #header>
         <div class="card-header flex-sb-c">
-          <Title />
+          <h1 className="flex-c-c h40px">
+            {{ isEdit ? '编辑文章' : '发布文章' }}
+          </h1>
 
-          <el-switch
-            inline-prompt
-            v-show="activeStep === 1"
-            v-model="articleForm.contentModel"
-            style="--el-switch-on-color: #1323ce; --el-switch-off-color: #3ce"
-            :active-value="0"
-            :inactive-value="1"
-            active-text="Markdown"
-            inactive-text="富文本"
-          />
+          <!-- 编辑已有文章 或者 发布文章 -->
+          <div>
+            <QuickActions mr10 />
+
+            <el-switch
+              inline-prompt
+              v-show="activeStep === 1"
+              v-model="articleForm.contentModel"
+              style="--el-switch-on-color: #1323ce; --el-switch-off-color: #3ce"
+              :active-value="0"
+              :inactive-value="1"
+              active-text="Markdown"
+              inactive-text="富文本"
+            />
+          </div>
         </div>
       </template>
       <!-- v-model="articleForm" -->
@@ -37,10 +44,10 @@
           <!-- @click-next-step="handleNextStep" -->
           <template #titleSlot>
             <Peng-Form
-              v-show="activeStep === 1"
               ref="titleFormRef"
-              v-model="articleForm"
               :formItems="formItemList"
+              v-model="articleForm"
+              v-show="activeStep === 1"
             />
           </template>
         </StepHeadend>
@@ -73,7 +80,7 @@
 <script setup lang="tsx" name="WriteArticle">
 import { ref, reactive, onMounted, computed } from 'vue';
 import MarkdownEditor from '@/components/MarkdownEditor';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import {
   AddArticleType,
   OperationArticleData,
@@ -85,8 +92,8 @@ import StepHeadend from './components/StepHeadend.vue';
 import InfoForm from './components/InfoForm.vue';
 import { useUserInfo } from '@/stores/userInfo';
 import { useArticleApi } from '@/api';
-import { ElMessage } from 'element-plus';
 import { useNotificationMsg } from '@/utils/notificationMsg';
+import QuickActions from './components/QuickActions.vue';
 
 const { addArticle, updateArticle, getArticleDetailById, uploadImage } =
   useArticleApi();
@@ -94,12 +101,10 @@ const { addArticle, updateArticle, getArticleDetailById, uploadImage } =
 const userInfoStore = useUserInfo();
 
 const route = useRoute();
+const router = useRouter();
 
 // 是否是编辑模式
 const isEdit = computed<boolean>(() => route.name !== 'WriteArticle');
-const Title = () => (
-  <h1 className="flex-c-c h40px">{isEdit.value ? '编辑文章' : '发布文章'}</h1>
-);
 
 const activeStep = ref(1);
 
@@ -163,7 +168,8 @@ const handlePublish = async () => {
     .catch(() => false);
   const validate2 = await infoFormRef.value.validateForm();
 
-  if (!(validate1 && validate2)) return ElMessage.warning('有必填项未填');
+  if (!(validate1 && validate2))
+    return useNotificationMsg('', '有必填项未填', 'warning');
 
   // 创建 / 更新
   if (articleForm.id) return handleUpdateArticle();
@@ -173,21 +179,25 @@ const handlePublish = async () => {
 // 添加文章
 const handleAddArticle = async (actionType: 0 | 1) => {
   try {
-    const { summary, author, id, category, ...args } = articleForm;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+    const { summary, author, category, id, ...args } = articleForm;
     const { data: res } = await addArticle<ArticleData>({
       ...args,
       category: category || 0,
       authorId: author,
-      summary: args.content.substring(0, 300),
+      summary: summary || args.content.substring(0, 300),
     });
     const [errMsg, successMsg] = [
       ['暂存失败!', '暂存成功!'],
       ['发布失败', '发布成功'],
     ][actionType];
     if (res.code !== 20100) return useNotificationMsg('', errMsg, 'error');
-    // ElMessage.success(successMsg);
     useNotificationMsg('', successMsg);
     articleForm.id = res.data.id;
+    router.push({
+      name: 'EditArticle',
+      params: { aid: res.data.id },
+    });
   } catch (e) {
     console.log('e ------', e);
   }
@@ -196,16 +206,14 @@ const handleAddArticle = async (actionType: 0 | 1) => {
 // 更新文章
 const handleUpdateArticle = async () => {
   try {
-    const { author, id, category, updateTime, createTime, ...args } =
-      articleForm;
+    const { author, id, category, ...args } = articleForm;
     const params = {
       category: category || 0,
       ...args,
     };
     const { data: res } = await updateArticle<ArticleData>(author, id, params);
-    const { code, message, success, data } = res;
+    const { code, message, success } = res;
     if (code !== 20001 && success) return;
-    // ElMessage.success(message);
     useNotificationMsg('更新成功', message);
   } catch (e) {
     console.log('e ------', e);
@@ -223,6 +231,7 @@ const getArticleDetail = async () => {
   try {
     loadingStatus.value = true;
     const { data: res } = await getArticleDetailById<ArticleData>(
+      userInfoStore.userInfos.id,
       Number(route.params.aid)
     );
     const { code, success, data } = res;
@@ -247,7 +256,7 @@ const editArticleInit = () => {
   if (route.name === 'EditArticle') {
     if (!Number(route.params.aid)) {
       loadingStatus.value = false;
-      ElMessage.warning('文章ID参数有误');
+      useNotificationMsg('', '文章ID参数有误', 'warning');
       return;
     }
     getArticleDetail();
@@ -272,7 +281,7 @@ const handleUploadImage = async (file: File): Promise<string> => {
 
     formData.append('file', file);
     const { data: res } = await uploadImage(formData);
-    const { data, message, code, success } = res;
+    const { data, code, success } = res;
     if (!success || code !== 20100) return;
     return data;
   } catch (e) {

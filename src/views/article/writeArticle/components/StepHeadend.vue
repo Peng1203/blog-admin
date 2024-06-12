@@ -5,9 +5,10 @@
       finish-status="finish"
     >
       <el-step
-        v-for="{ title, icon } of stepData"
-        :title="title"
+        :key="title"
         :icon="icon"
+        :title="title"
+        v-for="{ title, icon } of stepData"
       />
     </el-steps>
 
@@ -82,10 +83,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { Edit, Picture, Upload, ArrowLeft, ArrowRight } from '@element-plus/icons-vue';
+import { Edit, Picture, ArrowLeft, ArrowRight } from '@element-plus/icons-vue';
 import { onMounted, onUnmounted, PropType } from 'vue';
-import { AddArticleType } from '../../article/types';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
@@ -101,7 +100,12 @@ const stepData = [
 //   type: Object as PropType<AddArticleType>,
 // });
 
-const emit = defineEmits(['clickSaveDraftBox', 'clickNextStep', 'clickPublish', 'clickSave']);
+const emit = defineEmits([
+  'clickSaveDraftBox',
+  'clickNextStep',
+  'clickPublish',
+  'clickSave',
+]);
 
 defineProps({
   size: {

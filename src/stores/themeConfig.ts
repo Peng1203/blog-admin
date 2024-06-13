@@ -9,11 +9,11 @@ import { defineStore } from 'pinia';
  * 2、或者点击布局配置最底部 `一键恢复默认` 按钮即可看到效果
  */
 export const useThemeConfig = defineStore('themeConfig', {
-  state: () => ({
+  state: (): ThemeConfigState => ({
     themeConfig: {
       // 是否开启布局配置抽屉
       isDrawer: false,
-
+      themeMode: '',
       /**
        * 全局主题
        */

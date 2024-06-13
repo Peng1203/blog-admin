@@ -1,24 +1,6 @@
-import { RoleEntityData } from '@/views/auth/role';
 /**
  * pinia 类型定义
  */
-
-// 用户信息
-declare interface UserInfosState<T = any> {
-  userInfos: {
-    id: number;
-    userName: string;
-    nickName: string | null;
-    email: string | null;
-    userEnabled: 0 | 1;
-    userAvatar: string | null;
-    createTime: string;
-    updateTime: string;
-    roles: RoleEntityData[];
-  };
-  menus: MenuData[];
-  permissions: string[];
-}
 
 // 路由缓存列表
 declare interface KeepAliveNamesState {
@@ -90,6 +72,7 @@ declare interface ThemeConfigState {
     globalViceTitle: string;
     // globalI18n: string;
     globalComponentSize: string;
+    themeMode: '' | 'os' | 'light' | 'dark';
   };
 }
 

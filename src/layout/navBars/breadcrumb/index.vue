@@ -20,8 +20,8 @@ import { useThemeConfig } from '@/stores/themeConfig';
 import mittBus from '@/utils/mitt';
 
 // 引入组件
-import Breadcrumb from '@/layout/navBars/breadcrumb/breadcrumb.vue';
-import User from '@/layout/navBars/breadcrumb/user.vue';
+import Breadcrumb from './components/Breadcrumb';
+import User from './components/User';
 import Logo from '@/layout/logo/index.vue';
 import Horizontal from '@/layout/navMenu/horizontal.vue';
 

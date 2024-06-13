@@ -21,7 +21,7 @@
             ></el-color-picker>
           </div>
         </div>
-        <div class="layout-breadcrumb-seting-bar-flex mt15">
+        <!-- <div class="layout-breadcrumb-seting-bar-flex mt15">
           <div class="layout-breadcrumb-seting-bar-flex-label">深色模式</div>
           <div class="layout-breadcrumb-seting-bar-flex-value">
             <el-switch
@@ -30,7 +30,7 @@
               @change="onAddDarkChange"
             ></el-switch>
           </div>
-        </div>
+        </div> -->
 
         <!-- 顶栏设置 -->
         <el-divider content-position="left">顶栏设置</el-divider>

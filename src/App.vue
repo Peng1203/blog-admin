@@ -5,6 +5,7 @@
   >
     <router-view v-show="setLockScreen" />
     <LockScreen v-if="themeConfig.isLockScreen" />
+    <!-- 布局配置 -->
     <Setings
       ref="setingsRef"
       v-show="setLockScreen"
@@ -37,9 +38,15 @@ import handlePromiseError from '@/utils/handlePromiseError';
 import getClientType from './utils/getClientType';
 
 // 引入组件
-const LockScreen = defineAsyncComponent(() => import('@/layout/lockScreen/index.vue'));
-const Setings = defineAsyncComponent(() => import('@/layout/navBars/breadcrumb/setings.vue'));
-const CloseFull = defineAsyncComponent(() => import('@/layout/navBars/breadcrumb/closeFull.vue'));
+const LockScreen = defineAsyncComponent(
+  () => import('@/layout/lockScreen/index.vue')
+);
+const Setings = defineAsyncComponent(
+  () => import('@/layout/navBars/breadcrumb/setings.vue')
+);
+const CloseFull = defineAsyncComponent(
+  () => import('@/layout/navBars/breadcrumb/closeFull.vue')
+);
 
 // 定义变量内容
 const setingsRef = ref();
@@ -53,7 +60,9 @@ const { themeConfig } = storeToRefs(storesThemeConfig);
 const setLockScreen = computed(() => {
   // 防止锁屏后，刷新出现不相关界面
   // https://gitee.com/lyt-top/vue-next-admin/issues/I6AF8P
-  return themeConfig.value.isLockScreen ? themeConfig.value.lockScreenTime > 1 : themeConfig.value.lockScreenTime >= 0;
+  return themeConfig.value.isLockScreen
+    ? themeConfig.value.lockScreenTime > 1
+    : themeConfig.value.lockScreenTime >= 0;
 });
 // 获取全局组件大小
 const getGlobalComponentSize = computed(() => {
@@ -91,7 +100,9 @@ onMounted(() => {
     });
     // 获取缓存中的布局配置
     if (Local.get('themeConfig')) {
-      storesThemeConfig.setThemeConfig({ themeConfig: Local.get('themeConfig') });
+      storesThemeConfig.setThemeConfig({
+        themeConfig: Local.get('themeConfig'),
+      });
       document.documentElement.style.cssText = Local.get('themeConfigStyle');
     }
     // 获取缓存中的全屏配置

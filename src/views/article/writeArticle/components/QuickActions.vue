@@ -38,18 +38,13 @@ const articleOptions = ref<OptionItem[]>([]);
 // 是否是编辑模式
 const isEdit = computed<boolean>(() => route.name !== 'WriteArticle');
 
-// {
-//     name: 'EditArticle',
-//     params: { aid: row.id },
-//   }
-
 const getArticleOptions = async () => {
   try {
     const params = {
       page: 1,
       pageSize: 1000,
       column: 'createTime',
-      order: 'ASC',
+      order: 'DESC',
       type: 2,
     };
     const { data: res } = await getUserArticles<ArticleOptionData>(

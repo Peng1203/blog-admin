@@ -49,7 +49,7 @@ const getArticleOptions = async () => {
       page: 1,
       pageSize: 1000,
       column: 'createTime',
-      order: 'DESC',
+      order: 'ASC',
       type: 2,
     };
     const { data: res } = await getUserArticles<ArticleOptionData>(

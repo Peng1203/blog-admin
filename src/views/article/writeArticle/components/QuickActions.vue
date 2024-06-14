@@ -11,7 +11,7 @@
   <Peng-Select
     v-else
     virtual
-    width="100px"
+    width="200px"
     placeholder="请选择编辑文章"
     :options="articleOptions"
     v-model="aId"
@@ -48,8 +48,8 @@ const getArticleOptions = async () => {
     const params = {
       page: 1,
       pageSize: 1000,
-      column: '',
-      order: '',
+      column: 'createTime',
+      order: 'DESC',
       type: 2,
     };
     const { data: res } = await getUserArticles<ArticleOptionData>(

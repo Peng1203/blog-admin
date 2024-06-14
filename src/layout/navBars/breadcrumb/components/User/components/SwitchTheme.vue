@@ -70,6 +70,7 @@ const setHTMLThemeAttr = (val: string) => {
   const HTML = document.documentElement as HTMLElement;
 
   HTML.setAttribute('data-theme', val);
+  // @ts-expect-error: Transition API
   // document.startViewTransition(() => {});
   // document.documentElement.classList.add('transition');
   // document.documentElement.classList.remove('transition');

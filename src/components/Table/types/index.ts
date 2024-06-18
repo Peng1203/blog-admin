@@ -27,9 +27,14 @@ export interface TableAttribute<T> {
   operationColumnWidth?: number;
 }
 
-export type OperationType = 'add' | 'edit' | 'delete' | 'view';
+export type OperationType = 'add' | 'edit' | 'delete' | 'view' | '';
 
-export type OperationBtnsType = [OperationType?, OperationType?, OperationType?, OperationType?];
+export type OperationBtnsType = [
+  OperationType?,
+  OperationType?,
+  OperationType?,
+  OperationType?
+];
 
 export interface BaseTableAttribute {
   data: any[];

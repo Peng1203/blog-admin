@@ -36,7 +36,7 @@ const { themeConfig } = storeToRefs(storesThemeConfig)
 // 重置滚动条高度
 const updateScrollbar = () => {
 	// 更新父级 scrollbar
-	layoutScrollbarRef.value.update()
+	layoutScrollbarRef.value?.update()
 	// 更新子级 scrollbar
 	layoutMainRef.value && layoutMainRef.value!.layoutMainScrollbarRef.update()
 }

@@ -52,7 +52,7 @@
       <Peng-Table
         isSelection
         operationColumn
-        :operationColumnBtns="['edit', 'delete']"
+        :operationColumnBtns="['edit', 'delete', '']"
         :isFilterShowColumn="true"
         :data="tableState.data"
         :loading="tableState.loading"
@@ -100,6 +100,20 @@
             {{ row[prop!] ? '启用' : '锁定' }}
           </el-tag>
         </template>
+
+        <template #operationEndSlot="{ row }">
+          <el-button
+            circle
+            title="重置密码"
+            size="small"
+            type="info"
+            @click="handleResetPwd(row)"
+          >
+            <template #icon>
+              <el-icon class="iconfont icon-zhongzhimima" />
+            </template>
+          </el-button>
+        </template>
       </Peng-Table>
     </el-card>
     <!-- 添加用户对话框 -->
@@ -134,7 +148,7 @@ import {
 import { queryStrHighlight } from '@/utils/queryStrHighlight';
 import { useNotificationMsg } from '@/utils/notificationMsg';
 
-const { getUsers, deleteUserById, deleteUsers } = useUserApi();
+const { getUsers, deleteUserById, deleteUsers, resetPassword } = useUserApi();
 
 const roleStore = useRolesInfo();
 const userStore = useUsersInfo();
@@ -313,6 +327,19 @@ const handleUpdate = () => {
   userStore.getUserData(true);
 };
 
+const handleResetPwd = async (user: UserData) => {
+  try {
+    const { data: res } = await resetPassword(user.id);
+    const { code, message, data, success } = res;
+    if (code !== 20000 || !success) return false;
+    useNotificationMsg(message, data);
+    return true;
+  } catch (e) {
+    console.log('e', e);
+    return false;
+  }
+};
+
 onMounted(() => {
   roleStore
     .getRoleData()
@@ -322,4 +349,8 @@ onMounted(() => {
 });
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.icon-zhongzhimima {
+  margin-right: 0px !important;
+}
+</style>

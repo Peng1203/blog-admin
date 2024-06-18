@@ -103,5 +103,14 @@ export function useUserApi() {
         data: params,
       });
     },
+    /**
+     * 重置用户密码
+     */
+    resetPassword(userId: number): TransformedResponse<string> {
+      return request({
+        url: `/user/${userId}/password/reset`,
+        method: Method.PATCH,
+      });
+    },
   };
 }

@@ -53,10 +53,11 @@ const { themeConfig } = storeToRefs(store);
 
 const THEME_MODE_KEY = 'current_theme';
 
-const handleSwitchTheme = newTheme => {
+const handleSwitchTheme = (newTheme, _?, event?: PointerEvent) => {
+  if (themeConfig.value.themeMode === newTheme) return;
   themeConfig.value.themeMode = newTheme;
   Local.set(THEME_MODE_KEY, newTheme);
-  setTheme();
+  setTheme(event);
 };
 
 const matchTheme = ref<MediaQueryList>();
@@ -66,37 +67,78 @@ const handleOSThemeChange = (e: MediaQueryListEvent) => {
   setHTMLThemeAttr(newColorScheme);
 };
 
-const setHTMLThemeAttr = (val: string) => {
+const setHTMLThemeAttr = (val: string, pointerEvent?: PointerEvent) => {
   const HTML = document.documentElement as HTMLElement;
 
-  HTML.setAttribute('data-theme', val);
-  // @ts-expect-error: Transition API
-  // document.startViewTransition(() => {});
-  // document.documentElement.classList.add('transition');
-  // document.documentElement.classList.remove('transition');
+  /**
+   * ViewTransition API 只有 Chrome 和 Edge 以及部分浏览器才支持 并不是 标注的API
+   */
+
+  // @ts-ignore
+  if (document?.startViewTransition && pointerEvent) {
+    const x = pointerEvent.clientX;
+    const y = pointerEvent.clientY;
+
+    const endRadius = Math.hypot(
+      Math.max(x, innerWidth - x),
+      Math.max(y, innerHeight - y)
+    );
+
+    // @ts-ignore
+    const transition = document.startViewTransition(() =>
+      HTML.setAttribute('data-theme', val)
+    );
+
+    transition.ready.then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`,
+      ];
+      document.documentElement.animate(
+        {
+          clipPath:
+            themeConfig.value.themeMode === 'dark'
+              ? clipPath
+              : [...clipPath].reverse(),
+        },
+        {
+          duration: 400,
+          easing: 'ease-in',
+          pseudoElement:
+            themeConfig.value.themeMode === 'dark'
+              ? '::view-transition-new(root)'
+              : '::view-transition-old(root)',
+        }
+      );
+    });
+  } else {
+    HTML.setAttribute('data-theme', val);
+  }
 };
 
-const setTheme = () => {
+const setTheme = (event?: PointerEvent) => {
+  // 每次切换主题都清除之前绑定的 change 事件
   if (matchTheme.value) {
     matchTheme.value.removeEventListener('change', handleOSThemeChange);
   }
+  let newVal = '';
   switch (themeConfig.value.themeMode) {
     case 'os':
       matchTheme.value = matchMedia('(prefers-color-scheme:dark)');
-      setHTMLThemeAttr(matchTheme.value.matches ? 'dark' : '');
+      setHTMLThemeAttr(matchTheme.value.matches ? 'dark' : '', event);
       matchTheme.value.addEventListener('change', handleOSThemeChange);
-      break;
+      return;
     case 'light':
-      setHTMLThemeAttr('');
+      newVal = 'light';
       break;
     case 'dark':
-      setHTMLThemeAttr('dark');
+      newVal = 'dark';
       break;
     default:
-      setHTMLThemeAttr('');
-
+      newVal = '';
       break;
   }
+  setHTMLThemeAttr(newVal, event);
 };
 
 handleSwitchTheme(Local.get(THEME_MODE_KEY) || 'light');
@@ -122,5 +164,30 @@ onUnmounted(() => {
       animation: logoAnimation 0.3s ease-in-out;
     }
   }
+}
+</style>
+
+<style>
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* 进入dark模式和退出dark模式时，两个图像的位置顺序正好相反 */
+[data-theme='dark']::view-transition-old(root) {
+  z-index: 10000;
+}
+
+[data-theme='dark']::view-transition-new(root) {
+  z-index: 99999;
+}
+
+::view-transition-old(root) {
+  z-index: 99999;
+}
+
+::view-transition-new(root) {
+  z-index: 10000;
 }
 </style>

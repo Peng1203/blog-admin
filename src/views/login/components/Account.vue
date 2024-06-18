@@ -27,24 +27,14 @@
       class="login-animation2"
     >
       <el-input
+        show-password
+        type="password"
         autocomplete="off"
         placeholder="请输入密码"
         v-model.trim="loginState.loginForm.password"
-        :type="loginState.isShowPassword ? 'text' : 'password'"
       >
         <template #prefix>
           <el-icon class="el-input__icon"><ele-Unlock /></el-icon>
-        </template>
-        <template #suffix>
-          <i
-            class="iconfont el-input__icon login-content-password"
-            :class="
-              loginState.isShowPassword
-                ? 'icon-yincangmima'
-                : 'icon-xianshimima'
-            "
-            @click="loginState.isShowPassword = !loginState.isShowPassword"
-          ></i>
         </template>
       </el-input>
     </el-form-item>

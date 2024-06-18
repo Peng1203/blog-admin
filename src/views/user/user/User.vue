@@ -137,6 +137,7 @@
 import { defineAsyncComponent, reactive, onMounted, ref } from 'vue';
 import { useRolesInfo } from '@/stores/roleList';
 import { useUsersInfo } from '@/stores/userList';
+import { useUserInfo } from '@/stores/userInfo';
 import { useUserApi } from '@/api/user';
 import { UserData, UserListData } from './types';
 import {
@@ -152,6 +153,7 @@ const { getUsers, deleteUserById, deleteUsers, resetPassword } = useUserApi();
 
 const roleStore = useRolesInfo();
 const userStore = useUsersInfo();
+const { userInfos, userLogout } = useUserInfo();
 
 // 表格参数
 const tableState = reactive({
@@ -333,10 +335,14 @@ const handleResetPwd = async (user: UserData) => {
     const { code, message, data, success } = res;
     if (code !== 20000 || !success) return false;
     useNotificationMsg(message, data);
-    return true;
+
+    if (userInfos.id === user.id) {
+      setTimeout(() => {
+        userLogout();
+      }, 2000);
+    }
   } catch (e) {
     console.log('e', e);
-    return false;
   }
 };
 

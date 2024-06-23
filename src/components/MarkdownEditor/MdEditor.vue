@@ -3,7 +3,7 @@
     <MdEditor
       ref="mdEditorRef"
       v-model="model"
-      :theme="props.theme"
+      :theme="getCurrentTheme"
       :language="props.lang"
       :showCodeRowNumber="showCodeRowNumber"
       :tableShape="[10, 6]"
@@ -28,9 +28,15 @@ import '@vavt/md-editor-extension/dist/previewTheme/arknights.css';
 import { allToolbars, commonToolbars } from './config/index';
 import { MarkdownEditorAttibute } from './types';
 import { useComponentRef } from '@/composables/useComponentRef';
-import { onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { blobToFile, compressImage } from '@/utils/file';
 import EmojiExtension from './components/Emoji';
+import { useThemeConfig } from '@/stores/themeConfig';
+import { storeToRefs } from 'pinia';
+
+const themeStore = useThemeConfig();
+
+const { themeConfig } = storeToRefs(themeStore);
 
 const model = defineModel({ type: String });
 
@@ -54,7 +60,6 @@ const insert = (generator: InsertContentGenerator) => {
 
 const props = withDefaults(defineProps<MarkdownEditorAttibute>(), {
   toolbarModel: 'common',
-  theme: 'light',
   preTheme: 'default',
   lang: 'zh-CN',
   codeTheme: 'atom',
@@ -141,6 +146,18 @@ const insterImageContent = content => {
     };
   });
 };
+
+const getCurrentTheme = computed<'light' | 'dark'>(() => {
+  switch (themeConfig.value.themeMode) {
+    case '':
+    case 'light':
+      return 'light';
+    case 'dark':
+      return 'dark';
+    default:
+      return 'light';
+  }
+});
 
 onMounted(() => {
   // addPasteUploadImg();

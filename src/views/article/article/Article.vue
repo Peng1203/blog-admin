@@ -22,19 +22,20 @@
           "
         >
           <!-- 文章删除过渡效果 -->
-          <TransitionGroup name="list">
-            <template
-              :key="item.id"
-              v-for="item in articleListState.articleList"
-            >
-              <ArticleItem
-                :article="item"
-                @click-delete-dtn="handleDelete"
-                @click-edit-btn="handleEditArticle"
-                @click-view-btn="handlePreviewArticle"
-              />
-            </template>
-          </TransitionGroup>
+          <!-- <TransitionGroup name="list"> -->
+          <template
+            :key="item.id"
+            v-for="item in articleListState.articleList"
+          >
+            <ArticleItem
+              v-slide-in="100"
+              :article="item"
+              @click-delete-dtn="handleDelete"
+              @click-edit-btn="handleEditArticle"
+              @click-view-btn="handlePreviewArticle"
+            />
+          </template>
+          <!-- </TransitionGroup> -->
         </div>
 
         <!-- 加载完毕 -->

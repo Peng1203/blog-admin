@@ -54,7 +54,7 @@ const { themeConfig } = storeToRefs(store);
 const THEME_MODE_KEY = 'current_theme';
 
 const handleSwitchTheme = (newTheme, _?, event?: PointerEvent) => {
-  if (themeConfig.value.themeMode === newTheme) return;
+  // if (themeConfig.value.themeMode === newTheme) return;
   themeConfig.value.themeMode = newTheme;
   Local.set(THEME_MODE_KEY, newTheme);
   setTheme(event);

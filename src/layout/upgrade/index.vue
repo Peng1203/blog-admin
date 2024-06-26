@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts" name="layoutUpgrade">
-import { reactive, onMounted } from 'vue';
+import { reactive } from 'vue';
 import mittBus from '@/utils/mitt';
 
 const state = reactive({
@@ -77,12 +77,9 @@ const delayShow = () => {
 };
 
 mittBus.on('onUpgradeOpen', () => {
-  console.log('触发了 ------');
   delayShow();
   state.btnTxt = `马上更新`;
 });
-// 页面加载时
-onMounted(() => {});
 
 defineExpose({
   state,

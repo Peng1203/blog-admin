@@ -11,6 +11,7 @@
       v-show="setLockScreen"
     />
     <CloseFull v-if="!themeConfig.isLockScreen" />
+    <Upgrade />
   </el-config-provider>
 </template>
 
@@ -36,6 +37,7 @@ import { Local, Session } from '@/utils/storage';
 import mittBus from '@/utils/mitt';
 import handlePromiseError from '@/utils/handlePromiseError';
 import getClientType from './utils/getClientType';
+import Upgrade from '@/layout/upgrade/index.vue';
 
 // 引入组件
 const LockScreen = defineAsyncComponent(

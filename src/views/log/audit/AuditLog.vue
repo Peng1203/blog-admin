@@ -39,6 +39,7 @@
         :stripe="false"
         :data="tableState.data"
         :loading="tableState.loading"
+        :operationColumnWidth="100"
         :row-class-name="tableRowStatus"
         :pagerInfo="tableState.pagerInfo"
         :columns="tableState.tableColumns"
@@ -86,6 +87,29 @@
             {{ getFromNow(row[prop]) }}
           </el-tooltip>
         </template>
+
+        <template #operationEndSlot="{ row }">
+          <!-- {{ row }} -->
+          <el-popover
+            placement="top-start"
+            title="IP 信息"
+            width="auto"
+            trigger="hover"
+            :content="row.ipInfo || '暂无IP信息'"
+          >
+            <template #reference>
+              <el-button
+                circle
+                title="解析IP"
+                size="small"
+                type="info"
+                @click="handleParseIpInfo(row)"
+              >
+                <el-icon class="iconfont icon-weixiefenxi-keyiIPshijian" />
+              </el-button>
+            </template>
+          </el-popover>
+        </template>
       </Peng-Table>
     </el-card>
   </div>
@@ -93,7 +117,7 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue';
-import { useAuditApi } from '@/api';
+import { useAuditApi, useCommonApi } from '@/api';
 import { getFromNow } from '@/utils/date';
 import { ColumnItem, PageChangeParams, PageInfo } from '@/components/Table';
 import DatePicker from '@/components/Date';
@@ -103,6 +127,7 @@ import UserSelect from '@/views/user/user/components/UserSelect.vue';
 import { useNotificationMsg } from '@/utils/notificationMsg';
 
 const { getAuditLogs, deleteById, deletes } = useAuditApi();
+const { getIPInfo } = useCommonApi();
 
 const tableState = reactive({
   selectVal: ref<number[]>([]),
@@ -288,7 +313,30 @@ const batchDelete = async () => {
   }
 };
 
+const handleParseIpInfo = async row => {
+  if (row.ipInfo) return;
+  const parseResult = await parseIP(row.ip);
+  row.ipInfo = parseResult.region;
+};
+
+const parseIP = async (ip: string) => {
+  try {
+    const { data: res } = await getIPInfo(ip);
+    const { code, data, success } = res;
+    if (code !== 20000 || !success) return;
+    return data;
+  } catch (e) {
+    console.log('e', e);
+  }
+};
+
 onMounted(() => {
   getDataList();
 });
 </script>
+
+<style scoped lang="scss">
+.iconfont {
+  margin-right: 0 !important;
+}
+</style>

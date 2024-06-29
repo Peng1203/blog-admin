@@ -3,6 +3,7 @@
     <MdEditor
       ref="mdEditorRef"
       v-model="model"
+      :codeFoldable="false"
       :theme="getCurrentTheme"
       :language="props.lang"
       :showCodeRowNumber="showCodeRowNumber"

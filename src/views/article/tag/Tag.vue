@@ -153,7 +153,7 @@ const tableState = reactive({
   // 分页器信息
   pagerInfo: ref<PageInfo>({
     page: 1,
-    pageSize: 10,
+    pageSize: 50,
     total: 0,
   }),
 });

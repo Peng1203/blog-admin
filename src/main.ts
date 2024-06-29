@@ -15,7 +15,6 @@ import 'element-plus/dist/index.css';
 import '@/theme/index.scss';
 import '@/assets/global.css';
 import 'uno.css';
-import '@/utils/autoUpdate';
 import { rememberLastVisitedPage } from './utils/recordLastVisitedPage';
 
 rememberLastVisitedPage();

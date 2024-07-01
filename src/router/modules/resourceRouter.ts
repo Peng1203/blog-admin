@@ -5,7 +5,7 @@ const routerRules: RouteRecordRaw[] = [
   {
     path: '/resource',
     name: 'Resource',
-    component: () => import('@/views/resource/index.vue'),
+    redirect: { name: 'ResourceList' },
     meta: {
       title: '资源管理',
       icon: 'iconfont icon-ziyuan-resources',
@@ -13,6 +13,38 @@ const routerRules: RouteRecordRaw[] = [
       orderNum: 5,
       isHide: false,
     },
+    children: [
+      {
+        path: '/resource/list',
+        name: 'ResourceList',
+        component: () => import('@/views/resource/list'),
+        meta: {
+          title: '资源列表',
+          isLink: '',
+          isHide: false,
+          isKeepAlive: false,
+          isAffix: false,
+          isIframe: false,
+          icon: 'ele-UploadFilled',
+          orderNum: 1,
+        },
+      },
+      {
+        path: '/resource/upload',
+        name: 'ResourceUpload',
+        component: () => import('@/views/resource/upload'),
+        meta: {
+          title: '上传资源',
+          isLink: '',
+          isHide: false,
+          isKeepAlive: false,
+          isAffix: false,
+          isIframe: false,
+          icon: 'ele-UploadFilled',
+          orderNum: 2,
+        },
+      },
+    ],
   },
 ];
 

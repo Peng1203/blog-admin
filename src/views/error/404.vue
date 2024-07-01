@@ -5,8 +5,12 @@
         <div class="left">
           <div class="left-item">
             <div class="left-item-animation left-item-num">404</div>
-            <div class="left-item-animation left-item-title">地址输入错误，请重新输入地址~</div>
-            <div class="left-item-animation left-item-msg">您可以先检查网址，然后重新输入或给我们反馈问题。</div>
+            <div class="left-item-animation left-item-title">
+              地址输入错误，请重新输入地址~
+            </div>
+            <div class="left-item-animation left-item-msg">
+              您可以先检查网址，然后重新输入或给我们反馈问题。
+            </div>
             <div class="left-item-animation left-item-btn">
               <el-button
                 type="primary"
@@ -37,7 +41,7 @@ const router = useRouter();
 // 返回首页
 const onGoHome = () => {
   if (Session.get('token')) router.go(-1);
-  else router.push('/');
+  else router.push({ name: 'Home' });
 };
 </script>
 

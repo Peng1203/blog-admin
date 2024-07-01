@@ -38,7 +38,7 @@ const routerRules: RouteRecordRaw[] = [
           isLink: '',
           isHide: false,
           isKeepAlive: false,
-          isAffix: false,
+          isAffix: true,
           isIframe: false,
           icon: 'ele-UploadFilled',
           orderNum: 2,

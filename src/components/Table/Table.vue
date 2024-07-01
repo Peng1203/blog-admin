@@ -303,6 +303,11 @@ const emits = defineEmits([
   'viewBtn',
 ]);
 
+defineSlots<{
+  operationSlot(props: { scope: any; row: T }): any;
+  [key: string]: any;
+}>();
+
 const tableRef = useComponentRef(ElTable);
 
 // 表格展示的 columns

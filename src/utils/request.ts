@@ -34,9 +34,12 @@ service.interceptors.request.use(
     const token = Session.getACToken();
     token && (config.headers['Authorization'] = `Bearer ${token}`);
 
-    config.cancelToken = new axios.CancelToken(cancel => {
-      window.httpRequestList.push(cancel); //存储cancle
-    });
+    // 当没有单独控制接口取消操作时 添加全局的取消请求操作
+    if (!config.cancelToken) {
+      config.cancelToken = new axios.CancelToken(cancel => {
+        window.httpRequestList.push(cancel); //存储cancle
+      });
+    }
 
     // 是否开启全屏loading
     if ((<any>config)?.headers.fullscreenLoading) {

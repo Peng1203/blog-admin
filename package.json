@@ -36,6 +36,8 @@
     "qs": "^6.12.1",
     "screenfull": "^6.0.2",
     "sortablejs": "^1.15.2",
+    "v-viewer": "^3.0.11",
+    "viewerjs": "^1.11.6",
     "vue": "^3.4.27",
     "vue-clipboard3": "^2.0.0",
     "vue-cropper": "^1.1.3",

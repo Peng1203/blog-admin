@@ -9,6 +9,7 @@ import ElementPlus from 'element-plus';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
 // import locale from 'element-plus/lib/locale/lang/zh-cn'
 import ComponentHashMap from '@/utils/registerGlobalComponent';
+import VueViewer from 'v-viewer';
 import '@/assets/icons/iconfont.css';
 import '@/assets/icons/iconfont.js';
 import 'element-plus/dist/index.css';
@@ -16,6 +17,7 @@ import '@/theme/index.scss';
 import '@/assets/global.css';
 import 'uno.css';
 import { rememberLastVisitedPage } from './utils/recordLastVisitedPage';
+import 'viewerjs/dist/viewer.css';
 
 rememberLastVisitedPage();
 
@@ -38,4 +40,5 @@ app
   // .use(ElementPlus, { locale })
   .use(router)
   .use(ElementPlus)
+  .use(VueViewer)
   .mount('#app');

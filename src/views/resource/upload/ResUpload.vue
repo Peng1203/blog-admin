@@ -222,7 +222,7 @@ import { api as viewerApi } from 'v-viewer';
 
 const { uploadResource } = useResourceApi();
 
-const MAX_SIZE_MB = 200;
+const MAX_SIZE_MB = 2;
 const MAX_SIZE_VALUE = 1024 * 1024 * MAX_SIZE_MB;
 
 const tableState = reactive({
@@ -342,7 +342,6 @@ const fileToFormData = async (fileItem: FileData): Promise<FormData> => {
 
 const handleDelete = (row: FileData, scope) => {
   tableState.data.splice(scope.$index, 1);
-  console.log('row.row ------', row.cancel);
   row.cancel && row.cancel();
 };
 
@@ -375,11 +374,11 @@ const handlePasteEvent = (event: ClipboardEvent) => {
 };
 
 onMounted(() => {
-  el.value.addEventListener(PASTE_EVENT, handlePasteEvent);
+  el.value && el.value.addEventListener(PASTE_EVENT, handlePasteEvent);
 });
 
 onUnmounted(() => {
-  el.value.removeEventListener(PASTE_EVENT, handlePasteEvent);
+  el.value && el.value.removeEventListener(PASTE_EVENT, handlePasteEvent);
 });
 </script>
 

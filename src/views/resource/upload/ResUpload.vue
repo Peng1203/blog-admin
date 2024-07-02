@@ -8,37 +8,60 @@
       multiple
       :auto-upload="false"
       :show-file-list="false"
-      :on-change="(uploadFile: UploadFile)=> handleFileChange(uploadFile.raw)"
+      :on-change="(uploadInfo: UploadFile)=> handleFileChange(uploadInfo.raw)"
     >
       <el-icon class="el-icon--upload"><upload-filled /></el-icon>
       <div class="el-upload__text">拖拽或点击选择上传文件</div>
       <div>上传文件不得大于 {{ MAX_SIZE_MB }} Mb</div>
     </el-upload>
 
-    <div class="select-file-row">
-      <el-button
-        type="primary"
-        size="default"
-        icon="ele-Files"
+    <div class="select-file-row flex">
+      <el-upload
+        multiple
+        :auto-upload="false"
+        :show-file-list="false"
+        :on-change="(uploadInfo: UploadFile)=> handleFileChange(uploadInfo.raw)"
       >
-        选择文件
-      </el-button>
+        <!-- :on-change="test" -->
+        <el-button
+          type="primary"
+          size="default"
+          icon="ele-Files"
+        >
+          选择文件
+        </el-button>
+      </el-upload>
+
       <el-button
+        ml10
         type="primary"
         size="default"
         icon="ele-Folder"
         color="#ffe791"
+        @click="handleSelectDirectory"
       >
         选择文件夹
       </el-button>
-      <el-button
-        type="primary"
-        size="default"
-        icon="ele-Files"
+
+      <el-upload
+        ml10
+        multiple
+        :auto-upload="false"
+        :show-file-list="false"
+        :on-change="(uploadInfo: UploadFile)=> handleFileChange(uploadInfo.raw,LARGE_FILE_MAX_SIZE_VALUE)"
       >
-        上传大文件
-      </el-button>
+        <!-- :on-change="test" -->
+        <el-button
+          type="primary"
+          size="default"
+          icon="ele-Files"
+        >
+          上传大文件
+        </el-button>
+      </el-upload>
+
       <el-button
+        ml10
         type="info"
         size="default"
         icon="ele-DeleteFilled"
@@ -90,7 +113,7 @@
           @click="
             () => {
               row.uploadProcess = 0;
-              uploadFile(row);
+              handleExeUploadMethod(row);
             }
           "
           v-else-if="row.status === StatusEnum.FAIL"
@@ -129,7 +152,7 @@
           type="primary"
           icon="ele-Upload"
           :disabled="row.status === StatusEnum.SUCCESS"
-          @click="uploadFile(row)"
+          @click="handleExeUploadMethod(row)"
         />
 
         <el-button
@@ -222,8 +245,13 @@ import { api as viewerApi } from 'v-viewer';
 
 const { uploadResource } = useResourceApi();
 
-const MAX_SIZE_MB = 2;
+// 正常上传文件大小
+const MAX_SIZE_MB = 5;
 const MAX_SIZE_VALUE = 1024 * 1024 * MAX_SIZE_MB;
+
+// 大上传文件大小
+const LARGE_FILE_MAX_SIZE_MB = 200;
+const LARGE_FILE_MAX_SIZE_VALUE = 1024 * 1024 * LARGE_FILE_MAX_SIZE_MB;
 
 const tableState = reactive({
   data: <FileData[]>[],
@@ -255,6 +283,7 @@ const tableState = reactive({
       label: '上传压缩',
       prop: 'isCompress',
       slotName: 'isCompressSlot',
+      tooltip: true,
     },
     {
       label: '操作',
@@ -281,6 +310,27 @@ const uploadInfo = ref({
 // 字节转换mb单位
 const byteToMb = (size: number) => (size / 1024 / 1024).toFixed(2);
 
+// 选择文件夹上传
+const handleSelectDirectory = () => {
+  const inputEl: HTMLInputElement = document.createElement('input');
+  inputEl.type = 'file';
+  inputEl.webkitdirectory = true;
+  // 用于兼容 openg浏览器和 火狐浏览器
+  (inputEl as any).mozdirectory = true;
+  (inputEl as any).odirectory = true;
+  inputEl.click();
+
+  inputEl.onchange = () => {
+    for (let i = 0; i < inputEl.files.length; i++) {
+      const file = inputEl.files[i];
+      handleFileChange(file);
+    }
+
+    // 选择完成 删除创建的 input 元素
+    inputEl.remove();
+  };
+};
+
 const handleFileChange = (file: File, maxFileSize = MAX_SIZE_VALUE) => {
   const { name, size, type } = file;
 
@@ -299,15 +349,61 @@ const handleFileChange = (file: File, maxFileSize = MAX_SIZE_VALUE) => {
     mimeType: type,
     isCompress: type.includes('image') && !type.includes('gif'),
   };
+
   tableState.data.unshift(fileItem);
 };
 
 const handleUpload = () => {
   tableState.data.forEach(
-    item => item.status === StatusEnum.PENDING && uploadFile(item)
+    item => item.status === StatusEnum.PENDING && handleExeUploadMethod(item)
   );
 };
 
+// 根据文件大小 判断走正常上传还是 大文件分片上传
+const handleExeUploadMethod = (row: FileData) => {
+  if (row.size <= MAX_SIZE_VALUE) uploadFile(row);
+  else chunkUpload(row);
+};
+
+// 分片上传
+const chunkUpload = async (fileItem: FileData) => {
+  try {
+    console.log('分片上传 ------', fileItem);
+    const { fileData } = fileItem;
+
+    // slice 类似数组中的方法 表示 取当前文件的字节范围 0~99 字节
+    // const chunk = fileData.slice(0, 100);
+    const chunks = createFileChunks(fileData, 1024 * 1024);
+    console.log('chunks ------', chunks);
+  } catch (e) {
+    console.log('e', e);
+  }
+};
+
+// 将文件按照指定大小切分
+const createFileChunks = (file: File, chunkSize: number): Blob[] => {
+  const fileChunks: Blob[] = [];
+  const currentChunkSize = () => fileChunks.length * chunkSize;
+  while (file.size > currentChunkSize()) {
+    const chunk = file.slice(
+      currentChunkSize(),
+      currentChunkSize() + chunkSize
+    );
+    fileChunks.push(chunk);
+  }
+
+  // console.time('for 切割耗时');
+  // const fileChunks2: Blob[] = [];
+  // for (let i = 0; i < file.size; i += chunkSize) {
+  //   const chunk = file.slice(i, i + chunkSize);
+  //   fileChunks2.push(chunk);
+  // }
+  // console.timeEnd('for 切割耗时');
+  // console.log('fileChunks2 ------', fileChunks2);
+  return fileChunks;
+};
+
+// 正常上传
 const uploadFile = async (fileItem: FileData) => {
   fileItem.status = StatusEnum.UPLOADING;
   try {
@@ -363,7 +459,7 @@ const handlePreView = async (fileItem: FileData) => {
 const PASTE_EVENT = 'paste';
 const el = ref<RefType<HTMLDivElement>>(null);
 
-// 粘贴上传
+// 粘贴文件快捷操作
 const handlePasteEvent = (event: ClipboardEvent) => {
   const { clipboardData } = event;
   const { files } = clipboardData;

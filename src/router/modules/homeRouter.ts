@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from 'vue-router';
+import { RouteRecordRaw } from 'vue-router'
 
 // 设置
 const routerRules: RouteRecordRaw[] = [
@@ -16,6 +16,6 @@ const routerRules: RouteRecordRaw[] = [
       orderNum: 1,
     },
   },
-];
+]
 
-export default routerRules;
+export default routerRules

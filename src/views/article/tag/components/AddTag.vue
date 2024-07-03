@@ -23,20 +23,22 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-import { ElMessage } from 'element-plus';
-import { useTagApi } from '@/api/tag/index';
-import Dialog from '@/components/Dialog';
-import Form, { FormItem } from '@/components/Form';
-import { AddTagType, TagData } from '../types';
+import { ref, reactive, computed, defineAsyncComponent } from 'vue'
+import { ElMessage } from 'element-plus'
+import { useTagApi } from '@/api/tag/index'
+import Dialog from '@/components/Dialog'
+import Form, { FormItem } from '@/components/Form'
+import { AddTagType, TagData } from '../types'
 
-const IconSelector = defineAsyncComponent(() => import('@/components/iconSelector/index.vue'));
+const IconSelector = defineAsyncComponent(
+  () => import('@/components/iconSelector/index.vue')
+)
 
-const { addTag } = useTagApi();
+const { addTag } = useTagApi()
 
-const emits = defineEmits(['updateList']);
+const emits = defineEmits(['updateList'])
 
-const addTagDialogStatus = ref<boolean>(false);
+const addTagDialogStatus = ref<boolean>(false)
 
 const addTagState = reactive({
   data: ref<AddTagType>({
@@ -60,56 +62,56 @@ const addTagState = reactive({
       slotName: 'tagIcon',
     },
   ]),
-});
+})
 
-const addFormRef = ref<RefType>(null);
+const addFormRef = ref<RefType>(null)
 // 处理添加操作
 const handleAdd = async () => {
   const validRes = await addFormRef.value
     .getRef()
     .validate()
-    .catch(() => false);
-  if (!validRes) return;
-  const addRes = await addNewTag();
-  if (!addRes) return;
-  handleDialogClose();
-  emits('updateList');
-};
+    .catch(() => false)
+  if (!validRes) return
+  const addRes = await addNewTag()
+  if (!addRes) return
+  handleDialogClose()
+  emits('updateList')
+}
 
 // 添加权限标识
 const addNewTag = async (): Promise<boolean> => {
   try {
-    const { tagName, icon } = addTagState.data;
-    const params = { tagName, icon };
-    const { data: res } = await addTag<TagData>(params);
-    const { code, message, success } = res;
-    if (code !== 20100 || !success) return false;
-    ElMessage.success(message);
-    return true;
+    const { tagName, icon } = addTagState.data
+    const params = { tagName, icon }
+    const { data: res } = await addTag<TagData>(params)
+    const { code, message, success } = res
+    if (code !== 20100 || !success) return false
+    ElMessage.success(message)
+    return true
   } catch (e) {
-    console.log(e);
-    return false;
+    console.log(e)
+    return false
   }
-};
+}
 
 // 图标选择器前置图标
 const preIcon = computed<string>(() => {
-  if (addTagState.data.icon) return addTagState.data.icon;
-  else return 'ele-Pointer';
-});
+  if (addTagState.data.icon) return addTagState.data.icon
+  else return 'ele-Pointer'
+})
 
 const resetAddForm = () => {
-  addTagState.data.tagName = '';
-  addTagState.data.icon = '';
-};
+  addTagState.data.tagName = ''
+  addTagState.data.icon = ''
+}
 
 const handleDialogClose = () => {
-  resetAddForm();
-  addFormRef.value.getRef().resetFields();
-  addTagDialogStatus.value = false;
-};
+  resetAddForm()
+  addFormRef.value.getRef().resetFields()
+  addTagDialogStatus.value = false
+}
 
-defineExpose({ addTagDialogStatus });
+defineExpose({ addTagDialogStatus })
 </script>
 
 <style lang="scss" scoped></style>

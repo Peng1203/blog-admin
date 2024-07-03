@@ -1,6 +1,6 @@
-import request from '@/utils/request';
-import { TransformedResponse, RequestListParams } from 'Api';
-import { Method } from '../types';
+import request from '@/utils/request'
+import { TransformedResponse, RequestListParams } from 'Api'
+import { Method } from '../types'
 
 /**
  * 操作权限标识
@@ -22,7 +22,7 @@ export function usePermissionApi() {
         url: '/permission',
         method: Method.GET,
         params,
-      });
+      })
     },
     /**
      * 添加权限标识
@@ -36,7 +36,7 @@ export function usePermissionApi() {
         url: '/permission',
         method: Method.POST,
         data: params,
-      });
+      })
     },
     /**
      * 删除权限标识
@@ -49,7 +49,7 @@ export function usePermissionApi() {
       return request({
         url: `/permission/${id}`,
         method: Method.DELETE,
-      });
+      })
     },
     /**
      * 更新权限标识信息
@@ -59,19 +59,22 @@ export function usePermissionApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    updateAuthPermInfo<T = any>(id: number, params: object): TransformedResponse<T> {
+    updateAuthPermInfo<T = any>(
+      id: number,
+      params: object
+    ): TransformedResponse<T> {
       return request({
         url: `/permission/${id}`,
         method: Method.PATCH,
         data: params,
-      });
+      })
     },
 
     getPermCodeOptions<T = any>(): TransformedResponse<T> {
       return request({
         url: '/permission/code/options',
         method: Method.GET,
-      });
+      })
     },
-  };
+  }
 }

@@ -6,7 +6,6 @@
  */
 
 function getClientType(): string {
-
   const device = navigator.userAgent
   if (innerWidth < 570) {
     return 'phone'

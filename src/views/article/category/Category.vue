@@ -83,22 +83,22 @@
 </template>
 
 <script setup lang="ts" name="ArticleCategory">
-import { defineAsyncComponent, ref, onMounted, reactive } from 'vue';
+import { defineAsyncComponent, ref, onMounted, reactive } from 'vue'
 import {
   ColumnItem,
   PageInfo,
   PageChangeParams,
   ColumnChangeParams,
-} from '@/components/Table';
-import { queryStrHighlight } from '@/utils/queryStrHighlight';
-import { useCategoryApi } from '@/api/category/index';
-import { CategoryData, CategoryListDate } from './types';
-import { useArticleInfo } from '@/stores/articleInfo';
-import { useNotificationMsg } from '@/utils/notificationMsg';
+} from '@/components/Table'
+import { queryStrHighlight } from '@/utils/queryStrHighlight'
+import { useCategoryApi } from '@/api/category/index'
+import { CategoryData, CategoryListDate } from './types'
+import { useArticleInfo } from '@/stores/articleInfo'
+import { useNotificationMsg } from '@/utils/notificationMsg'
 
-const { getCategorys, deleteCategory, batchDelete } = useCategoryApi();
+const { getCategorys, deleteCategory, batchDelete } = useCategoryApi()
 
-const articleInfoStore = useArticleInfo();
+const articleInfoStore = useArticleInfo()
 
 // 表格参数
 const tableState = reactive({
@@ -133,118 +133,118 @@ const tableState = reactive({
     pageSize: 50,
     total: 0,
   }),
-});
+})
 
 // 获取分类表格数据
 const getCategoryTableData = async () => {
   try {
-    tableState.loading = true;
-    const { pagerInfo, column, order, queryStr } = tableState;
+    tableState.loading = true
+    const { pagerInfo, column, order, queryStr } = tableState
     const params = {
       queryStr,
       column,
       order,
       page: pagerInfo.page,
       pageSize: pagerInfo.pageSize,
-    };
-    const { data: res } = await getCategorys<CategoryListDate>(params);
-    const { code, data, success } = res;
+    }
+    const { data: res } = await getCategorys<CategoryListDate>(params)
+    const { code, data, success } = res
 
-    if (code !== 20000 || !success) return;
-    tableState.data = data.list;
-    tableState.pagerInfo.total = data.total;
+    if (code !== 20000 || !success) return
+    tableState.data = data.list
+    tableState.pagerInfo.total = data.total
   } catch (e) {
-    console.log(e);
+    console.log(e)
   } finally {
-    tableState.loading = false;
+    tableState.loading = false
   }
-};
+}
 
 // 分页器修改时触发
 const handlePageInfoChange = ({ page, pageSize }: PageChangeParams) => {
-  tableState.pagerInfo.page = page;
-  tableState.pagerInfo.pageSize = pageSize;
-  getCategoryTableData();
-};
+  tableState.pagerInfo.page = page
+  tableState.pagerInfo.pageSize = pageSize
+  getCategoryTableData()
+}
 
 // 搜索
 const handleSearch = () => {
-  tableState.pagerInfo.page = 1;
-  getCategoryTableData();
-};
+  tableState.pagerInfo.page = 1
+  getCategoryTableData()
+}
 
 // 表格排序
 const handleColumnChange = ({ column, order }: ColumnChangeParams) => {
-  tableState.column = column;
-  tableState.order = order;
-  getCategoryTableData();
-};
+  tableState.column = column
+  tableState.order = order
+  getCategoryTableData()
+}
 
 // 处理删除分类
 const handleDelCategory = async (row: CategoryData) => {
-  const delRes = await deleteCategoryById(row.id);
-  if (delRes) handleUpdate();
-};
+  const delRes = await deleteCategoryById(row.id)
+  if (delRes) handleUpdate()
+}
 
 // 删除分类
 const deleteCategoryById = async (id: number): Promise<boolean> => {
   try {
-    const { data: res } = await deleteCategory<string>(id);
-    const { code, data, success } = res;
-    if (code !== 20000 || !success) return false;
-    useNotificationMsg('成功', data);
-    return true;
+    const { data: res } = await deleteCategory<string>(id)
+    const { code, data, success } = res
+    if (code !== 20000 || !success) return false
+    useNotificationMsg('成功', data)
+    return true
   } catch (e) {
-    console.log(e);
-    return false;
+    console.log(e)
+    return false
   }
-};
+}
 
 const deleteCategorys = async () => {
   try {
-    const ids = tableState.selectVal.map(({ id }) => id);
-    const { data: res } = await batchDelete<string>(ids);
-    const { code, data, success } = res;
-    if (code !== 20000 || !success) return false;
-    useNotificationMsg('成功', data);
-    return true;
+    const ids = tableState.selectVal.map(({ id }) => id)
+    const { data: res } = await batchDelete<string>(ids)
+    const { code, data, success } = res
+    if (code !== 20000 || !success) return false
+    useNotificationMsg('成功', data)
+    return true
   } catch (e) {
-    console.log(e);
-    return false;
+    console.log(e)
+    return false
   }
-};
+}
 
 const handleBatchDelete = async () => {
-  const delRes = await deleteCategorys();
-  if (delRes) handleUpdate();
-};
+  const delRes = await deleteCategorys()
+  if (delRes) handleUpdate()
+}
 
 // 处理编辑分类
-const editRow = ref<CategoryData>();
+const editRow = ref<CategoryData>()
 const EditCategoryDrawer = defineAsyncComponent(
   () => import('./components/EditCategory.vue')
-);
-const editDrawerRef = ref<RefType>(null);
+)
+const editDrawerRef = ref<RefType>(null)
 const handleEditCategory = (row: CategoryData) => {
-  editRow.value = JSON.parse(JSON.stringify(row));
-  editDrawerRef.value.editDrawerStatus = true;
-};
+  editRow.value = JSON.parse(JSON.stringify(row))
+  editDrawerRef.value.editDrawerStatus = true
+}
 
 // 处理添加分类
 const AddCategoryDialog = defineAsyncComponent(
   () => import('./components/AddCategory.vue')
-);
-const addDialogRef = ref<RefType>(null);
+)
+const addDialogRef = ref<RefType>(null)
 
 const handleUpdate = () => {
-  getCategoryTableData();
-  articleInfoStore.getCategoryData(true);
-};
+  getCategoryTableData()
+  articleInfoStore.getCategoryData(true)
+}
 
 // 页面加载时
 onMounted(() => {
-  getCategoryTableData();
-});
+  getCategoryTableData()
+})
 </script>
 
 <style lang="scss" scoped></style>

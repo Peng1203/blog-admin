@@ -1,20 +1,20 @@
-import { ListApiBaseResponse } from 'Api';
+import { ListApiBaseResponse } from 'Api'
 export interface LoginAuditLogData {
-  id: number;
-  userName: string;
-  userId?: any;
-  device: string;
-  location: string;
-  loginStatus: number;
-  failureReason: string;
-  userAgent: string;
-  loginDuration: string;
-  loginMethod: string;
-  browser: string;
-  os: string;
-  loginTime: string;
-  logoutTime: string;
-  ip: string;
+  id: number
+  userName: string
+  userId?: any
+  device: string
+  location: string
+  loginStatus: number
+  failureReason: string
+  userAgent: string
+  loginDuration: string
+  loginMethod: string
+  browser: string
+  os: string
+  loginTime: string
+  logoutTime: string
+  ip: string
 }
 
 export enum RequestMethodEnum {
@@ -25,4 +25,4 @@ export enum RequestMethodEnum {
   PATCH = 5,
 }
 
-export type LoginAuditLogListData = ListApiBaseResponse<LoginAuditLogData>;
+export type LoginAuditLogListData = ListApiBaseResponse<LoginAuditLogData>

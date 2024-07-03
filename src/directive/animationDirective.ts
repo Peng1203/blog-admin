@@ -1,20 +1,20 @@
-import { App } from 'vue';
+import { App } from 'vue'
 
-const DISTANCE = 100;
+const DISTANCE = 100
 
 // 元素 动画 映射
-const map = new WeakMap();
+const map = new WeakMap()
 
 const ob = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      const animation = map.get(entry.target);
-      if (animation) animation.play();
+      const animation = map.get(entry.target)
+      if (animation) animation.play()
       // 动画播放一次后移除
-      ob.unobserve(entry.target);
+      ob.unobserve(entry.target)
     }
-  });
-});
+  })
+})
 
 export function slideIn(app: App) {
   app.directive('slide-in', {
@@ -35,15 +35,15 @@ export function slideIn(app: App) {
           easing: 'ease-in-out',
           fill: 'forwards',
         }
-      );
+      )
 
-      animation.pause();
+      animation.pause()
 
-      map.set(el, animation);
-      ob.observe(el);
+      map.set(el, animation)
+      ob.observe(el)
     },
     unmounted(el: HTMLElement) {
-      ob.unobserve(el);
+      ob.unobserve(el)
     },
-  });
+  })
 }

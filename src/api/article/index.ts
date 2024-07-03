@@ -1,6 +1,6 @@
-import request from '@/utils/request';
-import { TransformedResponse } from 'Api';
-import { Method } from '../types';
+import request from '@/utils/request'
+import { TransformedResponse } from 'Api'
+import { Method } from '../types'
 
 export function useArticleApi() {
   return {
@@ -16,7 +16,7 @@ export function useArticleApi() {
         url: '/article',
         method: Method.GET,
         params,
-      });
+      })
     },
     /**
      * 通过文章id获取详情信息
@@ -28,7 +28,7 @@ export function useArticleApi() {
       return request({
         url: `/article/${uid}/${articleId}`,
         method: Method.GET,
-      });
+      })
     },
     /**
      * 添加文章
@@ -42,7 +42,7 @@ export function useArticleApi() {
         url: '/article',
         method: Method.POST,
         data: JSON.stringify(data),
-      });
+      })
     },
     /**
      * 通过文章ID更新文章
@@ -65,7 +65,7 @@ export function useArticleApi() {
         headers: {
           fullscreenLoading: true,
         },
-      });
+      })
     },
     /**
      * 通过ID删除文章
@@ -79,7 +79,7 @@ export function useArticleApi() {
       return request({
         url: `/article/${authorId}/${articleId}`,
         method: Method.DELETE,
-      });
+      })
     },
     /**
      * 上传文章图片资源
@@ -92,14 +92,14 @@ export function useArticleApi() {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      });
+      })
     },
     getUserArticles<T>(uid, params): TransformedResponse<T> {
       return request({
         url: `/article/${uid}`,
         method: Method.GET,
         params,
-      });
+      })
     },
-  };
+  }
 }

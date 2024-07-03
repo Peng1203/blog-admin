@@ -62,16 +62,16 @@
 </template>
 
 <script lang="ts" setup name="ArticleList">
-import { ref, reactive, onMounted, defineAsyncComponent } from 'vue';
-import { useRouter } from 'vue-router';
-import { useArticleApi } from '@/api/article/index';
-import { ArticleListData, ArticleData, FilterParamsInfo } from './';
-import FilterHeadend from './components/FilterHeadend.vue';
-import ArticleItem from './components/ArticleItem.vue';
-import { ElNotification } from 'element-plus';
+import { ref, reactive, onMounted, defineAsyncComponent } from 'vue'
+import { useRouter } from 'vue-router'
+import { useArticleApi } from '@/api/article/index'
+import { ArticleListData, ArticleData, FilterParamsInfo } from './'
+import FilterHeadend from './components/FilterHeadend.vue'
+import ArticleItem from './components/ArticleItem.vue'
+import { ElNotification } from 'element-plus'
 
-const router = useRouter();
-const { getArticles, delArticle } = useArticleApi();
+const router = useRouter()
+const { getArticles, delArticle } = useArticleApi()
 
 let filterParams = reactive<FilterParamsInfo>({
   queryStr: '',
@@ -82,7 +82,7 @@ let filterParams = reactive<FilterParamsInfo>({
   tagId: 0,
   // 归档日期
   timeVal: ['', ''],
-});
+})
 
 // 文章列表参数
 const articleListState = reactive({
@@ -94,15 +94,15 @@ const articleListState = reactive({
   // 文章列表数据
   articleList: ref<ArticleData[]>([]),
   total: 0,
-});
+})
 
 // 获取文章列表
 const getArticleDataList = async () => {
-  articleListState.loading = true;
+  articleListState.loading = true
   try {
-    const { page, pageSize, order, column } = articleListState;
-    const { timeVal, ...args } = filterParams;
-    const [startTime, endTime] = timeVal || ['', ''];
+    const { page, pageSize, order, column } = articleListState
+    const { timeVal, ...args } = filterParams
+    const [startTime, endTime] = timeVal || ['', '']
     const params = {
       page,
       pageSize,
@@ -111,96 +111,96 @@ const getArticleDataList = async () => {
       startTime,
       endTime,
       ...args,
-    };
-    const { data: res } = await getArticles<ArticleListData>(params);
-    const { data, code, success } = res;
-    if (code !== 20000 || !success) return (articleListState.loading = false);
+    }
+    const { data: res } = await getArticles<ArticleListData>(params)
+    const { data, code, success } = res
+    if (code !== 20000 || !success) return (articleListState.loading = false)
 
     articleListState.articleList = [
       ...articleListState.articleList,
       ...data.list,
-    ];
-    articleListState.total = data.total;
+    ]
+    articleListState.total = data.total
   } catch (e) {
-    console.log(e);
-    articleListState.loading = false;
+    console.log(e)
+    articleListState.loading = false
   } finally {
-    articleListState.loading = false;
+    articleListState.loading = false
   }
-};
+}
 
 // 带有过滤条件的查询 page 和 list 需要重置
 const resetFilterGetDataList = () => {
-  articleListState.articleList = [];
-  articleListState.page = 1;
-  getArticleDataList();
-};
+  articleListState.articleList = []
+  articleListState.page = 1
+  getArticleDataList()
+}
 
 // 文章列表触底
 const load = () => {
-  if (articleListState.articleList.length >= articleListState.total) return;
-  articleListState.page++;
-  getArticleDataList();
-};
+  if (articleListState.articleList.length >= articleListState.total) return
+  articleListState.page++
+  getArticleDataList()
+}
 
 // 处理删除文章
 const handleDelete = async (row: ArticleData) => {
-  const delRes = await deleteArticle(row.author.id, row.id);
-  if (!delRes) return;
+  const delRes = await deleteArticle(row.author.id, row.id)
+  if (!delRes) return
   // 从文章列表数据中找到对应数据 删除 而不是从新调用列表接口
-  removeArticleFromList(row.id);
-};
+  removeArticleFromList(row.id)
+}
 
 // 删除文章
 const deleteArticle = async (uid: number, aid: number): Promise<boolean> => {
   try {
-    const { data: res } = await delArticle<string>(uid, aid);
-    const { code, data, message, success } = res;
-    if (code !== 20000 || !success) return false;
+    const { data: res } = await delArticle<string>(uid, aid)
+    const { code, data, message, success } = res
+    if (code !== 20000 || !success) return false
     ElNotification({
       title: message,
       message: data,
       type: 'success',
-    });
+    })
 
-    return true;
+    return true
   } catch (e) {
-    console.log(e);
-    return false;
+    console.log(e)
+    return false
   }
-};
+}
 
 const removeArticleFromList = (aid: number) => {
   const findItemIndex = articleListState.articleList.findIndex(
     ({ id }) => id === aid
-  );
-  if (findItemIndex === -1) return;
-  articleListState.articleList.splice(findItemIndex, 1);
-};
+  )
+  if (findItemIndex === -1) return
+  articleListState.articleList.splice(findItemIndex, 1)
+}
 
 // 编辑文章
 const handleEditArticle = (row: ArticleData) => {
   router.push({
     name: 'EditArticle',
     params: { aid: row.id },
-  });
-};
+  })
+}
 
 // 预览组件
-const previewDialogStatus = ref<boolean>(false);
-const previewRow = ref<ArticleData>();
+const previewDialogStatus = ref<boolean>(false)
+const previewRow = ref<ArticleData>()
 const PreviewArticleDialog = defineAsyncComponent(
   () => import('./components/PreviewArticle.vue')
-);
+)
 // 处理预览操作
 const handlePreviewArticle = async (row: ArticleData) => {
-  previewRow.value = row;
-  previewDialogStatus.value = true;
-};
+  previewRow.value = row
+  previewDialogStatus.value = true
+}
 
 onMounted(() => {
-  getArticleDataList();
-});
+  getArticleDataList()
+})
 </script>
 
 <style lang="scss" scoped>

@@ -15,20 +15,20 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from 'vue';
-import { useUserApi } from '@/api/user';
-import { UploadRawFile } from 'element-plus';
-import { FormItem } from '@/components/Form';
-import { passwordStrengthLevelDetection } from '@/utils/pwd';
-import { UserData, AddProps, AddEditUserType } from '../types';
-import { UploadRequestOptions } from 'element-plus';
-import { passwordEncryption } from '@/utils/encryption';
-import { useNotificationMsg } from '@/utils/notificationMsg';
+import { ref, reactive } from 'vue'
+import { useUserApi } from '@/api/user'
+import { UploadRawFile } from 'element-plus'
+import { FormItem } from '@/components/Form'
+import { passwordStrengthLevelDetection } from '@/utils/pwd'
+import { UserData, AddProps, AddEditUserType } from '../types'
+import { UploadRequestOptions } from 'element-plus'
+import { passwordEncryption } from '@/utils/encryption'
+import { useNotificationMsg } from '@/utils/notificationMsg'
 
-const props = defineProps<AddProps>();
+const props = defineProps<AddProps>()
 
-const emits = defineEmits(['updateList']);
-const { addUser, uploadAvatar } = useUserApi();
+const emits = defineEmits(['updateList'])
+const { addUser, uploadAvatar } = useUserApi()
 
 // 校验密码强度
 const passwordStrengthDetection = (
@@ -38,18 +38,18 @@ const passwordStrengthDetection = (
 ): any => {
   const findFormItem = addUserState.formItemList.find(
     item => item.prop === 'password'
-  );
+  )
 
-  if (!value) return findFormItem && (findFormItem.strengthLevel = 0);
+  if (!value) return findFormItem && (findFormItem.strengthLevel = 0)
 
-  let level = passwordStrengthLevelDetection(value);
-  if (level === -1) callback(new Error('密码不能包括出现特殊字符'));
-  if (findFormItem) findFormItem.strengthLevel = level as any;
-  callback();
-};
+  let level = passwordStrengthLevelDetection(value)
+  if (level === -1) callback(new Error('密码不能包括出现特殊字符'))
+  if (findFormItem) findFormItem.strengthLevel = level as any
+  callback()
+}
 
 // 对话框状态
-const addUserDialogStatus = ref<boolean>(false);
+const addUserDialogStatus = ref<boolean>(false)
 
 // 表单数据
 const formData = ref<AddEditUserType>({
@@ -60,7 +60,7 @@ const formData = ref<AddEditUserType>({
   email: '',
   userEnabled: 1,
   userAvatar: '',
-});
+})
 
 const addUserState = reactive({
   formItemList: ref<FormItem<AddEditUserType>[]>([
@@ -137,81 +137,81 @@ const addUserState = reactive({
       fileMaxSize: 2,
       // autoUpload: false,
       customUploadCb(options: UploadRequestOptions) {
-        handleUploadAvatar(options.file);
+        handleUploadAvatar(options.file)
       },
       accept: ['.gif', '.jpeg', '.jpg', '.png', '.webp'],
     },
   ]),
-});
+})
 
-const addFormRef = ref<RefType>(null);
+const addFormRef = ref<RefType>(null)
 // 处理添加用户
 const handleAdd = async () => {
   // 校验表单
   const validataRes = await addFormRef.value
     .getRef()
     .validate()
-    .catch(() => false);
-  if (!validataRes) return;
-  const addRes = await addNewUser();
-  if (!addRes) return;
-  handleDialogClose();
-  emits('updateList');
-};
+    .catch(() => false)
+  if (!validataRes) return
+  const addRes = await addNewUser()
+  if (!addRes) return
+  handleDialogClose()
+  emits('updateList')
+}
 // 添加用户
 const addNewUser = async (): Promise<boolean> => {
   try {
-    const { email, password, ...other } = formData.value;
+    const { email, password, ...other } = formData.value
     const params = {
       ...other,
       ...(email ? { email } : {}),
       password: passwordEncryption(password!),
-    };
-    const { data: res } = await addUser<UserData>(params as any);
-    const { code, message, success } = res;
-    if (code !== 20100 || !success) return false;
-    useNotificationMsg('', message);
-    return true;
+    }
+    const { data: res } = await addUser<UserData>(params as any)
+    const { code, message, success } = res
+    if (code !== 20100 || !success) return false
+    useNotificationMsg('', message)
+    return true
   } catch (e) {
-    console.log(e);
-    return false;
+    console.log(e)
+    return false
   }
-};
+}
 
 const handleUploadAvatar = async (file: UploadRawFile) => {
   try {
-    const fileFormData = new FormData();
+    const fileFormData = new FormData()
 
-    fileFormData.append('file', file);
+    fileFormData.append('file', file)
 
-    const { data: res } = await uploadAvatar(fileFormData);
-    formData.value.userAvatar = res.data;
+    const { data: res } = await uploadAvatar(fileFormData)
+    formData.value.userAvatar = res.data
   } catch (e) {
-    console.log('e', e);
+    console.log('e', e)
   }
-};
+}
 
 const resetAddForm = () => {
-  formData.value.userName = '';
-  formData.value.nickName = '';
-  formData.value.password = '';
-  formData.value.roleIds = [];
-  formData.value.email = '';
-  formData.value.userEnabled = 1;
-  formData.value.userAvatar = '';
+  formData.value.userName = ''
+  formData.value.nickName = ''
+  formData.value.password = ''
+  formData.value.roleIds = []
+  formData.value.email = ''
+  formData.value.userEnabled = 1
+  formData.value.userAvatar = ''
   const findFormItem = addUserState.formItemList.find(
     item => item.prop === 'password'
-  );
-  if (findFormItem) findFormItem.strengthLevel = 0;
-};
+  )
+  if (findFormItem) findFormItem.strengthLevel = 0
+}
 
 const handleDialogClose = () => {
-  resetAddForm();
-  addFormRef.value.getRef().resetFields();
-  addUserDialogStatus.value = false;
-};
+  resetAddForm()
+  addFormRef.value.getRef().resetFields()
+  addUserDialogStatus.value = false
+}
 
-defineExpose({ addUserDialogStatus });
+defineExpose({ addUserDialogStatus })
 </script>
 
 <style lang="scss" scoped></style>

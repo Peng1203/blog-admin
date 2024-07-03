@@ -35,25 +35,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
-import { MdPreview, MdCatalog } from 'md-editor-v3';
-import 'md-editor-v3/lib/preview.css';
-import { PreviewAttibute } from './types';
+import { ref, reactive } from 'vue'
+import { MdPreview, MdCatalog } from 'md-editor-v3'
+import 'md-editor-v3/lib/preview.css'
+import { PreviewAttibute } from './types'
 
-defineEmits(['catalogClick']);
+defineEmits(['catalogClick'])
 
-const model = defineModel({ type: String });
+const model = defineModel({ type: String })
 
 withDefaults(defineProps<PreviewAttibute>(), {
   height: '400px',
   catalogVisible: true,
-});
+})
 
 const state = reactive({
   id: 'my-editor',
-});
+})
 
-const previewRef = ref<RefType>(null);
+const previewRef = ref<RefType>(null)
 </script>
 
 <style scoped lang="scss">

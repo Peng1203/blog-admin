@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from 'vue-router';
+import { RouteRecordRaw } from 'vue-router'
 
 // 设置
 const routerRules: RouteRecordRaw[] = [
@@ -14,6 +14,6 @@ const routerRules: RouteRecordRaw[] = [
       isKeepAlive: false,
     },
   },
-];
+]
 
-export default routerRules;
+export default routerRules

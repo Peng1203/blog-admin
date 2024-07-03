@@ -1,7 +1,7 @@
-import request from '@/utils/request';
-import { TransformedResponse } from 'Api';
-import { Method } from '../types';
-import axios, { AxiosProgressEvent } from 'axios';
+import request from '@/utils/request'
+import { TransformedResponse } from 'Api'
+import { Method } from '../types'
+import axios, { AxiosProgressEvent } from 'axios'
 // Canceler
 
 export function useResourceApi() {
@@ -13,7 +13,7 @@ export function useResourceApi() {
         url: '/resource',
         method: Method.GET,
         params,
-      });
+      })
     },
     uploadResource<T = string>(
       file: FormData,
@@ -29,7 +29,7 @@ export function useResourceApi() {
         },
         onUploadProgress,
         cancelToken: new axios.CancelToken(c => (item.cancel = c)),
-      });
+      })
     },
-  };
+  }
 }

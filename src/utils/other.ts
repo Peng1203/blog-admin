@@ -1,13 +1,13 @@
-import { nextTick, defineAsyncComponent } from 'vue';
-import type { App } from 'vue';
-import * as svg from '@element-plus/icons-vue';
-import router from '@/router/index';
-import pinia from '@/stores/index';
-import { storeToRefs } from 'pinia';
-import { useThemeConfig } from '@/stores/themeConfig';
-import { Local } from '@/utils/storage';
-import { verifyUrl } from '@/utils/toolsValidate';
-import SvgIcon from '@/components/svgIcon/index.vue';
+import { nextTick, defineAsyncComponent } from 'vue'
+import type { App } from 'vue'
+import * as svg from '@element-plus/icons-vue'
+import router from '@/router/index'
+import pinia from '@/stores/index'
+import { storeToRefs } from 'pinia'
+import { useThemeConfig } from '@/stores/themeConfig'
+import { Local } from '@/utils/storage'
+import { verifyUrl } from '@/utils/toolsValidate'
+import SvgIcon from '@/components/svgIcon/index.vue'
 
 // 引入组件
 // const SvgIcon = defineAsyncComponent(() => import('@/components/svgIcon/index.vue'));
@@ -18,11 +18,11 @@ import SvgIcon from '@/components/svgIcon/index.vue';
  * @description 使用：https://element-plus.gitee.io/zh-CN/component/icon.html
  */
 export function elSvg(app: App) {
-  const icons = svg as any;
+  const icons = svg as any
   for (const i in icons) {
-    app.component(`ele-${icons[i].name}`, icons[i]);
+    app.component(`ele-${icons[i].name}`, icons[i])
   }
-  app.component('SvgIcon', SvgIcon);
+  app.component('SvgIcon', SvgIcon)
 }
 
 /**
@@ -30,19 +30,19 @@ export function elSvg(app: App) {
  * @method const title = useTitle(); ==> title()
  */
 export function useTitle() {
-  const stores = useThemeConfig(pinia);
-  const { themeConfig } = storeToRefs(stores);
+  const stores = useThemeConfig(pinia)
+  const { themeConfig } = storeToRefs(stores)
   nextTick(() => {
-    let webTitle = '';
-    let globalTitle: string = themeConfig.value.globalTitle;
-    const { path, meta } = router.currentRoute.value;
+    let webTitle = ''
+    let globalTitle: string = themeConfig.value.globalTitle
+    const { path, meta } = router.currentRoute.value
     if (path === '/login') {
-      webTitle = <string>meta.title;
+      webTitle = <string>meta.title
     } else {
-      webTitle = setTagsViewNameI18n(router.currentRoute.value);
+      webTitle = setTagsViewNameI18n(router.currentRoute.value)
     }
-    document.title = `${webTitle}  ${globalTitle}` || globalTitle;
-  });
+    document.title = `${webTitle}  ${globalTitle}` || globalTitle
+  })
 }
 
 /**
@@ -51,16 +51,16 @@ export function useTitle() {
  * @returns 返回当前 tagsViewName 名称
  */
 export function setTagsViewNameI18n(item: any) {
-  let tagsViewName: string = '';
-  const { query, params, meta } = item;
+  let tagsViewName: string = ''
+  const { query, params, meta } = item
   if (query?.tagsViewName || params?.tagsViewName) {
     // 非国际化
-    tagsViewName = query?.tagsViewName || params?.tagsViewName;
+    tagsViewName = query?.tagsViewName || params?.tagsViewName
   } else {
     // 非自定义 tagsView 名称
-    tagsViewName = meta.title;
+    tagsViewName = meta.title
   }
-  return tagsViewName;
+  return tagsViewName
 }
 
 /**
@@ -73,29 +73,32 @@ export const lazyImg = (el: string, arr: EmptyArrayType) => {
   const io = new IntersectionObserver(res => {
     res.forEach((v: any) => {
       if (v.isIntersecting) {
-        const { img, key } = v.target.dataset;
-        v.target.src = img;
+        const { img, key } = v.target.dataset
+        v.target.src = img
         v.target.onload = () => {
-          io.unobserve(v.target);
-          arr[key]['loading'] = false;
-        };
+          io.unobserve(v.target)
+          arr[key]['loading'] = false
+        }
       }
-    });
-  });
+    })
+  })
   nextTick(() => {
-    document.querySelectorAll(el).forEach(img => io.observe(img));
-  });
-};
+    document.querySelectorAll(el).forEach(img => io.observe(img))
+  })
+}
 
 /**
  * 全局组件大小
  * @returns 返回 `window.localStorage` 中读取的缓存值 `globalComponentSize`
  */
 export const globalComponentSize = (): string => {
-  const stores = useThemeConfig(pinia);
-  const { themeConfig } = storeToRefs(stores);
-  return Local.get('themeConfig')?.globalComponentSize || themeConfig.value?.globalComponentSize;
-};
+  const stores = useThemeConfig(pinia)
+  const { themeConfig } = storeToRefs(stores)
+  return (
+    Local.get('themeConfig')?.globalComponentSize ||
+    themeConfig.value?.globalComponentSize
+  )
+}
 
 /**
  * 对象深克隆
@@ -103,20 +106,20 @@ export const globalComponentSize = (): string => {
  * @returns 克隆后的对象
  */
 export function deepClone(obj: EmptyObjectType) {
-  let newObj: EmptyObjectType;
+  let newObj: EmptyObjectType
   try {
-    newObj = obj.push ? [] : {};
+    newObj = obj.push ? [] : {}
   } catch (error) {
-    newObj = {};
+    newObj = {}
   }
   for (let attr in obj) {
     if (obj[attr] && typeof obj[attr] === 'object') {
-      newObj[attr] = deepClone(obj[attr]);
+      newObj[attr] = deepClone(obj[attr])
     } else {
-      newObj[attr] = obj[attr];
+      newObj[attr] = obj[attr]
     }
   }
-  return newObj;
+  return newObj
 }
 
 /**
@@ -128,9 +131,9 @@ export function isMobile() {
       /('phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone')/i
     )
   ) {
-    return true;
+    return true
   } else {
-    return false;
+    return false
   }
 }
 
@@ -141,18 +144,18 @@ export function isMobile() {
  * @returns 删除空值后的数组对象
  */
 export function handleEmpty(list: EmptyArrayType) {
-  const arr = [];
+  const arr = []
   for (const i in list) {
-    const d = [];
+    const d = []
     for (const j in list[i]) {
-      d.push(list[i][j]);
+      d.push(list[i][j])
     }
-    const leng = d.filter(item => item === '').length;
+    const leng = d.filter(item => item === '').length
     if (leng !== d.length) {
-      arr.push(list[i]);
+      arr.push(list[i])
     }
   }
-  return arr;
+  return arr
 }
 
 /**
@@ -160,10 +163,10 @@ export function handleEmpty(list: EmptyArrayType) {
  * @param val 当前点击项菜单
  */
 export function handleOpenLink(val: RouteItem) {
-  const { origin, pathname } = window.location;
-  router.push(val.path);
-  if (verifyUrl(<string>val.meta?.isLink)) window.open(val.meta?.isLink);
-  else window.open(`${origin}${pathname}#${val.meta?.isLink}`);
+  const { origin, pathname } = window.location
+  router.push(val.path)
+  if (verifyUrl(<string>val.meta?.isLink)) window.open(val.meta?.isLink)
+  else window.open(`${origin}${pathname}#${val.meta?.isLink}`)
 }
 
 /**
@@ -179,33 +182,33 @@ export function handleOpenLink(val: RouteItem) {
  */
 const other = {
   elSvg: (app: App) => {
-    elSvg(app);
+    elSvg(app)
   },
   useTitle: () => {
-    useTitle();
+    useTitle()
   },
   setTagsViewNameI18n(route: RouteToFrom) {
-    return setTagsViewNameI18n(route);
+    return setTagsViewNameI18n(route)
   },
   lazyImg: (el: string, arr: EmptyArrayType) => {
-    lazyImg(el, arr);
+    lazyImg(el, arr)
   },
   globalComponentSize: () => {
-    return globalComponentSize();
+    return globalComponentSize()
   },
   deepClone: (obj: EmptyObjectType) => {
-    return deepClone(obj);
+    return deepClone(obj)
   },
   isMobile: () => {
-    return isMobile();
+    return isMobile()
   },
   handleEmpty: (list: EmptyArrayType) => {
-    return handleEmpty(list);
+    return handleEmpty(list)
   },
   handleOpenLink: (val: RouteItem) => {
-    handleOpenLink(val);
+    handleOpenLink(val)
   },
-};
+}
 
 // 统一批量导出
-export default other;
+export default other

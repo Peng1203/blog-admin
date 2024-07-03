@@ -17,14 +17,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { FormItem } from '@/components/Form';
-import { AddArticleType } from '@/views/article/article';
-import { ARTICLE } from '@/constants';
-import { CategorySelect } from '@/views/article/category';
-import { TagSelect } from '@/views/article/tag';
+import { ref } from 'vue'
+import { FormItem } from '@/components/Form'
+import { AddArticleType } from '@/views/article/article'
+import { ARTICLE } from '@/constants'
+import { CategorySelect } from '@/views/article/category'
+import { TagSelect } from '@/views/article/tag'
 
-const articleForm = defineModel<AddArticleType>({ required: true });
+const articleForm = defineModel<AddArticleType>({ required: true })
 
 const formItemList = ref<FormItem<AddArticleType>[]>([
   {
@@ -116,37 +116,37 @@ const formItemList = ref<FormItem<AddArticleType>[]>([
     height: 150,
     placeholder: '默认取文章内容的前300个字符',
   },
-]);
+])
 
-const infoFormRef = ref<RefType>();
+const infoFormRef = ref<RefType>()
 
 // 校验表单
 const validateForm = async (): Promise<boolean> => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  const { status, accessPassword, ...args } = articleForm.value;
+  const { status, accessPassword, ...args } = articleForm.value
   // 当为私密文章时 调用整个表单校验 否则调用 局部校验
   const [validateMethod, validateProps] =
     status === 2
       ? ['validate', undefined]
-      : ['validateField', Object.keys(args)];
+      : ['validateField', Object.keys(args)]
 
   // prettier-ignore
   const validateStatus = await infoFormRef.value
     .getRef()[validateMethod](validateProps)
     .catch(() => false);
-  return validateStatus;
-};
+  return validateStatus
+}
 
 // 重置表单校验规则
-const resetFormFields = () => infoFormRef.value.resetFields();
+const resetFormFields = () => infoFormRef.value.resetFields()
 
 const handleRadioChange = () => {
   const accessPwdItem = formItemList.value.find(
     item => item.prop === 'accessPassword'
-  );
-  if (articleForm.value.status !== 2) accessPwdItem.isShow = false;
-  else accessPwdItem.isShow = true;
-};
+  )
+  if (articleForm.value.status !== 2) accessPwdItem.isShow = false
+  else accessPwdItem.isShow = true
+}
 
-defineExpose({ validateForm, resetFormFields });
+defineExpose({ validateForm, resetFormFields })
 </script>

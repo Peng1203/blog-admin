@@ -1,7 +1,7 @@
-import { ListApiBaseResponse } from 'Api';
-import { TagData } from '@/views/article/tag';
-import { CategoryData } from '@/views/article/category';
-import { UserData } from '@/views/user/user';
+import { ListApiBaseResponse } from 'Api'
+import { TagData } from '@/views/article/tag'
+import { CategoryData } from '@/views/article/category'
+import { UserData } from '@/views/user/user'
 
 /**
  * 文章类型枚举
@@ -44,80 +44,83 @@ export enum ContentModelEnum {
 }
 
 export interface ArticleData {
-  id: number;
-  title: string;
-  summary: string;
-  content: string;
-  cover: string;
-  likes: number;
-  views: number;
+  id: number
+  title: string
+  summary: string
+  content: string
+  cover: string
+  likes: number
+  views: number
   /** 评论数 */
-  comment: number;
+  comment: number
   /** 文章内容模式 */
-  contentModel: ContentModelEnum;
+  contentModel: ContentModelEnum
   /** 文章类型: 1原创 2转载 3翻译 */
-  type: ArticleTypeEnum;
+  type: ArticleTypeEnum
   /** 文章状态: 1已发布 2私密 3草稿箱 4已删除 5待审核 6已拒绝 */
-  status: ArticleStatusEnum;
+  status: ArticleStatusEnum
   /** 是否置顶 */
-  isTop: BolEnum;
+  isTop: BolEnum
   /** 访问密码 */
-  accessPassword?: string | null;
-  tags: TagData[];
-  category: CategoryData;
-  author: TypeOmit<UserData, 'password'>;
-  createTime: string;
-  updateTime: string;
+  accessPassword?: string | null
+  tags: TagData[]
+  category: CategoryData
+  author: TypeOmit<UserData, 'password'>
+  createTime: string
+  updateTime: string
 }
 
 // 表单操作的文章数据类型
-export type OperationArticleData = TypeOmit<ArticleData, 'tags' | 'category' | 'author'> & {
-  tags: number[];
-  category: number | '';
-  author: number;
-};
+export type OperationArticleData = TypeOmit<
+  ArticleData,
+  'tags' | 'category' | 'author'
+> & {
+  tags: number[]
+  category: number | ''
+  author: number
+}
 
-export type ArticleListData = ListApiBaseResponse<ArticleData>;
+export type ArticleListData = ListApiBaseResponse<ArticleData>
 
 export type AddArticleType = Optional<
   OperationArticleData,
   'id' | 'likes' | 'views' | 'comment' | 'createTime' | 'updateTime'
->;
+>
 
 export interface EditProps {
-  editRow: ArticleData;
+  editRow: ArticleData
 }
 
 export interface FilterParamsInfo {
-  queryStr: string;
+  queryStr: string
   /** 文章类型: 1原创 2转载 3翻译 */
-  type: ArticleTypeEnum | 0;
+  type: ArticleTypeEnum | 0
   /** 文章状态: 1已发布 2私密 3草稿箱 4已删除 5待审核 6已拒绝 */
-  status: ArticleStatusEnum | 0;
+  status: ArticleStatusEnum | 0
   /** 作者ID */
-  authorId: number;
+  authorId: number
   /** 分类ID */
-  categoryId: number;
+  categoryId: number
   /** TagId */
-  tagId: number;
+  tagId: number
   /** 时间过滤 */
-  timeVal: [string, string];
+  timeVal: [string, string]
 }
 
 export interface FilterHeadendProps {
-  modelValue: FilterParamsInfo;
+  modelValue: FilterParamsInfo
 }
 
 // 文章列表item 组件props
 export interface ArticleItemProps {
-  article: ArticleData;
+  article: ArticleData
 }
 
 // 文章 图标信息映射项
 export interface IconHashMappingItem {
-  name: string;
-  title: string;
-  prop: keyof ArticleData;
-  color?: string;
-  size?: number;
+  name: string
+  title: string
+  prop: keyof ArticleData
+  color?: string
+  size?: number
 }

@@ -34,31 +34,31 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch } from 'vue';
-import { useRoleApi } from '@/api/role/index';
-import { ElMessage } from 'element-plus';
-import { AddEditRoleType, RoleEntityData } from '../types';
-import Drawer from '@/components/Drawer';
-import Form, { FormItem } from '@/components/Form';
-import { MenuTree } from '@/views/auth/menu';
-import { PermissionTree } from '@/views/auth/authPermission';
-import { usePermissionInfo } from '@/stores/permissionList';
+import { ref, reactive, watch } from 'vue'
+import { useRoleApi } from '@/api/role/index'
+import { ElMessage } from 'element-plus'
+import { AddEditRoleType, RoleEntityData } from '../types'
+import Drawer from '@/components/Drawer'
+import Form, { FormItem } from '@/components/Form'
+import { MenuTree } from '@/views/auth/menu'
+import { PermissionTree } from '@/views/auth/authPermission'
+import { usePermissionInfo } from '@/stores/permissionList'
 
-const { updateRole } = useRoleApi();
+const { updateRole } = useRoleApi()
 
 interface EditRowProps {
-  editRow: RoleEntityData;
+  editRow: RoleEntityData
 }
 
 const props = withDefaults(defineProps<EditRowProps>(), {
   editRow: () => ({} as RoleEntityData),
-});
-const emits = defineEmits(['updateList']);
+})
+const emits = defineEmits(['updateList'])
 
-const permissionStore = usePermissionInfo();
+const permissionStore = usePermissionInfo()
 
 // 抽屉状态
-const editDrawerStatus = ref<boolean>(false);
+const editDrawerStatus = ref<boolean>(false)
 
 const editFormState = reactive({
   data: ref<AddEditRoleType>({
@@ -98,53 +98,61 @@ const editFormState = reactive({
       placeholder: '请输入角色描述',
     },
   ]),
-});
+})
 
-const editFormRef = ref<RefType>(null);
+const editFormRef = ref<RefType>(null)
 // 处理保存修改
 const handleSaveEdit = async () => {
   const valdateRes = await editFormRef.value
     .getRef()
     .validate()
-    .catch(() => false);
-  if (!valdateRes) return;
-  const editRes = await saveEditRole();
-  if (!editRes) return;
-  editDrawerStatus.value = false;
-  emits('updateList');
-};
+    .catch(() => false)
+  if (!valdateRes) return
+  const editRes = await saveEditRole()
+  if (!editRes) return
+  editDrawerStatus.value = false
+  emits('updateList')
+}
 
 // 保存修改数据
 const saveEditRole = async (): Promise<boolean> => {
   try {
-    const { id, permissions: pIds, createTime, updateTime, ...args } = editFormState.data;
-    const permissions = pIds?.filter(id => !permissionStore.permissionList.find(p => p.id === id));
+    const {
+      id,
+      permissions: pIds,
+      createTime,
+      updateTime,
+      ...args
+    } = editFormState.data
+    const permissions = pIds?.filter(
+      id => !permissionStore.permissionList.find(p => p.id === id)
+    )
     const params = {
       ...args,
       permissions,
-    };
-    const { data: res } = await updateRole<string>(id!, params);
-    const { code, data, message, success } = res;
-    if (code !== 20001 || !success) return false;
-    ElMessage.success(data);
-    return true;
+    }
+    const { data: res } = await updateRole<string>(id!, params)
+    const { code, data, message, success } = res
+    if (code !== 20001 || !success) return false
+    ElMessage.success(data)
+    return true
   } catch (e) {
-    console.log(e);
-    return false;
+    console.log(e)
+    return false
   }
-};
+}
 
 watch(
   () => props.editRow,
   val => {
-    editFormState.data = JSON.parse(JSON.stringify(val));
-    editFormState.data.permissions = val.permissions.map(({ id }) => id);
-    editFormState.data.menus = val.menus.map(({ id }) => id);
+    editFormState.data = JSON.parse(JSON.stringify(val))
+    editFormState.data.permissions = val.permissions.map(({ id }) => id)
+    editFormState.data.menus = val.menus.map(({ id }) => id)
   },
   { deep: true }
-);
+)
 
-defineExpose({ editDrawerStatus });
+defineExpose({ editDrawerStatus })
 </script>
 
 <style lang="scss" scoped></style>

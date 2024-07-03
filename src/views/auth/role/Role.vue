@@ -66,18 +66,23 @@
 </template>
 
 <script setup lang="ts" name="SystemRole">
-import { defineAsyncComponent, ref, onMounted, reactive } from 'vue';
-import { ElMessage } from 'element-plus';
-import { queryStrHighlight } from '@/utils/queryStrHighlight';
-import { useRoleApi } from '@/api/role/index';
-import { useRolesInfo } from '@/stores/roleList';
-import { RoleData, RoleListData, RoleEntityData } from './types';
-import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table';
-import Search from '@/components/Search';
+import { defineAsyncComponent, ref, onMounted, reactive } from 'vue'
+import { ElMessage } from 'element-plus'
+import { queryStrHighlight } from '@/utils/queryStrHighlight'
+import { useRoleApi } from '@/api/role/index'
+import { useRolesInfo } from '@/stores/roleList'
+import { RoleData, RoleListData, RoleEntityData } from './types'
+import Table, {
+  ColumnItem,
+  PageInfo,
+  PageChangeParams,
+  ColumnChangeParams,
+} from '@/components/Table'
+import Search from '@/components/Search'
 
-const { getRole, deleteRole } = useRoleApi();
+const { getRole, deleteRole } = useRoleApi()
 
-const roleStore = useRolesInfo();
+const roleStore = useRolesInfo()
 
 // 表格参数
 const tableState = reactive({
@@ -113,106 +118,112 @@ const tableState = reactive({
     pageSize: 10,
     total: 0,
   }),
-});
+})
 
 // 获取角色表格数据
 const getRoleTableData = async () => {
   try {
-    tableState.loading = true;
-    const { pagerInfo, column, order, queryStr } = tableState;
+    tableState.loading = true
+    const { pagerInfo, column, order, queryStr } = tableState
     const params = {
       queryStr,
       column,
       order,
       page: pagerInfo.page,
       pageSize: pagerInfo.pageSize,
-    };
-    const { data: res } = await getRole<RoleListData>(params);
+    }
+    const { data: res } = await getRole<RoleListData>(params)
 
-    const { code, data, success } = res;
-    if (code !== 20000 || !success) return;
-    tableState.data = data.list;
-    tableState.pagerInfo.total = data.total;
+    const { code, data, success } = res
+    if (code !== 20000 || !success) return
+    tableState.data = data.list
+    tableState.pagerInfo.total = data.total
   } catch (e) {
-    console.log(e);
+    console.log(e)
   } finally {
-    tableState.loading = false;
+    tableState.loading = false
   }
-};
+}
 
 // 分页器修改时触发
 const handlePageInfoChange = ({ page, pageSize }: PageChangeParams) => {
-  tableState.pagerInfo.page = page;
-  tableState.pagerInfo.pageSize = pageSize;
-  getRoleTableData();
-};
+  tableState.pagerInfo.page = page
+  tableState.pagerInfo.pageSize = pageSize
+  getRoleTableData()
+}
 
 // 搜索
 const handleSearch = () => {
-  tableState.pagerInfo.page = 1;
-  getRoleTableData();
-};
+  tableState.pagerInfo.page = 1
+  getRoleTableData()
+}
 
 // 表格排序
 const handleColumnChange = ({ column, order }: ColumnChangeParams) => {
-  tableState.column = column;
-  tableState.order = order;
-  getRoleTableData();
-};
+  tableState.column = column
+  tableState.order = order
+  getRoleTableData()
+}
 
 // 处理删除角色
 const handleDelRole = async (row: RoleData) => {
-  const delRes = await deleteRoleById(row.id);
-  if (!delRes) return;
-  handleUpdate();
-};
+  const delRes = await deleteRoleById(row.id)
+  if (!delRes) return
+  handleUpdate()
+}
 
 // 删除角色
 const deleteRoleById = async (id: number): Promise<boolean> => {
   try {
-    const { data: res } = await deleteRole<string>(id);
-    const { code, data, message, success } = res;
-    if (code !== 20000 || !success) return false;
-    ElMessage.success(data);
-    return true;
+    const { data: res } = await deleteRole<string>(id)
+    const { code, data, message, success } = res
+    if (code !== 20000 || !success) return false
+    ElMessage.success(data)
+    return true
   } catch (e) {
-    console.log(e);
-    return false;
+    console.log(e)
+    return false
   }
-};
+}
 
 // 处理编辑角色
-const editRow = ref<RoleEntityData>();
-const EditRoleDrawer = defineAsyncComponent(() => import('./components/EditRole.vue'));
-const editDrawerRef = ref<RefType>(null);
+const editRow = ref<RoleEntityData>()
+const EditRoleDrawer = defineAsyncComponent(
+  () => import('./components/EditRole.vue')
+)
+const editDrawerRef = ref<RefType>(null)
 const handleEditRole = (row: RoleEntityData) => {
-  editRow.value = row;
-  editDrawerRef.value.editDrawerStatus = true;
-};
+  editRow.value = row
+  editDrawerRef.value.editDrawerStatus = true
+}
 
 // 处理添加角色
-const AddRoleDialog = defineAsyncComponent(() => import('./components/AddRole.vue'));
-const addDialogRef = ref<RefType>(null);
+const AddRoleDialog = defineAsyncComponent(
+  () => import('./components/AddRole.vue')
+)
+const addDialogRef = ref<RefType>(null)
 
 // 查看角色
-const viewRow = ref<RoleEntityData>();
-const ViewRoleDialog = defineAsyncComponent(() => import('./components/ViewRole.vue'));
-const viewDialogRef = ref<RefType>(null);
+const viewRow = ref<RoleEntityData>()
+const ViewRoleDialog = defineAsyncComponent(
+  () => import('./components/ViewRole.vue')
+)
+const viewDialogRef = ref<RefType>(null)
 const handleViewRole = (row: RoleEntityData) => {
-  viewRow.value = row;
-  viewDialogRef.value.viewRoleDialogStatus = true;
-};
+  viewRow.value = row
+  viewDialogRef.value.viewRoleDialogStatus = true
+}
 
 // 更新列表
 const handleUpdate = () => {
-  getRoleTableData();
-  roleStore.getRoleData(true);
-};
+  getRoleTableData()
+  roleStore.getRoleData(true)
+}
 
 // 页面加载时
 onMounted(async () => {
-  getRoleTableData();
-});
+  getRoleTableData()
+})
 </script>
 
 <style lang="scss" scoped></style>

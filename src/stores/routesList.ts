@@ -1,5 +1,5 @@
-import { RoutesListState } from '@/types/pinia';
-import { defineStore } from 'pinia';
+import { RoutesListState } from '@/types/pinia'
+import { defineStore } from 'pinia'
 
 /**
  * 路由列表
@@ -15,13 +15,13 @@ export const useRoutesList = defineStore('routesList', {
   }),
   actions: {
     async setRoutesList(data: Array<string>) {
-      this.routesList = data;
+      this.routesList = data
     },
     async setColumnsMenuHover(bool: Boolean) {
-      this.isColumnsMenuHover = bool;
+      this.isColumnsMenuHover = bool
     },
     async setColumnsNavHover(bool: Boolean) {
-      this.isColumnsNavHover = bool;
+      this.isColumnsNavHover = bool
     },
   },
-});
+})

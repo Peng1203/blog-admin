@@ -22,23 +22,25 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch, defineAsyncComponent, computed } from 'vue';
-import { useMenuApi } from '@/api/menu/index';
-import Form, { FormItem } from '@/components/Form';
-import Drawer from '@/components/Drawer';
-import { ElMessage } from 'element-plus';
-import { MenuData, EditMenuType, EditProps } from '../types';
+import { ref, reactive, watch, defineAsyncComponent, computed } from 'vue'
+import { useMenuApi } from '@/api/menu/index'
+import Form, { FormItem } from '@/components/Form'
+import Drawer from '@/components/Drawer'
+import { ElMessage } from 'element-plus'
+import { MenuData, EditMenuType, EditProps } from '../types'
 
-const IconSelector = defineAsyncComponent(() => import('@/components/iconSelector/index.vue'));
-const { updataMenu } = useMenuApi();
+const IconSelector = defineAsyncComponent(
+  () => import('@/components/iconSelector/index.vue')
+)
+const { updataMenu } = useMenuApi()
 
 const props = withDefaults(defineProps<EditProps>(), {
   editRow: () => ({} as MenuData),
-});
-const emits = defineEmits(['updateList']);
+})
+const emits = defineEmits(['updateList'])
 
 // 抽屉状态
-const editDrawerStatus = ref<boolean>(false);
+const editDrawerStatus = ref<boolean>(false)
 
 const formData = ref<EditMenuType>({
   menuName: '',
@@ -49,7 +51,7 @@ const formData = ref<EditMenuType>({
   orderNum: 0,
   isKeepalive: 0,
   isHidden: 0,
-});
+})
 const editFormState = reactive({
   formItemList: ref<FormItem<EditMenuType>[]>([
     {
@@ -111,60 +113,60 @@ const editFormState = reactive({
       controlsR: true,
     },
   ]),
-});
+})
 
 // 图标选择器前置图标
 const preIcon = computed<string>(() => {
-  if (formData.value.menuIcon) return formData.value.menuIcon;
-  else return 'ele-Pointer';
-});
+  if (formData.value.menuIcon) return formData.value.menuIcon
+  else return 'ele-Pointer'
+})
 
-const editFormRef = ref<any>(null);
+const editFormRef = ref<any>(null)
 // 处理保存修改
 const handleSaveEdit = async () => {
   const validRes = editFormRef.value
     .getRef()
     .validate()
-    .catch(() => false);
-  if (!validRes) return;
-  const editRes = await saveEditMenu();
-  if (!editRes) return;
-  editDrawerStatus.value = false;
-  emits('updateList');
-};
+    .catch(() => false)
+  if (!validRes) return
+  const editRes = await saveEditMenu()
+  if (!editRes) return
+  editDrawerStatus.value = false
+  emits('updateList')
+}
 
 // 保存修改数据
 const saveEditMenu = async (): Promise<boolean> => {
   try {
-    const { id, createTime, updateTime, children, ...params } = formData.value;
-    const { data: res } = await updataMenu<string>(id!, params);
-    const { code, data, message, success } = res;
-    if (code !== 20001 || !success) return false;
-    ElMessage.success(data);
-    return true;
+    const { id, createTime, updateTime, children, ...params } = formData.value
+    const { data: res } = await updataMenu<string>(id!, params)
+    const { code, data, message, success } = res
+    if (code !== 20001 || !success) return false
+    ElMessage.success(data)
+    return true
   } catch (e) {
-    console.log(e);
-    return false;
+    console.log(e)
+    return false
   }
-};
+}
 
 // 获取当前点击的 icon 图标
-const handleGetIcon = (icon: string) => (formData.value.menuIcon = icon);
+const handleGetIcon = (icon: string) => (formData.value.menuIcon = icon)
 
 watch(
   () => props.editRow,
   val => {
-    formData.value = JSON.parse(JSON.stringify(val));
-    formData.value.menuIcon = formData.value.menuIcon || '';
+    formData.value = JSON.parse(JSON.stringify(val))
+    formData.value.menuIcon = formData.value.menuIcon || ''
   }
-);
+)
 
 // 当窗口关闭时 重置表单校验 重置图标
 watch(editDrawerStatus, val => {
-  if (!val) editFormRef.value.getRef().resetFields();
-});
+  if (!val) editFormRef.value.getRef().resetFields()
+})
 
-defineExpose({ editDrawerStatus });
+defineExpose({ editDrawerStatus })
 </script>
 
 <style lang="scss" scoped></style>

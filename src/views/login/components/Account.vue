@@ -91,22 +91,22 @@
 </template>
 
 <script setup lang="ts" name="loginAccount">
-import { ref, reactive, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { ElMessage, ElNotification, FormRules } from 'element-plus';
-import { handleUserAuthRouters } from '@/router/handleAuthRouter';
-import { Local, Session } from '@/utils/storage';
-import { formatAxis } from '@/utils/formatTime';
-import { NextLoading } from '@/utils/loading';
-import { useAuthApi } from '@/api';
-import type { LoginData } from '../';
-import { useUserInfo } from '@/stores/userInfo';
-import { passwordEncryption } from '@/utils/encryption';
+import { ref, reactive, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { ElMessage, ElNotification, FormRules } from 'element-plus'
+import { handleUserAuthRouters } from '@/router/handleAuthRouter'
+import { Local, Session } from '@/utils/storage'
+import { formatAxis } from '@/utils/formatTime'
+import { NextLoading } from '@/utils/loading'
+import { useAuthApi } from '@/api'
+import type { LoginData } from '../'
+import { useUserInfo } from '@/stores/userInfo'
+import { passwordEncryption } from '@/utils/encryption'
 
-const { getCaptcha, login } = useAuthApi();
+const { getCaptcha, login } = useAuthApi()
 
-const router = useRouter();
-const userInfoStore = useUserInfo();
+const router = useRouter()
+const userInfoStore = useUserInfo()
 
 const loginState = reactive({
   isShowPassword: false,
@@ -134,36 +134,36 @@ const loginState = reactive({
   loading: {
     signIn: false,
   },
-});
+})
 
 onMounted(() => {
-  getLoginCaptcha();
-});
-const captchaInputRef = ref<RefType>(null);
+  getLoginCaptcha()
+})
+const captchaInputRef = ref<RefType>(null)
 
 // 刷新 定时器
-const timer = ref<number>(0);
+const timer = ref<number>(0)
 // 刷新验证码
 const handleRefreshCaptcha = () => {
-  clearTimeout(timer.value);
+  clearTimeout(timer.value)
   // 防抖
   timer.value = setTimeout(() => {
-    loginState.loginForm.captcha = '';
-    captchaInputRef.value.focus();
-    getLoginCaptcha();
-  }, 300);
-};
+    loginState.loginForm.captcha = ''
+    captchaInputRef.value.focus()
+    getLoginCaptcha()
+  }, 300)
+}
 
 // 获取登录验证码
-const captchaCode = ref<string>('');
+const captchaCode = ref<string>('')
 const getLoginCaptcha = async (): Promise<void> => {
   try {
-    const { data: res } = await getCaptcha<string>();
-    captchaCode.value = res;
+    const { data: res } = await getCaptcha<string>()
+    captchaCode.value = res
   } catch (error) {
-    console.log('------', error);
+    console.log('------', error)
   }
-};
+}
 
 // 登录 获取用户信息
 const getLoginUserInfo = async (): Promise<LoginData> => {
@@ -171,23 +171,23 @@ const getLoginUserInfo = async (): Promise<LoginData> => {
     const params = {
       ...loginState.loginForm,
       password: passwordEncryption(loginState.loginForm.password),
-    };
-    const { data: res } = await login<LoginData>(params);
-    const { code, data, success } = res;
-    if (code !== 20000 || !success) return;
-    return data;
+    }
+    const { data: res } = await login<LoginData>(params)
+    const { code, data, success } = res
+    if (code !== 20000 || !success) return
+    return data
   } catch (error: any) {
-    if (error.code === 40101) handleRefreshCaptcha();
-    console.log('error ------', error);
+    if (error.code === 40101) handleRefreshCaptcha()
+    console.log('error ------', error)
   }
-};
+}
 
-const loginFormRef = ref(null) as any;
+const loginFormRef = ref(null) as any
 // 处理登录
 const handleUserLogin = async () => {
   try {
-    await loginFormRef.value.validate();
-    loginState.loading.signIn = true;
+    await loginFormRef.value.validate()
+    loginState.loading.signIn = true
     // 调用后端验证码校验接口
     const {
       user,
@@ -196,48 +196,48 @@ const handleUserLogin = async () => {
       loginTime,
       ip,
       location: locationInfo,
-    } = await getLoginUserInfo();
-    if (!user || !tokens) return;
+    } = await getLoginUserInfo()
+    if (!user || !tokens) return
 
-    userInfoStore.userInfos = user;
-    Local.set('ip', ip);
-    Local.set('locationInfo', JSON.parse(locationInfo));
-    Local.set('loginTime', loginTime);
-    Local.set('clientInfo', clientInfo);
-    Local.setRFToken(tokens.refresh_token);
-    Session.setACToken(tokens.access_token);
+    userInfoStore.userInfos = user
+    Local.set('ip', ip)
+    Local.set('locationInfo', JSON.parse(locationInfo))
+    Local.set('loginTime', loginTime)
+    Local.set('clientInfo', clientInfo)
+    Local.setRFToken(tokens.refresh_token)
+    Session.setACToken(tokens.access_token)
 
     // 获取角色持有菜单
     if (user.userName !== 'admin' && user.id !== 1) {
-      await userInfoStore.getMenus();
-      await userInfoStore.getPermissions();
+      await userInfoStore.getMenus()
+      await userInfoStore.getPermissions()
     }
     // 获取角色持有的权限标识
 
     // 处理登录用户角色的路由表
-    const showPageName = await handleUserAuthRouters();
+    const showPageName = await handleUserAuthRouters()
     if (showPageName === '') {
-      ElMessage.warning(`当前用户角色没有任何菜单, 请联系管理员!`);
-      loginState.loading.signIn = false;
-      return;
+      ElMessage.warning(`当前用户角色没有任何菜单, 请联系管理员!`)
+      loginState.loading.signIn = false
+      return
     }
-    router.push({ name: showPageName });
-    const signInText = '欢迎回来！';
+    router.push({ name: showPageName })
+    const signInText = '欢迎回来！'
     ElNotification.success({
       title: loginState.loginForm.userName,
       message: `${currentTime.value}，${signInText}`,
-    });
-    NextLoading.start();
-    loginState.loading.signIn = false;
+    })
+    NextLoading.start()
+    loginState.loading.signIn = false
   } catch (e) {
-    loginState.loading.signIn = false;
-    throw e;
+    loginState.loading.signIn = false
+    throw e
   }
-};
+}
 // 时间获取
 const currentTime = computed(() => {
-  return formatAxis(new Date());
-});
+  return formatAxis(new Date())
+})
 </script>
 
 <style scoped lang="scss">

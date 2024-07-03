@@ -15,15 +15,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, PropType, watch, watchEffect } from 'vue';
-import { usePermissionApi } from '@/api';
-import { FormItem } from '@/components/Form';
-import Drawer from '@/components/Drawer';
-import { PermissionData, resourceMethodOptions } from '../';
-import { SelectOptionItem } from '@/components/Select';
-import { useNotificationMsg } from '@/utils/notificationMsg';
+import { ref, reactive, PropType, watch, watchEffect } from 'vue'
+import { usePermissionApi } from '@/api'
+import { FormItem } from '@/components/Form'
+import Drawer from '@/components/Drawer'
+import { PermissionData, resourceMethodOptions } from '../'
+import { SelectOptionItem } from '@/components/Select'
+import { useNotificationMsg } from '@/utils/notificationMsg'
 
-const { updateAuthPermInfo } = usePermissionApi();
+const { updateAuthPermInfo } = usePermissionApi()
 
 const props = defineProps({
   editRow: {
@@ -33,11 +33,11 @@ const props = defineProps({
   permissionCodeOptions: {
     type: Array as PropType<SelectOptionItem[]>,
   },
-});
-const emits = defineEmits(['updateList']);
+})
+const emits = defineEmits(['updateList'])
 
 // 抽屉状态
-const editDrawerStatus = ref<boolean>(false);
+const editDrawerStatus = ref<boolean>(false)
 
 const editFormState = reactive({
   data: ref<PermissionData>({
@@ -92,62 +92,62 @@ const editFormState = reactive({
       placeholder: '请输入权限标识描述',
     },
   ]),
-});
+})
 
-const editFormRef = ref<any>(null);
+const editFormRef = ref<any>(null)
 // 处理保存修改
 const handleSaveEdit = async () => {
   const [validateMethod, validateProps] = props.editRow!.parentId
     ? ['validate', undefined]
-    : ['validateField', ['permissionName']];
+    : ['validateField', ['permissionName']]
   // prettier-ignore
   const isValidatePass = await editFormRef.value
     .getRef()[validateMethod](validateProps)
     .catch(() => false);
-  if (!isValidatePass) return;
-  const editRes = await saveEditAuthPermisson();
-  if (!editRes) return;
-  emits('updateList');
-  editDrawerStatus.value = false;
-};
+  if (!isValidatePass) return
+  const editRes = await saveEditAuthPermisson()
+  if (!editRes) return
+  emits('updateList')
+  editDrawerStatus.value = false
+}
 
 // 保存修改数据
 const saveEditAuthPermisson = async (): Promise<boolean> => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
     const { id, updateTime, createTime, children, ...params } =
-      editFormState.data;
-    const { data: res } = await updateAuthPermInfo<string>(id, params);
-    const { code, data, success } = res;
-    if (code !== 20001 || !success) return false;
-    useNotificationMsg('', data);
-    return true;
+      editFormState.data
+    const { data: res } = await updateAuthPermInfo<string>(id, params)
+    const { code, data, success } = res
+    if (code !== 20001 || !success) return false
+    useNotificationMsg('', data)
+    return true
   } catch (e) {
-    console.log(e);
-    return false;
+    console.log(e)
+    return false
   }
-};
+}
 
 watchEffect(() => {
-  if (!Object.keys(props.editRow).length) return;
+  if (!Object.keys(props.editRow).length) return
   const isEditParent = ['', null, undefined].includes(
     props.editRow?.permissionCode
-  );
+  )
 
   editFormState.formItemList.find(
     item => item.prop === 'permissionCode'
-  )!.isShow = !isEditParent;
+  )!.isShow = !isEditParent
   editFormState.formItemList.find(item => item.prop === 'resourceUrl')!.isShow =
-    !isEditParent;
+    !isEditParent
   editFormState.formItemList.find(
     item => item.prop === 'resourceMethod'
-  )!.isShow = !isEditParent;
+  )!.isShow = !isEditParent
 
   editDrawerStatus.value &&
     (editFormState.formItemList.find(
       item => item.prop === 'permissionCode'
-    ).options = props.permissionCodeOptions);
-});
+    ).options = props.permissionCodeOptions)
+})
 
 watch(
   () => props.editRow,
@@ -155,9 +155,9 @@ watch(
     !Object.keys(val).length &&
     (editFormState.data = JSON.parse(JSON.stringify(val))),
   { deep: true }
-);
+)
 
-defineExpose({ editDrawerStatus });
+defineExpose({ editDrawerStatus })
 </script>
 
 <style lang="scss" scoped></style>

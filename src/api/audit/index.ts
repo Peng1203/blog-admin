@@ -1,6 +1,6 @@
-import request from '@/utils/request';
-import { TransformedResponse, RequestListParams } from 'Api';
-import { Method } from '../types';
+import request from '@/utils/request'
+import { TransformedResponse, RequestListParams } from 'Api'
+import { Method } from '../types'
 
 export function useAuditApi() {
   return {
@@ -10,14 +10,14 @@ export function useAuditApi() {
         url: '/audit',
         method: Method.GET,
         params,
-      });
+      })
     },
     /** 通过ID删除审计记录 */
     deleteById<T = string>(id: number): TransformedResponse<T> {
       return request({
         url: `/audit/${id}`,
         method: Method.DELETE,
-      });
+      })
     },
     /** 批量删除审计记录 */
     deletes<T = string>(ids: number[]): TransformedResponse<T> {
@@ -25,7 +25,7 @@ export function useAuditApi() {
         url: `/audit`,
         method: Method.DELETE,
         data: JSON.stringify({ ids }),
-      });
+      })
     },
-  };
+  }
 }

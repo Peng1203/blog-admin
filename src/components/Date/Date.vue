@@ -47,17 +47,17 @@
 </template>
 
 <script setup lang="ts" generic="T extends DatePickerType">
-import { computed } from 'vue';
-import { DateAttrs, DatePickerType } from './types';
+import { computed } from 'vue'
+import { DateAttrs, DatePickerType } from './types'
 // DatePickerInstance
-import { ElDatePicker } from 'element-plus';
+import { ElDatePicker } from 'element-plus'
 
-const FORMAT = 'YYYY-MM-DD HH:mm:ss';
+const FORMAT = 'YYYY-MM-DD HH:mm:ss'
 
 // const model = defineModel<T extends 1 ? string : string[]>({
 const model = defineModel<T extends 1 ? string : any>({
   required: true,
-});
+})
 
 const props = withDefaults(defineProps<DateAttrs<T>>(), {
   size: 'default',
@@ -66,21 +66,21 @@ const props = withDefaults(defineProps<DateAttrs<T>>(), {
   endPlaceholder: '结束日期',
   format: '',
   valueFormat: '',
-});
+})
 
-const emit = defineEmits(['change']);
+const emit = defineEmits(['change'])
 
 const dateValue = computed({
   get: () => model.value as any,
   set: newVal => {
-    if (newVal) model.value = newVal;
-    else model.value = (props.type === 1 ? '' : ['', '']) as any;
+    if (newVal) model.value = newVal
+    else model.value = (props.type === 1 ? '' : ['', '']) as any
   },
-});
+})
 
-const defaultTime1 = new Date(2000, 1, 1, 0, 0, 0);
+const defaultTime1 = new Date(2000, 1, 1, 0, 0, 0)
 const defaultTime2: [Date, Date] = [
   new Date(2000, 1, 1, 0, 0, 0),
   new Date(2000, 2, 1, 23, 59, 59),
-];
+]
 </script>

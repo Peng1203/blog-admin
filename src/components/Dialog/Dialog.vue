@@ -46,9 +46,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
-import { DialogAttribute } from './types';
-import { computed } from 'vue';
+import { ref, watch } from 'vue'
+import { DialogAttribute } from './types'
+import { computed } from 'vue'
 
 const props = withDefaults(defineProps<DialogAttribute>(), {
   fullscreen: false,
@@ -62,11 +62,17 @@ const props = withDefaults(defineProps<DialogAttribute>(), {
   operationRow: true,
   cancleBtnText: '取消',
   confirmBtnText: '确认',
-});
+})
 
-const emits = defineEmits(['update:modelValue', 'dialogClose', 'clickCancel', 'clickConfirm', 'open']);
+const emits = defineEmits([
+  'update:modelValue',
+  'dialogClose',
+  'clickCancel',
+  'clickConfirm',
+  'open',
+])
 
-const dialogStatus = ref<boolean>(true);
+const dialogStatus = ref<boolean>(true)
 
 watch(
   () => props.modelValue,
@@ -75,23 +81,23 @@ watch(
     deep: true,
     immediate: true,
   }
-);
+)
 const handleClose = () => {
-  dialogStatus.value = false;
-  emits('update:modelValue', dialogStatus.value);
-  emits('dialogClose', dialogStatus.value);
-};
+  dialogStatus.value = false
+  emits('update:modelValue', dialogStatus.value)
+  emits('dialogClose', dialogStatus.value)
+}
 
 const handleClickCancel = () => {
-  emits('clickCancel');
-  handleClose();
-};
+  emits('clickCancel')
+  handleClose()
+}
 /** 计算滚动区域内的最大高度 */
 const bodyMaxHeight = computed(() => {
-  return `${props.height} - ${props.operationRow ? '111px' : '0px'}`;
-});
+  return `${props.height} - ${props.operationRow ? '111px' : '0px'}`
+})
 
-const handleClickConfirm = () => emits('clickConfirm');
+const handleClickConfirm = () => emits('clickConfirm')
 </script>
 
 <style lang="scss" scoped>

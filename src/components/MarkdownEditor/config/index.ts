@@ -1,4 +1,4 @@
-import { ToolbarNames } from 'md-editor-v3';
+import { ToolbarNames } from 'md-editor-v3'
 
 /** 全部配置 */
 export const allToolbars: ToolbarNames[] = [
@@ -35,7 +35,7 @@ export const allToolbars: ToolbarNames[] = [
   'htmlPreview',
   'catalog',
   'github',
-];
+]
 
 /** 常用配置 */
 export const commonToolbars: ToolbarNames[] = [
@@ -71,4 +71,4 @@ export const commonToolbars: ToolbarNames[] = [
   'preview',
   'htmlPreview',
   'catalog',
-];
+]

@@ -33,20 +33,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watchEffect, PropType } from 'vue';
-import Dialog from '@/components/Dialog';
-import Form, { FormItem } from '@/components/Form';
-import { RoleData, RoleEntityData } from '../';
-import { MenuTree } from '@/views/auth/menu';
-import { PermissionTree } from '@/views/auth/authPermission';
+import { ref, reactive, watchEffect, PropType } from 'vue'
+import Dialog from '@/components/Dialog'
+import Form, { FormItem } from '@/components/Form'
+import { RoleData, RoleEntityData } from '../'
+import { MenuTree } from '@/views/auth/menu'
+import { PermissionTree } from '@/views/auth/authPermission'
 
 const props = defineProps({
   viewRow: {
     type: Object as PropType<RoleEntityData>,
   },
-});
+})
 
-const viewRoleDialogStatus = ref<boolean>(false);
+const viewRoleDialogStatus = ref<boolean>(false)
 
 const viewRoleState = reactive({
   data: ref<RoleData>({
@@ -86,16 +86,18 @@ const viewRoleState = reactive({
       prop: 'description',
     },
   ]),
-});
+})
 
 watchEffect(() => {
-  if (!props.viewRow) return;
-  viewRoleState.data = JSON.parse(JSON.stringify(props.viewRow));
-  viewRoleState.data.menus = props.viewRow?.menus.map(({ id }) => id)!;
-  viewRoleState.data.permissions = props.viewRow?.permissions.map(({ id }) => id)!;
-});
+  if (!props.viewRow) return
+  viewRoleState.data = JSON.parse(JSON.stringify(props.viewRow))
+  viewRoleState.data.menus = props.viewRow?.menus.map(({ id }) => id)!
+  viewRoleState.data.permissions = props.viewRow?.permissions.map(
+    ({ id }) => id
+  )!
+})
 
-defineExpose({ viewRoleDialogStatus });
+defineExpose({ viewRoleDialogStatus })
 </script>
 
 <style scoped lang="scss"></style>

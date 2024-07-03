@@ -48,8 +48,8 @@
 </template>
 
 <script setup lang="ts" name="layoutUpgrade">
-import { reactive } from 'vue';
-import mittBus from '@/utils/mitt';
+import { reactive } from 'vue'
+import mittBus from '@/utils/mitt'
 
 const state = reactive({
   isUpgrade: false,
@@ -57,33 +57,33 @@ const state = reactive({
   version: __NEXT_VERSION__,
   isLoading: false,
   btnTxt: '',
-});
+})
 
 // 残忍拒绝
 const onCancel = () => {
-  state.isUpgrade = false;
-};
+  state.isUpgrade = false
+}
 // 马上更新
 const onUpgrade = () => {
-  state.isLoading = true;
-  state.btnTxt = `更新中...`;
-  location.reload();
-};
+  state.isLoading = true
+  state.btnTxt = `更新中...`
+  location.reload()
+}
 // 延迟显示，防止刷新时界面显示太快
 const delayShow = () => {
   setTimeout(() => {
-    state.isUpgrade = true;
-  }, 2000);
-};
+    state.isUpgrade = true
+  }, 2000)
+}
 
 mittBus.on('onUpgradeOpen', () => {
-  delayShow();
-  state.btnTxt = `马上更新`;
-});
+  delayShow()
+  state.btnTxt = `马上更新`
+})
 
 defineExpose({
   state,
-});
+})
 </script>
 
 <style scoped lang="scss">

@@ -37,34 +37,38 @@
 </template>
 
 <script setup lang="ts" name="Test">
-import { ref, reactive } from 'vue';
-import 'vue-cropper/dist/index.css';
-import { Preview } from '@/components/MarkdownEditor';
-import Cropper from '@/components/Cropper';
+import { ref, reactive } from 'vue'
+import 'vue-cropper/dist/index.css'
+import { Preview } from '@/components/MarkdownEditor'
+import Cropper from '@/components/Cropper'
 
-import { MdPreview } from 'md-editor-v3';
+import { MdPreview } from 'md-editor-v3'
 
-const resMsg = ref<string>('121');
+const resMsg = ref<string>('121')
 
-const inputStr = ref<string>('你好');
-const responseMsg = ref<string>('');
+const inputStr = ref<string>('你好')
+const responseMsg = ref<string>('')
 
-const img = ref();
+const img = ref()
 
-const fileInputRef = ref<RefType>();
+const fileInputRef = ref<RefType>()
 
 const handleFileChange = e => {
-  const files = e.target.files as FileList;
+  const files = e.target.files as FileList
 
-  const reader = new FileReader();
+  const reader = new FileReader()
 
-  reader.readAsDataURL(files[0]);
+  reader.readAsDataURL(files[0])
 
   reader.onload = e => {
-    console.log(`%c e.target.result ----`, 'color: #fff;background-color: #000;font-size: 18px', e.target.result);
-    img.value = e.target.result as string;
-  };
-};
+    console.log(
+      `%c e.target.result ----`,
+      'color: #fff;background-color: #000;font-size: 18px',
+      e.target.result
+    )
+    img.value = e.target.result as string
+  }
+}
 </script>
 
 <style scoped lang="scss"></style>

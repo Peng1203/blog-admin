@@ -1,8 +1,8 @@
-import { ElNotification, ElMessage } from 'element-plus';
+import { ElNotification, ElMessage } from 'element-plus'
 
-type MsgTypeEnum = 'success' | 'warning' | 'info' | 'error';
+type MsgTypeEnum = 'success' | 'warning' | 'info' | 'error'
 
-type NotificationTypeEnum = 1 | 2;
+type NotificationTypeEnum = 1 | 2
 
 /**
  * @author Peng
@@ -28,12 +28,12 @@ export const useNotificationMsg = (
       message,
       duration,
       type: msgType,
-    });
+    })
   } else {
     ElMessage({
       duration,
       message,
       type: msgType,
-    });
+    })
   }
-};
+}

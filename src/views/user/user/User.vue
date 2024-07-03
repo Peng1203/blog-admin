@@ -134,26 +134,26 @@
 </template>
 
 <script setup lang="ts" name="UserList">
-import { defineAsyncComponent, reactive, onMounted, ref } from 'vue';
-import { useRolesInfo } from '@/stores/roleList';
-import { useUsersInfo } from '@/stores/userList';
-import { useUserInfo } from '@/stores/userInfo';
-import { useUserApi } from '@/api/user';
-import { UserData, UserListData } from './types';
+import { defineAsyncComponent, reactive, onMounted, ref } from 'vue'
+import { useRolesInfo } from '@/stores/roleList'
+import { useUsersInfo } from '@/stores/userList'
+import { useUserInfo } from '@/stores/userInfo'
+import { useUserApi } from '@/api/user'
+import { UserData, UserListData } from './types'
 import {
   ColumnItem,
   PageInfo,
   PageChangeParams,
   ColumnChangeParams,
-} from '@/components/Table';
-import { queryStrHighlight } from '@/utils/queryStrHighlight';
-import { useNotificationMsg } from '@/utils/notificationMsg';
+} from '@/components/Table'
+import { queryStrHighlight } from '@/utils/queryStrHighlight'
+import { useNotificationMsg } from '@/utils/notificationMsg'
 
-const { getUsers, deleteUserById, deleteUsers, resetPassword } = useUserApi();
+const { getUsers, deleteUserById, deleteUsers, resetPassword } = useUserApi()
 
-const roleStore = useRolesInfo();
-const userStore = useUsersInfo();
-const { userInfos, userLogout } = useUserInfo();
+const roleStore = useRolesInfo()
+const userStore = useUsersInfo()
+const { userInfos, userLogout } = useUserInfo()
 
 // 表格参数
 const tableState = reactive({
@@ -206,38 +206,38 @@ const tableState = reactive({
     pageSize: 10,
     total: 0,
   }),
-});
+})
 
 // 角色下拉数据
-const roleColumns = ref<OptionItem[]>([]);
+const roleColumns = ref<OptionItem[]>([])
 
 // 根据条件来判断复选框是否可选
-const handleCheckboxIsEnable = (row: UserData) => (row.id === 1 ? false : true);
+const handleCheckboxIsEnable = (row: UserData) => (row.id === 1 ? false : true)
 
 // 搜索
 const handleSearch = () => {
-  tableState.pagerInfo.page = 1;
-  getUserTableData();
-};
+  tableState.pagerInfo.page = 1
+  getUserTableData()
+}
 
 // 分页器修改时触发
 const handlePageInfoChange = ({ page, pageSize }: PageChangeParams) => {
-  tableState.pagerInfo.page = page;
-  tableState.pagerInfo.pageSize = pageSize;
-  getUserTableData();
-};
+  tableState.pagerInfo.page = page
+  tableState.pagerInfo.pageSize = pageSize
+  getUserTableData()
+}
 
 // 表格排序
 const handleColumnChange = ({ column, order }: ColumnChangeParams) => {
-  tableState.column = column;
-  tableState.order = order;
-  getUserTableData();
-};
+  tableState.column = column
+  tableState.order = order
+  getUserTableData()
+}
 
 // 获取用户表格数据
 const getUserTableData = async () => {
   try {
-    tableState.loading = true;
+    tableState.loading = true
     const params = {
       page: tableState.pagerInfo.page,
       pageSize: tableState.pagerInfo.pageSize,
@@ -245,114 +245,112 @@ const getUserTableData = async () => {
       column: tableState.column,
       order: tableState.order,
       roleId: tableState.roleId,
-    };
-    const { data: res } = await getUsers<UserListData>(params);
+    }
+    const { data: res } = await getUsers<UserListData>(params)
 
-    const { code, message, data } = res;
-    if (code !== 20000 || !message) return;
-    tableState.data = data.list;
-    tableState.pagerInfo.total = data.total;
+    const { code, message, data } = res
+    if (code !== 20000 || !message) return
+    tableState.data = data.list
+    tableState.pagerInfo.total = data.total
   } catch (e) {
-    console.log('e ------', e);
+    console.log('e ------', e)
   } finally {
-    tableState.loading = false;
+    tableState.loading = false
   }
-};
+}
 
 // 删除用户
 const handleDelUser = async (row: UserData) => {
-  const delRes = await deleteUser(row.id);
-  if (!delRes) return;
-  getUserTableData();
-  userStore.getUserData(true);
-};
+  const delRes = await deleteUser(row.id)
+  if (!delRes) return
+  getUserTableData()
+  userStore.getUserData(true)
+}
 // 删除用户
 const deleteUser = async (id: number): Promise<boolean> => {
   try {
-    const { data: res } = await deleteUserById<string>(id);
-    const { code, message, data, success } = res;
-    if (code !== 20000 || !success) return false;
-    useNotificationMsg(message, data);
-    return true;
+    const { data: res } = await deleteUserById<string>(id)
+    const { code, message, data, success } = res
+    if (code !== 20000 || !success) return false
+    useNotificationMsg(message, data)
+    return true
   } catch (e) {
-    console.log(e);
-    return false;
+    console.log(e)
+    return false
   }
-};
+}
 
 // 引入编辑用户抽屉组件
 const EditUserDrawer = defineAsyncComponent(
   () => import('./components/EditUser.vue')
-);
-const editDrawerRef = ref<RefType>(null);
-const editRow = ref<UserData>();
+)
+const editDrawerRef = ref<RefType>(null)
+const editRow = ref<UserData>()
 // 打开编辑用户信息抽屉
 const handleEditUserInfo = (row: UserData) => {
-  editRow.value = JSON.parse(JSON.stringify(row));
-  editDrawerRef.value.editDrawerStatus = true;
-};
+  editRow.value = JSON.parse(JSON.stringify(row))
+  editDrawerRef.value.editDrawerStatus = true
+}
 
 // 引入添加用户对话框组件
 const AddUserDialog = defineAsyncComponent(
   () => import('./components/AddUser.vue')
-);
-const addDialogRef = ref<RefType>(null);
+)
+const addDialogRef = ref<RefType>(null)
 
 // 按角色过滤
 const handleRoleFilter = () => {
-  tableState.pagerInfo.page = 1;
-  getUserTableData();
-};
+  tableState.pagerInfo.page = 1
+  getUserTableData()
+}
 
 // 处理批量删除用户操作
 const handleBatchDelUser = async () => {
-  const delRes = await batchDel();
-  if (!delRes) return;
-  handleUpdate();
-};
+  const delRes = await batchDel()
+  if (!delRes) return
+  handleUpdate()
+}
 // 批量删除用户
 const batchDel = async (): Promise<boolean> => {
   try {
-    const { data: res } = await deleteUsers(tableState.selectVal);
-    const { code, message, data, success } = res;
-    if (code !== 20000 || !success) return false;
-    useNotificationMsg(message, data);
-    return true;
+    const { data: res } = await deleteUsers(tableState.selectVal)
+    const { code, message, data, success } = res
+    if (code !== 20000 || !success) return false
+    useNotificationMsg(message, data)
+    return true
   } catch (e) {
-    console.log(e);
-    return false;
+    console.log(e)
+    return false
   }
-};
+}
 
 const handleUpdate = () => {
-  getUserTableData();
-  userStore.getUserData(true);
-};
+  getUserTableData()
+  userStore.getUserData(true)
+}
 
 const handleResetPwd = async (user: UserData) => {
   try {
-    const { data: res } = await resetPassword(user.id);
-    const { code, message, data, success } = res;
-    if (code !== 20000 || !success) return false;
-    useNotificationMsg(message, data);
+    const { data: res } = await resetPassword(user.id)
+    const { code, message, data, success } = res
+    if (code !== 20000 || !success) return false
+    useNotificationMsg(message, data)
 
     if (userInfos.id === user.id) {
       setTimeout(() => {
-        userLogout();
-      }, 2000);
+        userLogout()
+      }, 2000)
     }
   } catch (e) {
-    console.log('e', e);
+    console.log('e', e)
   }
-};
+}
 
 onMounted(() => {
-  roleStore
-    .getRoleData()
-    .then(() => (roleColumns.value = roleStore.roleOption));
-  getUserTableData();
+  roleStore.getRoleData().then(() => (roleColumns.value = roleStore.roleOption))
+  getUserTableData()
   // userAuthStore.getAllRoleList();
-});
+})
 </script>
 
 <style scoped lang="scss">

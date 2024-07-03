@@ -76,4 +76,4 @@ export const emojis = [
   '🤭', // Face with hand over mouth
   '🧐', // Face with monocle
   '🤨', // Face with raised eyebrow
-];
+]

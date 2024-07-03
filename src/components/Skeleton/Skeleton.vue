@@ -24,7 +24,7 @@
 -->
 
 <script setup lang="ts">
-import { SkeletonAttribute } from './types';
+import { SkeletonAttribute } from './types'
 
 withDefaults(defineProps<SkeletonAttribute>(), {
   rows: 3,
@@ -35,7 +35,7 @@ withDefaults(defineProps<SkeletonAttribute>(), {
   height: '16px',
   /** 延时渲染真实 内容 避免数据响应太快一闪而过 单位ms */
   throttle: 500,
-});
+})
 </script>
 
 <style scoped lang="scss">

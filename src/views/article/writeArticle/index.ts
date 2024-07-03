@@ -1,1 +1,1 @@
-export { default as default } from './WriteArticle.vue';
+export { default as default } from './WriteArticle.vue'

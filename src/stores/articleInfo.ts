@@ -1,12 +1,12 @@
-import { defineStore } from 'pinia';
-import { useCategoryApi } from '@/api/category';
-import { useTagApi } from '@/api/tag';
-import { ref } from 'vue';
-import { TagData, TagListData } from '@/views/article/tag';
-import { CategoryData, CategoryListDate } from '@/views/article/category/types';
+import { defineStore } from 'pinia'
+import { useCategoryApi } from '@/api/category'
+import { useTagApi } from '@/api/tag'
+import { ref } from 'vue'
+import { TagData, TagListData } from '@/views/article/tag'
+import { CategoryData, CategoryListDate } from '@/views/article/category/types'
 
-const { getCategorys } = useCategoryApi();
-const { getTags } = useTagApi();
+const { getCategorys } = useCategoryApi()
+const { getTags } = useTagApi()
 
 export const useArticleInfo = defineStore('articleInfo', {
   state: () => ({
@@ -30,36 +30,39 @@ export const useArticleInfo = defineStore('articleInfo', {
     // 获取全部文章分类数据
     async getCategoryData(updata?: boolean) {
       try {
-        if (this.categoryList.length && this.categoryOption.length && !updata) return;
-        const { data: res } = await getCategorys<CategoryListDate>(this.allParams);
-        const { code, message, data, success } = res;
-        if (code !== 20000 || !success) return;
+        if (this.categoryList.length && this.categoryOption.length && !updata)
+          return
+        const { data: res } = await getCategorys<CategoryListDate>(
+          this.allParams
+        )
+        const { code, message, data, success } = res
+        if (code !== 20000 || !success) return
 
-        this.categoryList = data.list;
+        this.categoryList = data.list
         this.categoryOption = data.list.map(({ categoryName, id }) => ({
           label: categoryName,
           value: id,
-        }));
+        }))
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     },
     // 获取全部标签列表
     async getTagData(updata?: boolean) {
       try {
-        if (this.tagList.length && this.tagOption.length && !updata) return;
-        const { data: res } = await getTags<TagListData>(this.allParams);
-        const { code, message, data, success } = res;
-        if (code !== 20000 || !success) return;
+        if (this.tagList.length && this.tagOption.length && !updata) return
+        const { data: res } = await getTags<TagListData>(this.allParams)
+        const { code, message, data, success } = res
+        if (code !== 20000 || !success) return
 
-        this.tagList = data.list;
+        this.tagList = data.list
         this.tagOption = data.list.map(({ tagName, id }) => ({
           label: tagName,
           value: id,
-        }));
+        }))
       } catch (e) {
-        console.log(e);
+        console.log(e)
       }
     },
   },
-});
+})

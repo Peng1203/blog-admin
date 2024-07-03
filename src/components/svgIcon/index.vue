@@ -1,12 +1,26 @@
 <template>
   <span>
-    <i v-if="isShowIconSvg" class="el-icon" :style="setIconSvgStyle">
+    <i
+      v-if="isShowIconSvg"
+      class="el-icon"
+      :style="setIconSvgStyle"
+    >
       <component :is="getIconName" />
     </i>
-    <div v-else-if="isShowIconImg" :style="setIconImgOutStyle">
-      <img :src="getIconName" :style="setIconSvgInsStyle" />
+    <div
+      v-else-if="isShowIconImg"
+      :style="setIconImgOutStyle"
+    >
+      <img
+        :src="getIconName"
+        :style="setIconSvgInsStyle"
+      />
     </div>
-    <i v-else :class="getIconName" :style="setIconSvgStyle" />
+    <i
+      v-else
+      :class="getIconName"
+      :style="setIconSvgStyle"
+    />
   </span>
 </template>
 
@@ -50,7 +64,7 @@ const isShowIconSvg = computed(() => {
 })
 // 用于判断在线链接、本地引入等图标显示、隐藏
 const isShowIconImg = computed(() => {
-  return linesString.find((str) => props.name?.startsWith(str))
+  return linesString.find(str => props.name?.startsWith(str))
 })
 // 设置图标样式
 const setIconSvgStyle = computed(() => {
@@ -65,7 +79,7 @@ const setIconImgOutStyle = computed(() => {
 const setIconSvgInsStyle = computed(() => {
   const filterStyle: string[] = []
   const compatibles: string[] = ['-webkit', '-ms', '-o', '-moz']
-  compatibles.forEach((j) =>
+  compatibles.forEach(j =>
     filterStyle.push(`${j}-filter: drop-shadow(${props.color} 30px 0);`)
   )
   return `width: ${props.size}px;height: ${

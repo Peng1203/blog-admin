@@ -1,13 +1,15 @@
-.filter-column-header>.cell {
+.filter-column-header > .cell {
   position: relative !important;
 }
 
-.filter-column-header>.cell>.el-icon {
+.filter-column-header > .cell > .el-icon {
   position: absolute;
   transform: translate(-55%, 30%);
 }
 
-.filter-column-header>.cell>.el-table__column-filter-trigger.el-none-outline.el-tooltip__trigger.el-tooltip__trigger {
+.filter-column-header
+  > .cell
+  > .el-table__column-filter-trigger.el-none-outline.el-tooltip__trigger.el-tooltip__trigger {
   width: 100%;
   height: 100%;
   opacity: 0;
@@ -51,7 +53,7 @@
   border-radius: 3px;
 }
 
-.editor-content-view pre>code {
+.editor-content-view pre > code {
   display: block;
   padding: 10px;
 }
@@ -76,12 +78,12 @@
   padding-left: 20px;
 }
 
-.editor-content-view input[type="checkbox"] {
+.editor-content-view input[type='checkbox'] {
   margin-right: 5px;
 }
 
 input:-webkit-autofill,
 textarea:-webkit-autofill,
 select:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0px 1000px white inset
+  -webkit-box-shadow: 0 0 0px 1000px white inset;
 }

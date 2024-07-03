@@ -25,8 +25,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch, PropType } from 'vue';
-import { Search } from '@element-plus/icons-vue';
+import { ref, watch, PropType } from 'vue'
+import { Search } from '@element-plus/icons-vue'
 
 const props = defineProps({
   modelValue: {
@@ -54,15 +54,15 @@ const props = defineProps({
     type: Number,
     default: 200,
   },
-});
+})
 
 // const emits = defineEmits({
 // 	'update:modelValue': (value: string) => true,
 // })
-const emits = defineEmits(['update:modelValue', 'search']);
+const emits = defineEmits(['update:modelValue', 'search'])
 
 // 搜索关键字
-const queryString = ref<string>(props.modelValue);
+const queryString = ref<string>(props.modelValue)
 
 // 同步父组件传递过来的值
 watch(
@@ -71,29 +71,29 @@ watch(
   {
     immediate: true,
   }
-);
+)
 // 更新 父组件中的 queryStr
 const handleUpdateValue = (val: string) => {
-  emits('update:modelValue', val);
-};
+  emits('update:modelValue', val)
+}
 
 // 触发搜索
 const handleSearch = () => {
-  emits('search', queryString.value);
-};
+  emits('search', queryString.value)
+}
 
 // 输入框最大宽度
-const inputWidth = ref<number>(props.width);
+const inputWidth = ref<number>(props.width)
 // 输入框聚焦时
 const handleInputFocus = () => {
-  if (!props.focusStyle) return;
-  inputWidth.value = inputWidth.value * 1.5;
-};
+  if (!props.focusStyle) return
+  inputWidth.value = inputWidth.value * 1.5
+}
 // 输入框失去焦点时
 const handleInputBlur = () => {
-  if (!props.focusStyle) return;
-  inputWidth.value = props.width;
-};
+  if (!props.focusStyle) return
+  inputWidth.value = props.width
+}
 </script>
 
 <style lang="scss" scoped>

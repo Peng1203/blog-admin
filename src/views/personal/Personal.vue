@@ -267,18 +267,18 @@
 </template>
 
 <script setup lang="ts" name="personal">
-import { ref, reactive, computed, defineAsyncComponent } from 'vue';
-import { formatAxis } from '@/utils/formatTime';
-import { useUserInfo } from '@/stores/userInfo';
-import { Local } from '@/utils/storage';
-import { FormItem } from '@/components/Form';
-import { ClientInfo } from '@/views/login';
-import { AddEditUserType } from '../user/user';
+import { ref, reactive, computed, defineAsyncComponent } from 'vue'
+import { formatAxis } from '@/utils/formatTime'
+import { useUserInfo } from '@/stores/userInfo'
+import { Local } from '@/utils/storage'
+import { FormItem } from '@/components/Form'
+import { ClientInfo } from '@/views/login'
+import { AddEditUserType } from '../user/user'
 
-const { userInfos } = useUserInfo();
+const { userInfos } = useUserInfo()
 
 const defaultAvatar =
-  'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png';
+  'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
 
 //
 //
@@ -308,13 +308,13 @@ const personalInfoItemMapping = [
       value: () => `${clientInfo.browser} ${clientInfo.version}`,
     },
   ],
-];
+]
 
 // 登录客户端信息
-const clientInfo: ClientInfo = Local.get('clientInfo');
-const ip = Local.get('ip');
-const locationInfo = Local.get('locationInfo');
-const loginTime = Local.get('loginTime');
+const clientInfo: ClientInfo = Local.get('clientInfo')
+const ip = Local.get('ip')
+const locationInfo = Local.get('locationInfo')
+const loginTime = Local.get('loginTime')
 
 // 定义变量内容
 const state = reactive({
@@ -388,39 +388,39 @@ const state = reactive({
       label: '',
     },
   ]),
-});
+})
 
-const loading = ref<boolean>(false);
+const loading = ref<boolean>(false)
 
 // 当前时间提示语
 const currentTime = computed(() => {
-  return formatAxis(new Date());
-});
+  return formatAxis(new Date())
+})
 
 // 处理更新个人信息操作
 const handleUpdatePersonalInfo = () => {
-  saveEditUserInfo();
-};
+  saveEditUserInfo()
+}
 // 更新用户个人信息
-const saveEditUserInfo = async () => {};
+const saveEditUserInfo = async () => {}
 
 // 更新用户头像
 const UploadAvatarDialog = defineAsyncComponent(
   () => import('./components/UploadAvatarDialog.vue')
-);
-const uploadAvatarDialogRef = ref<RefType>();
+)
+const uploadAvatarDialogRef = ref<RefType>()
 const handleShowChangeAvatarDialog = () => {
-  uploadAvatarDialogRef.value.dialogState = true;
-};
+  uploadAvatarDialogRef.value.dialogState = true
+}
 
 // 修改密码
 const ChangePasswordDialog = defineAsyncComponent(
   () => import('./components/ChangePasswordDialog.vue')
-);
-const changePasswordDialogRef = ref<RefType>();
+)
+const changePasswordDialogRef = ref<RefType>()
 const handleShowChangePasswordDialog = () => {
-  changePasswordDialogRef.value.dialogState = true;
-};
+  changePasswordDialogRef.value.dialogState = true
+}
 </script>
 
 <style scoped lang="scss">

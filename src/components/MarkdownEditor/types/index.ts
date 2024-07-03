@@ -5,7 +5,7 @@ type preThemes =
   | 'mk-cute'
   | 'smart-blue'
   | 'cyanosis'
-  | 'arknights';
+  | 'arknights'
 type codeTheme =
   | 'atom'
   | 'a11y'
@@ -14,25 +14,25 @@ type codeTheme =
   | 'kimbie'
   | 'paraiso'
   | 'qtcreator'
-  | 'stackoverflow';
+  | 'stackoverflow'
 
 export interface MarkdownEditorAttibute {
   // toolbar配置
-  toolbarModel?: 'all' | 'common';
+  toolbarModel?: 'all' | 'common'
   // 预览主题
-  preTheme?: preThemes;
+  preTheme?: preThemes
   // 语言
-  lang?: string;
+  lang?: string
   // 代码块主题
-  codeTheme?: codeTheme;
+  codeTheme?: codeTheme
   // 代码块是否显示行数
-  showCodeRowNumber?: boolean;
+  showCodeRowNumber?: boolean
   // 不展示的工具栏
-  toolbarsExclude?: string[];
-  height?: string;
+  toolbarsExclude?: string[]
+  height?: string
 }
 
 export interface PreviewAttibute {
-  height?: string;
-  catalogVisible?: boolean;
+  height?: string
+  catalogVisible?: boolean
 }

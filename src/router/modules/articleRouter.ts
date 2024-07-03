@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from 'vue-router';
+import { RouteRecordRaw } from 'vue-router'
 
 // 文章管理路由规则
 const routerRules: RouteRecordRaw[] = [
@@ -94,6 +94,6 @@ const routerRules: RouteRecordRaw[] = [
       },
     ],
   },
-];
+]
 
-export default routerRules;
+export default routerRules

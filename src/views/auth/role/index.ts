@@ -1,3 +1,3 @@
-export { default as default } from './Role.vue';
+export { default as default } from './Role.vue'
 
-export * from './types';
+export * from './types'

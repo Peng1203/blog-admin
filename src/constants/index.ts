@@ -28,4 +28,4 @@ export const ARTICLE = {
     { label: '私密', value: 2 },
     { label: '草稿箱', value: 3 },
   ],
-};
+}

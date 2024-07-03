@@ -1,13 +1,13 @@
-import { defineStore } from 'pinia';
-import { useRoleApi } from '@/api/role/index';
-import { useMenuApi } from '@/api/menu/index';
-import { usePermissionApi } from '@/api/permission/index';
+import { defineStore } from 'pinia'
+import { useRoleApi } from '@/api/role/index'
+import { useMenuApi } from '@/api/menu/index'
+import { usePermissionApi } from '@/api/permission/index'
 
-const { getRoleList } = useRoleApi();
+const { getRoleList } = useRoleApi()
 
-const { getMenuList } = useMenuApi();
+const { getMenuList } = useMenuApi()
 
-const { getAuthPermissionList } = usePermissionApi();
+const { getAuthPermissionList } = usePermissionApi()
 
 export const useUserAuthList = defineStore('userAuthList', {
   state: (): UserAuthState => ({
@@ -37,72 +37,80 @@ export const useUserAuthList = defineStore('userAuthList', {
     async getAllRoleList(updata?: boolean) {
       // 当已经存在则直接返回
       try {
-        if (this.allRoleList.length && this.allRoleOptions.length && !updata) return;
+        if (this.allRoleList.length && this.allRoleOptions.length && !updata)
+          return
         const params = {
           ...this.allParams,
-        };
-        const { data: res } = await getRoleList(params);
-        const { code, message, data } = res;
+        }
+        const { data: res } = await getRoleList(params)
+        const { code, message, data } = res
         if (code !== 200 || message !== 'Success') {
-          this.allRoleList = [];
-          this.allRoleOptions = [];
+          this.allRoleList = []
+          this.allRoleOptions = []
         } else {
-          this.allRoleList = data;
+          this.allRoleList = data
           this.allRoleOptions = data.map(({ roleName, id }: any) => ({
             label: roleName,
             value: id,
-          }));
+          }))
         }
       } catch (e) {
-        this.allRoleList = [];
-        this.allRoleOptions = [];
-        throw e;
+        this.allRoleList = []
+        this.allRoleOptions = []
+        throw e
       }
     },
     // 获取全部菜列表
     async getAllMenuList(updata?: boolean) {
       try {
-        if (this.allMenuList.length && !updata) return;
+        if (this.allMenuList.length && !updata) return
         const params = {
           queryStr: '',
           column: '',
           order: '',
-        };
-        const { data: res } = await getMenuList(params);
-        const { code, message, data } = res;
+        }
+        const { data: res } = await getMenuList(params)
+        const { code, message, data } = res
         if (code !== 200 || message !== 'Success') {
-          this.allMenuList = [];
+          this.allMenuList = []
         } else {
-          this.allMenuList = data;
+          this.allMenuList = data
         }
       } catch (e) {
-        this.allAuthPermissionList = [];
-        this.allAuthPermissionOptions = [];
-        throw e;
+        this.allAuthPermissionList = []
+        this.allAuthPermissionOptions = []
+        throw e
       }
     },
     // 获取全部权限标识列表
     async getAllAuthPermissionList(updata?: boolean) {
-      if (this.allAuthPermissionList.length && this.allAuthPermissionOptions && !updata) return;
+      if (
+        this.allAuthPermissionList.length &&
+        this.allAuthPermissionOptions &&
+        !updata
+      )
+        return
       try {
-        const params = { ...this.allParams };
-        const { data: res } = await getAuthPermissionList(params);
-        const { code, message, data } = res;
+        const params = { ...this.allParams }
+        const { data: res } = await getAuthPermissionList(params)
+        const { code, message, data } = res
         if (code !== 200 || message !== 'Success') {
-          this.allAuthPermissionList = [];
-          this.allAuthPermissionOptions = [];
+          this.allAuthPermissionList = []
+          this.allAuthPermissionOptions = []
         } else {
-          this.allAuthPermissionList = data;
-          this.allAuthPermissionOptions = data.map(({ permissionName, id }: any) => ({
-            label: permissionName,
-            value: id,
-          }));
+          this.allAuthPermissionList = data
+          this.allAuthPermissionOptions = data.map(
+            ({ permissionName, id }: any) => ({
+              label: permissionName,
+              value: id,
+            })
+          )
         }
       } catch (e) {
-        this.allAuthPermissionList = [];
-        this.allAuthPermissionOptions = [];
-        throw e;
+        this.allAuthPermissionList = []
+        this.allAuthPermissionOptions = []
+        throw e
       }
     },
   },
-});
+})

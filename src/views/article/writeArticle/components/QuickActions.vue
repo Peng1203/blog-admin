@@ -20,23 +20,23 @@
 </template>
 
 <script setup lang="ts">
-import { useArticleApi } from '@/api';
-import { ref, computed, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { ArticleOptionData } from '../types';
-import { useUserInfo } from '@/stores/userInfo';
+import { useArticleApi } from '@/api'
+import { ref, computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { ArticleOptionData } from '../types'
+import { useUserInfo } from '@/stores/userInfo'
 
-const route = useRoute();
-const router = useRouter();
-const { userInfos } = useUserInfo();
+const route = useRoute()
+const router = useRouter()
+const { userInfos } = useUserInfo()
 
-const { getUserArticles } = useArticleApi();
+const { getUserArticles } = useArticleApi()
 
-const aId = ref<number>();
-const articleOptions = ref<OptionItem[]>([]);
+const aId = ref<number>()
+const articleOptions = ref<OptionItem[]>([])
 
 // 是否是编辑模式
-const isEdit = computed<boolean>(() => route.name !== 'WriteArticle');
+const isEdit = computed<boolean>(() => route.name !== 'WriteArticle')
 
 const getArticleOptions = async () => {
   try {
@@ -46,30 +46,30 @@ const getArticleOptions = async () => {
       column: 'createTime',
       order: 'DESC',
       type: 2,
-    };
+    }
     const { data: res } = await getUserArticles<ArticleOptionData>(
       userInfos.id,
       params
-    );
-    const { code, message, data } = res;
-    if (code !== 20000 || !message) return;
-    articleOptions.value = data.list;
+    )
+    const { code, message, data } = res
+    if (code !== 20000 || !message) return
+    articleOptions.value = data.list
   } catch (e) {
-    console.log('e', e);
+    console.log('e', e)
   }
-};
+}
 
 const handleSelectEdit = () => {
   router.push({
     name: 'EditArticle',
     params: { aid: aId.value },
-  });
-};
+  })
+}
 
 onMounted(() => {
   // 获取当前用户可编辑文章 下拉数据
-  isEdit.value || getArticleOptions();
-});
+  isEdit.value || getArticleOptions()
+})
 </script>
 
 <style scoped lang="scss"></style>

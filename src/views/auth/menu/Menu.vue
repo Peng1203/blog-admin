@@ -13,8 +13,8 @@
             type="success"
             @click="
               () => {
-                addDialogRef.addMenuDialogStatus = true;
-                isAddChildren = false;
+                addDialogRef.addMenuDialogStatus = true
+                isAddChildren = false
               }
             "
           >
@@ -114,18 +114,18 @@
 </template>
 
 <script setup lang="ts" name="Menu">
-import { defineAsyncComponent, ref, onMounted, reactive } from 'vue';
-import { ElMessage } from 'element-plus';
-import { queryStrHighlight } from '@/utils/queryStrHighlight';
-import { useMenuApi } from '@/api';
-import { useMenuInfo } from '@/stores/menuList';
-import { ColumnItem, ColumnChangeParams } from '@/components/Table';
-import { MenuData, MenuListData } from './types';
-import InitMenu from './components/InitMenu.vue';
+import { defineAsyncComponent, ref, onMounted, reactive } from 'vue'
+import { ElMessage } from 'element-plus'
+import { queryStrHighlight } from '@/utils/queryStrHighlight'
+import { useMenuApi } from '@/api'
+import { useMenuInfo } from '@/stores/menuList'
+import { ColumnItem, ColumnChangeParams } from '@/components/Table'
+import { MenuData, MenuListData } from './types'
+import InitMenu from './components/InitMenu.vue'
 
-const { getMenus, deleteMenu } = useMenuApi();
+const { getMenus, deleteMenu } = useMenuApi()
 
-const menuStore = useMenuInfo();
+const menuStore = useMenuInfo()
 
 // 表格参数
 const tableState = reactive({
@@ -183,95 +183,99 @@ const tableState = reactive({
   column: '',
   order: '',
   queryStr: '',
-});
+})
 
 // 获取菜单表格数据
 const getMenuTableData = async () => {
   try {
-    tableState.loading = true;
-    const { column, order, queryStr } = tableState;
+    tableState.loading = true
+    const { column, order, queryStr } = tableState
     const params = {
       queryStr,
       column,
       order,
-    };
-    const { data: res } = await getMenus<MenuListData>(params);
-    const { code, success, data } = res;
-    if (code !== 20000 || !success) return;
-    tableState.data = data.list;
+    }
+    const { data: res } = await getMenus<MenuListData>(params)
+    const { code, success, data } = res
+    if (code !== 20000 || !success) return
+    tableState.data = data.list
   } catch (e) {
-    console.log(e);
+    console.log(e)
   } finally {
-    tableState.loading = false;
+    tableState.loading = false
   }
-};
+}
 
 // 搜索
-const handleSearch = () => getMenuTableData();
+const handleSearch = () => getMenuTableData()
 
 // 表格排序
 const handleColumnChange = ({ column, order }: ColumnChangeParams) => {
-  tableState.column = column;
-  tableState.order = order;
-  getMenuTableData();
-};
+  tableState.column = column
+  tableState.order = order
+  getMenuTableData()
+}
 
 // 处理删除菜单
 const handleDelMenu = async (row: MenuData) => {
-  const delRes = await deleteMenuById(row.id);
-  if (!delRes) return;
-  handleUpdate();
-};
+  const delRes = await deleteMenuById(row.id)
+  if (!delRes) return
+  handleUpdate()
+}
 
 // 删除菜单
 const deleteMenuById = async (id: number): Promise<boolean> => {
   try {
-    const { data: res } = await deleteMenu<string>(id);
-    const { code, data, success } = res;
-    if (code !== 20000 || !success) return false;
-    ElMessage.success(data);
-    return true;
+    const { data: res } = await deleteMenu<string>(id)
+    const { code, data, success } = res
+    if (code !== 20000 || !success) return false
+    ElMessage.success(data)
+    return true
   } catch (e) {
-    console.log(e);
-    return false;
+    console.log(e)
+    return false
   }
-};
+}
 
 // 处理编辑菜单
-const EditMenuDrawer = defineAsyncComponent(() => import('./components/EditMenu.vue'));
-const editDrawerRef = ref<RefType>(null);
-const editRow = ref<MenuData>();
+const EditMenuDrawer = defineAsyncComponent(
+  () => import('./components/EditMenu.vue')
+)
+const editDrawerRef = ref<RefType>(null)
+const editRow = ref<MenuData>()
 const handleEditMenu = (row: MenuData) => {
-  editRow.value = JSON.parse(JSON.stringify(row));
-  editDrawerRef.value.editDrawerStatus = true;
-};
+  editRow.value = JSON.parse(JSON.stringify(row))
+  editDrawerRef.value.editDrawerStatus = true
+}
 
-const isAddChildren = ref<boolean>();
+const isAddChildren = ref<boolean>()
 const handleAddChildrenMenu = (row: MenuData) => {
-  parentRow.value = row;
-  isAddChildren.value = true;
-  addDialogRef.value.addMenuDialogStatus = true;
-};
+  parentRow.value = row
+  isAddChildren.value = true
+  addDialogRef.value.addMenuDialogStatus = true
+}
 
 // 添加子菜单的父菜单
-const parentRow = ref<MenuData>();
+const parentRow = ref<MenuData>()
 // 处理添加菜单
-const AddMenuDialog = defineAsyncComponent(() => import('./components/AddMenu.vue'));
-const addDialogRef = ref<RefType>(null);
+const AddMenuDialog = defineAsyncComponent(
+  () => import('./components/AddMenu.vue')
+)
+const addDialogRef = ref<RefType>(null)
 
 // 添加全部菜单按钮
 // const AddAllMenuButton = defineAsyncComponent(() => import('./components/AddAllMenu.vue'));
 
 // 处理子组件通知父组件更新列表
 const handleUpdate = () => {
-  getMenuTableData();
-  menuStore.getMenuData(true);
-};
+  getMenuTableData()
+  menuStore.getMenuData(true)
+}
 
 // 页面加载时
 onMounted(() => {
-  getMenuTableData();
-});
+  getMenuTableData()
+})
 </script>
 
 <style lang="scss" scoped></style>

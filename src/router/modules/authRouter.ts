@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from 'vue-router';
+import { RouteRecordRaw } from 'vue-router'
 
 // 权限管理路由规则
 const routerRules: Array<RouteRecordRaw> = [
@@ -65,6 +65,6 @@ const routerRules: Array<RouteRecordRaw> = [
       },
     ],
   },
-];
+]
 
-export default routerRules;
+export default routerRules

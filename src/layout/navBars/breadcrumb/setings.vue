@@ -712,103 +712,103 @@
 </template>
 
 <script setup lang="ts" name="layoutBreadcrumbSeting">
-import { nextTick, onUnmounted, onMounted, computed, reactive } from 'vue';
-import { ElMessage } from 'element-plus';
-import { storeToRefs } from 'pinia';
-import { useThemeConfig } from '@/stores/themeConfig';
-import { useChangeColor } from '@/utils/theme';
+import { nextTick, onUnmounted, onMounted, computed, reactive } from 'vue'
+import { ElMessage } from 'element-plus'
+import { storeToRefs } from 'pinia'
+import { useThemeConfig } from '@/stores/themeConfig'
+import { useChangeColor } from '@/utils/theme'
 // import { verifyAndSpace } from '@/utils/toolsValidate'
-import { Local } from '@/utils/storage';
+import { Local } from '@/utils/storage'
 // import Watermark from '@/utils/watermark'
-import commonFunction from '@/utils/commonFunction';
-import other from '@/utils/other';
-import mittBus from '@/utils/mitt';
+import commonFunction from '@/utils/commonFunction'
+import other from '@/utils/other'
+import mittBus from '@/utils/mitt'
 
 // 定义变量内容
-const storesThemeConfig = useThemeConfig();
-const { themeConfig } = storeToRefs(storesThemeConfig);
-const { copyText } = commonFunction();
-const { getLightColor, getDarkColor } = useChangeColor();
+const storesThemeConfig = useThemeConfig()
+const { themeConfig } = storeToRefs(storesThemeConfig)
+const { copyText } = commonFunction()
+const { getLightColor, getDarkColor } = useChangeColor()
 const state = reactive({
   isMobile: false,
-});
+})
 
 // 获取布局配置信息
 const getThemeConfig = computed(() => {
-  return themeConfig.value;
-});
+  return themeConfig.value
+})
 // 1、全局主题
 const onColorPickerChange = () => {
   if (!getThemeConfig.value.primary)
-    return ElMessage.warning('全局主题 primary 颜色值不能为空');
+    return ElMessage.warning('全局主题 primary 颜色值不能为空')
   // 颜色加深
   document.documentElement.style.setProperty(
     '--el-color-primary-dark-2',
     `${getDarkColor(getThemeConfig.value.primary, 0.1)}`
-  );
+  )
   document.documentElement.style.setProperty(
     '--el-color-primary',
     getThemeConfig.value.primary
-  );
+  )
   // 颜色变浅
   for (let i = 1; i <= 9; i++) {
     document.documentElement.style.setProperty(
       `--el-color-primary-light-${i}`,
       `${getLightColor(getThemeConfig.value.primary, i / 10)}`
-    );
+    )
   }
-  setDispatchThemeConfig();
-};
+  setDispatchThemeConfig()
+}
 // 2、菜单 / 顶栏
 const onBgColorPickerChange = (bg: string) => {
   document.documentElement.style.setProperty(
     `--next-bg-${bg}`,
     themeConfig.value[bg]
-  );
+  )
   if (bg === 'menuBar') {
     document.documentElement.style.setProperty(
       `--next-bg-menuBar-light-1`,
       getLightColor(getThemeConfig.value.menuBar, 0.05)
-    );
+    )
   }
-  onTopBarGradualChange();
-  onMenuBarGradualChange();
-  onColumnsMenuBarGradualChange();
-  setDispatchThemeConfig();
-};
+  onTopBarGradualChange()
+  onMenuBarGradualChange()
+  onColumnsMenuBarGradualChange()
+  setDispatchThemeConfig()
+}
 // 2、菜单 / 顶栏 --> 顶栏背景渐变
 const onTopBarGradualChange = () => {
   setGraduaFun(
     '.layout-navbars-breadcrumb-index',
     getThemeConfig.value.isTopBarColorGradual,
     getThemeConfig.value.topBar
-  );
-};
+  )
+}
 // 2、菜单 / 顶栏 --> 菜单背景渐变
 const onMenuBarGradualChange = () => {
   setGraduaFun(
     '.layout-container .el-aside',
     getThemeConfig.value.isMenuBarColorGradual,
     getThemeConfig.value.menuBar
-  );
-};
+  )
+}
 // 2、菜单 / 顶栏 --> 分栏菜单背景渐变
 const onColumnsMenuBarGradualChange = () => {
   setGraduaFun(
     '.layout-container .layout-columns-aside',
     getThemeConfig.value.isColumnsMenuBarColorGradual,
     getThemeConfig.value.columnsMenuBar
-  );
-};
+  )
+}
 // 2、菜单 / 顶栏 --> 背景渐变函数
 const setGraduaFun = (el: string, bool: boolean, color: string) => {
   setTimeout(() => {
-    let els = document.querySelector(el);
-    if (!els) return false;
+    let els = document.querySelector(el)
+    if (!els) return false
     document.documentElement.style.setProperty(
       '--el-menu-bg-color',
       document.documentElement.style.getPropertyValue('--next-bg-menuBar')
-    );
+    )
     if (bool)
       els.setAttribute(
         'style',
@@ -816,179 +816,179 @@ const setGraduaFun = (el: string, bool: boolean, color: string) => {
           color,
           0.6
         )}) !important;`
-      );
-    else els.setAttribute('style', ``);
-    setLocalThemeConfig();
-  }, 200);
-};
+      )
+    else els.setAttribute('style', ``)
+    setLocalThemeConfig()
+  }, 200)
+}
 // 2、分栏设置 ->
 const onColumnsMenuHoverPreloadChange = () => {
-  setLocalThemeConfig();
-};
+  setLocalThemeConfig()
+}
 // 3、界面设置 --> 菜单水平折叠
 const onThemeConfigChange = () => {
-  setDispatchThemeConfig();
-};
+  setDispatchThemeConfig()
+}
 // 3、界面设置 --> 固定 Header
 const onIsFixedHeaderChange = () => {
   getThemeConfig.value.isFixedHeaderChange = getThemeConfig.value.isFixedHeader
     ? false
-    : true;
-  setLocalThemeConfig();
-};
+    : true
+  setLocalThemeConfig()
+}
 // 3、界面设置 --> 经典布局分割菜单
 const onClassicSplitMenuChange = () => {
-  getThemeConfig.value.isBreadcrumb = false;
-  setLocalThemeConfig();
-  mittBus.emit('getBreadcrumbIndexSetFilterRoutes');
-};
+  getThemeConfig.value.isBreadcrumb = false
+  setLocalThemeConfig()
+  mittBus.emit('getBreadcrumbIndexSetFilterRoutes')
+}
 // 4、界面显示 --> 侧边栏 Logo
 const onIsShowLogoChange = () => {
   getThemeConfig.value.isShowLogoChange = getThemeConfig.value.isShowLogo
     ? false
-    : true;
-  setLocalThemeConfig();
-};
+    : true
+  setLocalThemeConfig()
+}
 // 4、界面显示 --> 面包屑 Breadcrumb
 const onIsBreadcrumbChange = () => {
   if (getThemeConfig.value.layout === 'classic') {
-    getThemeConfig.value.isClassicSplitMenu = false;
+    getThemeConfig.value.isClassicSplitMenu = false
   }
-  setLocalThemeConfig();
-};
+  setLocalThemeConfig()
+}
 // 4、界面显示 --> 开启 TagsView 拖拽
 const onSortableTagsViewChange = () => {
-  mittBus.emit('openOrCloseSortable');
-  setLocalThemeConfig();
-};
+  mittBus.emit('openOrCloseSortable')
+  setLocalThemeConfig()
+}
 // 4、界面显示 --> 开启 TagsView 共用
 const onShareTagsViewChange = () => {
-  mittBus.emit('openShareTagsView');
-  setLocalThemeConfig();
-};
+  mittBus.emit('openShareTagsView')
+  setLocalThemeConfig()
+}
 // 4、界面显示 --> 灰色模式/色弱模式
 const onAddFilterChange = (attr: string) => {
   if (attr === 'grayscale') {
-    if (getThemeConfig.value.isGrayscale) getThemeConfig.value.isInvert = false;
+    if (getThemeConfig.value.isGrayscale) getThemeConfig.value.isInvert = false
   } else {
-    if (getThemeConfig.value.isInvert) getThemeConfig.value.isGrayscale = false;
+    if (getThemeConfig.value.isInvert) getThemeConfig.value.isGrayscale = false
   }
   const cssAttr =
     attr === 'grayscale'
       ? `grayscale(${getThemeConfig.value.isGrayscale ? 1 : 0})`
-      : `invert(${getThemeConfig.value.isInvert ? '80%' : '0%'})`;
-  const appEle = document.body;
-  appEle.setAttribute('style', `filter: ${cssAttr}`);
-  setLocalThemeConfig();
-};
+      : `invert(${getThemeConfig.value.isInvert ? '80%' : '0%'})`
+  const appEle = document.body
+  appEle.setAttribute('style', `filter: ${cssAttr}`)
+  setLocalThemeConfig()
+}
 // 4、界面显示 --> 深色模式
 const onAddDarkChange = () => {
-  const body = document.documentElement as HTMLElement;
-  if (getThemeConfig.value.isIsDark) body.setAttribute('data-theme', 'dark');
-  else body.setAttribute('data-theme', '');
-};
+  const body = document.documentElement as HTMLElement
+  if (getThemeConfig.value.isIsDark) body.setAttribute('data-theme', 'dark')
+  else body.setAttribute('data-theme', '')
+}
 // 5、布局切换
 const onSetLayout = (layout: string) => {
-  Local.set('oldLayout', layout);
-  if (getThemeConfig.value.layout === layout) return false;
-  if (layout === 'transverse') getThemeConfig.value.isCollapse = false;
-  getThemeConfig.value.layout = layout;
-  getThemeConfig.value.isDrawer = false;
-  initLayoutChangeFun();
-};
+  Local.set('oldLayout', layout)
+  if (getThemeConfig.value.layout === layout) return false
+  if (layout === 'transverse') getThemeConfig.value.isCollapse = false
+  getThemeConfig.value.layout = layout
+  getThemeConfig.value.isDrawer = false
+  initLayoutChangeFun()
+}
 // 设置布局切换函数
 const initLayoutChangeFun = () => {
-  onBgColorPickerChange('menuBar');
-  onBgColorPickerChange('menuBarColor');
-  onBgColorPickerChange('menuBarActiveColor');
-  onBgColorPickerChange('topBar');
-  onBgColorPickerChange('topBarColor');
-  onBgColorPickerChange('columnsMenuBar');
-  onBgColorPickerChange('columnsMenuBarColor');
-};
+  onBgColorPickerChange('menuBar')
+  onBgColorPickerChange('menuBarColor')
+  onBgColorPickerChange('menuBarActiveColor')
+  onBgColorPickerChange('topBar')
+  onBgColorPickerChange('topBarColor')
+  onBgColorPickerChange('columnsMenuBar')
+  onBgColorPickerChange('columnsMenuBarColor')
+}
 // 关闭弹窗时，初始化变量。变量用于处理 layoutScrollbarRef.value.update() 更新滚动条高度
 const onDrawerClose = () => {
-  getThemeConfig.value.isFixedHeaderChange = false;
-  getThemeConfig.value.isShowLogoChange = false;
-  getThemeConfig.value.isDrawer = false;
-  setLocalThemeConfig();
-};
+  getThemeConfig.value.isFixedHeaderChange = false
+  getThemeConfig.value.isShowLogoChange = false
+  getThemeConfig.value.isDrawer = false
+  setLocalThemeConfig()
+}
 // 布局配置弹窗打开
 const openDrawer = () => {
-  getThemeConfig.value.isDrawer = true;
-};
+  getThemeConfig.value.isDrawer = true
+}
 // 触发 store 布局配置更新
 const setDispatchThemeConfig = () => {
-  setLocalThemeConfig();
-  setLocalThemeConfigStyle();
-};
+  setLocalThemeConfig()
+  setLocalThemeConfigStyle()
+}
 // 存储布局配置
 const setLocalThemeConfig = () => {
-  Local.remove('themeConfig');
-  Local.set('themeConfig', getThemeConfig.value);
-};
+  Local.remove('themeConfig')
+  Local.set('themeConfig', getThemeConfig.value)
+}
 // 存储布局配置全局主题样式（html根标签）
 const setLocalThemeConfigStyle = () => {
-  Local.set('themeConfigStyle', document.documentElement.style.cssText);
-};
+  Local.set('themeConfigStyle', document.documentElement.style.cssText)
+}
 // 一键复制配置
 const onCopyConfigClick = () => {
-  let copyThemeConfig = Local.get('themeConfig');
-  copyThemeConfig.isDrawer = false;
+  let copyThemeConfig = Local.get('themeConfig')
+  copyThemeConfig.isDrawer = false
   copyText(JSON.stringify(copyThemeConfig)).then(() => {
-    getThemeConfig.value.isDrawer = false;
-  });
-};
+    getThemeConfig.value.isDrawer = false
+  })
+}
 // 一键恢复默认
 const onResetConfigClick = () => {
-  Local.clear();
-  window.location.reload();
+  Local.clear()
+  window.location.reload()
   // @ts-ignore
-  Local.set('version', __NEXT_VERSION__);
-};
+  Local.set('version', __NEXT_VERSION__)
+}
 // 初始化菜单样式等
 const initSetStyle = () => {
   // 2、菜单 / 顶栏 --> 顶栏背景渐变
-  onTopBarGradualChange();
+  onTopBarGradualChange()
   // 2、菜单 / 顶栏 --> 菜单背景渐变
-  onMenuBarGradualChange();
+  onMenuBarGradualChange()
   // 2、菜单 / 顶栏 --> 分栏菜单背景渐变
-  onColumnsMenuBarGradualChange();
-};
+  onColumnsMenuBarGradualChange()
+}
 onMounted(() => {
   nextTick(() => {
     // 判断当前布局是否不相同，不相同则初始化当前布局的样式，防止监听窗口大小改变时，布局配置logo、菜单背景等部分布局失效问题
-    if (!Local.get('frequency')) initLayoutChangeFun();
-    Local.set('frequency', 1);
+    if (!Local.get('frequency')) initLayoutChangeFun()
+    Local.set('frequency', 1)
     // 监听窗口大小改变，非默认布局，设置成默认布局（适配移动端）
     mittBus.on('layoutMobileResize', (res: LayoutMobileResize) => {
-      getThemeConfig.value.layout = res.layout;
-      getThemeConfig.value.isDrawer = false;
-      initLayoutChangeFun();
-      state.isMobile = other.isMobile();
-    });
+      getThemeConfig.value.layout = res.layout
+      getThemeConfig.value.isDrawer = false
+      initLayoutChangeFun()
+      state.isMobile = other.isMobile()
+    })
     setTimeout(() => {
       // 默认样式
-      onColorPickerChange();
+      onColorPickerChange()
       // 灰色模式
-      if (getThemeConfig.value.isGrayscale) onAddFilterChange('grayscale');
+      if (getThemeConfig.value.isGrayscale) onAddFilterChange('grayscale')
       // 色弱模式
-      if (getThemeConfig.value.isInvert) onAddFilterChange('invert');
+      if (getThemeConfig.value.isInvert) onAddFilterChange('invert')
       // 深色模式
-      if (getThemeConfig.value.isIsDark) onAddDarkChange();
+      if (getThemeConfig.value.isIsDark) onAddDarkChange()
       // 初始化菜单样式等
-      initSetStyle();
-    }, 100);
-  });
-});
+      initSetStyle()
+    }, 100)
+  })
+})
 onUnmounted(() => {
-  mittBus.off('layoutMobileResize', () => {});
-});
+  mittBus.off('layoutMobileResize', () => {})
+})
 
 // 暴露变量
 defineExpose({
   openDrawer,
-});
+})
 </script>
 
 <style scoped lang="scss">

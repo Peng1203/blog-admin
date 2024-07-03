@@ -45,12 +45,12 @@
 </template>
 
 <script setup lang="ts" name="">
-import { ref, onMounted, PropType, watch } from 'vue';
-import { ElTree } from 'element-plus';
-import { useMenuInfo } from '@/stores/menuList';
-import { MenuData } from '../types';
+import { ref, onMounted, PropType, watch } from 'vue'
+import { ElTree } from 'element-plus'
+import { useMenuInfo } from '@/stores/menuList'
+import { MenuData } from '../types'
 
-const emits = defineEmits(['update:checkedMenu']);
+const emits = defineEmits(['update:checkedMenu'])
 
 const props = defineProps({
   checkedMenu: {
@@ -65,50 +65,50 @@ const props = defineProps({
     type: Number as PropType<number>,
     default: 200,
   },
-});
+})
 
-const loading = ref<boolean>(false);
+const loading = ref<boolean>(false)
 
-const menuStore = useMenuInfo();
+const menuStore = useMenuInfo()
 
 const defaultProps = {
   children: 'children',
   label: 'menuName',
-};
+}
 
-const filterText = ref('');
+const filterText = ref('')
 
 // 选中的数据
-const checkedKeys = ref<number[]>([]);
+const checkedKeys = ref<number[]>([])
 // 默认展开的数据
-const expandedKeys = ref<number[]>([]);
+const expandedKeys = ref<number[]>([])
 // 树形结构数据
-const data = ref<MenuData[]>();
+const data = ref<MenuData[]>()
 
 const handleCheckboxChange = (checkedNodes: MenuData, checkedInfo: any) => {
-  emits('update:checkedMenu', checkedInfo.checkedKeys);
-};
+  emits('update:checkedMenu', checkedInfo.checkedKeys)
+}
 
 const handleReset = () => {
-  checkedKeys.value = [];
-  treeRef.value!.setCheckedKeys([]);
-};
+  checkedKeys.value = []
+  treeRef.value!.setCheckedKeys([])
+}
 
 const filterNode = (value: string, data: any) => {
-  if (!value) return true;
-  return data.menuName.includes(value);
-};
+  if (!value) return true
+  return data.menuName.includes(value)
+}
 
-const treeRef = ref<InstanceType<typeof ElTree>>();
+const treeRef = ref<InstanceType<typeof ElTree>>()
 watch(filterText, val => {
-  treeRef.value!.filter(val);
-});
+  treeRef.value!.filter(val)
+})
 
 watch(
   () => menuStore.menuList,
   val => (data.value = val),
   { deep: true }
-);
+)
 
 watch(
   () => props.checkedMenu,
@@ -117,15 +117,15 @@ watch(
     deep: true,
     immediate: true,
   }
-);
+)
 
 onMounted(async () => {
-  loading.value = true;
-  await menuStore.getMenuData().finally(() => (loading.value = false));
-  data.value = menuStore.menuList;
-});
+  loading.value = true
+  await menuStore.getMenuData().finally(() => (loading.value = false))
+  data.value = menuStore.menuList
+})
 
-defineExpose({ handleReset });
+defineExpose({ handleReset })
 </script>
 
 <style scoped lang="scss"></style>

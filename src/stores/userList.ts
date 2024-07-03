@@ -1,9 +1,9 @@
-import { UserData, UserListData } from '@/views/user/user';
-import { ref } from 'vue';
-import { defineStore } from 'pinia';
-import { useUserApi } from '@/api';
+import { UserData, UserListData } from '@/views/user/user'
+import { ref } from 'vue'
+import { defineStore } from 'pinia'
+import { useUserApi } from '@/api'
 
-const { getUsers } = useUserApi();
+const { getUsers } = useUserApi()
 
 export const useUsersInfo = defineStore('usersInfo', {
   state: () => ({
@@ -16,21 +16,24 @@ export const useUsersInfo = defineStore('usersInfo', {
   actions: {
     async getUserData(isUpdate?: boolean) {
       try {
-        if (!isUpdate && this.userList.length) return;
+        if (!isUpdate && this.userList.length) return
         const { data: res } = await getUsers<UserListData>({
           page: 1,
           pageSize: 9999,
           queryStr: '',
           column: '',
           order: '',
-        });
-        const { code, success, data } = res;
-        if (code !== 20000 || !success) return;
-        this.userList = data.list;
-        this.userOption = data.list.map(({ userName, nickName, id }) => ({ label: nickName || userName, value: id }));
+        })
+        const { code, success, data } = res
+        if (code !== 20000 || !success) return
+        this.userList = data.list
+        this.userOption = data.list.map(({ userName, nickName, id }) => ({
+          label: nickName || userName,
+          value: id,
+        }))
       } catch (e) {
-        throw e;
+        throw e
       }
     },
   },
-});
+})

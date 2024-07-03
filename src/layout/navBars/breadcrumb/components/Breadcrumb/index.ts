@@ -1,1 +1,1 @@
-export { default as default } from './Breadcrumb.vue';
+export { default as default } from './Breadcrumb.vue'

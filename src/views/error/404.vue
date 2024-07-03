@@ -32,17 +32,17 @@
 </template>
 
 <script setup lang="ts" name="notFound">
-import { useRouter } from 'vue-router';
-import { Session } from '@/utils/storage';
+import { useRouter } from 'vue-router'
+import { Session } from '@/utils/storage'
 
 // 定义变量内容
-const router = useRouter();
+const router = useRouter()
 
 // 返回首页
 const onGoHome = () => {
-  if (Session.get('token')) router.go(-1);
-  else router.push({ name: 'Home' });
-};
+  if (Session.get('token')) router.go(-1)
+  else router.push({ name: 'Home' })
+}
 </script>
 
 <style scoped lang="scss">

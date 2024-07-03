@@ -90,27 +90,27 @@
 </template>
 
 <script lang="ts" setup name="SystemAuthPermission">
-import { ref, reactive, onMounted, defineAsyncComponent } from 'vue';
-import { usePermissionInfo } from '@/stores/permissionList';
-import { usePermissionApi } from '@/api';
-import { Plus } from '@element-plus/icons-vue';
+import { ref, reactive, onMounted, defineAsyncComponent } from 'vue'
+import { usePermissionInfo } from '@/stores/permissionList'
+import { usePermissionApi } from '@/api'
+import { Plus } from '@element-plus/icons-vue'
 import {
   ColumnItem,
   PageInfo,
   PageChangeParams,
   ColumnChangeParams,
-} from '@/components/Table';
-import { PermissionData, PermissionListData } from './types';
-import { queryStrHighlight } from '@/utils/queryStrHighlight';
-import { resourceMethodOptions } from './';
-import { SelectOptionItem } from '@/components/Select';
-import { useNotificationMsg } from '@/utils/notificationMsg';
-import { isObject } from 'lodash';
+} from '@/components/Table'
+import { PermissionData, PermissionListData } from './types'
+import { queryStrHighlight } from '@/utils/queryStrHighlight'
+import { resourceMethodOptions } from './'
+import { SelectOptionItem } from '@/components/Select'
+import { useNotificationMsg } from '@/utils/notificationMsg'
+import { isObject } from 'lodash'
 
-const permissionStore = usePermissionInfo();
+const permissionStore = usePermissionInfo()
 
 const { getPermissions, delAuthPermission, getPermCodeOptions } =
-  usePermissionApi();
+  usePermissionApi()
 // 表格参数
 const tableState = reactive({
   loading: false,
@@ -155,77 +155,77 @@ const tableState = reactive({
     pageSize: 9999,
     total: 0,
   }),
-});
+})
 
 // 获取权限标识数据
 const getAuthPermissionTableData = async (): Promise<void> => {
   try {
-    tableState.loading = true;
+    tableState.loading = true
     const params = {
       page: tableState.pagerInfo.page,
       pageSize: tableState.pagerInfo.pageSize,
       queryStr: tableState.queryStr,
       column: tableState.column,
       order: tableState.order,
-    };
-    const { data: res } = await getPermissions<PermissionListData>(params);
-    const { code, success, data } = res;
-    if (code !== 20000 || !success) return;
-    tableState.data = data.list;
-    tableState.pagerInfo.total = data.total;
+    }
+    const { data: res } = await getPermissions<PermissionListData>(params)
+    const { code, success, data } = res
+    if (code !== 20000 || !success) return
+    tableState.data = data.list
+    tableState.pagerInfo.total = data.total
   } catch (e) {
-    console.log(e);
+    console.log(e)
   } finally {
-    tableState.loading = false;
+    tableState.loading = false
   }
-};
+}
 
 // 表格排序
 const handleColumnChange = ({ column, order }: ColumnChangeParams) => {
-  tableState.column = column;
-  tableState.order = order;
-  getAuthPermissionTableData();
-};
+  tableState.column = column
+  tableState.order = order
+  getAuthPermissionTableData()
+}
 
 // 分页器修改时触发
 const handlePageInfoChange = ({ page, pageSize }: PageChangeParams) => {
-  tableState.pagerInfo.page = page;
-  tableState.pagerInfo.pageSize = pageSize;
-  getAuthPermissionTableData();
-};
+  tableState.pagerInfo.page = page
+  tableState.pagerInfo.pageSize = pageSize
+  getAuthPermissionTableData()
+}
 
 // 搜索
 const handleSearch = () => {
-  tableState.pagerInfo.page = 1;
-  getAuthPermissionTableData();
-};
+  tableState.pagerInfo.page = 1
+  getAuthPermissionTableData()
+}
 
 // 处理删除权限标识
 const handleDeleteAuthPermission = async (row: PermissionData) => {
-  const delRes = await delAuthPermissionById(row.id);
-  if (!delRes) return;
-  handleUpdate();
-};
+  const delRes = await delAuthPermissionById(row.id)
+  if (!delRes) return
+  handleUpdate()
+}
 // 通过ID删除权限标识
 const delAuthPermissionById = async (id: number): Promise<boolean> => {
   try {
-    const { data: res } = await delAuthPermission<string>(id);
-    const { code, data, success } = res;
-    if (code !== 20000 || !success) return false;
-    useNotificationMsg('', data);
-    return true;
+    const { data: res } = await delAuthPermission<string>(id)
+    const { code, data, success } = res
+    if (code !== 20000 || !success) return false
+    useNotificationMsg('', data)
+    return true
   } catch (e) {
-    console.log(e);
-    return false;
+    console.log(e)
+    return false
   }
-};
+}
 
 // 编辑权限标识
 const EditAuthPermissonDrawer = defineAsyncComponent(
   () => import('./components/EditAuthPermisson.vue')
-);
+)
 
-const editAuthDrawerRef = ref<RefType>(null);
+const editAuthDrawerRef = ref<RefType>(null)
 const editAuthRowInfo = ref<PermissionData>({
   id: 0,
   permissionName: '',
@@ -237,78 +237,78 @@ const editAuthRowInfo = ref<PermissionData>({
   updateTime: '',
   createTime: '',
   children: [],
-});
+})
 // 编辑权限标识
 const handleEditAuthPermission = (row: PermissionData) => {
-  editAuthRowInfo.value = JSON.parse(JSON.stringify(row));
-  editAuthDrawerRef.value.editDrawerStatus = true;
-};
+  editAuthRowInfo.value = JSON.parse(JSON.stringify(row))
+  editAuthDrawerRef.value.editDrawerStatus = true
+}
 
 // 添加权限标识
 const AddAuthPermissonDialog = defineAsyncComponent(
   () => import('./components/AddAuthPermisson.vue')
-);
-const addAuthDialogRef = ref<RefType>(null);
+)
+const addAuthDialogRef = ref<RefType>(null)
 
 const handleUpdate = async () => {
-  permissionStore.getPermissionData(true);
-  await getAuthPermissionTableData();
+  permissionStore.getPermissionData(true)
+  await getAuthPermissionTableData()
   // 更新下拉数据的 禁用状态
-  getPermissionCodeOptions();
-};
+  getPermissionCodeOptions()
+}
 
 const handleMethodTagColor = (value: any) => {
-  return resourceMethodOptions.find(item => item.value === value)!.color;
-};
+  return resourceMethodOptions.find(item => item.value === value)!.color
+}
 
 const handleMethodTagText = (value: any) => {
-  return resourceMethodOptions.find(item => item.value === value)!.label;
-};
+  return resourceMethodOptions.find(item => item.value === value)!.label
+}
 
 // 用于区分添加权限标识的类型 0 为目录
-const parentId = ref<number>();
+const parentId = ref<number>()
 
 const handleAddPermission = (row?: PermissionData | number) => {
-  if (isObject(row)) parentId.value = row?.id;
-  else parentId.value = 0;
-  addAuthDialogRef.value.addAuthPermissonDialogStatus = true;
-};
+  if (isObject(row)) parentId.value = row?.id
+  else parentId.value = 0
+  addAuthDialogRef.value.addAuthPermissonDialogStatus = true
+}
 
-const permissionCodeOptions = ref<SelectOptionItem[]>([]);
+const permissionCodeOptions = ref<SelectOptionItem[]>([])
 const getPermissionCodeOptions = async () => {
   try {
-    const { data: res } = await getPermCodeOptions<OptionItem[]>();
-    const { code, success, data } = res;
-    if (code !== 20000 || !success) return;
+    const { data: res } = await getPermCodeOptions<OptionItem[]>()
+    const { code, success, data } = res
+    if (code !== 20000 || !success) return
     permissionCodeOptions.value = data.map(item => {
       return {
         ...item,
         disabled: optionItemIsDisabled(item.value, tableState.data),
-      };
-    });
+      }
+    })
   } catch (e) {
-    console.log('e', e);
+    console.log('e', e)
   }
-};
+}
 
 const optionItemIsDisabled = (
   value: string,
   PermissionData: PermissionData[]
 ): boolean => {
   for (let i = 0; i < PermissionData.length; i++) {
-    if (PermissionData[i].permissionCode === value) return true;
+    if (PermissionData[i].permissionCode === value) return true
 
     if (PermissionData[i].children.length) {
-      if (optionItemIsDisabled(value, PermissionData[i].children)) return true;
+      if (optionItemIsDisabled(value, PermissionData[i].children)) return true
     }
   }
-  return false;
-};
+  return false
+}
 
 onMounted(async () => {
-  await getAuthPermissionTableData();
-  getPermissionCodeOptions();
-});
+  await getAuthPermissionTableData()
+  getPermissionCodeOptions()
+})
 </script>
 
 <style lang="scss" scoped></style>

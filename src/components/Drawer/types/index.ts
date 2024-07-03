@@ -1,22 +1,22 @@
-type directionEnum = 'ltr' | 'ttb' | 'btt' | 'rtl';
+type directionEnum = 'ltr' | 'ttb' | 'btt' | 'rtl'
 
 export interface DrawerAttribute {
   /** 抽屉状态 */
-  modelValue: boolean;
+  modelValue: boolean
   /** 标题 */
-  title?: string;
+  title?: string
   /** 抽屉宽度 百分比 | px */
-  size?: number | string;
+  size?: number | string
   /** 打开方向 */
-  direction?: directionEnum;
+  direction?: directionEnum
   /** 是否有遮罩层 */
-  modal?: boolean;
+  modal?: boolean
   /** 是否展示标题 */
-  showHeader?: boolean;
+  showHeader?: boolean
   /** 遮罩层类名 */
-  mdClass?: string;
+  mdClass?: string
   /** esc 关闭抽屉 */
-  escClose?: boolean;
+  escClose?: boolean
   /** 点击遮罩层关闭 */
-  modalClose?: boolean;
+  modalClose?: boolean
 }

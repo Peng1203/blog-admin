@@ -29,22 +29,22 @@
 </template>
 
 <script lang="ts" setup name="EmojiExtension">
-import { reactive } from 'vue';
-import type { PropType } from 'vue';
-import { InsertContentGenerator, DropdownToolbar } from 'md-editor-v3';
-import { emojis } from './date';
-import 'md-editor-v3/lib/style.css';
+import { reactive } from 'vue'
+import type { PropType } from 'vue'
+import { InsertContentGenerator, DropdownToolbar } from 'md-editor-v3'
+import { emojis } from './date'
+import 'md-editor-v3/lib/style.css'
 
 const props = defineProps({
   onInsert: {
     type: Function as PropType<(generator: InsertContentGenerator) => void>,
     default: () => () => null,
   },
-});
+})
 
 const state = reactive({
   visible: false,
-});
+})
 
 const emojiHandler = (emoji: string) => {
   const generator: InsertContentGenerator = () => {
@@ -53,15 +53,15 @@ const emojiHandler = (emoji: string) => {
       select: true,
       deviationStart: 0,
       deviationEnd: 0,
-    };
-  };
+    }
+  }
 
-  props.onInsert(generator);
-};
+  props.onInsert(generator)
+}
 
 const onChange = (visible: boolean) => {
-  state.visible = visible;
-};
+  state.visible = visible
+}
 </script>
 
 <style scoped lang="scss">

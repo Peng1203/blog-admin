@@ -15,22 +15,22 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch } from 'vue';
-import { ElMessage } from 'element-plus';
-import { useUserApi } from '@/api/user/index';
-import Form, { FormItem } from '@/components/Form';
-import Drawer from '@/components/Drawer';
-import { EditProps, AddEditUserType, UserData } from '../types';
+import { ref, reactive, watch } from 'vue'
+import { ElMessage } from 'element-plus'
+import { useUserApi } from '@/api/user/index'
+import Form, { FormItem } from '@/components/Form'
+import Drawer from '@/components/Drawer'
+import { EditProps, AddEditUserType, UserData } from '../types'
 
-const { updateUser } = useUserApi();
+const { updateUser } = useUserApi()
 
 const props = withDefaults(defineProps<EditProps>(), {
   editRow: () => ({} as UserData),
-});
-const emits = defineEmits(['updateList']);
+})
+const emits = defineEmits(['updateList'])
 
 // 抽屉状态
-const editDrawerStatus = ref<boolean>(false);
+const editDrawerStatus = ref<boolean>(false)
 
 const formData = ref<AddEditUserType>({
   userName: '',
@@ -39,7 +39,7 @@ const formData = ref<AddEditUserType>({
   email: '',
   userEnabled: 1,
   userAvatar: '',
-});
+})
 
 // 编辑状态信息
 const editFormState = reactive({
@@ -92,12 +92,13 @@ const editFormState = reactive({
       span: 20,
     },
   ]),
-});
+})
 
 // 保存编辑信息
 const saveEditUserInfo = async (): Promise<boolean> => {
   try {
-    const { userName, nickName, userAvatar, userEnabled, roleIds, email } = formData.value;
+    const { userName, nickName, userAvatar, userEnabled, roleIds, email } =
+      formData.value
     const params = {
       userName,
       nickName,
@@ -105,44 +106,48 @@ const saveEditUserInfo = async (): Promise<boolean> => {
       userEnabled,
       roleIds,
       email: email === '' ? null : email,
-    };
-    const { data: res } = await updateUser<UserData>(props.editRow.id, params as any);
-    const { code, message, success } = res;
-    if (code !== 20001 || !success) return false;
+    }
+    const { data: res } = await updateUser<UserData>(
+      props.editRow.id,
+      params as any
+    )
+    const { code, message, success } = res
+    if (code !== 20001 || !success) return false
 
-    ElMessage.success(message);
-    return true;
+    ElMessage.success(message)
+    return true
   } catch (e) {
     // ElMessage.error('更新失败')
-    console.log(e);
-    return false;
+    console.log(e)
+    return false
   }
-};
+}
 
 // 处理保存修改信息
 const handleSaveEdit = async () => {
-  const updateRes = await saveEditUserInfo();
-  if (!updateRes) return;
-  editDrawerStatus.value = false;
-  emits('updateList');
-};
+  const updateRes = await saveEditUserInfo()
+  if (!updateRes) return
+  editDrawerStatus.value = false
+  emits('updateList')
+}
 
-const editFormRef = ref<RefType>(null);
+const editFormRef = ref<RefType>(null)
 
 watch(
   () => props.editRow,
   val => {
-    formData.value = JSON.parse(JSON.stringify(val));
-    formData.value.roleIds = formData.value.roles?.map(role => role.id);
+    formData.value = JSON.parse(JSON.stringify(val))
+    formData.value.roleIds = formData.value.roles?.map(role => role.id)
   }
-);
+)
 
 watch(editDrawerStatus, async val => {
-  editFormState.formItemList.find(item => item.prop === 'roleIds')!.options = props.roles;
-  if (!val) editFormRef.value.getRef().resetFields();
-});
+  editFormState.formItemList.find(item => item.prop === 'roleIds')!.options =
+    props.roles
+  if (!val) editFormRef.value.getRef().resetFields()
+})
 
-defineExpose({ editDrawerStatus });
+defineExpose({ editDrawerStatus })
 </script>
 
 <style lang="scss" scoped></style>

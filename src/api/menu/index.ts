@@ -1,7 +1,7 @@
-import request from '@/utils/request';
-import { TransformedResponse, RequestNoPageListParams } from 'Api';
-import { EditMenuParams, MenuParams } from './params';
-import { Method } from '../types';
+import request from '@/utils/request'
+import { TransformedResponse, RequestNoPageListParams } from 'Api'
+import { EditMenuParams, MenuParams } from './params'
+import { Method } from '../types'
 
 export function useMenuApi() {
   return {
@@ -17,7 +17,7 @@ export function useMenuApi() {
         url: '/menu',
         method: Method.GET,
         params,
-      });
+      })
     },
     /**
      * 添加菜单
@@ -31,7 +31,7 @@ export function useMenuApi() {
         url: '/menu',
         method: Method.POST,
         data: JSON.stringify(data),
-      });
+      })
     },
     /**
      * 删除菜单
@@ -44,7 +44,7 @@ export function useMenuApi() {
       return request({
         url: `/menu/${id}`,
         method: Method.DELETE,
-      });
+      })
     },
     /**
      * 更新菜单信息
@@ -54,12 +54,15 @@ export function useMenuApi() {
      * @param {any} params:EditMenuParams
      * @returns {any}
      */
-    updataMenu<T = string>(id: number, params: EditMenuParams): TransformedResponse<T> {
+    updataMenu<T = string>(
+      id: number,
+      params: EditMenuParams
+    ): TransformedResponse<T> {
       return request({
         url: `/menu/${id}`,
         method: Method.PUT,
         data: JSON.stringify(params),
-      });
+      })
     },
     /**
      * 初始化菜单
@@ -76,7 +79,7 @@ export function useMenuApi() {
         headers: {
           fullscreenLoading: true,
         },
-      });
+      })
     },
-  };
+  }
 }

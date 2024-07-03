@@ -542,18 +542,18 @@
 </template>
 
 <script lang="ts" setup>
-import { FormAttribute, UploadLimit } from './types';
-import { UploadRawFile, ElMessage, ElForm } from 'element-plus';
-import { useComponentRef } from '@/composables/useComponentRef';
+import { FormAttribute, UploadLimit } from './types'
+import { UploadRawFile, ElMessage, ElForm } from 'element-plus'
+import { useComponentRef } from '@/composables/useComponentRef'
 // FormInstance
-const formData = defineModel();
+const formData = defineModel()
 
 const emits = defineEmits([
   'update:modelValue',
   'switchChange',
   'selectChange',
   'radioChange',
-]);
+])
 
 withDefaults(defineProps<FormAttribute>(), {
   // formItems: () => [],
@@ -565,7 +565,7 @@ withDefaults(defineProps<FormAttribute>(), {
   gutter: 30,
   readonly: false,
   submitPrevent: true,
-});
+})
 
 // const formData = computed({
 //   get() {
@@ -594,10 +594,10 @@ withDefaults(defineProps<FormAttribute>(), {
 // });
 
 // const formRef = ref<InstanceType<typeof ElForm>>();
-const formRef = useComponentRef(ElForm);
+const formRef = useComponentRef(ElForm)
 
 // 获取Form表单的Ref
-const getRef = () => formRef.value;
+const getRef = () => formRef.value
 
 // switch 切换
 const handleSwitchChange = (
@@ -606,8 +606,8 @@ const handleSwitchChange = (
   index: number
 ) => {
   // console.log('switch切换 -----', newVal, prop, index)
-  emits('switchChange', { newVal, prop, index });
-};
+  emits('switchChange', { newVal, prop, index })
+}
 
 // 下拉框 切换
 const handleSelectChange = (
@@ -616,8 +616,8 @@ const handleSelectChange = (
   index: number
 ) => {
   // console.log('switch切换 -----', newVal, prop, index)
-  emits('selectChange', { newVal, prop, index });
-};
+  emits('selectChange', { newVal, prop, index })
+}
 
 // 单选框切换
 const handleRadioChange = (
@@ -625,32 +625,32 @@ const handleRadioChange = (
   prop: string | number | symbol,
   index: number
 ) => {
-  emits('radioChange', { newVal, prop, index });
-};
+  emits('radioChange', { newVal, prop, index })
+}
 
 /** 文件上传前的回调 返回 false 或者 Promise.reject() 停止上传 */
 const handlebeforeUpload = (
   rawFile: UploadRawFile,
   limitInfo: UploadLimit
 ): boolean => {
-  const { size, name } = rawFile;
+  const { size, name } = rawFile
   // 判断 选中的文件类型不在 限制返回内
-  const isPass = limitInfo.accept!.some(extName => name.includes(extName));
+  const isPass = limitInfo.accept!.some(extName => name.includes(extName))
   if (!isPass) {
-    ElMessage.warning('文件类型有误');
-    return false;
+    ElMessage.warning('文件类型有误')
+    return false
   }
 
   if (size > (limitInfo?.fileMaxSize || 1) * 1024 ** 2) {
-    ElMessage.warning('文件大小超出限制!');
-    return false;
+    ElMessage.warning('文件大小超出限制!')
+    return false
   }
 
-  return true;
-};
+  return true
+}
 
 // 暴露出 可被父组件调用的变量或方法
-defineExpose({ getRef });
+defineExpose({ getRef })
 </script>
 
 <style lang="scss" scoped>

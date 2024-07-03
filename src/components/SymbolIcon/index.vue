@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType, computed } from 'vue';
+import { PropType, computed } from 'vue'
 const props = defineProps({
   type: {
     type: String as PropType<string>,
@@ -47,22 +47,22 @@ const props = defineProps({
     type: String as PropType<string>,
     default: '',
   },
-});
+})
 
 const iconClass = computed<string>(() => {
-  if (props.name.includes('iconfont')) return props.name.split(' ')[1];
-  return props.name;
-});
+  if (props.name.includes('iconfont')) return props.name.split(' ')[1]
+  return props.name
+})
 
 // 计算出像素变量
 const sizePx = computed<string>(() => {
-  if (typeof props.size === 'number') return `${props.size}px`;
+  if (typeof props.size === 'number') return `${props.size}px`
   if (typeof props.size === 'string') {
-    if (props.size.includes('px')) return `${props.size}`;
-    else return `${props.size}px`;
+    if (props.size.includes('px')) return `${props.size}`
+    else return `${props.size}px`
   }
-  return '';
-});
+  return ''
+})
 /** 
       <Peng-Icon name="" />
 

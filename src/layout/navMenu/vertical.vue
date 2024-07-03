@@ -17,16 +17,25 @@
       >
         <template #title>
           <div>
-            <SvgIcon :name="val.meta.icon" :size="16" />
+            <SvgIcon
+              :name="val.meta.icon"
+              :size="16"
+            />
           </div>
           <span>{{ val.meta.title }}</span>
         </template>
         <SubItem :chil="val.children" />
       </el-sub-menu>
       <template v-else>
-        <el-menu-item :index="val.path" :key="val.path">
+        <el-menu-item
+          :index="val.path"
+          :key="val.path"
+        >
           <div>
-            <SvgIcon :name="val.meta.icon" :size="16" />
+            <SvgIcon
+              :name="val.meta.icon"
+              :size="16"
+            />
           </div>
           <template
             #title
@@ -34,8 +43,14 @@
           >
             <span>{{ val.meta.title }}</span>
           </template>
-          <template #title v-else>
-            <a class="w100" @click.prevent="onALinkClick(val)">
+          <template
+            #title
+            v-else
+          >
+            <a
+              class="w100"
+              @click.prevent="onALinkClick(val)"
+            >
               {{ val.meta.title }}
             </a>
           </template>
@@ -102,7 +117,7 @@ onMounted(() => {
   state.defaultActive = setParentHighlight(route)
 })
 // 路由更新时
-onBeforeRouteUpdate((to) => {
+onBeforeRouteUpdate(to => {
   // 修复：https://gitee.com/lyt-top/vue-next-admin/issues/I3YX6G
   state.defaultActive = setParentHighlight(to)
   const clientWidth = document.body.clientWidth

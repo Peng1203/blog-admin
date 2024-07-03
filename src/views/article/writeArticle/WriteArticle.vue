@@ -78,40 +78,40 @@
 </template>
 
 <script setup lang="tsx" name="WriteArticle">
-import { ref, reactive, onMounted, computed } from 'vue';
-import MarkdownEditor from '@/components/MarkdownEditor';
-import { useRoute, useRouter } from 'vue-router';
+import { ref, reactive, onMounted, computed } from 'vue'
+import MarkdownEditor from '@/components/MarkdownEditor'
+import { useRoute, useRouter } from 'vue-router'
 import {
   AddArticleType,
   OperationArticleData,
   ArticleData,
-} from '../article/types';
-import { FormItem } from '@/components/Form';
-import AiEditor from '@/components/AiEditor';
-import StepHeadend from './components/StepHeadend.vue';
-import InfoForm from './components/InfoForm.vue';
-import { useUserInfo } from '@/stores/userInfo';
-import { useArticleApi } from '@/api';
-import { useNotificationMsg } from '@/utils/notificationMsg';
-import QuickActions from './components/QuickActions.vue';
+} from '../article/types'
+import { FormItem } from '@/components/Form'
+import AiEditor from '@/components/AiEditor'
+import StepHeadend from './components/StepHeadend.vue'
+import InfoForm from './components/InfoForm.vue'
+import { useUserInfo } from '@/stores/userInfo'
+import { useArticleApi } from '@/api'
+import { useNotificationMsg } from '@/utils/notificationMsg'
+import QuickActions from './components/QuickActions.vue'
 
 const { addArticle, updateArticle, getArticleDetailById, uploadImage } =
-  useArticleApi();
+  useArticleApi()
 
-const userInfoStore = useUserInfo();
+const userInfoStore = useUserInfo()
 
-const route = useRoute();
-const router = useRouter();
+const route = useRoute()
+const router = useRouter()
 
 // 是否是编辑模式
-const isEdit = computed<boolean>(() => route.name !== 'WriteArticle');
+const isEdit = computed<boolean>(() => route.name !== 'WriteArticle')
 
-const activeStep = ref(1);
+const activeStep = ref(1)
 
 const editorMapping = {
   0: MarkdownEditor,
   1: AiEditor,
-};
+}
 
 const formItemList = ref<FormItem<AddArticleType>[]>([
   {
@@ -122,7 +122,7 @@ const formItemList = ref<FormItem<AddArticleType>[]>([
     placeholder: '请输入文章标题',
     rules: [{ required: true, trigger: 'blur', message: '文章标题不能为空' }],
   },
-]);
+])
 
 let articleForm = reactive<AddArticleType | OperationArticleData>({
   id: 0,
@@ -138,10 +138,10 @@ let articleForm = reactive<AddArticleType | OperationArticleData>({
   contentModel: 0,
   summary: '',
   accessPassword: '',
-});
+})
 
-const titleFormRef = ref<RefType>();
-const infoFormRef = ref<RefType>();
+const titleFormRef = ref<RefType>()
+const infoFormRef = ref<RefType>()
 
 /**
  * 暂存草稿箱
@@ -152,147 +152,147 @@ const handleSaveToDraftBox = async () => {
   const validate = await titleFormRef.value
     .getRef()
     .validate()
-    .catch(() => false);
+    .catch(() => false)
 
-  if (!validate) return;
+  if (!validate) return
   // 创建 / 更新
-  if (articleForm.id) return handleUpdateArticle();
-  else handleAddArticle(0);
-};
+  if (articleForm.id) return handleUpdateArticle()
+  else handleAddArticle(0)
+}
 
 // 发布文章
 const handlePublish = async () => {
   const validate1 = await titleFormRef.value
     .getRef()
     .validate()
-    .catch(() => false);
-  const validate2 = await infoFormRef.value.validateForm();
+    .catch(() => false)
+  const validate2 = await infoFormRef.value.validateForm()
 
   if (!(validate1 && validate2))
-    return useNotificationMsg('', '有必填项未填', 'warning');
+    return useNotificationMsg('', '有必填项未填', 'warning')
 
   // 创建 / 更新
-  if (articleForm.id) return handleUpdateArticle();
-  else handleAddArticle(1);
-};
+  if (articleForm.id) return handleUpdateArticle()
+  else handleAddArticle(1)
+}
 
 // 添加文章
 const handleAddArticle = async (actionType: 0 | 1) => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-    const { summary, author, category, id, ...args } = articleForm;
+    const { summary, author, category, id, ...args } = articleForm
     const { data: res } = await addArticle<ArticleData>({
       ...args,
       category: category || 0,
       authorId: author,
       summary: summary || args.content.substring(0, 300),
-    });
+    })
     const [errMsg, successMsg] = [
       ['暂存失败!', '暂存成功!'],
       ['发布失败', '发布成功'],
-    ][actionType];
-    if (res.code !== 20100) return useNotificationMsg('', errMsg, 'error');
-    useNotificationMsg('', successMsg);
-    articleForm.id = res.data.id;
+    ][actionType]
+    if (res.code !== 20100) return useNotificationMsg('', errMsg, 'error')
+    useNotificationMsg('', successMsg)
+    articleForm.id = res.data.id
     router.push({
       name: 'EditArticle',
       params: { aid: res.data.id },
-    });
+    })
   } catch (e) {
-    console.log('e ------', e);
+    console.log('e ------', e)
   }
-};
+}
 
 // 更新文章
 const handleUpdateArticle = async () => {
   try {
-    const { author, id, category, ...args } = articleForm;
+    const { author, id, category, ...args } = articleForm
     const params = {
       category: category || 0,
       ...args,
-    };
-    const { data: res } = await updateArticle<ArticleData>(author, id, params);
-    const { code, message, success } = res;
-    if (code !== 20001 && success) return;
-    useNotificationMsg('更新成功', message);
+    }
+    const { data: res } = await updateArticle<ArticleData>(author, id, params)
+    const { code, message, success } = res
+    if (code !== 20001 && success) return
+    useNotificationMsg('更新成功', message)
   } catch (e) {
-    console.log('e ------', e);
+    console.log('e ------', e)
   }
-};
+}
 
 // ctrl + s 快捷更新 只针对于 已创建文章 编辑时生效
 const handleFastSave = () => {
-  if (isEdit.value) handleUpdateArticle();
-};
+  if (isEdit.value) handleUpdateArticle()
+}
 
-const loadingStatus = ref<boolean>(route.name === 'EditArticle');
+const loadingStatus = ref<boolean>(route.name === 'EditArticle')
 // 编辑文章 获取文章详情
 const getArticleDetail = async () => {
   try {
-    loadingStatus.value = true;
+    loadingStatus.value = true
     const { data: res } = await getArticleDetailById<ArticleData>(
       userInfoStore.userInfos.id,
       Number(route.params.aid)
-    );
-    const { code, success, data } = res;
-    if (code !== 20000 && success) return;
-    const { tags, category, author, ...args } = data;
+    )
+    const { code, success, data } = res
+    if (code !== 20000 && success) return
+    const { tags, category, author, ...args } = data
     for (const key in articleForm) {
-      articleForm[key] = args[key];
+      articleForm[key] = args[key]
     }
 
-    articleForm.tags = tags.map(({ id }) => id);
-    articleForm.category = category?.id || '';
-    articleForm.author = author.id;
+    articleForm.tags = tags.map(({ id }) => id)
+    articleForm.category = category?.id || ''
+    articleForm.author = author.id
   } catch (error) {
-    console.log(error);
+    console.log(error)
   } finally {
-    loadingStatus.value = false;
+    loadingStatus.value = false
   }
-};
+}
 
 // 编辑文章初始化操作
 const editArticleInit = () => {
   if (route.name === 'EditArticle') {
     if (!Number(route.params.aid)) {
-      loadingStatus.value = false;
-      useNotificationMsg('', '文章ID参数有误', 'warning');
-      return;
+      loadingStatus.value = false
+      useNotificationMsg('', '文章ID参数有误', 'warning')
+      return
     }
-    getArticleDetail();
+    getArticleDetail()
   }
-};
+}
 
 const handlePasteUploadImg = async ({
   file,
   cb,
 }: {
-  file: File;
-  cb: Function;
+  file: File
+  cb: Function
 }) => {
-  const imgUrl = await handleUploadImage(file);
-  if (!imgUrl) return;
-  cb(imgUrl);
-};
+  const imgUrl = await handleUploadImage(file)
+  if (!imgUrl) return
+  cb(imgUrl)
+}
 
 const handleUploadImage = async (file: File): Promise<string> => {
   try {
-    const formData = new FormData();
+    const formData = new FormData()
 
-    formData.append('file', file);
-    const { data: res } = await uploadImage(formData);
-    const { data, code, success } = res;
-    if (!success || code !== 20100) return;
-    return data;
+    formData.append('file', file)
+    const { data: res } = await uploadImage(formData)
+    const { data, code, success } = res
+    if (!success || code !== 20100) return
+    return data
   } catch (e) {
-    console.log('e', e);
-    return '';
+    console.log('e', e)
+    return ''
   }
-};
+}
 
 onMounted(() => {
-  editArticleInit();
-});
+  editArticleInit()
+})
 </script>
 
 <style scoped lang="scss">

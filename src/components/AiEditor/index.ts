@@ -1,3 +1,3 @@
-export { default as default } from './AiEditor.vue';
+export { default as default } from './AiEditor.vue'
 
 export * from './types'

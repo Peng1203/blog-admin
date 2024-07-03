@@ -1,3 +1,3 @@
-import { ListApiBaseResponse } from 'Api';
+import { ListApiBaseResponse } from 'Api'
 
-export type ArticleOptionData = ListApiBaseResponse<OptionItem>;
+export type ArticleOptionData = ListApiBaseResponse<OptionItem>

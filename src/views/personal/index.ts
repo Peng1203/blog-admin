@@ -1,1 +1,1 @@
-export { default as default } from './Personal.vue';
+export { default as default } from './Personal.vue'

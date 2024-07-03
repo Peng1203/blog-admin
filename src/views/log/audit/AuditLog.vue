@@ -116,18 +116,18 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
-import { useAuditApi, useCommonApi } from '@/api';
-import { getFromNow } from '@/utils/date';
-import { ColumnItem, PageChangeParams, PageInfo } from '@/components/Table';
-import DatePicker from '@/components/Date';
-import { AuditLogData, AuditLogListData } from './types';
-import { resourceMethodOptions } from '@/views/auth/authPermission';
-import UserSelect from '@/views/user/user/components/UserSelect.vue';
-import { useNotificationMsg } from '@/utils/notificationMsg';
+import { onMounted, reactive, ref } from 'vue'
+import { useAuditApi, useCommonApi } from '@/api'
+import { getFromNow } from '@/utils/date'
+import { ColumnItem, PageChangeParams, PageInfo } from '@/components/Table'
+import DatePicker from '@/components/Date'
+import { AuditLogData, AuditLogListData } from './types'
+import { resourceMethodOptions } from '@/views/auth/authPermission'
+import UserSelect from '@/views/user/user/components/UserSelect.vue'
+import { useNotificationMsg } from '@/utils/notificationMsg'
 
-const { getAuditLogs, deleteById, deletes } = useAuditApi();
-const { getIPInfo } = useCommonApi();
+const { getAuditLogs, deleteById, deletes } = useAuditApi()
+const { getIPInfo } = useCommonApi()
 
 const tableState = reactive({
   selectVal: ref<number[]>([]),
@@ -234,12 +234,12 @@ const tableState = reactive({
     pageSize: 50,
     total: 0,
   }),
-});
+})
 
 const getDataList = async () => {
   try {
-    tableState.loading = true;
-    const [startTime, endTime] = tableState.timeVal;
+    tableState.loading = true
+    const [startTime, endTime] = tableState.timeVal
     const params = {
       queryStr: tableState.queryStr,
       column: tableState.column,
@@ -249,90 +249,90 @@ const getDataList = async () => {
       userId: tableState.userId,
       startTime,
       endTime,
-    };
-    const { data: res } = await getAuditLogs<AuditLogListData>(params);
-    const { code, data, success } = res;
-    if (code !== 20000 || !success) return;
-    tableState.data = data.list;
-    tableState.pagerInfo.total = data.total;
+    }
+    const { data: res } = await getAuditLogs<AuditLogListData>(params)
+    const { code, data, success } = res
+    if (code !== 20000 || !success) return
+    tableState.data = data.list
+    tableState.pagerInfo.total = data.total
   } catch (e) {
-    console.log('e', e);
+    console.log('e', e)
   } finally {
-    tableState.loading = false;
+    tableState.loading = false
   }
-};
+}
 
 const handlePagerChange = ({ page, pageSize }: PageChangeParams) => {
-  tableState.pagerInfo.page = page;
-  tableState.pagerInfo.pageSize = pageSize;
-  getDataList();
-};
+  tableState.pagerInfo.page = page
+  tableState.pagerInfo.pageSize = pageSize
+  getDataList()
+}
 
 const handleMethodTagColor = (value: any) => {
-  return resourceMethodOptions.find(item => item.value === value)!.color;
-};
+  return resourceMethodOptions.find(item => item.value === value)!.color
+}
 
 const handleMethodTagText = (value: any) => {
-  return resourceMethodOptions.find(item => item.value === value)!.label;
-};
+  return resourceMethodOptions.find(item => item.value === value)!.label
+}
 
 const tableRowStatus = ({ row }: { row: AuditLogData }) => {
-  return row.operationStatus ? 'success-row' : 'fail-row';
-};
+  return row.operationStatus ? 'success-row' : 'fail-row'
+}
 
 const handleDelete = async (row: AuditLogData, type: 1 | 2) => {
-  const delRes = type === 1 ? await deleteAudit(row.id) : await batchDelete();
-  if (!delRes) return;
-  getDataList();
-};
+  const delRes = type === 1 ? await deleteAudit(row.id) : await batchDelete()
+  if (!delRes) return
+  getDataList()
+}
 
 const deleteAudit = async (id: number) => {
   try {
-    const { data: res } = await deleteById(id);
-    const { code, message, data, success } = res;
+    const { data: res } = await deleteById(id)
+    const { code, message, data, success } = res
 
-    if (code !== 20000 || !success) return false;
-    useNotificationMsg(message, data);
-    return true;
+    if (code !== 20000 || !success) return false
+    useNotificationMsg(message, data)
+    return true
   } catch (e) {
-    console.log('e', e);
-    return false;
+    console.log('e', e)
+    return false
   }
-};
+}
 
 const batchDelete = async () => {
   try {
-    const { data: res } = await deletes(tableState.selectVal);
-    const { code, message, data, success } = res;
-    if (code !== 20000 || !success) return false;
-    useNotificationMsg(message, data);
-    return true;
+    const { data: res } = await deletes(tableState.selectVal)
+    const { code, message, data, success } = res
+    if (code !== 20000 || !success) return false
+    useNotificationMsg(message, data)
+    return true
   } catch (e) {
-    console.log('e', e);
-    return false;
+    console.log('e', e)
+    return false
   }
-};
+}
 
 const handleParseIpInfo = async row => {
-  if (row.ipInfo) return;
-  const parseResult = await parseIP(row.ip);
-  row.ipInfo = parseResult.region;
-};
+  if (row.ipInfo) return
+  const parseResult = await parseIP(row.ip)
+  row.ipInfo = parseResult.region
+}
 
 const parseIP = async (ip: string) => {
   try {
-    const { data: res } = await getIPInfo(ip);
-    const { code, data, success } = res;
-    if (code !== 20000 || !success) return;
-    return data;
+    const { data: res } = await getIPInfo(ip)
+    const { code, data, success } = res
+    if (code !== 20000 || !success) return
+    return data
   } catch (e) {
-    console.log('e', e);
+    console.log('e', e)
   }
-};
+}
 
 onMounted(() => {
-  getDataList();
-});
+  getDataList()
+})
 </script>
 
 <style scoped lang="scss">

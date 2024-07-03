@@ -1,7 +1,7 @@
-import request from '@/utils/request';
-import { TransformedResponse, RequestListParams } from 'Api';
+import request from '@/utils/request'
+import { TransformedResponse, RequestListParams } from 'Api'
 
-import { Method } from '../types';
+import { Method } from '../types'
 
 export function useCategoryApi() {
   return {
@@ -17,7 +17,7 @@ export function useCategoryApi() {
         url: '/category',
         method: Method.GET,
         params,
-      });
+      })
     },
     /**
      * 添加分类
@@ -31,7 +31,7 @@ export function useCategoryApi() {
         url: '/category',
         method: Method.POST,
         data: JSON.stringify(data),
-      });
+      })
     },
     /**
      * 通过ID更新分类信息
@@ -49,7 +49,7 @@ export function useCategoryApi() {
         url: `/category/${categoryId}`,
         method: Method.PATCH,
         data: JSON.stringify(params),
-      });
+      })
     },
     /**
      * 通过ID删除分类
@@ -62,7 +62,7 @@ export function useCategoryApi() {
       return request({
         url: `/category/${categoryId}`,
         method: Method.DELETE,
-      });
+      })
     },
     /** 批量删除标签 */
     batchDelete<T = string>(categoryIds: number[]): TransformedResponse<T> {
@@ -70,7 +70,7 @@ export function useCategoryApi() {
         url: '/category',
         method: Method.DELETE,
         data: JSON.stringify({ categoryIds }),
-      });
+      })
     },
-  };
+  }
 }

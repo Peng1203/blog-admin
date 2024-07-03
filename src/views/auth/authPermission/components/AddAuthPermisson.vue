@@ -15,15 +15,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watchEffect, PropType } from 'vue';
-import { usePermissionApi } from '@/api';
-import Dialog from '@/components/Dialog';
-import { FormItem } from '@/components/Form';
-import { PermissionData, AddPermissionType, resourceMethodOptions } from '../';
-import { useNotificationMsg } from '@/utils/notificationMsg';
-import { SelectOptionItem } from '@/components/Select';
+import { ref, reactive, watchEffect, PropType } from 'vue'
+import { usePermissionApi } from '@/api'
+import Dialog from '@/components/Dialog'
+import { FormItem } from '@/components/Form'
+import { PermissionData, AddPermissionType, resourceMethodOptions } from '../'
+import { useNotificationMsg } from '@/utils/notificationMsg'
+import { SelectOptionItem } from '@/components/Select'
 
-const emits = defineEmits(['updateList']);
+const emits = defineEmits(['updateList'])
 
 const props = defineProps({
   parentId: {
@@ -33,11 +33,11 @@ const props = defineProps({
   permissionCodeOptions: {
     type: Array as PropType<SelectOptionItem[]>,
   },
-});
+})
 
-const { addPermission } = usePermissionApi();
+const { addPermission } = usePermissionApi()
 
-const addAuthPermissonDialogStatus = ref<boolean>(false);
+const addAuthPermissonDialogStatus = ref<boolean>(false)
 
 const addAuthState = reactive({
   data: ref<AddPermissionType>({
@@ -88,80 +88,80 @@ const addAuthState = reactive({
       placeholder: '请输入权限标识描述',
     },
   ]),
-});
+})
 
-const addAuthFormRef = ref<RefType>(null);
+const addAuthFormRef = ref<RefType>(null)
 // 处理添加操作
 const handleAdd = async () => {
   const [validateMethod, validateProps] = props.parentId
     ? ['validate', undefined]
-    : ['validateField', ['permissionName']];
+    : ['validateField', ['permissionName']]
   // 动态调用校验方法
   // prettier-ignore
   const isValidatePass = await addAuthFormRef.value
     .getRef()[validateMethod](validateProps)
     .catch(() => false);
 
-  if (!isValidatePass) return;
-  const addRes = await addNewAuthPermission();
-  if (!addRes) return;
-  emits('updateList');
-  handleDialogClose();
-};
+  if (!isValidatePass) return
+  const addRes = await addNewAuthPermission()
+  if (!addRes) return
+  emits('updateList')
+  handleDialogClose()
+}
 
 // 添加权限标识
 const addNewAuthPermission = async (): Promise<boolean> => {
   try {
-    const { resourceMethod, permissionCode, ...args } = addAuthState.data;
+    const { resourceMethod, permissionCode, ...args } = addAuthState.data
     const params = {
       ...args,
       resourceMethod: props.parentId ? resourceMethod : null,
       permissionCode: props.parentId ? permissionCode : null,
       parentId: props.parentId,
-    };
-    const { data: res } = await addPermission<PermissionData>(params);
-    const { code, message, success } = res;
-    if (code !== 20100 || !success) return false;
-    useNotificationMsg('', message);
-    return true;
+    }
+    const { data: res } = await addPermission<PermissionData>(params)
+    const { code, message, success } = res
+    if (code !== 20100 || !success) return false
+    useNotificationMsg('', message)
+    return true
   } catch (e) {
-    console.log(e);
-    return false;
+    console.log(e)
+    return false
   }
-};
+}
 
 const resetAddForm = () => {
-  addAuthState.data.permissionName = '';
-  addAuthState.data.permissionCode = '';
-  addAuthState.data.resourceUrl = '';
-  addAuthState.data.resourceMethod = 1;
-  addAuthState.data.parentId = 0;
-  addAuthState.data.description = '';
-};
+  addAuthState.data.permissionName = ''
+  addAuthState.data.permissionCode = ''
+  addAuthState.data.resourceUrl = ''
+  addAuthState.data.resourceMethod = 1
+  addAuthState.data.parentId = 0
+  addAuthState.data.description = ''
+}
 
 const handleDialogClose = () => {
-  resetAddForm();
-  addAuthFormRef.value.getRef().resetFields();
-  addAuthPermissonDialogStatus.value = false;
-};
+  resetAddForm()
+  addAuthFormRef.value.getRef().resetFields()
+  addAuthPermissonDialogStatus.value = false
+}
 
 watchEffect(() => {
   addAuthState.formItemList.find(
     item => item.prop === 'permissionCode'
-  )!.isShow = props.parentId !== 0;
+  )!.isShow = props.parentId !== 0
   addAuthState.formItemList.find(item => item.prop === 'resourceUrl')!.isShow =
-    props.parentId !== 0;
+    props.parentId !== 0
   addAuthState.formItemList.find(
     item => item.prop === 'resourceMethod'
-  )!.isShow = props.parentId !== 0;
+  )!.isShow = props.parentId !== 0
 
   addAuthPermissonDialogStatus.value &&
     (addAuthState.formItemList.find(
       item => item.prop === 'permissionCode'
-    ).options = props.permissionCodeOptions);
-});
+    ).options = props.permissionCodeOptions)
+})
 
-defineExpose({ addAuthPermissonDialogStatus });
+defineExpose({ addAuthPermissonDialogStatus })
 </script>
 
 <style lang="scss" scoped></style>

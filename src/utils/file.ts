@@ -2,31 +2,31 @@
 
 /** 是否是图片 */
 export const isImage = (file: File): boolean => {
-  return file.type.includes('image');
-};
+  return file.type.includes('image')
+}
 
 /** 文件是否超出指定大小 */
 export const checkFileSizeExceeds = (
   file: File,
   maxSize: number = 2
 ): boolean => {
-  const fileMb = file.size / (1024 * 1024);
-  return fileMb > maxSize;
-};
+  const fileMb = file.size / (1024 * 1024)
+  return fileMb > maxSize
+}
 
 export const imageToBase64 = (file: File): Promise<string> => {
   return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = e => resolve(e.target.result as string);
-    reader.onerror = err => reject(err);
-  });
-};
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = e => resolve(e.target.result as string)
+    reader.onerror = err => reject(err)
+  })
+}
 
-type QualityType = 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1;
+type QualityType = 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | 1
 interface CompressOptions {
-  quality?: QualityType;
-  outputType?: 'jpeg' | 'png' | 'webp' | 'base64';
+  quality?: QualityType
+  outputType?: 'jpeg' | 'png' | 'webp' | 'base64'
 }
 /** 压缩图片 无法压缩gif图 */
 export const compressImage = (
@@ -35,51 +35,51 @@ export const compressImage = (
 ): Promise<string | Blob> => {
   // eslint-disable-next-line no-async-promise-executor
   return new Promise(async resolve => {
-    const { quality, outputType } = options;
-    const { size } = file;
+    const { quality, outputType } = options
+    const { size } = file
 
-    const base64: string = await imageToBase64(file);
-    const imgEl = document.createElement('img');
-    imgEl.src = base64;
+    const base64: string = await imageToBase64(file)
+    const imgEl = document.createElement('img')
+    imgEl.src = base64
 
     setTimeout(() => {
-      const { width, height } = imgEl;
+      const { width, height } = imgEl
 
-      const canvasEl = document.createElement('canvas');
-      canvasEl.width = imgEl.width;
-      canvasEl.height = imgEl.height;
+      const canvasEl = document.createElement('canvas')
+      canvasEl.width = imgEl.width
+      canvasEl.height = imgEl.height
 
-      const ctx = canvasEl.getContext('2d');
-      ctx.drawImage(imgEl, 0, 0, width, height);
+      const ctx = canvasEl.getContext('2d')
+      ctx.drawImage(imgEl, 0, 0, width, height)
 
       switch (outputType) {
         case 'base64':
-          const compressBase64 = canvasEl.toDataURL('image/jpeg', quality);
-          resolve(compressBase64);
-          break;
+          const compressBase64 = canvasEl.toDataURL('image/jpeg', quality)
+          resolve(compressBase64)
+          break
         default:
           // 转换为 blob 对象
           canvasEl.toBlob(
             blob => {
               const compressibility =
-                (((size - blob.size) / size) * 100).toFixed(2) + ' %';
+                (((size - blob.size) / size) * 100).toFixed(2) + ' %'
               console.table({
                 原始大小: size,
                 压后大小: blob.size,
                 文件类型: blob.type,
                 压缩率: compressibility,
-              });
+              })
               // saveAs(blob, `${Date.now()}.${outputType}`);
-              resolve(blob);
+              resolve(blob)
             },
             `image/${outputType}`,
             quality
-          );
-          break;
+          )
+          break
       }
-    });
-  });
-};
+    })
+  })
+}
 
 /** Blob类型转File类型 */
 export function blobToFile(blob: Blob, fileName: string = Date.now() + '') {
@@ -87,6 +87,6 @@ export function blobToFile(blob: Blob, fileName: string = Date.now() + '') {
   const file = new File([blob], `${fileName}.${blob.type.split('/')[1]}`, {
     type: blob.type,
     lastModified: Date.now(),
-  });
-  return file;
+  })
+  return file
 }

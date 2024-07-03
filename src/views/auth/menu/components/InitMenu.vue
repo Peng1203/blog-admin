@@ -10,43 +10,57 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useMenuApi } from '@/api/menu';
-import { useNotificationMsg } from '@/utils/notificationMsg';
-import { allDynamicRoutes } from '@/router/dynamicRoutes';
+import { ref } from 'vue'
+import { useMenuApi } from '@/api/menu'
+import { useNotificationMsg } from '@/utils/notificationMsg'
+import { allDynamicRoutes } from '@/router/dynamicRoutes'
 
-const { initMenus } = useMenuApi();
+const { initMenus } = useMenuApi()
 
-const emits = defineEmits(['updateList']);
+const emits = defineEmits(['updateList'])
 
 const handleInitMenus = async () => {
-  const addStatus = await addInitMenu();
-  if (!addStatus) return;
-  emits('updateList');
-};
+  const addStatus = await addInitMenu()
+  if (!addStatus) return
+  emits('updateList')
+}
 
 const addInitMenu = async (): Promise<boolean> => {
   try {
-    const params = getInitMenuData();
-    const { data: res } = await initMenus<string>(params);
-    const { data, success, message, code } = res;
-    if (code !== 20100 || !success) return false;
-    useNotificationMsg(message, data);
-    return true;
+    const params = getInitMenuData()
+    const { data: res } = await initMenus<string>(params)
+    const { data, success, message, code } = res
+    if (code !== 20100 || !success) return false
+    useNotificationMsg(message, data)
+    return true
   } catch (e) {
-    console.log('e', e);
-    return false;
+    console.log('e', e)
+    return false
   }
-};
+}
 
 // 处理提交菜单数据
 const getInitMenuData = () => {
   return allDynamicRoutes[0].children.reduce(
     (prev, cur) => {
-      const { name: menuUri, path: menuPath, children } = cur;
-      const { title: menuName, icon: menuIcon, orderNum, isHide, isKeepAlive } = cur.meta;
+      const { name: menuUri, path: menuPath, children } = cur
+      const {
+        title: menuName,
+        icon: menuIcon,
+        orderNum,
+        isHide,
+        isKeepAlive,
+      } = cur.meta
 
-      prev.parentMenus.push({ menuUri, menuPath, menuName, menuIcon, orderNum, isHide, isKeepAlive });
+      prev.parentMenus.push({
+        menuUri,
+        menuPath,
+        menuName,
+        menuIcon,
+        orderNum,
+        isHide,
+        isKeepAlive,
+      })
 
       if (children) {
         prev.subMenus.push(
@@ -60,12 +74,12 @@ const getInitMenuData = () => {
             isKeepAlive: subMenu.meta.isKeepAlive,
             parentUri: menuUri,
           }))
-        );
+        )
       }
 
-      return prev;
+      return prev
     },
     { parentMenus: [], subMenus: [] }
-  );
-};
+  )
+}
 </script>

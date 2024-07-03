@@ -19,9 +19,9 @@
 </template>
 
 <script setup lang="ts">
-import { ButtonAttribute } from './index';
+import { ButtonAttribute } from './index'
 
-const emits = defineEmits(['click']);
+const emits = defineEmits(['click'])
 
 const props = withDefaults(defineProps<ButtonAttribute>(), {
   label: '',
@@ -40,18 +40,18 @@ const props = withDefaults(defineProps<ButtonAttribute>(), {
   info: false,
   warning: false,
   danger: false,
-});
+})
 
-const handleBtnClick = () => emits('click');
+const handleBtnClick = () => emits('click')
 
 const attrType = () => {
-  if (props.type) return props.type;
-  if (props.primary) return 'primary';
-  if (props.success) return 'success';
-  if (props.info) return 'info';
-  if (props.warning) return 'warning';
-  if (props.danger) return 'danger';
-};
+  if (props.type) return props.type
+  if (props.primary) return 'primary'
+  if (props.success) return 'success'
+  if (props.info) return 'info'
+  if (props.warning) return 'warning'
+  if (props.danger) return 'danger'
+}
 </script>
 
 <style scoped lang="scss"></style>

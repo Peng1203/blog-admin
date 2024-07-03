@@ -1,3 +1,3 @@
-export { default as default } from './Cropper.vue';
+export { default as default } from './Cropper.vue'
 
-export * from './types';
+export * from './types'

@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from 'vue-router';
+import { RouteRecordRaw } from 'vue-router'
 
 const routerRules: RouteRecordRaw[] = [
   {
@@ -16,5 +16,5 @@ const routerRules: RouteRecordRaw[] = [
       icon: 'iconfont icon-ceshi',
     },
   },
-];
-export default routerRules;
+]
+export default routerRules

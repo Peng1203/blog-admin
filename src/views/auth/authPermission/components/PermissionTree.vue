@@ -34,12 +34,12 @@
 </template>
 
 <script setup lang="ts" name="">
-import { ref, onMounted, PropType, watch } from 'vue';
-import { ElTree } from 'element-plus';
-import { usePermissionInfo } from '@/stores/permissionList';
-import { PermissionData } from '../types';
+import { ref, onMounted, PropType, watch } from 'vue'
+import { ElTree } from 'element-plus'
+import { usePermissionInfo } from '@/stores/permissionList'
+import { PermissionData } from '../types'
 
-const emits = defineEmits(['update:checkedPermission']);
+const emits = defineEmits(['update:checkedPermission'])
 
 const props = defineProps({
   checkedPermission: {
@@ -58,50 +58,53 @@ const props = defineProps({
     type: Boolean as PropType<boolean>,
     default: false,
   },
-});
+})
 
-const loading = ref<boolean>(false);
+const loading = ref<boolean>(false)
 
-const permissionStore = usePermissionInfo();
+const permissionStore = usePermissionInfo()
 
 const defaultProps = {
   children: 'children',
   label: 'permissionName',
-};
+}
 
-const filterText = ref('');
+const filterText = ref('')
 
 // 选中的数据
-const checkedKeys = ref<number[]>([]);
+const checkedKeys = ref<number[]>([])
 // 默认展开的数据
-const expandedKeys = ref<number[]>([]);
+const expandedKeys = ref<number[]>([])
 // 树形结构数据
-const data = ref<PermissionData[]>();
+const data = ref<PermissionData[]>()
 
-const handleCheckboxChange = (checkedNodes: PermissionData, checkedInfo: any) => {
-  emits('update:checkedPermission', checkedInfo.checkedKeys);
-};
+const handleCheckboxChange = (
+  checkedNodes: PermissionData,
+  checkedInfo: any
+) => {
+  emits('update:checkedPermission', checkedInfo.checkedKeys)
+}
 
 const handleReset = () => {
-  checkedKeys.value = [];
-  treeRef.value!.setCheckedKeys([]);
-};
+  checkedKeys.value = []
+  treeRef.value!.setCheckedKeys([])
+}
 
 const filterNode = (value: string, data: any) => {
-  if (!value) return true;
-  return data.permissionName.includes(value);
-};
+  if (!value) return true
+  return data.permissionName.includes(value)
+}
 
-const treeRef = ref<InstanceType<typeof ElTree>>();
+const treeRef = ref<InstanceType<typeof ElTree>>()
 watch(filterText, val => {
-  treeRef.value!.filter(val);
-});
+  treeRef.value!.filter(val)
+})
 
 watch(
   () => permissionStore.permissionList,
   val => (data.value = val),
   { deep: true }
-);
+)
 
 watch(
   () => props.checkedPermission,
@@ -110,15 +113,17 @@ watch(
     deep: true,
     immediate: true,
   }
-);
+)
 
 onMounted(async () => {
-  loading.value = true;
-  await permissionStore.getPermissionData().finally(() => (loading.value = false));
-  data.value = permissionStore.permissionList;
-});
+  loading.value = true
+  await permissionStore
+    .getPermissionData()
+    .finally(() => (loading.value = false))
+  data.value = permissionStore.permissionList
+})
 
-defineExpose({ handleReset });
+defineExpose({ handleReset })
 </script>
 
 <style scoped lang="scss"></style>

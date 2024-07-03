@@ -51,7 +51,7 @@
 </template>
 
 <script setup lang="ts" name="loginMobile">
-import { reactive } from 'vue';
+import { reactive } from 'vue'
 
 // 定义变量内容
 const state = reactive({
@@ -59,7 +59,7 @@ const state = reactive({
     userName: '',
     code: '',
   },
-});
+})
 </script>
 
 <style scoped lang="scss">

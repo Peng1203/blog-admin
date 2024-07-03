@@ -1,6 +1,6 @@
-import { OperationItem } from '@/components/Form';
+import { OperationItem } from '@/components/Form'
 
-export { default as default } from './Permission.vue';
+export { default as default } from './Permission.vue'
 
 // 请求方式下拉数据
 export const resourceMethodOptions: OperationItem[] = [
@@ -9,8 +9,8 @@ export const resourceMethodOptions: OperationItem[] = [
   { label: 'PUT', value: 3, color: '#ffa443' },
   { label: 'DELETE', value: 4, color: '#ff4244' },
   { label: 'PATCH', value: 5, color: '#0ae3c3' },
-];
+]
 
-export * from './types';
+export * from './types'
 
-export { default as PermissionTree } from './components/PermissionTree.vue';
+export { default as PermissionTree } from './components/PermissionTree.vue'

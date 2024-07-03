@@ -1,3 +1,3 @@
-export { default as default } from './AuditLog.vue';
+export { default as default } from './AuditLog.vue'
 
-export * from './types';
+export * from './types'

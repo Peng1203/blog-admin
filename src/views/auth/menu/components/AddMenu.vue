@@ -22,18 +22,20 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, PropType, computed, defineAsyncComponent } from 'vue';
-import { ElMessage } from 'element-plus';
-import { useMenuApi } from '@/api/menu/index';
-import Dialog from '@/components/Dialog';
-import Form, { FormItem } from '@/components/Form';
-import { MenuData, AddMenuType } from '../types';
+import { ref, reactive, PropType, computed, defineAsyncComponent } from 'vue'
+import { ElMessage } from 'element-plus'
+import { useMenuApi } from '@/api/menu/index'
+import Dialog from '@/components/Dialog'
+import Form, { FormItem } from '@/components/Form'
+import { MenuData, AddMenuType } from '../types'
 
-const IconSelector = defineAsyncComponent(() => import('@/components/iconSelector/index.vue'));
+const IconSelector = defineAsyncComponent(
+  () => import('@/components/iconSelector/index.vue')
+)
 
-const { addMenu } = useMenuApi();
+const { addMenu } = useMenuApi()
 
-const emits = defineEmits(['updateList']);
+const emits = defineEmits(['updateList'])
 
 const props = defineProps({
   isAddChildren: {
@@ -44,9 +46,9 @@ const props = defineProps({
     type: Object as PropType<MenuData>,
     default: () => ({}),
   },
-});
+})
 
-const addMenuDialogStatus = ref<boolean>(false);
+const addMenuDialogStatus = ref<boolean>(false)
 
 const addMenuState = reactive({
   data: ref<AddMenuType>({
@@ -119,25 +121,34 @@ const addMenuState = reactive({
       controlsR: true,
     },
   ]),
-});
+})
 
-const addFormRef = ref<any>(null);
+const addFormRef = ref<any>(null)
 // 处理添加操作
 const handleAdd = async () => {
   const validRes = await addFormRef.value
     .getRef()
     .validate()
-    .catch(() => false);
-  if (!validRes) return;
-  const addRes = await addNewMenu();
-  if (!addRes) return;
-  handleDialogClose();
-  emits('updateList');
-};
+    .catch(() => false)
+  if (!validRes) return
+  const addRes = await addNewMenu()
+  if (!addRes) return
+  handleDialogClose()
+  emits('updateList')
+}
 
 const addNewMenu = async (): Promise<boolean> => {
   try {
-    const { menuName, menuUri, menuPath, menuIcon, parentId, orderNum, isKeepalive, isHidden } = addMenuState.data;
+    const {
+      menuName,
+      menuUri,
+      menuPath,
+      menuIcon,
+      parentId,
+      orderNum,
+      isKeepalive,
+      isHidden,
+    } = addMenuState.data
     const params = {
       menuName,
       menuUri,
@@ -147,23 +158,23 @@ const addNewMenu = async (): Promise<boolean> => {
       orderNum,
       isKeepalive,
       isHidden,
-    } as any;
-    const { data: res } = await addMenu<MenuData>(params);
-    const { code, success, message } = res;
-    if (code !== 20100 || !success) return false;
-    ElMessage.success(message);
-    return true;
+    } as any
+    const { data: res } = await addMenu<MenuData>(params)
+    const { code, success, message } = res
+    if (code !== 20100 || !success) return false
+    ElMessage.success(message)
+    return true
   } catch (error) {
-    console.log('error ------', error);
-    return false;
+    console.log('error ------', error)
+    return false
   }
-};
+}
 
 // 图标选择器前置图标
 const preIcon = computed<string>(() => {
-  if (addMenuState.data.menuIcon) return addMenuState.data.menuIcon;
-  else return 'ele-Pointer';
-});
+  if (addMenuState.data.menuIcon) return addMenuState.data.menuIcon
+  else return 'ele-Pointer'
+})
 
 // 下拉选择切换
 // const handleSelectChange = ({ newVal, prop, index }) => {};
@@ -175,24 +186,24 @@ const preIcon = computed<string>(() => {
 // const handleRadioChange = ({ newVal, prop, index }) => {};
 
 const resetAddForm = () => {
-  addMenuState.data.menuName = '';
-  addMenuState.data.menuPath = '';
-  addMenuState.data.menuUri = '';
-  addMenuState.data.menuIcon = '';
-  addMenuState.data.parentId = 0;
-  addMenuState.data.updateTime = '';
-  addMenuState.data.createTime = '';
-  addMenuState.data.isKeepalive = 0;
-  addMenuState.data.isHidden = 0;
-};
+  addMenuState.data.menuName = ''
+  addMenuState.data.menuPath = ''
+  addMenuState.data.menuUri = ''
+  addMenuState.data.menuIcon = ''
+  addMenuState.data.parentId = 0
+  addMenuState.data.updateTime = ''
+  addMenuState.data.createTime = ''
+  addMenuState.data.isKeepalive = 0
+  addMenuState.data.isHidden = 0
+}
 
 const handleDialogClose = () => {
-  resetAddForm();
-  addFormRef.value.getRef().resetFields();
-  addMenuDialogStatus.value = false;
-};
+  resetAddForm()
+  addFormRef.value.getRef().resetFields()
+  addMenuDialogStatus.value = false
+}
 
-defineExpose({ addMenuDialogStatus });
+defineExpose({ addMenuDialogStatus })
 </script>
 
 <style lang="scss" scoped></style>

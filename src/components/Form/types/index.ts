@@ -1,43 +1,43 @@
-import { SelectOptionItem } from '@/components/Select';
-import { UploadRequestOptions } from 'element-plus';
+import { SelectOptionItem } from '@/components/Select'
+import { UploadRequestOptions } from 'element-plus'
 
 export interface FormAttribute {
   /**
    * 表单数据
    */
-  modelValue: Record<string, unknown>;
+  modelValue: Record<string, unknown>
   /**
    * 表单配置项
    */
-  formItems: FormItem[];
+  formItems: FormItem[]
   /**
    * label 宽度
    */
-  labelW?: string | number;
+  labelW?: string | number
   /**
    * label 定位
    */
-  labelP?: 'right' | 'top' | 'left';
+  labelP?: 'right' | 'top' | 'left'
   /**
    * 表单组件尺寸 大小
    */
-  size?: SizeEnum;
+  size?: SizeEnum
   /**
    * 是否禁用该表单内的所有组件
    */
-  disabled?: boolean;
+  disabled?: boolean
   /**
    * 行内表单模式
    */
-  inline?: boolean;
+  inline?: boolean
   /**
    * 每行间隔
    */
-  gutter?: number;
+  gutter?: number
   /**
    * 只读
    */
-  readonly?: boolean;
+  readonly?: boolean
 }
 
 export type FormItemEnum =
@@ -51,7 +51,7 @@ export type FormItemEnum =
   | 'transparent'
   | 'textarea'
   | 'upload'
-  | 'inputNum';
+  | 'inputNum'
 
 export type AcceptEnum =
   | '.png'
@@ -61,121 +61,121 @@ export type AcceptEnum =
   | '.webp'
   | '.txt'
   | '.mp3'
-  | '.mp4';
+  | '.mp4'
 
 // 封装表单formItem属性
 export type FormItem<T = any> = BaseFormItem<T> &
   UploadLimit &
   InputAttr &
   SwitchAttr &
-  InputNumAttr;
+  InputNumAttr
 
 /** 封装表单formItem基础属性 */
 export interface BaseFormItem<T = any> {
   // type: string // slot input select
-  type: FormItemEnum; // slot input select
-  label: string;
-  prop: keyof T | '';
-  size?: string;
-  placeholder?: string;
-  labelItemW?: string | number;
-  required?: boolean;
-  rules?: any[];
-  disabled?: boolean;
-  span?: number;
-  offset?: number;
-  xs?: number;
-  sm?: number;
-  md?: number;
-  lg?: number;
-  xl?: number;
-  isShow?: boolean;
-  slotName?: string;
+  type: FormItemEnum // slot input select
+  label: string
+  prop: keyof T | ''
+  size?: string
+  placeholder?: string
+  labelItemW?: string | number
+  required?: boolean
+  rules?: any[]
+  disabled?: boolean
+  span?: number
+  offset?: number
+  xs?: number
+  sm?: number
+  md?: number
+  lg?: number
+  xl?: number
+  isShow?: boolean
+  slotName?: string
   /** 下拉框的数据 复选框数据 */
-  options?: OperationItem[] | RadioItem[] | SelectOptionItem[];
+  options?: OperationItem[] | RadioItem[] | SelectOptionItem[]
   /** 开启多选 */
-  multiple?: boolean;
+  multiple?: boolean
   /** 宽度 */
-  width?: number;
+  width?: number
   /** 高度 */
-  height?: number;
-  [key: string]: any;
+  height?: number
+  [key: string]: any
 }
 
 /** input类型 输入框 特有属性 */
 export interface InputAttr {
   /** 复合型输入框 前置插槽内容 */
-  statrPre?: string;
+  statrPre?: string
   /** 复合型输入框 后置插槽内容 */
-  endPre?: string;
+  endPre?: string
   /**
    * 密码强度等级
    */
-  strengthLevel?: 0 | 1 | 2 | 3;
+  strengthLevel?: 0 | 1 | 2 | 3
   /**
    * 输入框 自动填充历史值
    */
-  autocomplete?: boolean;
+  autocomplete?: boolean
 }
 
 export interface InputNumAttr {
   /** 数字输入框最小值 */
-  minVal?: number;
+  minVal?: number
   /** 数字输入框最大值 */
-  maxVal?: number;
+  maxVal?: number
   /** 控件是否居右 */
-  controlsR?: boolean;
+  controlsR?: boolean
 }
 
 /** swatch类型 特有属性 */
 export interface SwitchAttr {
   /** switch true 文本 */
-  tText?: string | number;
+  tText?: string | number
   /** switch false 文本 */
-  fText?: string | number;
+  fText?: string | number
   /** switch true 值 */
-  tValue?: string | number | boolean;
+  tValue?: string | number | boolean
   /** switch false 值 */
-  fValue?: string | number | boolean;
+  fValue?: string | number | boolean
 }
 
 /** 文件上传的限制属性 */
 export interface UploadLimit {
   /** 上传文件类型 */
-  accept?: AcceptEnum[];
+  accept?: AcceptEnum[]
   /** 允许上传文件的最大数量 */
-  limit?: number;
+  limit?: number
   /** 单个文件最大大小 Mb */
-  fileMaxSize?: number;
+  fileMaxSize?: number
   /** 是否显示已上传文件列表 */
-  fsShow?: boolean;
+  fsShow?: boolean
   /** 自动上传 */
-  autoUpload?: boolean;
+  autoUpload?: boolean
   /** 文件上传前的回调 返回 false 或者 Promise.reject() 停止上传 */
   // beforeUploadCb?: (rawFile: UploadRawFile) => Awaitable<void | undefined | null | boolean | File | Blob>;
   /** 自定义上传函数 */
-  customUploadCb?: (options: UploadRequestOptions) => any;
+  customUploadCb?: (options: UploadRequestOptions) => any
 }
 
 // 封装表单 下拉框 / switch 组件 自定义事件传递参数
 export type FormItemChangeType = {
-  newVal: any;
-  prop: string;
-  index: number;
-};
+  newVal: any
+  prop: string
+  index: number
+}
 
 // 下拉数据 Options 项
 export interface OperationItem {
-  label: string;
-  value: string | number | boolean;
-  [key: string]: any;
+  label: string
+  value: string | number | boolean
+  [key: string]: any
 }
 
 // radio 菜单 Options 项
 export interface RadioItem {
-  value: number | string | null;
-  label: number | string;
-  disabled?: boolean;
-  border?: boolean;
-  size?: 'large' | 'default' | 'small';
+  value: number | string | null
+  label: number | string
+  disabled?: boolean
+  border?: boolean
+  size?: 'large' | 'default' | 'small'
 }

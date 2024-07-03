@@ -1,1 +1,1 @@
-export { default as default } from './Emoji.vue';
+export { default as default } from './Emoji.vue'

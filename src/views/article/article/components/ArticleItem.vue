@@ -176,21 +176,21 @@
 </template>
 
 <script setup lang="tsx">
-import { ArticleItemProps, IconHashMappingItem } from '../';
-import { useUserInfo } from '@/stores/userInfo';
-import Icon from '@/components/SymbolIcon/index.vue';
+import { ArticleItemProps, IconHashMappingItem } from '../'
+import { useUserInfo } from '@/stores/userInfo'
+import Icon from '@/components/SymbolIcon/index.vue'
 import {
   Picture as IconPicture,
   View,
   Delete,
   Edit,
-} from '@element-plus/icons-vue';
+} from '@element-plus/icons-vue'
 
-const userInfoStore = useUserInfo();
+const userInfoStore = useUserInfo()
 
-const emits = defineEmits(['clickViewBtn', 'clickEditBtn', 'clickDeleteDtn']);
+const emits = defineEmits(['clickViewBtn', 'clickEditBtn', 'clickDeleteDtn'])
 
-const props = defineProps<ArticleItemProps>();
+const props = defineProps<ArticleItemProps>()
 
 // 文章状态映射
 const statusMapping = {
@@ -200,24 +200,24 @@ const statusMapping = {
   4: ['已删除', '#FF0000'],
   5: ['待审核', '#808080'],
   6: ['已拒绝', '#800080'],
-};
+}
 
 // 文章类型映射
 const typeMapping = {
   1: '原创',
   2: '转载',
   3: '翻译',
-};
+}
 
 // 图标信息映射
 const iconHashMapping: IconHashMappingItem[] = [
   { name: 'icon-like-fill', title: '点赞数', prop: 'likes' },
   { name: 'icon-view', title: '浏览量', prop: 'views' },
   { name: 'icon-pinglun1', title: '评论数', prop: 'comment' },
-];
+]
 
 // 点击顶部操作行按钮
-const handleClickActionBnt = event => emits(event, props.article);
+const handleClickActionBnt = event => emits(event, props.article)
 
 // 文章uv 数据组件
 const InfoIcons = () => {
@@ -235,8 +235,8 @@ const InfoIcons = () => {
         </span>
       ))}
     </div>
-  );
-};
+  )
+}
 </script>
 
 <style scoped lang="scss">

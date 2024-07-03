@@ -1,6 +1,6 @@
-import request from '@/utils/request';
-import { RequestListParams, TransformedResponse } from 'Api';
-import { Method } from '../types';
+import request from '@/utils/request'
+import { RequestListParams, TransformedResponse } from 'Api'
+import { Method } from '../types'
 
 export function useRoleApi() {
   return {
@@ -16,7 +16,7 @@ export function useRoleApi() {
         url: '/role',
         method: Method.GET,
         params,
-      });
+      })
     },
     /**
      * 添加角色
@@ -30,7 +30,7 @@ export function useRoleApi() {
         url: '/role',
         method: Method.POST,
         data: JSON.stringify(params),
-      });
+      })
     },
     /**
      * 通过ID更新角色信息
@@ -45,7 +45,7 @@ export function useRoleApi() {
         url: `/role/${id}`,
         method: Method.PATCH,
         data: JSON.stringify(params),
-      });
+      })
     },
     /**
      * 通过ID删除角色信息
@@ -58,7 +58,7 @@ export function useRoleApi() {
       return request({
         url: `/role/${id}`,
         method: Method.DELETE,
-      });
+      })
     },
-  };
+  }
 }

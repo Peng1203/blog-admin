@@ -1,13 +1,13 @@
-import { RouteRecordRaw } from 'vue-router';
-import authRouterRules from './modules/authRouter';
-import userRouterRules from './modules/userRouter';
-import articleRouterRules from './modules/articleRouter';
-import resourceRouterRules from './modules/resourceRouter';
-import testRouterRules from './modules/testRouter';
-import systemConfigRouterRules from './modules/configRouter';
-import personalRouterRules from './modules/personalRouter';
-import homeRouterRules from './modules/homeRouter';
-import logRouterRules from './modules/logRouter';
+import { RouteRecordRaw } from 'vue-router'
+import authRouterRules from './modules/authRouter'
+import userRouterRules from './modules/userRouter'
+import articleRouterRules from './modules/articleRouter'
+import resourceRouterRules from './modules/resourceRouter'
+import testRouterRules from './modules/testRouter'
+import systemConfigRouterRules from './modules/configRouter'
+import personalRouterRules from './modules/personalRouter'
+import homeRouterRules from './modules/homeRouter'
+import logRouterRules from './modules/logRouter'
 
 /**
  * 需要权限的路由表
@@ -44,4 +44,4 @@ export const allDynamicRoutes: Array<RouteRecordRaw> = [
       ...personalRouterRules,
     ],
   },
-];
+]

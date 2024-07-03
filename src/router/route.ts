@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from 'vue-router';
+import { RouteRecordRaw } from 'vue-router'
 
 /**
  * 建议：路由 path 路径与文件夹名称相同，找文件可浏览器地址找，方便定位文件位置
@@ -19,15 +19,15 @@ import { RouteRecordRaw } from 'vue-router';
 // 扩展 RouteMeta 接口
 declare module 'vue-router' {
   interface RouteMeta {
-    title: string;
-    orderNum: number;
-    isHide: boolean;
-    isKeepAlive: boolean;
-    isLink?: string;
-    isAffix?: boolean;
-    isIframe?: boolean;
+    title: string
+    orderNum: number
+    isHide: boolean
+    isKeepAlive: boolean
+    isLink?: string
+    isAffix?: boolean
+    isIframe?: boolean
     // roles?: string[]
-    icon?: string;
+    icon?: string
   }
 }
 
@@ -38,7 +38,7 @@ declare module 'vue-router' {
  * @description 各字段请查看 `@/views/user/menu/component/addMenu.vue 下的 ruleForm`
  * @returns 返回路由菜单数据
  */
-export const dynamicRoutes: Array<RouteRecordRaw> = [];
+export const dynamicRoutes: Array<RouteRecordRaw> = []
 
 /**
  * 定义404、401界面
@@ -63,7 +63,7 @@ export const notFoundAndNoPower = [
       isHide: true,
     },
   },
-];
+]
 
 /**
  * 定义静态路由（默认路由）
@@ -83,4 +83,4 @@ export const staticRoutes: Array<RouteRecordRaw> = [
       isKeepAlive: false,
     },
   },
-];
+]

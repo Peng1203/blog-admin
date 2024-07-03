@@ -1,6 +1,6 @@
-import request from '@/utils/request';
-import { TransformedResponse, RequestListParams } from 'Api';
-import { Method } from '../types';
+import request from '@/utils/request'
+import { TransformedResponse, RequestListParams } from 'Api'
+import { Method } from '../types'
 
 export function useTagApi() {
   return {
@@ -16,7 +16,7 @@ export function useTagApi() {
         url: '/tag',
         method: Method.GET,
         params,
-      });
+      })
     },
     /**
      * 添加标签
@@ -30,7 +30,7 @@ export function useTagApi() {
         url: '/tag',
         method: Method.POST,
         data: JSON.stringify(data),
-      });
+      })
     },
     /**
      * 通过ID更新标签信息
@@ -45,7 +45,7 @@ export function useTagApi() {
         url: `/tag/${tagId}`,
         method: Method.PATCH,
         data: JSON.stringify(data),
-      });
+      })
     },
     /**
      * 通过ID删除标签
@@ -58,7 +58,7 @@ export function useTagApi() {
       return request({
         url: `/tag/${tagId}`,
         method: Method.DELETE,
-      });
+      })
     },
     /** 批量删除标签 */
     batchDeleteTag<T = string>(tagIds: number[]): TransformedResponse<T> {
@@ -66,7 +66,7 @@ export function useTagApi() {
         url: '/tag',
         method: Method.DELETE,
         data: JSON.stringify({ tagIds }),
-      });
+      })
     },
-  };
+  }
 }

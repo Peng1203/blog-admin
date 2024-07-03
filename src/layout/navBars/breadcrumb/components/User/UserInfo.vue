@@ -126,69 +126,69 @@
 </template>
 
 <script setup lang="ts" name="layoutBreadcrumbUser">
-import { defineAsyncComponent, ref, computed, reactive, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { ElMessageBox, ElMessage } from 'element-plus';
-import screenfull from 'screenfull';
-import { storeToRefs } from 'pinia';
-import { useUserInfo } from '@/stores/userInfo';
-import { useThemeConfig } from '@/stores/themeConfig';
-import mittBus from '@/utils/mitt';
-import { Local } from '@/utils/storage';
-import SwitchTheme from './components/SwitchTheme.vue';
+import { defineAsyncComponent, ref, computed, reactive, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { ElMessageBox, ElMessage } from 'element-plus'
+import screenfull from 'screenfull'
+import { storeToRefs } from 'pinia'
+import { useUserInfo } from '@/stores/userInfo'
+import { useThemeConfig } from '@/stores/themeConfig'
+import mittBus from '@/utils/mitt'
+import { Local } from '@/utils/storage'
+import SwitchTheme from './components/SwitchTheme.vue'
 
 // 引入组件
 const UserNews = defineAsyncComponent(
   () => import('@/layout/navBars/breadcrumb/userNews.vue')
-);
+)
 const Search = defineAsyncComponent(
   () => import('@/layout/navBars/breadcrumb/search.vue')
-);
+)
 
 // 定义变量内容
-const router = useRouter();
-const stores = useUserInfo();
-const storesThemeConfig = useThemeConfig();
-const { userInfos } = storeToRefs(stores);
-const { themeConfig } = storeToRefs(storesThemeConfig);
-const searchRef = ref();
+const router = useRouter()
+const stores = useUserInfo()
+const storesThemeConfig = useThemeConfig()
+const { userInfos } = storeToRefs(stores)
+const { themeConfig } = storeToRefs(storesThemeConfig)
+const searchRef = ref()
 const state: any = reactive({
   isScreenfull: false,
   disabledSize: 'large',
-});
+})
 
 const defaultAvatar =
-  'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png';
+  'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
 
 // 设置分割样式
 const layoutUserFlexNum = computed(() => {
-  let num: string | number = '';
-  const { layout, isClassicSplitMenu } = themeConfig.value;
-  const layoutArr: string[] = ['defaults', 'columns'];
+  let num: string | number = ''
+  const { layout, isClassicSplitMenu } = themeConfig.value
+  const layoutArr: string[] = ['defaults', 'columns']
   if (
     layoutArr.includes(layout) ||
     (layout === 'classic' && !isClassicSplitMenu)
   )
-    num = '1';
-  else num = '';
-  return num;
-});
+    num = '1'
+  else num = ''
+  return num
+})
 // 全屏点击时
 const onScreenfullClick = () => {
   if (!screenfull.isEnabled) {
-    ElMessage.warning('暂不不支持全屏');
-    return false;
+    ElMessage.warning('暂不不支持全屏')
+    return false
   }
-  screenfull.toggle();
+  screenfull.toggle()
   screenfull.on('change', () => {
-    if (screenfull.isFullscreen) state.isScreenfull = true;
-    else state.isScreenfull = false;
-  });
-};
+    if (screenfull.isFullscreen) state.isScreenfull = true
+    else state.isScreenfull = false
+  })
+}
 // 布局配置 icon 点击时
 const onLayoutSetingClick = () => {
-  mittBus.emit('openSetingsDrawer');
-};
+  mittBus.emit('openSetingsDrawer')
+}
 // 下拉菜单点击时
 const onHandleCommandClick = (path: string) => {
   if (path === 'logOut') {
@@ -203,52 +203,52 @@ const onHandleCommandClick = (path: string) => {
       buttonSize: 'default',
       beforeClose: (action, instance, done) => {
         if (action === 'confirm') {
-          instance.confirmButtonLoading = true;
-          instance.confirmButtonText = '退出中';
-          done();
+          instance.confirmButtonLoading = true
+          instance.confirmButtonText = '退出中'
+          done()
           setTimeout(() => {
-            instance.confirmButtonLoading = false;
-          }, 300);
+            instance.confirmButtonLoading = false
+          }, 300)
         } else {
-          done();
+          done()
         }
       },
     })
       .then(async () => {
         // 清除缓存/token等
-        await stores.userLogout();
+        await stores.userLogout()
 
         // Session.clear()
         // // 使用 reload 时，不需要调用 resetRoute() 重置路由
         // window.location.reload()
       })
-      .catch(() => {});
+      .catch(() => {})
   } else {
-    router.push(path);
+    router.push(path)
   }
-};
+}
 // 菜单搜索点击
 const onSearchClick = () => {
-  searchRef.value.openSearch();
-};
+  searchRef.value.openSearch()
+}
 // 组件大小改变
 const onComponentSizeChange = (size: string) => {
-  Local.remove('themeConfig');
-  themeConfig.value.globalComponentSize = size;
-  Local.set('themeConfig', themeConfig.value);
-  initI18nOrSize('globalComponentSize', 'disabledSize');
-  window.location.reload();
-};
+  Local.remove('themeConfig')
+  themeConfig.value.globalComponentSize = size
+  Local.set('themeConfig', themeConfig.value)
+  initI18nOrSize('globalComponentSize', 'disabledSize')
+  window.location.reload()
+}
 // 初始化组件大小/i18n
 const initI18nOrSize = (value: string, attr: string) => {
-  state[attr] = Local.get('themeConfig')[value];
-};
+  state[attr] = Local.get('themeConfig')[value]
+}
 // 页面加载时
 onMounted(() => {
   if (Local.get('themeConfig')) {
-    initI18nOrSize('globalComponentSize', 'disabledSize');
+    initI18nOrSize('globalComponentSize', 'disabledSize')
   }
-});
+})
 </script>
 
 <style scoped lang="scss">

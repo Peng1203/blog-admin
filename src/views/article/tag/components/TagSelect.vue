@@ -16,67 +16,67 @@
 </template>
 
 <script setup lang="ts">
-import { useTagApi } from '@/api';
-import { useArticleInfo } from '@/stores/articleInfo';
-import { storeToRefs } from 'pinia';
-import { computed, onMounted, ref } from 'vue';
-import { TagData } from '../types';
-import { useNotificationMsg } from '@/utils/notificationMsg';
+import { useTagApi } from '@/api'
+import { useArticleInfo } from '@/stores/articleInfo'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted, ref } from 'vue'
+import { TagData } from '../types'
+import { useNotificationMsg } from '@/utils/notificationMsg'
 
-const { addTag } = useTagApi();
+const { addTag } = useTagApi()
 
-const store = useArticleInfo();
-const articleStoreState = storeToRefs(store);
+const store = useArticleInfo()
+const articleStoreState = storeToRefs(store)
 
-const model = defineModel<number[]>({ required: true });
+const model = defineModel<number[]>({ required: true })
 
 const tag = computed<number[]>({
   get: () => model.value,
   set: newVal => (model.value = newVal),
-});
+})
 
-const options = ref<OptionItem[]>([]);
+const options = ref<OptionItem[]>([])
 
 const getTagOptions = async (update: boolean = false) => {
   try {
-    await store.getTagData(update);
-    options.value = articleStoreState.tagOption.value;
+    await store.getTagData(update)
+    options.value = articleStoreState.tagOption.value
   } catch (e) {
-    console.log('e', e);
+    console.log('e', e)
   }
-};
+}
 
-const newTag = ref<TagData>();
+const newTag = ref<TagData>()
 
 // 添加权限标识
 const addNewTag = async (tagName): Promise<boolean> => {
   try {
-    const params = { tagName, icon: '' };
-    const { data: res } = await addTag<TagData>(params);
-    const { code, message, success, data } = res;
-    if (code !== 20100 || !success) return false;
-    useNotificationMsg('成功', message);
-    newTag.value = data;
-    return true;
+    const params = { tagName, icon: '' }
+    const { data: res } = await addTag<TagData>(params)
+    const { code, message, success, data } = res
+    if (code !== 20100 || !success) return false
+    useNotificationMsg('成功', message)
+    newTag.value = data
+    return true
   } catch (e) {
-    console.log(e);
-    return false;
+    console.log(e)
+    return false
   }
-};
+}
 
 const handleChange = async (tagIds: (string | number)[]) => {
-  const addTags = tagIds.filter(tId => !Number.isInteger(tId));
-  if (!addTags.length) return;
+  const addTags = tagIds.filter(tId => !Number.isInteger(tId))
+  if (!addTags.length) return
   else {
-    const addStatus = await addNewTag(addTags[0]);
-    if (!addStatus) return;
-    await getTagOptions(true);
-    const currentIndex = tagIds.findIndex(id => id === newTag.value.tagName);
-    model.value[currentIndex] = newTag.value.id;
+    const addStatus = await addNewTag(addTags[0])
+    if (!addStatus) return
+    await getTagOptions(true)
+    const currentIndex = tagIds.findIndex(id => id === newTag.value.tagName)
+    model.value[currentIndex] = newTag.value.id
   }
-};
+}
 
 onMounted(() => {
-  getTagOptions();
-});
+  getTagOptions()
+})
 </script>

@@ -17,7 +17,20 @@
     <template
       :key="i"
       v-for="(
-        { label, prop, width, minWidth, sort, tooltip, fixed, align, slotName, childrenColumns, classNname }, i
+        {
+          label,
+          prop,
+          width,
+          minWidth,
+          sort,
+          tooltip,
+          fixed,
+          align,
+          slotName,
+          childrenColumns,
+          classNname,
+        },
+        i
       ) in tableColumns"
     >
       <!-- 自定义某列 -->
@@ -30,7 +43,9 @@
         :min-width="minWidth"
         :class-name="classNname"
         :show-overflow-tooltip="tooltip"
-        :fixed="deviceClientType === 'pc' ? fixed : fixed === 'left' ? false : fixed"
+        :fixed="
+          deviceClientType === 'pc' ? fixed : fixed === 'left' ? false : fixed
+        "
         :align="align || 'left'"
       >
         <template #default="scope">
@@ -105,34 +120,39 @@
 </template>
 
 <script setup lang="tsx" generic="T">
-import { ref, useSlots, inject, onMounted } from 'vue';
-import { TableAttribute_v2, SlotProps, SlotOperationProps, ColumnItem } from './';
+import { ref, useSlots, inject, onMounted } from 'vue'
+import {
+  TableAttribute_v2,
+  SlotProps,
+  SlotOperationProps,
+  ColumnItem,
+} from './'
 
-const deviceClientType = inject('deviceClientType');
+const deviceClientType = inject('deviceClientType')
 
-const slots = useSlots();
+const slots = useSlots()
 type SlotsType = {
-  expand(): any;
-  operationStartSlot(props: SlotOperationProps<T>): any;
-  operationEndSlot(props: SlotOperationProps<T>): any;
-} & { [K in keyof typeof slots]: (props: SlotProps<T>) => any };
+  expand(): any
+  operationStartSlot(props: SlotOperationProps<T>): any
+  operationEndSlot(props: SlotOperationProps<T>): any
+} & { [K in keyof typeof slots]: (props: SlotProps<T>) => any }
 
 // 定义组件属性
 const props = withDefaults(defineProps<TableAttribute_v2<T>>(), {
   loading: false,
   selection: false,
   hasFilterColumn: false,
-});
+})
 
 // 定义插槽
-defineSlots<SlotsType>();
+defineSlots<SlotsType>()
 
 // 表格展示的 columns
-let tableColumns = ref<ColumnItem<T>[]>([]);
+let tableColumns = ref<ColumnItem<T>[]>([])
 
 onMounted(() => {
   // tableColumns.value = props.columns;
-});
+})
 </script>
 
 <style scoped lang="scss"></style>

@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 
 /**
  * 布局配置
@@ -150,7 +150,7 @@ export const useThemeConfig = defineStore('themeConfig', {
   actions: {
     // ThemeConfigState
     setThemeConfig(data) {
-      this.themeConfig = data.themeConfig;
+      this.themeConfig = data.themeConfig
     },
   },
-});
+})

@@ -147,30 +147,30 @@
 </template>
 
 <script setup lang="ts" name="">
-import { ref, reactive, nextTick, onMounted, computed, watch } from 'vue';
-import { FilterHeadendProps } from '../types';
-import { useUserInfo } from '@/stores/userInfo';
-import { useArticleInfo } from '@/stores/articleInfo';
-import Icon from '@/components/svgIcon/index.vue';
-import Select from '@/components/Select';
-import { ARTICLE } from '@/constants';
-import { UserSelect } from '@/views/user/user';
-import DatePicker from '@/components/Date';
+import { ref, reactive, nextTick, onMounted, computed, watch } from 'vue'
+import { FilterHeadendProps } from '../types'
+import { useUserInfo } from '@/stores/userInfo'
+import { useArticleInfo } from '@/stores/articleInfo'
+import Icon from '@/components/svgIcon/index.vue'
+import Select from '@/components/Select'
+import { ARTICLE } from '@/constants'
+import { UserSelect } from '@/views/user/user'
+import DatePicker from '@/components/Date'
 
-const props = defineProps<FilterHeadendProps>();
+const props = defineProps<FilterHeadendProps>()
 const emits = defineEmits([
   'update:modelValue',
   'resetFilterGetDataList',
   'search',
-]);
+])
 
-const userInfoStore = useUserInfo();
-const articleInfoStore = useArticleInfo();
+const userInfoStore = useUserInfo()
+const articleInfoStore = useArticleInfo()
 
 let filterParams = computed({
   get: () => props.modelValue,
   set: (val: any) => emits('update:modelValue', val),
-});
+})
 
 const filterState = reactive({
   loading: ref<boolean>(false),
@@ -184,62 +184,62 @@ const filterState = reactive({
   typeOptions: ARTICLE.typeOptions,
   // 文章状态筛选数据
   statusOptions: ARTICLE.statusOptions,
-});
+})
 
 const handleSearch = () => {
-  emits('search');
+  emits('search')
   // emits('resetFilterGetDataList');
-};
+}
 
 // 归档日期查询
 const handleDateRangeChange = () => {
-  handleSearch();
-};
+  handleSearch()
+}
 
 // 分类筛选
 const handleFilterByCatagory = (val: number) => {
-  if (filterParams.value.categoryId === val) return;
-  filterParams.value.categoryId = val;
-  handleSearch();
-};
+  if (filterParams.value.categoryId === val) return
+  filterParams.value.categoryId = val
+  handleSearch()
+}
 
 // 标签筛选
 const handleFilterByTag = (val: number) => {
-  if (filterParams.value.tagId === val) return;
-  filterParams.value.tagId = val;
-  handleSearch();
-};
+  if (filterParams.value.tagId === val) return
+  filterParams.value.tagId = val
+  handleSearch()
+}
 
 // 作者过滤
 watch(
   () => filterParams.value.authorId,
   () => handleSearch(),
   { deep: true }
-);
+)
 
 const optionsInit = async () => {
-  filterState.loading = true;
+  filterState.loading = true
   await Promise.all([
     articleInfoStore.getCategoryData(),
     articleInfoStore.getTagData(),
-  ]).catch(() => (filterState.loading = false));
+  ]).catch(() => (filterState.loading = false))
 
   nextTick(() => {
     filterState.categoryList = [
       ...filterState.categoryList,
       ...articleInfoStore.categoryOption,
-    ];
+    ]
     filterState.tagList = [
       ...filterState.tagList,
       ...articleInfoStore.tagOption,
-    ];
-    filterState.loading = false;
-  });
-};
+    ]
+    filterState.loading = false
+  })
+}
 
 onMounted(() => {
-  optionsInit();
-});
+  optionsInit()
+})
 </script>
 
 <style scoped lang="scss">

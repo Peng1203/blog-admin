@@ -1,10 +1,10 @@
 // https://pinia.vuejs.org/
-import { createPinia } from 'pinia';
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+import { createPinia } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 // 创建
-const pinia = createPinia();
+const pinia = createPinia()
 // pinia持久化插件
-pinia.use(piniaPluginPersistedstate);
+pinia.use(piniaPluginPersistedstate)
 // 导出
-export default pinia;
+export default pinia

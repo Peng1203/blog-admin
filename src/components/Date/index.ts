@@ -1,3 +1,3 @@
-export { default as default } from './Date.vue';
+export { default as default } from './Date.vue'
 
-export * from './types';
+export * from './types'

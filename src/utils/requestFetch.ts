@@ -1,7 +1,7 @@
-import { Session } from './storage';
+import { Session } from './storage'
 
 interface FetchRequestConfig extends RequestInit {
-  url: string;
+  url: string
 }
 /**
  * fetch API 封装
@@ -13,7 +13,7 @@ const request = ({ url, ...args }: FetchRequestConfig) => {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${Session.getACToken()}`,
     },
-  });
-};
+  })
+}
 
-export default request;
+export default request

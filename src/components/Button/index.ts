@@ -1,3 +1,3 @@
-export { default as default } from './Button.vue';
+export { default as default } from './Button.vue'
 
-export * from './types';
+export * from './types'

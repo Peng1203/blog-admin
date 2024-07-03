@@ -15,41 +15,41 @@
 </template>
 
 <script setup lang="ts" name="">
-import { ref, watch, onMounted, onUnmounted } from 'vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 
 interface RightMenuAttr {
-  modelValue: boolean;
-  left: number;
-  top: number;
+  modelValue: boolean
+  left: number
+  top: number
 }
 
-const emits = defineEmits(['update:modelValue']);
+const emits = defineEmits(['update:modelValue'])
 
-const props = withDefaults(defineProps<RightMenuAttr>(), {});
+const props = withDefaults(defineProps<RightMenuAttr>(), {})
 
-const visible = ref<boolean>(false);
+const visible = ref<boolean>(false)
 
 const closeContextmenu = () => {
-  visible.value = false;
-  emits('update:modelValue', visible.value);
-};
+  visible.value = false
+  emits('update:modelValue', visible.value)
+}
 
 // 阻止点击当前菜单触发关闭事件
-const handleClickMenuContainer = () => {};
+const handleClickMenuContainer = () => {}
 
 watch(
   () => props.modelValue,
   value => (visible.value = value),
   { immediate: true }
-);
+)
 
 onMounted(() => {
-  document.body.addEventListener('click', closeContextmenu);
-});
+  document.body.addEventListener('click', closeContextmenu)
+})
 
 onUnmounted(() => {
-  document.body.removeEventListener('click', closeContextmenu);
-});
+  document.body.removeEventListener('click', closeContextmenu)
+})
 </script>
 
 <style scoped lang="scss">

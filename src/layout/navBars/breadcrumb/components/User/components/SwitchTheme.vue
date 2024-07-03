@@ -28,10 +28,10 @@
 </template>
 
 <script setup lang="ts">
-import { useThemeConfig } from '@/stores/themeConfig';
-import { Local } from '@/utils/storage';
-import { storeToRefs } from 'pinia';
-import { onUnmounted, ref } from 'vue';
+import { useThemeConfig } from '@/stores/themeConfig'
+import { Local } from '@/utils/storage'
+import { storeToRefs } from 'pinia'
+import { onUnmounted, ref } from 'vue'
 
 const themeOptions = [
   {
@@ -46,29 +46,29 @@ const themeOptions = [
     label: '黑暗',
     value: 'dark',
   },
-];
+]
 
-const store = useThemeConfig();
-const { themeConfig } = storeToRefs(store);
+const store = useThemeConfig()
+const { themeConfig } = storeToRefs(store)
 
-const THEME_MODE_KEY = 'current_theme';
+const THEME_MODE_KEY = 'current_theme'
 
 const handleSwitchTheme = (newTheme, _?, event?: PointerEvent) => {
   // if (themeConfig.value.themeMode === newTheme) return;
-  themeConfig.value.themeMode = newTheme;
-  Local.set(THEME_MODE_KEY, newTheme);
-  setTheme(event);
-};
+  themeConfig.value.themeMode = newTheme
+  Local.set(THEME_MODE_KEY, newTheme)
+  setTheme(event)
+}
 
-const matchTheme = ref<MediaQueryList>();
+const matchTheme = ref<MediaQueryList>()
 
 const handleOSThemeChange = (e: MediaQueryListEvent) => {
-  const newColorScheme = e.matches ? 'dark' : 'light';
-  setHTMLThemeAttr(newColorScheme);
-};
+  const newColorScheme = e.matches ? 'dark' : 'light'
+  setHTMLThemeAttr(newColorScheme)
+}
 
 const setHTMLThemeAttr = (val: string, pointerEvent?: PointerEvent) => {
-  const HTML = document.documentElement as HTMLElement;
+  const HTML = document.documentElement as HTMLElement
 
   /**
    * ViewTransition API 只有 Chrome 和 Edge 以及部分浏览器才支持 并不是 标注的API
@@ -76,24 +76,24 @@ const setHTMLThemeAttr = (val: string, pointerEvent?: PointerEvent) => {
 
   // @ts-ignore
   if (document?.startViewTransition && pointerEvent) {
-    const x = pointerEvent.clientX;
-    const y = pointerEvent.clientY;
+    const x = pointerEvent.clientX
+    const y = pointerEvent.clientY
 
     const endRadius = Math.hypot(
       Math.max(x, innerWidth - x),
       Math.max(y, innerHeight - y)
-    );
+    )
 
     // @ts-ignore
     const transition = document.startViewTransition(() =>
       HTML.setAttribute('data-theme', val)
-    );
+    )
 
     transition.ready.then(() => {
       const clipPath = [
         `circle(0px at ${x}px ${y}px)`,
         `circle(${endRadius}px at ${x}px ${y}px)`,
-      ];
+      ]
       document.documentElement.animate(
         {
           clipPath:
@@ -109,43 +109,43 @@ const setHTMLThemeAttr = (val: string, pointerEvent?: PointerEvent) => {
               ? '::view-transition-new(root)'
               : '::view-transition-old(root)',
         }
-      );
-    });
+      )
+    })
   } else {
-    HTML.setAttribute('data-theme', val);
+    HTML.setAttribute('data-theme', val)
   }
-};
+}
 
 const setTheme = (event?: PointerEvent) => {
   // 每次切换主题都清除之前绑定的 change 事件
   if (matchTheme.value) {
-    matchTheme.value.removeEventListener('change', handleOSThemeChange);
+    matchTheme.value.removeEventListener('change', handleOSThemeChange)
   }
-  let newVal = '';
+  let newVal = ''
   switch (themeConfig.value.themeMode) {
     case 'os':
-      matchTheme.value = matchMedia('(prefers-color-scheme:dark)');
-      setHTMLThemeAttr(matchTheme.value.matches ? 'dark' : '', event);
-      matchTheme.value.addEventListener('change', handleOSThemeChange);
-      return;
+      matchTheme.value = matchMedia('(prefers-color-scheme:dark)')
+      setHTMLThemeAttr(matchTheme.value.matches ? 'dark' : '', event)
+      matchTheme.value.addEventListener('change', handleOSThemeChange)
+      return
     case 'light':
-      newVal = 'light';
-      break;
+      newVal = 'light'
+      break
     case 'dark':
-      newVal = 'dark';
-      break;
+      newVal = 'dark'
+      break
     default:
-      newVal = '';
-      break;
+      newVal = ''
+      break
   }
-  setHTMLThemeAttr(newVal, event);
-};
+  setHTMLThemeAttr(newVal, event)
+}
 
-handleSwitchTheme(Local.get(THEME_MODE_KEY) || 'light');
+handleSwitchTheme(Local.get(THEME_MODE_KEY) || 'light')
 
 onUnmounted(() => {
-  matchTheme.value?.removeEventListener('change', handleOSThemeChange);
-});
+  matchTheme.value?.removeEventListener('change', handleOSThemeChange)
+})
 </script>
 
 <style scoped lang="scss">

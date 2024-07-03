@@ -14,16 +14,16 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType } from 'vue';
-import { ArticleData } from '../types';
-import { Preview } from '@/components/MarkdownEditor';
+import { PropType } from 'vue'
+import { ArticleData } from '../types'
+import { Preview } from '@/components/MarkdownEditor'
 
-const previewDialogStatus = defineModel({ type: Boolean });
+const previewDialogStatus = defineModel({ type: Boolean })
 
 const articleInfo = defineModel('row', {
   type: Object as PropType<ArticleData>,
   default: () => ({} as ArticleData),
-});
+})
 </script>
 
 <style lang="scss" scoped></style>

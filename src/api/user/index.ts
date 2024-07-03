@@ -1,7 +1,7 @@
-import request from '@/utils/request';
-import { TransformedResponse, RequestListParams } from 'Api';
-import { UserParams } from './params';
-import { Method } from '../types';
+import request from '@/utils/request'
+import { TransformedResponse, RequestListParams } from 'Api'
+import { UserParams } from './params'
+import { Method } from '../types'
 
 export function useUserApi() {
   return {
@@ -13,7 +13,7 @@ export function useUserApi() {
         url: '/user',
         method: Method.GET,
         params,
-      });
+      })
     },
     /**
      * 添加用户
@@ -23,7 +23,7 @@ export function useUserApi() {
         url: '/user',
         method: Method.POST,
         data: JSON.stringify(params),
-      });
+      })
     },
     /**
      * 更新用户信息
@@ -33,14 +33,14 @@ export function useUserApi() {
         url: `/user/${userId}`,
         method: Method.PUT,
         data: JSON.stringify(params),
-      });
+      })
     },
     update<T>(userId: number, params: UserParams): TransformedResponse<T> {
       return request({
         url: `/user/${userId}`,
         method: Method.PATCH,
         data: JSON.stringify(params),
-      });
+      })
     },
     /**
      * 通过ID删除用户
@@ -49,7 +49,7 @@ export function useUserApi() {
       return request({
         url: `/user/${userId}`,
         method: Method.DELETE,
-      });
+      })
     },
     /**
      * 批量删除用户
@@ -59,7 +59,7 @@ export function useUserApi() {
         url: `/user`,
         method: Method.DELETE,
         data: JSON.stringify({ ids }),
-      });
+      })
     },
     /**
      * 上传用户头像
@@ -72,7 +72,7 @@ export function useUserApi() {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      });
+      })
     },
     /**
      * 上传用户头像
@@ -88,7 +88,7 @@ export function useUserApi() {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      });
+      })
     },
     /**
      * 修改用户密码
@@ -101,7 +101,7 @@ export function useUserApi() {
         url: `/user/${userId}/password`,
         method: Method.PUT,
         data: params,
-      });
+      })
     },
     /**
      * 重置用户密码
@@ -110,7 +110,7 @@ export function useUserApi() {
       return request({
         url: `/user/${userId}/password/reset`,
         method: Method.PATCH,
-      });
+      })
     },
-  };
+  }
 }

@@ -134,6 +134,11 @@ declare type TypeOmit<T, K extends keyof T> = Omit<T, K>
 /** 将传入的属性生成新的类型 */
 declare type TypePick<T, K extends keyof T> = Pick<T, K>
 
+/** 指定一个对象为不可变类型 */
+declare type DeepReadonly<T> = {
+  readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P]
+}
+
 type SizeEnum = '' | 'large' | 'default' | 'small'
 
 interface OptionItem {

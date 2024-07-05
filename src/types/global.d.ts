@@ -139,6 +139,13 @@ declare type DeepReadonly<T> = {
   readonly [P in keyof T]: T[P] extends object ? DeepReadonly<T[P]> : T[P]
 }
 
+/** 获取指定类型的可选属性 */
+declare type GetOptional<T> = {
+  [K in keyof T as T[K] extends Required<T>[k] ? never : T[K]]: T[K]
+}
+
+// `get${Capitalize<K & string>}`
+
 type SizeEnum = '' | 'large' | 'default' | 'small'
 
 interface OptionItem {

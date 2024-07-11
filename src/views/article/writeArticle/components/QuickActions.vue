@@ -1,6 +1,7 @@
 <template>
+  <!-- v-if="isEdit" -->
   <el-button
-    v-if="isEdit"
+    mr
     type="primary"
     size="mini"
     @click="$router.push({ name: 'WriteArticle' })"
@@ -8,8 +9,9 @@
     写文章
   </el-button>
 
+  <!-- v-else -->
   <Peng-Select
-    v-else
+    mr
     virtual
     width="200px"
     placeholder="请选择编辑文章"
@@ -21,7 +23,7 @@
 
 <script setup lang="ts">
 import { useArticleApi } from '@/api'
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ArticleOptionData } from '../types'
 import { useUserInfo } from '@/stores/userInfo'
@@ -36,7 +38,7 @@ const aId = ref<number>()
 const articleOptions = ref<OptionItem[]>([])
 
 // 是否是编辑模式
-const isEdit = computed<boolean>(() => route.name !== 'WriteArticle')
+// const isEdit = computed<boolean>(() => route.name !== 'WriteArticle')
 
 const getArticleOptions = async () => {
   try {
@@ -67,8 +69,10 @@ const handleSelectEdit = () => {
 }
 
 onMounted(() => {
+  route.params.aid && (aId.value = Number(route.params.aid))
   // 获取当前用户可编辑文章 下拉数据
-  isEdit.value || getArticleOptions()
+  // isEdit.value ||
+  getArticleOptions()
 })
 </script>
 

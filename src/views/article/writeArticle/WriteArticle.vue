@@ -11,12 +11,11 @@
           </h1>
 
           <!-- 编辑已有文章 或者 发布文章 -->
-          <div>
-            <QuickActions mr10 />
+          <div v-show="activeStep === 1">
+            <QuickActions />
 
             <el-switch
               inline-prompt
-              v-show="activeStep === 1"
               v-model="articleForm.contentModel"
               style="--el-switch-on-color: #1323ce; --el-switch-off-color: #3ce"
               :active-value="0"

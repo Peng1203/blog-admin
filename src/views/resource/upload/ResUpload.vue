@@ -43,22 +43,11 @@
         选择文件夹
       </el-button>
 
-      <el-upload
-        ml10
-        multiple
-        :auto-upload="false"
-        :show-file-list="false"
-        :on-change="(uploadInfo: UploadFile)=> handleFileChange(uploadInfo.raw,LARGE_FILE_MAX_SIZE_VALUE)"
-      >
-        <!-- :on-change="test" -->
-        <el-button
-          type="primary"
-          size="default"
-          icon="ele-Files"
-        >
-          上传大文件
-        </el-button>
-      </el-upload>
+      <!-- 上传大文件 -->
+      <UploadLargeFile
+        ref="uploadLargeFileRef"
+        @change="item => tableState.data.unshift(item)"
+      />
 
       <el-button
         ml10
@@ -130,7 +119,8 @@
 
       <!-- 上传压缩 -->
       <template #isCompressSlot="{ row }">
-        <div v-if="row.mimeType.includes('image')">
+        <div v-if="row.size > MAX_SIZE_VALUE"></div>
+        <div v-else-if="row.mimeType.includes('image')">
           <span v-if="row.mimeType.includes('gif')">不支持压缩gif图</span>
           <el-switch
             v-else
@@ -153,6 +143,16 @@
           icon="ele-Upload"
           :disabled="row.status === StatusEnum.SUCCESS"
           @click="handleExeUploadMethod(row)"
+        />
+
+        <el-button
+          v-if="row.status === StatusEnum.UPLOADING"
+          circle
+          :title="row.pause ? '继续' : '暂停'"
+          size="small"
+          type="info"
+          icon="ele-Delete"
+          @click="handleDelete(row, scope)"
         />
 
         <el-button
@@ -242,16 +242,16 @@ import { useNotificationMsg } from '@/utils/notificationMsg'
 import { useResourceApi } from '@/api'
 import { blobToFile, compressImage, imageToBase64 } from '@/utils/file'
 import { api as viewerApi } from 'v-viewer'
+import { MB } from '@/constants'
+import UploadLargeFile from './components/UploadLargeFile.vue'
 
 const { uploadResource } = useResourceApi()
 
+const uploadLargeFileRef = ref<RefType>(null)
+
 // 正常上传文件大小
 const MAX_SIZE_MB = 5
-const MAX_SIZE_VALUE = 1024 * 1024 * MAX_SIZE_MB
-
-// 大上传文件大小
-const LARGE_FILE_MAX_SIZE_MB = 200
-const LARGE_FILE_MAX_SIZE_VALUE = 1024 * 1024 * LARGE_FILE_MAX_SIZE_MB
+const MAX_SIZE_VALUE = MB * MAX_SIZE_MB
 
 const tableState = reactive({
   data: <FileData[]>[],
@@ -333,14 +333,14 @@ const handleSelectDirectory = () => {
 
 const handleFileChange = (file: File, maxFileSize = MAX_SIZE_VALUE) => {
   const { name, size, type } = file
-
   // type 为空时 file 为目录
   if (!type) return
 
   // prettier-ignore
-  if (size > maxFileSize) return useNotificationMsg('', `请选择小于${MAX_SIZE_MB}MB的文件`, 'warning', 2);
+  if (size > maxFileSize) return useNotificationMsg('', `请选择小于${maxFileSize / MB}MB的文件`, 'warning', 2);
 
   const fileItem: FileData = {
+    url: '',
     name,
     size,
     type: name.split('.')[name.split('.').length - 1],
@@ -362,42 +362,7 @@ const handleUpload = () => {
 // 根据文件大小 判断走正常上传还是 大文件分片上传
 const handleExeUploadMethod = (row: FileData) => {
   if (row.size <= MAX_SIZE_VALUE) uploadFile(row)
-  else chunkUpload(row)
-}
-
-// 分片上传
-const chunkUpload = async (fileItem: FileData) => {
-  try {
-    console.log('分片上传 ------', fileItem)
-    const { fileData } = fileItem
-
-    // slice 类似数组中的方法 表示 取当前文件的字节范围 0~99 字节
-    // const chunk = fileData.slice(0, 100);
-    const chunks = createFileChunks(fileData, 1024 * 1024)
-    console.log('chunks ------', chunks)
-  } catch (e) {
-    console.log('e', e)
-  }
-}
-
-// 将文件按照指定大小切分
-const createFileChunks = (file: File, chunkSize: number): Blob[] => {
-  const fileChunks: Blob[] = []
-  const currentChunkSize = () => fileChunks.length * chunkSize
-  while (file.size > currentChunkSize()) {
-    const chunk = file.slice(currentChunkSize(), currentChunkSize() + chunkSize)
-    fileChunks.push(chunk)
-  }
-
-  // console.time('for 切割耗时');
-  // const fileChunks2: Blob[] = [];
-  // for (let i = 0; i < file.size; i += chunkSize) {
-  //   const chunk = file.slice(i, i + chunkSize);
-  //   fileChunks2.push(chunk);
-  // }
-  // console.timeEnd('for 切割耗时');
-  // console.log('fileChunks2 ------', fileChunks2);
-  return fileChunks
+  else uploadLargeFileRef.value.chunkUpload(row)
 }
 
 // 正常上传
@@ -458,8 +423,7 @@ const el = ref<RefType<HTMLDivElement>>(null)
 
 // 粘贴文件快捷操作
 const handlePasteEvent = (event: ClipboardEvent) => {
-  const { clipboardData } = event
-  const { files } = clipboardData
+  const { files } = event.clipboardData
 
   for (let i = 0; i < files.length; i++) {
     handleFileChange(files[i])

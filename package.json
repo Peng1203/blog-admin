@@ -8,7 +8,7 @@
     "build": "vite build",
     "build:prod": "node --max_old_space_size=2048 ./node_modules/vite/bin/vite.js build",
     "lint-fix": "eslint --fix --ext .js --ext .jsx --ext .vue src/",
-    "serve": "http-server ./dist",
+    "serve": "http-server ./dist -p 8000",
     "format": "npx prettier --write ./src/",
     "push": "git push origin && git push origin2"
   },

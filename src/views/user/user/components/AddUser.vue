@@ -31,14 +31,8 @@ const emits = defineEmits(['updateList'])
 const { addUser, uploadAvatar } = useUserApi()
 
 // 校验密码强度
-const passwordStrengthDetection = (
-  rule: any,
-  value: any,
-  callback: any
-): any => {
-  const findFormItem = addUserState.formItemList.find(
-    item => item.prop === 'password'
-  )
+const passwordStrengthDetection = (rule: any, value: any, callback: any): any => {
+  const findFormItem = addUserState.formItemList.find(item => item.prop === 'password')
 
   if (!value) return findFormItem && (findFormItem.strengthLevel = 0)
 
@@ -199,9 +193,7 @@ const resetAddForm = () => {
   formData.value.email = ''
   formData.value.userEnabled = 1
   formData.value.userAvatar = ''
-  const findFormItem = addUserState.formItemList.find(
-    item => item.prop === 'password'
-  )
+  const findFormItem = addUserState.formItemList.find(item => item.prop === 'password')
   if (findFormItem) findFormItem.strengthLevel = 0
 }
 

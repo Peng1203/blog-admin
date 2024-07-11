@@ -31,9 +31,7 @@ export async function handleUserAuthRouters(): Promise<any> {
   // 当登录 用户为 admin 用户 不进行菜单处理直接添加全部权限路由
   if (id === 1 && userName === 'admin') {
     // 将全部权限路由添加到路由规则中
-    await allDynamicRoutes.forEach((route: RouteRecordRaw) =>
-      router.addRoute(route)
-    )
+    await allDynamicRoutes.forEach((route: RouteRecordRaw) => router.addRoute(route))
     // 设置
     await storesRoutesList.setRoutesList(allDynamicRoutes[0].children as any)
     await storesTagsView.setTagsViewRoutes(allRouterRules)
@@ -60,9 +58,7 @@ async function generateUserMenu(menus: MenuData[]): Promise<string> {
   const allMenuRules = allDynamicRoutes[0].children
 
   // 过滤出持有的一级菜单
-  const handleAfterMenus: any = allMenuRules?.filter(m =>
-    menus.find((item: MenuData) => item.menuUri === m.name)
-  )
+  const handleAfterMenus: any = allMenuRules?.filter(m => menus.find((item: MenuData) => item.menuUri === m.name))
 
   // 递归处理 持有的菜单 设置的配置项
   handleChildrenMenu(handleAfterMenus, menus)
@@ -75,9 +71,7 @@ async function generateUserMenu(menus: MenuData[]): Promise<string> {
   await storesTagsView.setTagsViewRoutes(allRouterRules)
 
   // 返回第一个跳转后第一个展示的菜单展示
-  const toRouter = (newRule[0] as any).children.find(
-    (rule: RouteRecordRaw) => rule.meta && !rule.meta.isHide
-  )
+  const toRouter = (newRule[0] as any).children.find((rule: RouteRecordRaw) => rule.meta && !rule.meta.isHide)
 
   NextLoading.done()
   return toRouter!.name as string
@@ -111,8 +105,7 @@ function handleChildrenMenu(children: RouteRecordRaw[], menus: MenuData[]) {
     }
 
     // 当存在其他子节点是继续递归处理
-    if (item.children && item.children.length)
-      handleChildrenMenu(item.children, menus)
+    if (item.children && item.children.length) handleChildrenMenu(item.children, menus)
   })
 
   // 删除未持有的菜单

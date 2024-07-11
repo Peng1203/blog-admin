@@ -49,22 +49,14 @@
               name="ele-Close"
               class="layout-navbars-tagsview-ul-li-icon layout-icon-active"
               v-if="!v.meta.isAffix"
-              @click.stop="
-                closeCurrentTagsView(
-                  getThemeConfig.isShareTagsView ? v.path : v.url
-                )
-              "
+              @click.stop="closeCurrentTagsView(getThemeConfig.isShareTagsView ? v.path : v.url)"
             />
           </template>
           <SvgIcon
             name="ele-Close"
             class="layout-navbars-tagsview-ul-li-icon layout-icon-three"
             v-if="!v.meta.isAffix"
-            @click.stop="
-              closeCurrentTagsView(
-                getThemeConfig.isShareTagsView ? v.path : v.url
-              )
-            "
+            @click.stop="closeCurrentTagsView(getThemeConfig.isShareTagsView ? v.path : v.url)"
           />
         </li>
       </ul>
@@ -78,17 +70,7 @@
 </template>
 
 <script setup lang="ts" name="layoutTagsView">
-import {
-  reactive,
-  onMounted,
-  computed,
-  ref,
-  nextTick,
-  onBeforeUpdate,
-  onBeforeMount,
-  onUnmounted,
-  watch,
-} from 'vue'
+import { reactive, onMounted, computed, ref, nextTick, onBeforeUpdate, onBeforeMount, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import Sortable from 'sortablejs'
 import { ElMessage } from 'element-plus'
@@ -147,10 +129,7 @@ const isActive = (v: RouteItem) => {
   if (getThemeConfig.value.isShareTagsView) {
     return v.path === state.routePath
   } else {
-    if (
-      (v.query && Object.keys(v.query).length) ||
-      (v.params && Object.keys(v.params).length)
-    ) {
+    if ((v.query && Object.keys(v.query).length) || (v.params && Object.keys(v.params).length)) {
       // 普通传参
       return v.url ? v.url === state.routeActive : v.path === state.routeActive
     } else {
@@ -167,9 +146,7 @@ const addBrowserSetSession = (tagsViewList: Array<object>) => {
 // 获取 pinia 中的 tagsViewRoutes 列表
 const getTagsViewRoutes = async () => {
   state.routeActive = await setTagsViewHighlight(route)
-  state.routePath = (await route.meta.isDynamic)
-    ? route.meta.isDynamicPath
-    : route.path
+  state.routePath = (await route.meta.isDynamic) ? route.meta.isDynamicPath : route.path
   state.tagsViewList = []
   state.tagsViewRoutesList = tagsViewRoutes.value
   initTagsView()
@@ -189,9 +166,7 @@ const initTagsView = async () => {
     await addTagsView(route.path, <RouteToFrom>route)
   }
   // 初始化当前元素(li)的下标
-  getTagsRefsIndex(
-    getThemeConfig.value.isShareTagsView ? state.routePath : state.routeActive
-  )
+  getTagsRefsIndex(getThemeConfig.value.isShareTagsView ? state.routePath : state.routeActive)
 }
 // 处理可开启多标签详情，单标签详情（动态路由（xxx/:id/:name"），普通路由处理）
 const solveAddTagsView = async (path: string, to?: RouteToFrom) => {
@@ -200,33 +175,17 @@ const solveAddTagsView = async (path: string, to?: RouteToFrom) => {
     (v: RouteItem) =>
       v.path === isDynamicPath &&
       isObjectValueEqual(
-        to?.meta?.isDynamic
-          ? v.params
-            ? v.params
-            : null
-          : v.query
-          ? v.query
-          : null,
-        to?.meta?.isDynamic
-          ? to?.params
-            ? to?.params
-            : null
-          : to?.query
-          ? to?.query
-          : null
+        to?.meta?.isDynamic ? (v.params ? v.params : null) : v.query ? v.query : null,
+        to?.meta?.isDynamic ? (to?.params ? to?.params : null) : to?.query ? to?.query : null
       )
   )
   if (current.length <= 0) {
     // 防止：Avoid app logic that relies on enumerating keys on a component instance. The keys will be empty in production mode to avoid performance overhead.
-    let findItem = state.tagsViewRoutesList.find(
-      (v: RouteItem) => v.path === isDynamicPath
-    )
+    let findItem = state.tagsViewRoutesList.find((v: RouteItem) => v.path === isDynamicPath)
     if (!findItem) return false
     if (findItem.meta.isAffix) return false
     if (findItem.meta.isLink && !findItem.meta.isIframe) return false
-    to?.meta?.isDynamic
-      ? (findItem.params = to.params)
-      : (findItem.query = to?.query)
+    to?.meta?.isDynamic ? (findItem.params = to.params) : (findItem.query = to?.query)
     findItem.url = setTagsViewHighlight(findItem)
     state.tagsViewList.push({ ...findItem })
     await storesKeepALiveNames.addCachedView(findItem)
@@ -240,20 +199,8 @@ const singleAddTagsView = (path: string, to?: RouteToFrom) => {
     if (
       v.path === isDynamicPath &&
       !isObjectValueEqual(
-        to?.meta?.isDynamic
-          ? v.params
-            ? v.params
-            : null
-          : v.query
-          ? v.query
-          : null,
-        to?.meta?.isDynamic
-          ? to?.params
-            ? to?.params
-            : null
-          : to?.query
-          ? to?.query
-          : null
+        to?.meta?.isDynamic ? (v.params ? v.params : null) : v.query ? v.query : null,
+        to?.meta?.isDynamic ? (to?.params ? to?.params : null) : to?.query ? to?.query : null
       )
     ) {
       to?.meta?.isDynamic ? (v.params = to.params) : (v.query = to?.query)
@@ -270,25 +217,17 @@ const addTagsView = (path: string, to?: RouteToFrom) => {
     let item: RouteItem
     if (to?.meta?.isDynamic) {
       // 动态路由（xxx/:id/:name"）：参数不同，开启多个 tagsview
-      if (!getThemeConfig.value.isShareTagsView)
-        await solveAddTagsView(path, to)
+      if (!getThemeConfig.value.isShareTagsView) await solveAddTagsView(path, to)
       else await singleAddTagsView(path, to)
-      if (
-        state.tagsViewList.some(
-          (v: RouteItem) => v.path === to?.meta?.isDynamicPath
-        )
-      ) {
+      if (state.tagsViewList.some((v: RouteItem) => v.path === to?.meta?.isDynamicPath)) {
         // 防止首次进入界面时(登录进入) tagsViewList 不存浏览器中
         addBrowserSetSession(state.tagsViewList)
         return false
       }
-      item = state.tagsViewRoutesList.find(
-        (v: RouteItem) => v.path === to?.meta?.isDynamicPath
-      )
+      item = state.tagsViewRoutesList.find((v: RouteItem) => v.path === to?.meta?.isDynamicPath)
     } else {
       // 普通路由：参数不同，开启多个 tagsview
-      if (!getThemeConfig.value.isShareTagsView)
-        await solveAddTagsView(path, to)
+      if (!getThemeConfig.value.isShareTagsView) await solveAddTagsView(path, to)
       else await singleAddTagsView(path, to)
       if (state.tagsViewList.some((v: RouteItem) => v.path === path)) {
         // 防止首次进入界面时(登录进入) tagsViewList 不存浏览器中
@@ -299,8 +238,7 @@ const addTagsView = (path: string, to?: RouteToFrom) => {
     }
     if (!item) return false
     if (item?.meta?.isLink && !item.meta.isIframe) return false
-    if (to?.meta?.isDynamic)
-      item.params = to?.params ? to?.params : route.params
+    if (to?.meta?.isDynamic) item.params = to?.params ? to?.params : route.params
     else item.query = to?.query ? to?.query : route.query
     item.url = setTagsViewHighlight(item)
     await storesKeepALiveNames.addCachedView(item)
@@ -329,23 +267,19 @@ const refreshCurrentTagsView = async (fullPath: string) => {
 const closeCurrentTagsView = (path: string) => {
   state.tagsViewList.map((v: RouteItem, k: number, arr: RouteItems) => {
     if (!v.meta?.isAffix) {
-      if (
-        getThemeConfig.value.isShareTagsView ? v.path === path : v.url === path
-      ) {
+      if (getThemeConfig.value.isShareTagsView ? v.path === path : v.url === path) {
         storesKeepALiveNames.delCachedView(v)
         state.tagsViewList.splice(k, 1)
         setTimeout(() => {
           if (
-            state.tagsViewList.length === k &&
-            getThemeConfig.value.isShareTagsView
+            state.tagsViewList.length === k && getThemeConfig.value.isShareTagsView
               ? state.routePath === path
               : state.routeActive === path
           ) {
             // 最后一个且高亮时
             if (arr[arr.length - 1].meta.isDynamic) {
               // 动态路由（xxx/:id/:name"）
-              if (k !== arr.length)
-                router.push({ name: arr[k].name, params: arr[k].params })
+              if (k !== arr.length) router.push({ name: arr[k].name, params: arr[k].params })
               else
                 router.push({
                   name: arr[arr.length - 1].name,
@@ -353,8 +287,7 @@ const closeCurrentTagsView = (path: string) => {
                 })
             } else {
               // 普通路由
-              if (k !== arr.length)
-                router.push({ path: arr[k].path, query: arr[k].query })
+              if (k !== arr.length) router.push({ path: arr[k].path, query: arr[k].query })
               else
                 router.push({
                   path: arr[arr.length - 1].path,
@@ -364,8 +297,7 @@ const closeCurrentTagsView = (path: string) => {
           } else {
             // 非最后一个且高亮时，跳转到下一个
             if (
-              state.tagsViewList.length !== k &&
-              getThemeConfig.value.isShareTagsView
+              state.tagsViewList.length !== k && getThemeConfig.value.isShareTagsView
                 ? state.routePath === path
                 : state.routeActive === path
             ) {
@@ -421,8 +353,7 @@ const openCurrenFullscreen = async (path: string) => {
   const item = state.tagsViewList.find((v: RouteItem) =>
     getThemeConfig.value.isShareTagsView ? v.path === path : v.url === path
   )
-  if (item.meta.isDynamic)
-    await router.push({ name: item.name, params: item.params })
+  if (item.meta.isDynamic) await router.push({ name: item.name, params: item.params })
   else await router.push({ name: item.name, query: item.query })
   stores.setCurrenFullscreen(true)
 }
@@ -435,8 +366,7 @@ const getCurrentRouteItem = (item: RouteItem): any => {
     v.transUrl = transUrlParams(v)
     if (v.transUrl) {
       // 动态路由、普通路由带参数
-      if (v.transUrl === transUrlParams(v) && v.transUrl === item.commonUrl)
-        resItem = v
+      if (v.transUrl === transUrlParams(v) && v.transUrl === item.commonUrl) resItem = v
     } else {
       // 路由不带参数
       if (v.path === decodeURI(item.path)) resItem = v
@@ -522,9 +452,7 @@ const transUrlParams = (v: RouteItem) => {
      *
      * 所以右侧菜单点击时，需要处理路径拼接 v.path.split(':')[0]，得到路径 + 参数的完整路径
      */
-    return v.isFnClick
-      ? decodeURI(v.path)
-      : `${v.path.split(':')[0]}${path.replace(/^\//, '')}`
+    return v.isFnClick ? decodeURI(v.path) : `${v.path.split(':')[0]}${path.replace(/^\//, '')}`
   } else {
     return `${v.path}${path.replace(/^&/, '?')}`
   }
@@ -584,8 +512,7 @@ const tagsViewmoveToCurrentTag = () => {
       // 非头/尾部
       if (liIndex === 0) beforePrevL = liFirst.offsetLeft - 5
       else beforePrevL = liPrevTag?.offsetLeft - 5
-      if (liIndex === liLength)
-        afterNextL = liLast.offsetLeft + liLast.offsetWidth + 5
+      if (liIndex === liLength) afterNextL = liLast.offsetLeft + liLast.offsetWidth + 5
       else afterNextL = liNextTag.offsetLeft + liNextTag.offsetWidth + 5
       if (afterNextL > scrollL + offsetW) {
         scrollRefs.scrollLeft = afterNextL - offsetW
@@ -694,19 +621,13 @@ onBeforeRouteUpdate(async to => {
   state.routeActive = setTagsViewHighlight(to)
   state.routePath = to.meta.isDynamic ? to.meta.isDynamicPath : to.path
   await addTagsView(to.path, <RouteToFrom>to)
-  getTagsRefsIndex(
-    getThemeConfig.value.isShareTagsView ? state.routePath : state.routeActive
-  )
+  getTagsRefsIndex(getThemeConfig.value.isShareTagsView ? state.routePath : state.routeActive)
 })
 // 监听路由的变化，动态赋值给 tagsView
 watch(
   pinia.state,
   val => {
-    if (
-      val.tagsViewRoutes.tagsViewRoutes.length ===
-      state.tagsViewRoutesList.length
-    )
-      return false
+    if (val.tagsViewRoutes.tagsViewRoutes.length === state.tagsViewRoutesList.length) return false
     getTagsViewRoutes()
   },
   {
@@ -814,8 +735,7 @@ watch(
       -webkit-mask-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAiIGhlaWdodD0iNzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZmlsbD0ibm9uZSI+CgogPGc+CiAgPHRpdGxlPkxheWVyIDE8L3RpdGxlPgogIDxwYXRoIHRyYW5zZm9ybT0icm90YXRlKC0wLjEzMzUwNiA1MC4xMTkyIDUwKSIgaWQ9InN2Z18xIiBkPSJtMTAwLjExOTE5LDEwMGMtNTUuMjI4LDAgLTEwMCwtNDQuNzcyIC0xMDAsLTEwMGwwLDEwMGwxMDAsMHoiIG9wYWNpdHk9InVuZGVmaW5lZCIgc3Ryb2tlPSJudWxsIiBmaWxsPSIjRjhFQUU3Ii8+CiAgPHBhdGggZD0ibS0wLjYzNzY2LDcuMzEyMjhjMC4xMTkxOSwwIDAuMjE3MzcsMC4wNTc5NiAwLjQ3Njc2LDAuMTE5MTljMC4yMzIsMC4wNTQ3NyAwLjI3MzI5LDAuMDM0OTEgMC4zNTc1NywwLjExOTE5YzAuMDg0MjgsMC4wODQyOCAwLjM1NzU3LDAgMC40NzY3NiwwbDAuMTE5MTksMGwwLjIzODM4LDAiIGlkPSJzdmdfMiIgc3Ryb2tlPSJudWxsIiBmaWxsPSJub25lIi8+CiAgPHBhdGggZD0ibTI4LjkyMTM0LDY5LjA1MjQ0YzAsMC4xMTkxOSAwLDAuMjM4MzggMCwwLjM1NzU3bDAsMC4xMTkxOWwwLDAuMTE5MTkiIGlkPSJzdmdfMyIgc3Ryb2tlPSJudWxsIiBmaWxsPSJub25lIi8+CiAgPHJlY3QgaWQ9InN2Z180IiBoZWlnaHQ9IjAiIHdpZHRoPSIxLjMxMTA4IiB5PSI2LjgzNTUyIiB4PSItMC4wNDE3MSIgc3Ryb2tlPSJudWxsIiBmaWxsPSJub25lIi8+CiAgPHJlY3QgaWQ9InN2Z181IiBoZWlnaHQ9IjEuNzg3ODQiIHdpZHRoPSIwLjExOTE5IiB5PSI2OC40NTY1IiB4PSIyOC45MjEzNCIgc3Ryb2tlPSJudWxsIiBmaWxsPSJub25lIi8+CiAgPHJlY3QgaWQ9InN2Z182IiBoZWlnaHQ9IjQuODg2NzciIHdpZHRoPSIxOS4wNzAzMiIgeT0iNTEuMjkzMjEiIHg9IjM2LjY2ODY2IiBzdHJva2U9Im51bGwiIGZpbGw9Im5vbmUiLz4KIDwvZz4KPC9zdmc+'),
         url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNzAiIGhlaWdodD0iNzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgZmlsbD0ibm9uZSI+CiA8Zz4KICA8dGl0bGU+TGF5ZXIgMTwvdGl0bGU+CiAgPHBhdGggdHJhbnNmb3JtPSJyb3RhdGUoLTg5Ljc2MjQgNy4zMzAxNCA1NS4xMjUyKSIgc3Ryb2tlPSJudWxsIiBpZD0ic3ZnXzEiIGZpbGw9IiNGOEVBRTciIGQ9Im02Mi41NzQ0OSwxMTcuNTIwODZjLTU1LjIyOCwwIC0xMDAsLTQ0Ljc3MiAtMTAwLC0xMDBsMCwxMDBsMTAwLDB6IiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPgogIDxwYXRoIGQ9Im0tMC42Mzc2Niw3LjMxMjI4YzAuMTE5MTksMCAwLjIxNzM3LDAuMDU3OTYgMC40NzY3NiwwLjExOTE5YzAuMjMyLDAuMDU0NzcgMC4yNzMyOSwwLjAzNDkxIDAuMzU3NTcsMC4xMTkxOWMwLjA4NDI4LDAuMDg0MjggMC4zNTc1NywwIDAuNDc2NzYsMGwwLjExOTE5LDBsMC4yMzgzOCwwIiBpZD0ic3ZnXzIiIHN0cm9rZT0ibnVsbCIgZmlsbD0ibm9uZSIvPgogIDxwYXRoIGQ9Im0yOC45MjEzNCw2OS4wNTI0NGMwLDAuMTE5MTkgMCwwLjIzODM4IDAsMC4zNTc1N2wwLDAuMTE5MTlsMCwwLjExOTE5IiBpZD0ic3ZnXzMiIHN0cm9rZT0ibnVsbCIgZmlsbD0ibm9uZSIvPgogIDxyZWN0IGlkPSJzdmdfNCIgaGVpZ2h0PSIwIiB3aWR0aD0iMS4zMTEwOCIgeT0iNi44MzU1MiIgeD0iLTAuMDQxNzEiIHN0cm9rZT0ibnVsbCIgZmlsbD0ibm9uZSIvPgogIDxyZWN0IGlkPSJzdmdfNSIgaGVpZ2h0PSIxLjc4Nzg0IiB3aWR0aD0iMC4xMTkxOSIgeT0iNjguNDU2NSIgeD0iMjguOTIxMzQiIHN0cm9rZT0ibnVsbCIgZmlsbD0ibm9uZSIvPgogIDxyZWN0IGlkPSJzdmdfNiIgaGVpZ2h0PSI0Ljg4Njc3IiB3aWR0aD0iMTkuMDcwMzIiIHk9IjUxLjI5MzIxIiB4PSIzNi42Njg2NiIgc3Ryb2tlPSJudWxsIiBmaWxsPSJub25lIi8+CiA8L2c+Cjwvc3ZnPg=='),
         url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><rect rx='8' width='100%' height='100%' fill='%23F8EAE7'/></svg>");
-      -webkit-mask-size: 18px 30px, 20px 30px,
-        calc(100% - 30px) calc(100% + 17px);
+      -webkit-mask-size: 18px 30px, 20px 30px, calc(100% - 30px) calc(100% + 17px);
       -webkit-mask-position: right bottom, left bottom, center top;
       -webkit-mask-repeat: no-repeat;
     }

@@ -51,8 +51,7 @@ export function useChangeColor() {
       return ''
     }
     let rgb = useChangeColor().hexToRgb(color)
-    for (let i = 0; i < 3; i++)
-      rgb[i] = Math.floor((255 - rgb[i]) * level + rgb[i])
+    for (let i = 0; i < 3; i++) rgb[i] = Math.floor((255 - rgb[i]) * level + rgb[i])
     return useChangeColor().rgbToHex(rgb[0], rgb[1], rgb[2])
   }
   return {

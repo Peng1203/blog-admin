@@ -30,9 +30,7 @@ import Dialog from '@/components/Dialog'
 import Form, { FormItem } from '@/components/Form'
 import { AddTagType, TagData } from '../types'
 
-const IconSelector = defineAsyncComponent(
-  () => import('@/components/iconSelector/index.vue')
-)
+const IconSelector = defineAsyncComponent(() => import('@/components/iconSelector/index.vue'))
 
 const { addTag } = useTagApi()
 

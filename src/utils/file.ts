@@ -6,10 +6,7 @@ export const isImage = (file: File): boolean => {
 }
 
 /** 文件是否超出指定大小 */
-export const checkFileSizeExceeds = (
-  file: File,
-  maxSize: number = 2
-): boolean => {
+export const checkFileSizeExceeds = (file: File, maxSize: number = 2): boolean => {
   const fileMb = file.size / (1024 * 1024)
   return fileMb > maxSize
 }
@@ -61,8 +58,7 @@ export const compressImage = (
           // 转换为 blob 对象
           canvasEl.toBlob(
             blob => {
-              const compressibility =
-                (((size - blob.size) / size) * 100).toFixed(2) + ' %'
+              const compressibility = (((size - blob.size) / size) * 100).toFixed(2) + ' %'
               console.table({
                 原始大小: size,
                 压后大小: blob.size,

@@ -9,11 +9,7 @@ export const userTableRightMenu = <T>() => {
     row: ref<T>(), //el-table当前列表的信息
   })
   //右键菜单的方法
-  const handleMouseRightRowClick = (
-    row: T,
-    column: Column,
-    event: PointerEvent
-  ) => {
+  const handleMouseRightRowClick = (row: T, column: Column, event: PointerEvent) => {
     event.preventDefault() //阻止鼠标右键默认行为
     rightMenuInfo.value.row = row
     rightMenuInfo.value.left = event.clientX

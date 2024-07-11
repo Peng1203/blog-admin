@@ -34,23 +34,16 @@ const { userInfos, userLogout } = useUserInfo()
 
 const validatePass = (rule: any, value: any, callback: any) => {
   // 检测密码强度
-  const findFormItem = changePwdState.formItems.find(
-    item => item.prop === rule.fullField
-  )
+  const findFormItem = changePwdState.formItems.find(item => item.prop === rule.fullField)
   let level = passwordStrengthLevelDetection(value)
   if (level === -1) callback(new Error('密码不能包括出现特殊字符'))
   if (findFormItem) findFormItem.strengthLevel = level as any
 
   // 检测2次新密码是否一致
-  if (
-    changePwdState.dataForm.newPassword !==
-    changePwdState.dataForm.confirmNewPassword
-  )
+  if (changePwdState.dataForm.newPassword !== changePwdState.dataForm.confirmNewPassword)
     return callback(new Error('两次输入密码不一致!'))
   callback()
-  changePwdFormRef.value
-    .getRef()
-    .clearValidate(['newPassword', 'confirmNewPassword'])
+  changePwdFormRef.value.getRef().clearValidate(['newPassword', 'confirmNewPassword'])
 }
 
 const dialogState = ref<boolean>(false)

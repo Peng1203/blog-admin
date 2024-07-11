@@ -44,13 +44,7 @@ const getInitMenuData = () => {
   return allDynamicRoutes[0].children.reduce(
     (prev, cur) => {
       const { name: menuUri, path: menuPath, children } = cur
-      const {
-        title: menuName,
-        icon: menuIcon,
-        orderNum,
-        isHide,
-        isKeepAlive,
-      } = cur.meta
+      const { title: menuName, icon: menuIcon, orderNum, isHide, isKeepAlive } = cur.meta
 
       prev.parentMenus.push({
         menuUri,

@@ -21,10 +21,7 @@ export function useArticleApi() {
     /**
      * 通过文章id获取详情信息
      */
-    getArticleDetailById<T>(
-      uid: number,
-      articleId: number
-    ): TransformedResponse<T> {
+    getArticleDetailById<T>(uid: number, articleId: number): TransformedResponse<T> {
       return request({
         url: `/article/${uid}/${articleId}`,
         method: Method.GET,
@@ -53,11 +50,7 @@ export function useArticleApi() {
      * @param {any} data:object
      * @returns {any}
      */
-    updateArticle<T>(
-      authorId: number,
-      articleId: number,
-      data: object
-    ): TransformedResponse<T> {
+    updateArticle<T>(authorId: number, articleId: number, data: object): TransformedResponse<T> {
       return request({
         url: `/article/${authorId}/${articleId}`,
         method: Method.PATCH,

@@ -94,12 +94,7 @@ import { ref, reactive, onMounted, defineAsyncComponent } from 'vue'
 import { usePermissionInfo } from '@/stores/permissionList'
 import { usePermissionApi } from '@/api'
 import { Plus } from '@element-plus/icons-vue'
-import {
-  ColumnItem,
-  PageInfo,
-  PageChangeParams,
-  ColumnChangeParams,
-} from '@/components/Table'
+import { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table'
 import { PermissionData, PermissionListData } from './types'
 import { queryStrHighlight } from '@/utils/queryStrHighlight'
 import { resourceMethodOptions } from './'
@@ -109,8 +104,7 @@ import { isObject } from 'lodash'
 
 const permissionStore = usePermissionInfo()
 
-const { getPermissions, delAuthPermission, getPermCodeOptions } =
-  usePermissionApi()
+const { getPermissions, delAuthPermission, getPermCodeOptions } = usePermissionApi()
 // 表格参数
 const tableState = reactive({
   loading: false,
@@ -221,9 +215,7 @@ const delAuthPermissionById = async (id: number): Promise<boolean> => {
 }
 
 // 编辑权限标识
-const EditAuthPermissonDrawer = defineAsyncComponent(
-  () => import('./components/EditAuthPermisson.vue')
-)
+const EditAuthPermissonDrawer = defineAsyncComponent(() => import('./components/EditAuthPermisson.vue'))
 
 const editAuthDrawerRef = ref<RefType>(null)
 const editAuthRowInfo = ref<PermissionData>({
@@ -245,9 +237,7 @@ const handleEditAuthPermission = (row: PermissionData) => {
 }
 
 // 添加权限标识
-const AddAuthPermissonDialog = defineAsyncComponent(
-  () => import('./components/AddAuthPermisson.vue')
-)
+const AddAuthPermissonDialog = defineAsyncComponent(() => import('./components/AddAuthPermisson.vue'))
 const addAuthDialogRef = ref<RefType>(null)
 
 const handleUpdate = async () => {
@@ -291,10 +281,7 @@ const getPermissionCodeOptions = async () => {
   }
 }
 
-const optionItemIsDisabled = (
-  value: string,
-  PermissionData: PermissionData[]
-): boolean => {
+const optionItemIsDisabled = (value: string, PermissionData: PermissionData[]): boolean => {
   for (let i = 0; i < PermissionData.length; i++) {
     if (PermissionData[i].permissionCode === value) return true
 

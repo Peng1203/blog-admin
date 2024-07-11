@@ -100,12 +100,7 @@
 <script setup lang="tsx" name="ArticleTag">
 import { defineAsyncComponent, ref, onMounted, reactive } from 'vue'
 import { queryStrHighlight } from '@/utils/queryStrHighlight'
-import {
-  ColumnItem,
-  PageInfo,
-  PageChangeParams,
-  ColumnChangeParams,
-} from '@/components/Table'
+import { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table'
 import { useTagApi } from '@/api/tag/index'
 import { TagData, TagListData } from './'
 import { useArticleInfo } from '@/stores/articleInfo'
@@ -249,9 +244,7 @@ const handleBatchDelete = async () => {
 
 // 处理编辑标签
 const editRow = ref()
-const EditTagDrawer = defineAsyncComponent(
-  () => import('./components/EditTag.vue')
-)
+const EditTagDrawer = defineAsyncComponent(() => import('./components/EditTag.vue'))
 const editDrawerRef = ref<any>(null)
 const handleEditTag = (row: any) => {
   editRow.value = JSON.parse(JSON.stringify(row))
@@ -259,9 +252,7 @@ const handleEditTag = (row: any) => {
 }
 
 // 处理添加标签
-const AddTagDialog = defineAsyncComponent(
-  () => import('./components/AddTag.vue')
-)
+const AddTagDialog = defineAsyncComponent(() => import('./components/AddTag.vue'))
 const addDialogRef = ref<any>(null)
 
 // 页面加载时

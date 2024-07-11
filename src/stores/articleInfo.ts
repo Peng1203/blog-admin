@@ -30,11 +30,8 @@ export const useArticleInfo = defineStore('articleInfo', {
     // 获取全部文章分类数据
     async getCategoryData(updata?: boolean) {
       try {
-        if (this.categoryList.length && this.categoryOption.length && !updata)
-          return
-        const { data: res } = await getCategorys<CategoryListDate>(
-          this.allParams
-        )
+        if (this.categoryList.length && this.categoryOption.length && !updata) return
+        const { data: res } = await getCategorys<CategoryListDate>(this.allParams)
         const { code, message, data, success } = res
         if (code !== 20000 || !success) return
 

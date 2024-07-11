@@ -72,12 +72,7 @@ import { queryStrHighlight } from '@/utils/queryStrHighlight'
 import { useRoleApi } from '@/api/role/index'
 import { useRolesInfo } from '@/stores/roleList'
 import { RoleData, RoleListData, RoleEntityData } from './types'
-import Table, {
-  ColumnItem,
-  PageInfo,
-  PageChangeParams,
-  ColumnChangeParams,
-} from '@/components/Table'
+import Table, { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table'
 import Search from '@/components/Search'
 
 const { getRole, deleteRole } = useRoleApi()
@@ -188,9 +183,7 @@ const deleteRoleById = async (id: number): Promise<boolean> => {
 
 // 处理编辑角色
 const editRow = ref<RoleEntityData>()
-const EditRoleDrawer = defineAsyncComponent(
-  () => import('./components/EditRole.vue')
-)
+const EditRoleDrawer = defineAsyncComponent(() => import('./components/EditRole.vue'))
 const editDrawerRef = ref<RefType>(null)
 const handleEditRole = (row: RoleEntityData) => {
   editRow.value = row
@@ -198,16 +191,12 @@ const handleEditRole = (row: RoleEntityData) => {
 }
 
 // 处理添加角色
-const AddRoleDialog = defineAsyncComponent(
-  () => import('./components/AddRole.vue')
-)
+const AddRoleDialog = defineAsyncComponent(() => import('./components/AddRole.vue'))
 const addDialogRef = ref<RefType>(null)
 
 // 查看角色
 const viewRow = ref<RoleEntityData>()
-const ViewRoleDialog = defineAsyncComponent(
-  () => import('./components/ViewRole.vue')
-)
+const ViewRoleDialog = defineAsyncComponent(() => import('./components/ViewRole.vue'))
 const viewDialogRef = ref<RefType>(null)
 const handleViewRole = (row: RoleEntityData) => {
   viewRow.value = row

@@ -68,8 +68,7 @@ const closeIframeLoading = (val: string, item: RouteItem) => {
     iframeRef.value.forEach((v: HTMLElement) => {
       if (v.dataset.url === val) {
         v.onload = () => {
-          if (item.meta?.isIframeOpen && item.meta.loading)
-            item.meta.loading = false
+          if (item.meta?.isIframeOpen && item.meta.loading) item.meta.loading = false
         }
       }
     })

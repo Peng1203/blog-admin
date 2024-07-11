@@ -26,10 +26,7 @@ const divRef = ref<RefType>()
 let aiEditor: AiEditor | null = null
 
 // 内容变化 获取目录 getOutline()
-const handleContenChange = _.debounce(
-  (editor: AiEditor) => (modelValue.value = editor.getMarkdown()),
-  300
-)
+const handleContenChange = _.debounce((editor: AiEditor) => (modelValue.value = editor.getMarkdown()), 300)
 
 const handleUploadImage = (file: File): Promise<Record<string, any>> => {
   // eslint-disable-next-line no-async-promise-executor

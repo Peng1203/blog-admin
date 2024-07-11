@@ -7,37 +7,21 @@ export default function () {
   const { toClipboard } = useClipboard()
 
   // 百分比格式化
-  const percentFormat = (
-    row: EmptyArrayType,
-    column: number,
-    cellValue: string
-  ) => {
+  const percentFormat = (row: EmptyArrayType, column: number, cellValue: string) => {
     return cellValue ? `${cellValue}%` : '-'
   }
   // 列表日期时间格式化
-  const dateFormatYMD = (
-    row: EmptyArrayType,
-    column: number,
-    cellValue: string
-  ) => {
+  const dateFormatYMD = (row: EmptyArrayType, column: number, cellValue: string) => {
     if (!cellValue) return '-'
     return formatDate(new Date(cellValue), 'YYYY-mm-dd')
   }
   // 列表日期时间格式化
-  const dateFormatYMDHMS = (
-    row: EmptyArrayType,
-    column: number,
-    cellValue: string
-  ) => {
+  const dateFormatYMDHMS = (row: EmptyArrayType, column: number, cellValue: string) => {
     if (!cellValue) return '-'
     return formatDate(new Date(cellValue), 'YYYY-mm-dd HH:MM:SS')
   }
   // 列表日期时间格式化
-  const dateFormatHMS = (
-    row: EmptyArrayType,
-    column: number,
-    cellValue: string
-  ) => {
+  const dateFormatHMS = (row: EmptyArrayType, column: number, cellValue: string) => {
     if (!cellValue) return '-'
     let time = 0
     if (typeof row === 'number') time = row

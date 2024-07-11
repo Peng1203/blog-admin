@@ -30,21 +30,7 @@
     <template
       :key="i"
       v-for="(
-        {
-          label,
-          prop,
-          width,
-          minWidth,
-          sort,
-          tooltip,
-          fixed,
-          align,
-          slotName,
-          childrenColumns,
-          classNname,
-          ...args
-        },
-        i
+        { label, prop, width, minWidth, sort, tooltip, fixed, align, slotName, childrenColumns, classNname, ...args }, i
       ) in tableColumns"
     >
       <!-- 自定义某列 -->
@@ -57,9 +43,7 @@
         :min-width="minWidth"
         :class-name="classNname"
         :show-overflow-tooltip="tooltip"
-        :fixed="
-          deviceClientType === 'pc' ? fixed : fixed === 'left' ? false : fixed
-        "
+        :fixed="deviceClientType === 'pc' ? fixed : fixed === 'left' ? false : fixed"
         :align="align || 'left'"
         v-bind="args"
       >
@@ -241,15 +225,7 @@
 </template>
 
 <script setup lang="ts" generic="T">
-import {
-  ref,
-  reactive,
-  watch,
-  onMounted,
-  inject,
-  computed,
-  onUnmounted,
-} from 'vue'
+import { ref, reactive, watch, onMounted, inject, computed, onUnmounted } from 'vue'
 import { ColumnItem, TableAttribute } from './types'
 import { Plus, Edit, Delete, View } from '@element-plus/icons-vue'
 import { useComponentRef } from '@/composables/useComponentRef'
@@ -315,8 +291,7 @@ let tableColumns = ref<ColumnItem[]>([])
 
 // 操作列的宽度
 const operationColumnWidth = computed<number>(() => {
-  const width =
-    props.operationColumnWidth || 45 * props.operationColumnBtns.length
+  const width = props.operationColumnWidth || 45 * props.operationColumnBtns.length
   return width > 60 ? width : 60
 })
 
@@ -330,9 +305,7 @@ watch(
   () => props.isFilterShowColumn,
   val => {
     if (!val) return
-    props.columns.forEach(
-      ({ label, prop }) => prop && filterList.push({ text: label, value: prop })
-    )
+    props.columns.forEach(({ label, prop }) => prop && filterList.push({ text: label, value: prop }))
   },
   {
     deep: true,
@@ -347,13 +320,7 @@ type OrderProp = {
   ascending: string
   descending: string
 }
-const handleColumnSort = ({
-  prop,
-  order,
-}: {
-  prop: string
-  order: keyof OrderProp
-}) => {
+const handleColumnSort = ({ prop, order }: { prop: string; order: keyof OrderProp }) => {
   const orderProp: OrderProp = {
     ascending: 'ASC',
     descending: 'DESC',
@@ -374,9 +341,7 @@ const handleFilterTable = (filters: any) => {
   const { filter } = filters
 
   if (!filter.length) return (tableColumns.value = props.columns)
-  tableColumns.value = props.columns.filter(
-    (column: ColumnItem) => !filter.includes(column.prop)
-  )
+  tableColumns.value = props.columns.filter((column: ColumnItem) => !filter.includes(column.prop))
 }
 const Page = ref<number>(0)
 const PageSize = ref<number>(0)
@@ -443,12 +408,7 @@ const fixedTotalWidth = computed<number>({
       }
     })
 
-    return (
-      totalWidth +
-      (props.isSelection ? 45 : 0) +
-      (props.isFilterShowColumn ? 30 : 0) +
-      operationColumnWidth.value
-    )
+    return totalWidth + (props.isSelection ? 45 : 0) + (props.isFilterShowColumn ? 30 : 0) + operationColumnWidth.value
   },
   set: () => {},
 })
@@ -457,15 +417,12 @@ const fixedTotalWidth = computed<number>({
 const WHEEL_EVENT = 'wheel'
 const setXScrollWhell = () => {
   const rootDom = tableRef.value.$el as HTMLDivElement
-  tableContenDom.value = rootDom.querySelector<HTMLDivElement>(
-    '.el-table__inner-wrapper .el-table__body-wrapper'
-  )
+  tableContenDom.value = rootDom.querySelector<HTMLDivElement>('.el-table__inner-wrapper .el-table__body-wrapper')
 
   tableContenDom.value.addEventListener(WHEEL_EVENT, handleWhell)
 }
 
-const clearXScrollWhell = () =>
-  tableContenDom.value.removeEventListener(WHEEL_EVENT, handleWhell)
+const clearXScrollWhell = () => tableContenDom.value.removeEventListener(WHEEL_EVENT, handleWhell)
 
 const xScorllToValue = ref<number>(0)
 const handleWhell = (event: WheelEvent) => {

@@ -146,19 +146,12 @@ const handleDialogClose = () => {
 }
 
 watchEffect(() => {
-  addAuthState.formItemList.find(
-    item => item.prop === 'permissionCode'
-  )!.isShow = props.parentId !== 0
-  addAuthState.formItemList.find(item => item.prop === 'resourceUrl')!.isShow =
-    props.parentId !== 0
-  addAuthState.formItemList.find(
-    item => item.prop === 'resourceMethod'
-  )!.isShow = props.parentId !== 0
+  addAuthState.formItemList.find(item => item.prop === 'permissionCode')!.isShow = props.parentId !== 0
+  addAuthState.formItemList.find(item => item.prop === 'resourceUrl')!.isShow = props.parentId !== 0
+  addAuthState.formItemList.find(item => item.prop === 'resourceMethod')!.isShow = props.parentId !== 0
 
   addAuthPermissonDialogStatus.value &&
-    (addAuthState.formItemList.find(
-      item => item.prop === 'permissionCode'
-    ).options = props.permissionCodeOptions)
+    (addAuthState.formItemList.find(item => item.prop === 'permissionCode').options = props.permissionCodeOptions)
 })
 
 defineExpose({ addAuthPermissonDialogStatus })

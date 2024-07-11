@@ -37,8 +37,7 @@ export const useUserAuthList = defineStore('userAuthList', {
     async getAllRoleList(updata?: boolean) {
       // 当已经存在则直接返回
       try {
-        if (this.allRoleList.length && this.allRoleOptions.length && !updata)
-          return
+        if (this.allRoleList.length && this.allRoleOptions.length && !updata) return
         const params = {
           ...this.allParams,
         }
@@ -84,12 +83,7 @@ export const useUserAuthList = defineStore('userAuthList', {
     },
     // 获取全部权限标识列表
     async getAllAuthPermissionList(updata?: boolean) {
-      if (
-        this.allAuthPermissionList.length &&
-        this.allAuthPermissionOptions &&
-        !updata
-      )
-        return
+      if (this.allAuthPermissionList.length && this.allAuthPermissionOptions && !updata) return
       try {
         const params = { ...this.allParams }
         const { data: res } = await getAuthPermissionList(params)
@@ -99,12 +93,10 @@ export const useUserAuthList = defineStore('userAuthList', {
           this.allAuthPermissionOptions = []
         } else {
           this.allAuthPermissionList = data
-          this.allAuthPermissionOptions = data.map(
-            ({ permissionName, id }: any) => ({
-              label: permissionName,
-              value: id,
-            })
-          )
+          this.allAuthPermissionOptions = data.map(({ permissionName, id }: any) => ({
+            label: permissionName,
+            value: id,
+          }))
         }
       } catch (e) {
         this.allAuthPermissionList = []

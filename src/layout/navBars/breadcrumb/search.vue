@@ -68,9 +68,7 @@ const closeSearch = () => {
 }
 // 菜单搜索数据过滤
 const menuSearch = (queryString: string, cb: Function) => {
-  let results = queryString
-    ? state.tagsViewList.filter(createFilter(queryString))
-    : state.tagsViewList
+  let results = queryString ? state.tagsViewList.filter(createFilter(queryString)) : state.tagsViewList
   cb(results)
 }
 // 菜单搜索过滤
@@ -78,8 +76,7 @@ const createFilter = (queryString: string) => {
   return (restaurant: RouteItem) => {
     return (
       restaurant.path.toLowerCase().indexOf(queryString.toLowerCase()) > -1 ||
-      restaurant.meta!.title!.toLowerCase().indexOf(queryString.toLowerCase()) >
-        -1 ||
+      restaurant.meta!.title!.toLowerCase().indexOf(queryString.toLowerCase()) > -1 ||
       restaurant.meta!.title!.indexOf(queryString.toLowerCase()) > -1
     )
   }

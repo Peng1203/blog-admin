@@ -99,9 +99,7 @@ const formItemList = ref<FormItem<AddArticleType>[]>([
     label: '访问密码',
     prop: 'accessPassword',
     isShow: articleForm.value.status === 2,
-    rules: [
-      { required: true, trigger: 'blur', message: '私密文章 访问不能为空' },
-    ],
+    rules: [{ required: true, trigger: 'blur', message: '私密文章 访问不能为空' }],
   },
   {
     type: 'upload',
@@ -125,10 +123,7 @@ const validateForm = async (): Promise<boolean> => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const { status, accessPassword, ...args } = articleForm.value
   // 当为私密文章时 调用整个表单校验 否则调用 局部校验
-  const [validateMethod, validateProps] =
-    status === 2
-      ? ['validate', undefined]
-      : ['validateField', Object.keys(args)]
+  const [validateMethod, validateProps] = status === 2 ? ['validate', undefined] : ['validateField', Object.keys(args)]
 
   // prettier-ignore
   const validateStatus = await infoFormRef.value
@@ -141,9 +136,7 @@ const validateForm = async (): Promise<boolean> => {
 const resetFormFields = () => infoFormRef.value.resetFields()
 
 const handleRadioChange = () => {
-  const accessPwdItem = formItemList.value.find(
-    item => item.prop === 'accessPassword'
-  )
+  const accessPwdItem = formItemList.value.find(item => item.prop === 'accessPassword')
   if (articleForm.value.status !== 2) accessPwdItem.isShow = false
   else accessPwdItem.isShow = true
 }

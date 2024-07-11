@@ -18,8 +18,7 @@ const checkForUpdate = () => {
           if ((matches.groups.src as string).includes('/assets/index')) {
             if (!lastScriptHash) lastScriptHash = matches.groups.src
             else {
-              !lastScriptHash === matches.groups.src &&
-                mittBus.emit('onUpgradeOpen', true)
+              !lastScriptHash === matches.groups.src && mittBus.emit('onUpgradeOpen', true)
               lastScriptHash = matches.groups.src
             }
           }

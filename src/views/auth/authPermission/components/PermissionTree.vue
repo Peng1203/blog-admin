@@ -78,10 +78,7 @@ const expandedKeys = ref<number[]>([])
 // 树形结构数据
 const data = ref<PermissionData[]>()
 
-const handleCheckboxChange = (
-  checkedNodes: PermissionData,
-  checkedInfo: any
-) => {
+const handleCheckboxChange = (checkedNodes: PermissionData, checkedInfo: any) => {
   emits('update:checkedPermission', checkedInfo.checkedKeys)
 }
 
@@ -117,9 +114,7 @@ watch(
 
 onMounted(async () => {
   loading.value = true
-  await permissionStore
-    .getPermissionData()
-    .finally(() => (loading.value = false))
+  await permissionStore.getPermissionData().finally(() => (loading.value = false))
   data.value = permissionStore.permissionList
 })
 

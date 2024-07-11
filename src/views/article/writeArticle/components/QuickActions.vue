@@ -49,10 +49,7 @@ const getArticleOptions = async () => {
       order: 'DESC',
       type: 2,
     }
-    const { data: res } = await getUserArticles<ArticleOptionData>(
-      userInfos.id,
-      params
-    )
+    const { data: res } = await getUserArticles<ArticleOptionData>(userInfos.id, params)
     const { code, message, data } = res
     if (code !== 20000 || !message) return
     articleOptions.value = data.list

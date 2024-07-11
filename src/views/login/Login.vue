@@ -7,9 +7,7 @@
           <span class="login-right-warp-one"></span>
           <span class="login-right-warp-two"></span>
           <div class="login-right-warp-mian">
-            <div class="login-right-warp-main-title">
-              {{ getThemeConfig.globalTitle }} 欢迎您！
-            </div>
+            <div class="login-right-warp-main-title">{{ getThemeConfig.globalTitle }} 欢迎您！</div>
             <div class="login-right-warp-main-form">
               <div v-if="!state.isScan">
                 <el-tabs v-model="state.tabsActiveName">
@@ -56,15 +54,9 @@ import { useThemeConfig } from '@/stores/themeConfig'
 import { useCanvasBgc } from './hooks/useCanvasBgc'
 
 // 引入组件
-const Account = defineAsyncComponent(
-  () => import('@/views/login/components/Account.vue')
-)
-const Mobile = defineAsyncComponent(
-  () => import('@/views/login/components/Mobile.vue')
-)
-const Scan = defineAsyncComponent(
-  () => import('@/views/login/components/Scan.vue')
-)
+const Account = defineAsyncComponent(() => import('@/views/login/components/Account.vue'))
+const Mobile = defineAsyncComponent(() => import('@/views/login/components/Mobile.vue'))
+const Scan = defineAsyncComponent(() => import('@/views/login/components/Scan.vue'))
 
 // 设置背景的hooks
 useCanvasBgc()
@@ -97,13 +89,7 @@ const getThemeConfig = computed(() => {
   /* 背景渐变 */
   // background-image: linear-gradient(-225deg, #231557 0%, #43107a 29%, #5231ad 100%);
   // background-image: linear-gradient(-225deg, #0d0b1d 0%, #1e0f37 29%, #220d47 100%);
-  background-image: linear-gradient(
-    -225deg,
-    #001f3f 0%,
-    #0b559f 29%,
-    #136fb9 60%,
-    #0e80dd 100%
-  );
+  background-image: linear-gradient(-225deg, #001f3f 0%, #0b559f 29%, #136fb9 60%, #0e80dd 100%);
   // background-image: linear-gradient(-225deg, #000019 0%, #00003b 29%, #000052 100%);
   // background-image: linear-gradient(to right, #b8cbb8 0%, #b465da 0%, #cf6cc9 33%, #ee609c 66%, #ee609c 100%);
 }
@@ -201,11 +187,7 @@ const getThemeConfig = computed(() => {
           left: 0;
           width: 100%;
           height: 3px;
-          background: linear-gradient(
-            90deg,
-            transparent,
-            var(--el-color-primary)
-          );
+          background: linear-gradient(90deg, transparent, var(--el-color-primary));
           animation: loginLeft 3s linear infinite;
         }
         &::after {
@@ -214,11 +196,7 @@ const getThemeConfig = computed(() => {
           right: 2px;
           width: 3px;
           height: 100%;
-          background: linear-gradient(
-            180deg,
-            transparent,
-            var(--el-color-primary)
-          );
+          background: linear-gradient(180deg, transparent, var(--el-color-primary));
           animation: loginTop 3s linear infinite;
           animation-delay: 0.7s;
         }
@@ -230,11 +208,7 @@ const getThemeConfig = computed(() => {
           right: -100%;
           width: 100%;
           height: 3px;
-          background: linear-gradient(
-            270deg,
-            transparent,
-            var(--el-color-primary)
-          );
+          background: linear-gradient(270deg, transparent, var(--el-color-primary));
           animation: loginRight 3s linear infinite;
           animation-delay: 1.4s;
         }
@@ -244,11 +218,7 @@ const getThemeConfig = computed(() => {
           left: 0px;
           width: 3px;
           height: 100%;
-          background: linear-gradient(
-            360deg,
-            transparent,
-            var(--el-color-primary)
-          );
+          background: linear-gradient(360deg, transparent, var(--el-color-primary));
           animation: loginBottom 3s linear infinite;
           animation-delay: 2.1s;
         }

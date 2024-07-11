@@ -61,11 +61,7 @@ const handleFileChange = e => {
   reader.readAsDataURL(files[0])
 
   reader.onload = e => {
-    console.log(
-      `%c e.target.result ----`,
-      'color: #fff;background-color: #000;font-size: 18px',
-      e.target.result
-    )
+    console.log(`%c e.target.result ----`, 'color: #fff;background-color: #000;font-size: 18px', e.target.result)
     img.value = e.target.result as string
   }
 }

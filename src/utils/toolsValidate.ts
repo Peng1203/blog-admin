@@ -146,10 +146,7 @@ export function verifyNumberComma(val: string) {
  */
 export function verifyTextColor(val: string, text = '', color = 'red') {
   // 返回内容，添加颜色
-  let v = text.replace(
-    new RegExp(val, 'gi'),
-    `<span style='color: ${color}'>${val}</span>`
-  )
+  let v = text.replace(new RegExp(val, 'gi'), `<span style='color: ${color}'>${val}</span>`)
   // 返回结果
   return v
 }
@@ -160,11 +157,7 @@ export function verifyTextColor(val: string, text = '', color = 'red') {
  * @param unit 默认：仟佰拾亿仟佰拾万仟佰拾元角分
  * @returns 返回处理后的字符串
  */
-export function verifyNumberCnUppercase(
-  val: any,
-  unit = '仟佰拾亿仟佰拾万仟佰拾元角分',
-  v = ''
-) {
+export function verifyNumberCnUppercase(val: any, unit = '仟佰拾亿仟佰拾万仟佰拾元角分', v = '') {
   // 当前内容字符串添加 2个0，为什么??
   val += '00'
   // 返回某个指定的字符串值在字符串中首次出现的位置，没有出现，则该方法返回 -1
@@ -197,12 +190,7 @@ export function verifyNumberCnUppercase(
  */
 export function verifyPhone(val: string) {
   // false: 手机号码不正确
-  if (
-    !/^((12[0-9])|(13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0|1,5-9]))\d{8}$/.test(
-      val
-    )
-  )
-    return false
+  if (!/^((12[0-9])|(13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0|1,5-9]))\d{8}$/.test(val)) return false
   // true: 手机号码正确
   else return true
 }
@@ -273,12 +261,7 @@ export function verifyPasswordStrength(val: string) {
   // 弱：纯数字，纯字母，纯特殊字符
   if (/^(?:\d+|[a-zA-Z]+|[!@#$%^&\.*]+){6,16}$/.test(val)) v = '弱'
   // 中：字母+数字，字母+特殊字符，数字+特殊字符
-  if (
-    /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&\.*]+$)[a-zA-Z\d!@#$%^&\.*]{6,16}$/.test(
-      val
-    )
-  )
-    v = '中'
+  if (/^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&\.*]+$)[a-zA-Z\d!@#$%^&\.*]{6,16}$/.test(val)) v = '中'
   // 强：字母+数字+特殊字符
   if (
     /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&\.*]+$)(?![a-zA-z\d]+$)(?![a-zA-z!@#$%^&\.*]+$)(?![\d!@#$%^&\.*]+$)[a-zA-Z\d!@#$%^&\.*]{6,16}$/.test(
@@ -331,12 +314,7 @@ export function verifyEmail(val: string) {
  */
 export function verifyIdCard(val: string) {
   // false: 身份证不正确
-  if (
-    !/^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/.test(
-      val
-    )
-  )
-    return false
+  if (!/^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/.test(val)) return false
   // true: 身份证正确
   else return true
 }
@@ -348,8 +326,7 @@ export function verifyIdCard(val: string) {
  */
 export function verifyFullName(val: string) {
   // false: 姓名不正确
-  if (!/^[\u4e00-\u9fa5]{1,6}(·[\u4e00-\u9fa5]{1,6}){0,2}$/.test(val))
-    return false
+  if (!/^[\u4e00-\u9fa5]{1,6}(·[\u4e00-\u9fa5]{1,6}){0,2}$/.test(val)) return false
   // true: 姓名正确
   else return true
 }

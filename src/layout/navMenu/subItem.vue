@@ -19,9 +19,7 @@
         :index="val.path"
         :key="val.path"
       >
-        <template
-          v-if="!val.meta.isLink || (val.meta.isLink && val.meta.isIframe)"
-        >
+        <template v-if="!val.meta.isLink || (val.meta.isLink && val.meta.isIframe)">
           <SvgIcon :name="val.meta.icon" />
           <span>{{ val.meta.title }}</span>
         </template>

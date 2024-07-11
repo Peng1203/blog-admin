@@ -80,11 +80,7 @@
 import { ref, reactive, onMounted, computed } from 'vue'
 import MarkdownEditor from '@/components/MarkdownEditor'
 import { useRoute, useRouter } from 'vue-router'
-import {
-  AddArticleType,
-  OperationArticleData,
-  ArticleData,
-} from '../article/types'
+import { AddArticleType, OperationArticleData, ArticleData } from '../article/types'
 import { FormItem } from '@/components/Form'
 import AiEditor from '@/components/AiEditor'
 import StepHeadend from './components/StepHeadend.vue'
@@ -94,8 +90,7 @@ import { useArticleApi } from '@/api'
 import { useNotificationMsg } from '@/utils/notificationMsg'
 import QuickActions from './components/QuickActions.vue'
 
-const { addArticle, updateArticle, getArticleDetailById, uploadImage } =
-  useArticleApi()
+const { addArticle, updateArticle, getArticleDetailById, uploadImage } = useArticleApi()
 
 const userInfoStore = useUserInfo()
 
@@ -167,8 +162,7 @@ const handlePublish = async () => {
     .catch(() => false)
   const validate2 = await infoFormRef.value.validateForm()
 
-  if (!(validate1 && validate2))
-    return useNotificationMsg('', '有必填项未填', 'warning')
+  if (!(validate1 && validate2)) return useNotificationMsg('', '有必填项未填', 'warning')
 
   // 创建 / 更新
   if (articleForm.id) return handleUpdateArticle()
@@ -229,10 +223,7 @@ const loadingStatus = ref<boolean>(route.name === 'EditArticle')
 const getArticleDetail = async () => {
   try {
     loadingStatus.value = true
-    const { data: res } = await getArticleDetailById<ArticleData>(
-      userInfoStore.userInfos.id,
-      Number(route.params.aid)
-    )
+    const { data: res } = await getArticleDetailById<ArticleData>(userInfoStore.userInfos.id, Number(route.params.aid))
     const { code, success, data } = res
     if (code !== 20000 && success) return
     const { tags, category, author, ...args } = data
@@ -262,13 +253,7 @@ const editArticleInit = () => {
   }
 }
 
-const handlePasteUploadImg = async ({
-  file,
-  cb,
-}: {
-  file: File
-  cb: Function
-}) => {
+const handlePasteUploadImg = async ({ file, cb }: { file: File; cb: Function }) => {
   const imgUrl = await handleUploadImage(file)
   if (!imgUrl) return
   cb(imgUrl)

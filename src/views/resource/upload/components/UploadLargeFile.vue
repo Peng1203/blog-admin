@@ -33,10 +33,7 @@ const LARGE_FILE_MAX_SIZE_VALUE = MB * LARGE_FILE_MAX_SIZE_MB
 // 切片大小
 const SLICE_SIZE = MB * 2
 
-const handleFileChange = (
-  file: File,
-  maxFileSize = LARGE_FILE_MAX_SIZE_VALUE
-) => {
+const handleFileChange = (file: File, maxFileSize = LARGE_FILE_MAX_SIZE_VALUE) => {
   const { name, size, type } = file
   // type 为空时 file 为目录
   if (!type) return
@@ -88,10 +85,7 @@ const createFileChunks = (file: File): Blob[] => {
   const fileChunks: Blob[] = []
   const currentChunkSize = () => fileChunks.length * SLICE_SIZE
   while (file.size > currentChunkSize()) {
-    const chunk = file.slice(
-      currentChunkSize(),
-      currentChunkSize() + SLICE_SIZE
-    )
+    const chunk = file.slice(currentChunkSize(), currentChunkSize() + SLICE_SIZE)
     fileChunks.push(chunk)
   }
 

@@ -53,22 +53,10 @@ export type FormItemEnum =
   | 'upload'
   | 'inputNum'
 
-export type AcceptEnum =
-  | '.png'
-  | '.jpg'
-  | '.jpeg'
-  | '.gif'
-  | '.webp'
-  | '.txt'
-  | '.mp3'
-  | '.mp4'
+export type AcceptEnum = '.png' | '.jpg' | '.jpeg' | '.gif' | '.webp' | '.txt' | '.mp3' | '.mp4'
 
 // 封装表单formItem属性
-export type FormItem<T = any> = BaseFormItem<T> &
-  UploadLimit &
-  InputAttr &
-  SwitchAttr &
-  InputNumAttr
+export type FormItem<T = any> = BaseFormItem<T> & UploadLimit & InputAttr & SwitchAttr & InputNumAttr
 
 /** 封装表单formItem基础属性 */
 export interface BaseFormItem<T = any> {

@@ -1,10 +1,6 @@
 import type { App } from 'vue'
 import { authDirective } from '@/directive/authDirective'
-import {
-  wavesDirective,
-  dragDirective,
-  oneClickCopy,
-} from '@/directive/customDirective'
+import { wavesDirective, dragDirective, oneClickCopy } from '@/directive/customDirective'
 import { slideIn } from './animationDirective'
 
 /**

@@ -15,13 +15,7 @@
             class="user-info-skeleton-container flex-sb-c"
             v-if="loading"
           >
-            <el-skeleton
-              style="
-                --el-skeleton-circle-size: 140px;
-                width: auto;
-                margin-right: 10px;
-              "
-            >
+            <el-skeleton style="--el-skeleton-circle-size: 140px; width: auto; margin-right: 10px">
               <template #template>
                 <el-skeleton-item variant="circle" />
               </template>
@@ -193,9 +187,7 @@
             <div class="personal-edit-safe-item">
               <div class="personal-edit-safe-item-left">
                 <div class="personal-edit-safe-item-left-label">账户密码</div>
-                <div class="personal-edit-safe-item-left-value">
-                  当前密码强度：强
-                </div>
+                <div class="personal-edit-safe-item-left-value">当前密码强度：强</div>
               </div>
               <div class="personal-edit-safe-item-right">
                 <el-button
@@ -277,8 +269,7 @@ import { AddEditUserType } from '../user/user'
 
 const { userInfos } = useUserInfo()
 
-const defaultAvatar =
-  'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+const defaultAvatar = 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
 
 //
 //
@@ -294,8 +285,7 @@ const personalInfoItemMapping = [
   [
     {
       label: '位置信息',
-      value: () =>
-        `${locationInfo.country}${locationInfo.province}${locationInfo.city}`,
+      value: () => `${locationInfo.country}${locationInfo.province}${locationInfo.city}`,
     },
     { label: '登录IP', value: () => ip },
     { label: '登录时间', value: () => loginTime || '--' },
@@ -405,18 +395,14 @@ const handleUpdatePersonalInfo = () => {
 const saveEditUserInfo = async () => {}
 
 // 更新用户头像
-const UploadAvatarDialog = defineAsyncComponent(
-  () => import('./components/UploadAvatarDialog.vue')
-)
+const UploadAvatarDialog = defineAsyncComponent(() => import('./components/UploadAvatarDialog.vue'))
 const uploadAvatarDialogRef = ref<RefType>()
 const handleShowChangeAvatarDialog = () => {
   uploadAvatarDialogRef.value.dialogState = true
 }
 
 // 修改密码
-const ChangePasswordDialog = defineAsyncComponent(
-  () => import('./components/ChangePasswordDialog.vue')
-)
+const ChangePasswordDialog = defineAsyncComponent(() => import('./components/ChangePasswordDialog.vue'))
 const changePasswordDialogRef = ref<RefType>()
 const handleShowChangePasswordDialog = () => {
   changePasswordDialogRef.value.dialogState = true

@@ -1,11 +1,7 @@
 <template>
   <el-main
     class="layout-main"
-    :style="
-      isFixedHeader
-        ? `height: calc(100% - ${setMainHeight})`
-        : `minHeight: calc(100% - ${setMainHeight})`
-    "
+    :style="isFixedHeader ? `height: calc(100% - ${setMainHeight})` : `minHeight: calc(100% - ${setMainHeight})`"
   >
     <el-scrollbar
       ref="layoutMainScrollbarRef"
@@ -50,8 +46,7 @@ const isFixedHeader = computed(() => {
 })
 // 设置 Backtop 回到顶部
 const setBacktopClass = computed(() => {
-  if (themeConfig.value.isFixedHeader)
-    return `.layout-backtop-header-fixed .el-scrollbar__wrap`
+  if (themeConfig.value.isFixedHeader) return `.layout-backtop-header-fixed .el-scrollbar__wrap`
   else return `.layout-backtop .el-scrollbar__wrap`
 })
 // 设置主内容区的高度

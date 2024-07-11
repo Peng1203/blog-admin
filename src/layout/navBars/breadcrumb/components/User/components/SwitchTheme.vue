@@ -79,35 +79,22 @@ const setHTMLThemeAttr = (val: string, pointerEvent?: PointerEvent) => {
     const x = pointerEvent.clientX
     const y = pointerEvent.clientY
 
-    const endRadius = Math.hypot(
-      Math.max(x, innerWidth - x),
-      Math.max(y, innerHeight - y)
-    )
+    const endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))
 
     // @ts-ignore
-    const transition = document.startViewTransition(() =>
-      HTML.setAttribute('data-theme', val)
-    )
+    const transition = document.startViewTransition(() => HTML.setAttribute('data-theme', val))
 
     transition.ready.then(() => {
-      const clipPath = [
-        `circle(0px at ${x}px ${y}px)`,
-        `circle(${endRadius}px at ${x}px ${y}px)`,
-      ]
+      const clipPath = [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`]
       document.documentElement.animate(
         {
-          clipPath:
-            themeConfig.value.themeMode === 'dark'
-              ? clipPath
-              : [...clipPath].reverse(),
+          clipPath: themeConfig.value.themeMode === 'dark' ? clipPath : [...clipPath].reverse(),
         },
         {
           duration: 400,
           easing: 'ease-in',
           pseudoElement:
-            themeConfig.value.themeMode === 'dark'
-              ? '::view-transition-new(root)'
-              : '::view-transition-old(root)',
+            themeConfig.value.themeMode === 'dark' ? '::view-transition-new(root)' : '::view-transition-old(root)',
         }
       )
     })

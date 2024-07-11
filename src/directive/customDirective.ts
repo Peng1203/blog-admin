@@ -73,14 +73,8 @@ export function dragDirective(app: App) {
 
       function down(e: any, type: string) {
         // 鼠标按下，计算当前元素距离可视区的距离
-        const disX =
-          type === 'pc'
-            ? e.clientX - dragHeader.offsetLeft
-            : e.touches[0].clientX - dragHeader.offsetLeft
-        const disY =
-          type === 'pc'
-            ? e.clientY - dragHeader.offsetTop
-            : e.touches[0].clientY - dragHeader.offsetTop
+        const disX = type === 'pc' ? e.clientX - dragHeader.offsetLeft : e.touches[0].clientX - dragHeader.offsetLeft
+        const disY = type === 'pc' ? e.clientY - dragHeader.offsetTop : e.touches[0].clientY - dragHeader.offsetTop
 
         // body当前宽度
         const screenWidth = document.body.clientWidth
@@ -124,20 +118,10 @@ export function dragDirective(app: App) {
       }
 
       function move(e: any, type: string, obj: any) {
-        let {
-          disX,
-          disY,
-          minDragDomLeft,
-          maxDragDomLeft,
-          minDragDomTop,
-          maxDragDomTop,
-          styL,
-          styT,
-        } = obj
+        let { disX, disY, minDragDomLeft, maxDragDomLeft, minDragDomTop, maxDragDomTop, styL, styT } = obj
 
         // 通过事件委托，计算移动的距离
-        let left =
-          type === 'pc' ? e.clientX - disX : e.touches[0].clientX - disX
+        let left = type === 'pc' ? e.clientX - disX : e.touches[0].clientX - disX
         let top = type === 'pc' ? e.clientY - disY : e.touches[0].clientY - disY
 
         // 边界处理
@@ -212,12 +196,8 @@ export function oneClickCopy(app: App) {
         text: () => binding.value,
       })
 
-      vnode.dirs[0].dir.clipboard.on('success', () =>
-        ElMessage.success('复制成功')
-      )
-      vnode.dirs[0].dir.clipboard.on('error', () =>
-        ElMessage.error('复制失败!')
-      )
+      vnode.dirs[0].dir.clipboard.on('success', () => ElMessage.success('复制成功'))
+      vnode.dirs[0].dir.clipboard.on('error', () => ElMessage.error('复制失败!'))
     },
     updated(el, binding, vnode: any) {
       const clipboard = vnode.dirs[0].dir.clipboard

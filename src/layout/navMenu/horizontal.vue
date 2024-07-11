@@ -31,9 +31,7 @@
             >
               <template
                 #title
-                v-if="
-                  !val.meta.isLink || (val.meta.isLink && val.meta.isIframe)
-                "
+                v-if="!val.meta.isLink || (val.meta.isLink && val.meta.isIframe)"
               >
                 <SvgIcon :name="val.meta.icon" />
                 {{ val.meta.title }}
@@ -59,15 +57,7 @@
 </template>
 
 <script setup lang="ts" name="navMenuHorizontal">
-import {
-  defineAsyncComponent,
-  reactive,
-  computed,
-  onMounted,
-  nextTick,
-  onBeforeMount,
-  ref,
-} from 'vue'
+import { defineAsyncComponent, reactive, computed, onMounted, nextTick, onBeforeMount, ref } from 'vue'
 import { useRoute, onBeforeRouteUpdate, RouteRecordRaw } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useRoutesList } from '@/stores/routesList'
@@ -76,9 +66,7 @@ import other from '@/utils/other'
 import mittBus from '@/utils/mitt'
 
 // 引入组件
-const SubItem = defineAsyncComponent(
-  () => import('@/layout/navMenu/subItem.vue')
-)
+const SubItem = defineAsyncComponent(() => import('@/layout/navMenu/subItem.vue'))
 
 // 定义父组件传过来的值
 const props = defineProps({
@@ -113,9 +101,7 @@ const onElMenuHorizontalScroll = (e: WheelEventType) => {
 // 初始化数据，页面刷新时，滚动条滚动到对应位置
 const initElMenuOffsetLeft = () => {
   nextTick(() => {
-    let els = <HTMLElement>(
-      document.querySelector('.el-menu.el-menu--horizontal li.is-active')
-    )
+    let els = <HTMLElement>document.querySelector('.el-menu.el-menu--horizontal li.is-active')
     if (!els) return false
     elMenuHorizontalScrollRef.value.$refs.wrapRef.scrollLeft = els.offsetLeft
   })
@@ -150,11 +136,8 @@ const setCurrentRouterHighlight = (currentRoute: RouteToFrom) => {
   if (themeConfig.value.layout === 'classic') {
     state.defaultActive = `/${path?.split('/')[1]}`
   } else {
-    const pathSplit = meta?.isDynamic
-      ? meta.isDynamicPath!.split('/')
-      : path!.split('/')
-    if (pathSplit.length >= 4 && meta?.isHide)
-      state.defaultActive = pathSplit.splice(0, 3).join('/')
+    const pathSplit = meta?.isDynamic ? meta.isDynamicPath!.split('/') : path!.split('/')
+    if (pathSplit.length >= 4 && meta?.isHide) state.defaultActive = pathSplit.splice(0, 3).join('/')
     else state.defaultActive = path
   }
 }

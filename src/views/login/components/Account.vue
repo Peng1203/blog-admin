@@ -189,14 +189,7 @@ const handleUserLogin = async () => {
     await loginFormRef.value.validate()
     loginState.loading.signIn = true
     // 调用后端验证码校验接口
-    const {
-      user,
-      tokens,
-      clientInfo,
-      loginTime,
-      ip,
-      location: locationInfo,
-    } = await getLoginUserInfo()
+    const { user, tokens, clientInfo, loginTime, ip, location: locationInfo } = await getLoginUserInfo()
     if (!user || !tokens) return
 
     userInfoStore.userInfos = user

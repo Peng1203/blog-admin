@@ -56,9 +56,7 @@ declare module 'Api' {
   /**
    * @description 接口成功 经过响应拦截器转换的 数据结构接口成功 经过响应拦截器转换的 数据结构
    */
-  export type TransformedResponse<T> = Promise<
-    AxiosResponse<ApiBaseResponse<T>>
-  >
+  export type TransformedResponse<T> = Promise<AxiosResponse<ApiBaseResponse<T>>>
 
   /**
    * @description 列表接口返回的基本格式

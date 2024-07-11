@@ -238,9 +238,7 @@ const deleteMenuById = async (id: number): Promise<boolean> => {
 }
 
 // 处理编辑菜单
-const EditMenuDrawer = defineAsyncComponent(
-  () => import('./components/EditMenu.vue')
-)
+const EditMenuDrawer = defineAsyncComponent(() => import('./components/EditMenu.vue'))
 const editDrawerRef = ref<RefType>(null)
 const editRow = ref<MenuData>()
 const handleEditMenu = (row: MenuData) => {
@@ -258,9 +256,7 @@ const handleAddChildrenMenu = (row: MenuData) => {
 // 添加子菜单的父菜单
 const parentRow = ref<MenuData>()
 // 处理添加菜单
-const AddMenuDialog = defineAsyncComponent(
-  () => import('./components/AddMenu.vue')
-)
+const AddMenuDialog = defineAsyncComponent(() => import('./components/AddMenu.vue'))
 const addDialogRef = ref<RefType>(null)
 
 // 添加全部菜单按钮

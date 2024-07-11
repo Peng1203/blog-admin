@@ -4,10 +4,7 @@
  * @param old 源数据
  * @returns 两数组相同返回 `true`，反之则反
  */
-export function judementSameArr(
-  newArr: unknown[] | string[],
-  oldArr: string[]
-): boolean {
+export function judementSameArr(newArr: unknown[] | string[], oldArr: string[]): boolean {
   const news = removeDuplicate(newArr)
   const olds = removeDuplicate(oldArr)
   let count = 0
@@ -58,9 +55,7 @@ export function removeDuplicate(arr: EmptyArrayType, attr?: string) {
     if (attr) {
       const obj: EmptyObjectType = {}
       return arr.reduce((cur: EmptyArrayType[], item: EmptyArrayType) => {
-        obj[item[attr]]
-          ? ''
-          : (obj[item[attr]] = true && item[attr] && cur.push(item))
+        obj[item[attr]] ? '' : (obj[item[attr]] = true && item[attr] && cur.push(item))
         return cur
       }, [])
     } else {

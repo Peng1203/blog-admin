@@ -51,16 +51,12 @@ const state = reactive<AsideState>({
 const setCollapseStyle = computed(() => {
   const { layout, isCollapse, menuBar } = themeConfig.value
   const asideBrTheme = ['#FFFFFF', '#FFF', '#fff', '#ffffff']
-  const asideBrColor = asideBrTheme.includes(menuBar)
-    ? 'layout-el-aside-br-color'
-    : ''
+  const asideBrColor = asideBrTheme.includes(menuBar) ? 'layout-el-aside-br-color' : ''
   // 判断是否是手机端
   if (state.clientWidth <= 1000) {
     if (isCollapse) {
       document.body.setAttribute('class', 'el-popup-parent--hidden')
-      const asideEle = document.querySelector(
-        '.layout-container'
-      ) as HTMLElement
+      const asideEle = document.querySelector('.layout-container') as HTMLElement
       const modeDivs = document.createElement('div')
       modeDivs.setAttribute('class', 'layout-aside-mobile-mode')
       asideEle.appendChild(modeDivs)
@@ -86,10 +82,7 @@ const setCollapseStyle = computed(() => {
 // 设置显示/隐藏 logo
 const setShowLogo = computed(() => {
   let { layout, isShowLogo } = themeConfig.value
-  return (
-    (isShowLogo && layout === 'defaults') ||
-    (isShowLogo && layout === 'columns')
-  )
+  return (isShowLogo && layout === 'defaults') || (isShowLogo && layout === 'columns')
 })
 // 关闭移动端蒙版
 const closeLayoutAsideMobileMode = () => {

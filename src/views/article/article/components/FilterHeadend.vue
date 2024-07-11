@@ -158,11 +158,7 @@ import { UserSelect } from '@/views/user/user'
 import DatePicker from '@/components/Date'
 
 const props = defineProps<FilterHeadendProps>()
-const emits = defineEmits([
-  'update:modelValue',
-  'resetFilterGetDataList',
-  'search',
-])
+const emits = defineEmits(['update:modelValue', 'resetFilterGetDataList', 'search'])
 
 const userInfoStore = useUserInfo()
 const articleInfoStore = useArticleInfo()
@@ -219,20 +215,13 @@ watch(
 
 const optionsInit = async () => {
   filterState.loading = true
-  await Promise.all([
-    articleInfoStore.getCategoryData(),
-    articleInfoStore.getTagData(),
-  ]).catch(() => (filterState.loading = false))
+  await Promise.all([articleInfoStore.getCategoryData(), articleInfoStore.getTagData()]).catch(
+    () => (filterState.loading = false)
+  )
 
   nextTick(() => {
-    filterState.categoryList = [
-      ...filterState.categoryList,
-      ...articleInfoStore.categoryOption,
-    ]
-    filterState.tagList = [
-      ...filterState.tagList,
-      ...articleInfoStore.tagOption,
-    ]
+    filterState.categoryList = [...filterState.categoryList, ...articleInfoStore.categoryOption]
+    filterState.tagList = [...filterState.tagList, ...articleInfoStore.tagOption]
     filterState.loading = false
   })
 }

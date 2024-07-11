@@ -42,30 +42,15 @@ export function formatDate(date: Date, format: string): string {
   if (/(W+)/.test(format))
     format = format.replace(
       RegExp.$1,
-      RegExp.$1.length > 1
-        ? RegExp.$1.length > 2
-          ? '星期' + week[we]
-          : '周' + week[we]
-        : week[we]
+      RegExp.$1.length > 1 ? (RegExp.$1.length > 2 ? '星期' + week[we] : '周' + week[we]) : week[we]
     )
   if (/(Q+)/.test(format))
-    format = format.replace(
-      RegExp.$1,
-      RegExp.$1.length == 4 ? '第' + quarter[qut] + '季度' : quarter[qut]
-    )
-  if (/(Z+)/.test(format))
-    format = format.replace(
-      RegExp.$1,
-      RegExp.$1.length == 3 ? '第' + z + '周' : z + ''
-    )
+    format = format.replace(RegExp.$1, RegExp.$1.length == 4 ? '第' + quarter[qut] + '季度' : quarter[qut])
+  if (/(Z+)/.test(format)) format = format.replace(RegExp.$1, RegExp.$1.length == 3 ? '第' + z + '周' : z + '')
   for (let k in opt) {
     let r = new RegExp('(' + k + ')').exec(format)
     // 若输入的长度不为1，则前面补零
-    if (r)
-      format = format.replace(
-        r[1],
-        RegExp.$1.length == 1 ? opt[k] : opt[k].padStart(RegExp.$1.length, '0')
-      )
+    if (r) format = format.replace(r[1], RegExp.$1.length == 1 ? opt[k] : opt[k].padStart(RegExp.$1.length, '0'))
   }
   return format
 }
@@ -102,18 +87,13 @@ export function getWeek(dateTime: Date): number {
  * @description param 3天：   60 * 60* 24 * 1000 * 3
  * @returns 返回拼接后的时间字符串
  */
-export function formatPast(
-  param: string | Date,
-  format: string = 'YYYY-mm-dd'
-): string {
+export function formatPast(param: string | Date, format: string = 'YYYY-mm-dd'): string {
   // 传入格式处理、存储转换值
   let t: any, s: number
   // 获取js 时间戳
   let time: number = new Date().getTime()
   // 是否是对象
-  typeof param === 'string' || 'object'
-    ? (t = new Date(param).getTime())
-    : (t = param)
+  typeof param === 'string' || 'object' ? (t = new Date(param).getTime()) : (t = param)
   // 当前时间戳 - 传入时间戳
   time = Number.parseInt(`${time - t}`)
   if (time < 10000) {

@@ -115,8 +115,7 @@ const handleSaveEdit = async () => {
 const saveEditAuthPermisson = async (): Promise<boolean> => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-    const { id, updateTime, createTime, children, ...params } =
-      editFormState.data
+    const { id, updateTime, createTime, children, ...params } = editFormState.data
     const { data: res } = await updateAuthPermInfo<string>(id, params)
     const { code, data, success } = res
     if (code !== 20001 || !success) return false
@@ -130,30 +129,19 @@ const saveEditAuthPermisson = async (): Promise<boolean> => {
 
 watchEffect(() => {
   if (!Object.keys(props.editRow).length) return
-  const isEditParent = ['', null, undefined].includes(
-    props.editRow?.permissionCode
-  )
+  const isEditParent = ['', null, undefined].includes(props.editRow?.permissionCode)
 
-  editFormState.formItemList.find(
-    item => item.prop === 'permissionCode'
-  )!.isShow = !isEditParent
-  editFormState.formItemList.find(item => item.prop === 'resourceUrl')!.isShow =
-    !isEditParent
-  editFormState.formItemList.find(
-    item => item.prop === 'resourceMethod'
-  )!.isShow = !isEditParent
+  editFormState.formItemList.find(item => item.prop === 'permissionCode')!.isShow = !isEditParent
+  editFormState.formItemList.find(item => item.prop === 'resourceUrl')!.isShow = !isEditParent
+  editFormState.formItemList.find(item => item.prop === 'resourceMethod')!.isShow = !isEditParent
 
   editDrawerStatus.value &&
-    (editFormState.formItemList.find(
-      item => item.prop === 'permissionCode'
-    ).options = props.permissionCodeOptions)
+    (editFormState.formItemList.find(item => item.prop === 'permissionCode').options = props.permissionCodeOptions)
 })
 
 watch(
   () => props.editRow,
-  val =>
-    !Object.keys(val).length &&
-    (editFormState.data = JSON.parse(JSON.stringify(val))),
+  val => !Object.keys(val).length && (editFormState.data = JSON.parse(JSON.stringify(val))),
   { deep: true }
 )
 

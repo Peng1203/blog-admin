@@ -48,12 +48,7 @@ const toolbarConfigHashMapping = {
   common: commonToolbars,
 }
 
-const emit = defineEmits([
-  'update:modelValue',
-  'uploadImg',
-  'fastSave',
-  'pasteUploadImg',
-])
+const emit = defineEmits(['update:modelValue', 'uploadImg', 'fastSave', 'pasteUploadImg'])
 
 const insert = (generator: InsertContentGenerator) => {
   ;(<any>mdEditorRef.value).insert(generator)
@@ -71,11 +66,7 @@ const props = withDefaults(defineProps<MarkdownEditorAttibute>(), {
 // 工具栏上传图片事件
 // cb: (urls: Array<string>) => void
 const handleUploadImg = async (files: File[]) => {
-  console.log(
-    `%c files ----`,
-    'color: #fff;background-color: #000;font-size: 18px',
-    files
-  )
+  console.log(`%c files ----`, 'color: #fff;background-color: #000;font-size: 18px', files)
   // emit('uploadImg', files, cb);
   for (let i = 0; i < files.length; i++) {
     handlePasteUploadImg(files[i], ['Files'])
@@ -91,9 +82,7 @@ const PASTE_EVENT = 'paste'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 const addPasteUploadImg = () => {
-  inputEl.value = mdEditorRef.value.$el.querySelector(
-    '.md-editor-input-wrapper'
-  )
+  inputEl.value = mdEditorRef.value.$el.querySelector('.md-editor-input-wrapper')
 
   if (!inputEl.value) return
 

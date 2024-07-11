@@ -97,8 +97,7 @@ const editFormState = reactive({
 // 保存编辑信息
 const saveEditUserInfo = async (): Promise<boolean> => {
   try {
-    const { userName, nickName, userAvatar, userEnabled, roleIds, email } =
-      formData.value
+    const { userName, nickName, userAvatar, userEnabled, roleIds, email } = formData.value
     const params = {
       userName,
       nickName,
@@ -107,10 +106,7 @@ const saveEditUserInfo = async (): Promise<boolean> => {
       roleIds,
       email: email === '' ? null : email,
     }
-    const { data: res } = await updateUser<UserData>(
-      props.editRow.id,
-      params as any
-    )
+    const { data: res } = await updateUser<UserData>(props.editRow.id, params as any)
     const { code, message, success } = res
     if (code !== 20001 || !success) return false
 
@@ -142,8 +138,7 @@ watch(
 )
 
 watch(editDrawerStatus, async val => {
-  editFormState.formItemList.find(item => item.prop === 'roleIds')!.options =
-    props.roles
+  editFormState.formItemList.find(item => item.prop === 'roleIds')!.options = props.roles
   if (!val) editFormRef.value.getRef().resetFields()
 })
 

@@ -54,10 +54,7 @@ export function useMenuApi() {
      * @param {any} params:EditMenuParams
      * @returns {any}
      */
-    updataMenu<T = string>(
-      id: number,
-      params: EditMenuParams
-    ): TransformedResponse<T> {
+    updataMenu<T = string>(id: number, params: EditMenuParams): TransformedResponse<T> {
       return request({
         url: `/menu/${id}`,
         method: Method.PUT,

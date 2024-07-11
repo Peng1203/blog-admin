@@ -1,12 +1,6 @@
 import { Component } from 'vue'
 
-export type ButtonTypeEnum =
-  | ''
-  | 'primary'
-  | 'success'
-  | 'info'
-  | 'warning'
-  | 'danger'
+export type ButtonTypeEnum = '' | 'primary' | 'success' | 'info' | 'warning' | 'danger'
 
 export interface ButtonAttribute {
   label?: string

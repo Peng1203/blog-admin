@@ -6,9 +6,7 @@ import axios, { AxiosProgressEvent } from 'axios'
 
 export function useResourceApi() {
   return {
-    getResourceList<T>(
-      params?: Record<'path', string>
-    ): TransformedResponse<T> {
+    getResourceList<T>(params?: Record<'path', string>): TransformedResponse<T> {
       return request({
         url: '/resource',
         method: Method.GET,

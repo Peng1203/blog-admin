@@ -94,10 +94,7 @@ export const lazyImg = (el: string, arr: EmptyArrayType) => {
 export const globalComponentSize = (): string => {
   const stores = useThemeConfig(pinia)
   const { themeConfig } = storeToRefs(stores)
-  return (
-    Local.get('themeConfig')?.globalComponentSize ||
-    themeConfig.value?.globalComponentSize
-  )
+  return Local.get('themeConfig')?.globalComponentSize || themeConfig.value?.globalComponentSize
 }
 
 /**

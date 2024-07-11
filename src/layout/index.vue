@@ -38,9 +38,7 @@ const onLayoutResize = () => {
     })
   } else {
     mittBus.emit('layoutMobileResize', {
-      layout: Local.get('oldLayout')
-        ? Local.get('oldLayout')
-        : themeConfig.value.layout,
+      layout: Local.get('oldLayout') ? Local.get('oldLayout') : themeConfig.value.layout,
       clientWidth,
     })
   }

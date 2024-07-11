@@ -4,9 +4,7 @@
       :title="props.title"
       :modal="props.modal"
       :size="props.size || (deviceClientType === 'pc' ? '400px' : '50%')"
-      :direction="
-        props.direction || (deviceClientType === 'pc' ? 'rtl' : 'btt')
-      "
+      :direction="props.direction || (deviceClientType === 'pc' ? 'rtl' : 'btt')"
       :before-close="handleClose"
       :with-header="props.showHeader"
       :modal-class="props.mdClass"
@@ -60,12 +58,7 @@ const props = withDefaults(defineProps<DrawerAttribute>(), {
   modalClose: true,
 })
 
-const emits = defineEmits([
-  'update:modelValue',
-  'close',
-  'clickCancel',
-  'clickConfirm',
-])
+const emits = defineEmits(['update:modelValue', 'close', 'clickCancel', 'clickConfirm'])
 
 const drawerStatus = ref<boolean>(props.modelValue)
 watch(

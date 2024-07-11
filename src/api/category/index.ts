@@ -41,10 +41,7 @@ export function useCategoryApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    updateCategory<T>(
-      categoryId: number,
-      params: object
-    ): TransformedResponse<T> {
+    updateCategory<T>(categoryId: number, params: object): TransformedResponse<T> {
       return request({
         url: `/category/${categoryId}`,
         method: Method.PATCH,

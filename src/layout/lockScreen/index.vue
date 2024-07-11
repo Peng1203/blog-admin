@@ -39,9 +39,7 @@
         >
           <div class="layout-lock-screen-login-box">
             <div class="layout-lock-screen-login-box-img">
-              <img
-                src="https://img2.baidu.com/it/u=1978192862,2048448374&fm=253&fmt=auto&app=138&f=JPEG?w=504&h=500"
-              />
+              <img src="https://img2.baidu.com/it/u=1978192862,2048448374&fm=253&fmt=auto&app=138&f=JPEG?w=504&h=500" />
             </div>
             <div class="layout-lock-screen-login-box-name">Administrator</div>
             <div class="layout-lock-screen-login-box-value">
@@ -137,15 +135,9 @@ const onMove = () => {
     const el = <HTMLElement>state.querySelectorEl
     const opacitys = (state.transparency -= 1 / 200)
     if (state.moveDifference >= 0) return false
-    el.setAttribute(
-      'style',
-      `top:${state.moveDifference}px;cursor:pointer;opacity:${opacitys};`
-    )
+    el.setAttribute('style', `top:${state.moveDifference}px;cursor:pointer;opacity:${opacitys};`)
     if (state.moveDifference < -400) {
-      el.setAttribute(
-        'style',
-        `top:${-el.clientHeight}px;cursor:pointer;transition:all 0.3s ease;`
-      )
+      el.setAttribute('style', `top:${-el.clientHeight}px;cursor:pointer;transition:all 0.3s ease;`)
       state.moveDifference = -el.clientHeight
       setTimeout(() => {
         el && el.parentNode?.removeChild(el)
@@ -162,10 +154,7 @@ const onEnd = () => {
   state.isFlags = false
   state.transparency = 1
   if (state.moveDifference >= -400) {
-    ;(<HTMLElement>state.querySelectorEl).setAttribute(
-      'style',
-      `top:0px;opacity:1;transition:all 0.3s ease;`
-    )
+    ;(<HTMLElement>state.querySelectorEl).setAttribute('style', `top:0px;opacity:1;transition:all 0.3s ease;`)
   }
 }
 // 获取要拖拽的初始元素

@@ -117,16 +117,8 @@ const handleSaveEdit = async () => {
 // 保存修改数据
 const saveEditRole = async (): Promise<boolean> => {
   try {
-    const {
-      id,
-      permissions: pIds,
-      createTime,
-      updateTime,
-      ...args
-    } = editFormState.data
-    const permissions = pIds?.filter(
-      id => !permissionStore.permissionList.find(p => p.id === id)
-    )
+    const { id, permissions: pIds, createTime, updateTime, ...args } = editFormState.data
+    const permissions = pIds?.filter(id => !permissionStore.permissionList.find(p => p.id === id))
     const params = {
       ...args,
       permissions,

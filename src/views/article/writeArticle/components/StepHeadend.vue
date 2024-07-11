@@ -100,12 +100,7 @@ const stepData = [
 //   type: Object as PropType<AddArticleType>,
 // });
 
-const emit = defineEmits([
-  'clickSaveDraftBox',
-  'clickNextStep',
-  'clickPublish',
-  'clickSave',
-])
+const emit = defineEmits(['clickSaveDraftBox', 'clickNextStep', 'clickPublish', 'clickSave'])
 
 defineProps({
   size: {

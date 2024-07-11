@@ -85,9 +85,7 @@
     >
       <Peng-Icon
         :title="state.isScreenfull ? '退出全屏' : '全屏'"
-        :name="
-          !state.isScreenfull ? 'icon-quanping_o' : 'icon-quxiaoquanping_o'
-        "
+        :name="!state.isScreenfull ? 'icon-quanping_o' : 'icon-quxiaoquanping_o'"
       />
 
       <i class="iconfont"></i>
@@ -138,12 +136,8 @@ import { Local } from '@/utils/storage'
 import SwitchTheme from './components/SwitchTheme.vue'
 
 // 引入组件
-const UserNews = defineAsyncComponent(
-  () => import('@/layout/navBars/breadcrumb/userNews.vue')
-)
-const Search = defineAsyncComponent(
-  () => import('@/layout/navBars/breadcrumb/search.vue')
-)
+const UserNews = defineAsyncComponent(() => import('@/layout/navBars/breadcrumb/userNews.vue'))
+const Search = defineAsyncComponent(() => import('@/layout/navBars/breadcrumb/search.vue'))
 
 // 定义变量内容
 const router = useRouter()
@@ -157,19 +151,14 @@ const state: any = reactive({
   disabledSize: 'large',
 })
 
-const defaultAvatar =
-  'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+const defaultAvatar = 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
 
 // 设置分割样式
 const layoutUserFlexNum = computed(() => {
   let num: string | number = ''
   const { layout, isClassicSplitMenu } = themeConfig.value
   const layoutArr: string[] = ['defaults', 'columns']
-  if (
-    layoutArr.includes(layout) ||
-    (layout === 'classic' && !isClassicSplitMenu)
-  )
-    num = '1'
+  if (layoutArr.includes(layout) || (layout === 'classic' && !isClassicSplitMenu)) num = '1'
   else num = ''
   return num
 })

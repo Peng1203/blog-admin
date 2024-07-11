@@ -68,9 +68,7 @@ import { useThemeConfig } from '@/stores/themeConfig'
 import other from '@/utils/other'
 
 // 引入组件
-const SubItem = defineAsyncComponent(
-  () => import('@/layout/navMenu/subItem.vue')
-)
+const SubItem = defineAsyncComponent(() => import('@/layout/navMenu/subItem.vue'))
 
 // 定义父组件传过来的值
 const props = defineProps({
@@ -98,11 +96,8 @@ const getThemeConfig = computed(() => themeConfig.value)
 // 菜单高亮（详情时，父级高亮）
 const setParentHighlight = (currentRoute: RouteToFrom) => {
   const { path, meta } = currentRoute
-  const pathSplit = meta?.isDynamic
-    ? meta.isDynamicPath!.split('/')
-    : path!.split('/')
-  if (pathSplit.length >= 4 && meta?.isHide)
-    return pathSplit.splice(0, 3).join('/')
+  const pathSplit = meta?.isDynamic ? meta.isDynamicPath!.split('/') : path!.split('/')
+  if (pathSplit.length >= 4 && meta?.isHide) return pathSplit.splice(0, 3).join('/')
   else return path
 }
 
@@ -127,9 +122,7 @@ onBeforeRouteUpdate(to => {
 watch(
   themeConfig.value,
   () => {
-    document.body.clientWidth <= 1000
-      ? (state.isCollapse = false)
-      : (state.isCollapse = themeConfig.value.isCollapse)
+    document.body.clientWidth <= 1000 ? (state.isCollapse = false) : (state.isCollapse = themeConfig.value.isCollapse)
   },
   {
     immediate: true,

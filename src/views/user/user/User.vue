@@ -140,12 +140,7 @@ import { useUsersInfo } from '@/stores/userList'
 import { useUserInfo } from '@/stores/userInfo'
 import { useUserApi } from '@/api/user'
 import { UserData, UserListData } from './types'
-import {
-  ColumnItem,
-  PageInfo,
-  PageChangeParams,
-  ColumnChangeParams,
-} from '@/components/Table'
+import { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table'
 import { queryStrHighlight } from '@/utils/queryStrHighlight'
 import { useNotificationMsg } from '@/utils/notificationMsg'
 
@@ -281,9 +276,7 @@ const deleteUser = async (id: number): Promise<boolean> => {
 }
 
 // 引入编辑用户抽屉组件
-const EditUserDrawer = defineAsyncComponent(
-  () => import('./components/EditUser.vue')
-)
+const EditUserDrawer = defineAsyncComponent(() => import('./components/EditUser.vue'))
 const editDrawerRef = ref<RefType>(null)
 const editRow = ref<UserData>()
 // 打开编辑用户信息抽屉
@@ -293,9 +286,7 @@ const handleEditUserInfo = (row: UserData) => {
 }
 
 // 引入添加用户对话框组件
-const AddUserDialog = defineAsyncComponent(
-  () => import('./components/AddUser.vue')
-)
+const AddUserDialog = defineAsyncComponent(() => import('./components/AddUser.vue'))
 const addDialogRef = ref<RefType>(null)
 
 // 按角色过滤

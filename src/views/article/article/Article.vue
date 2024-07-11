@@ -17,9 +17,7 @@
         <div
           v-infinite-scroll="load"
           infinite-scroll-immediate
-          :infinite-scroll-disabled="
-            articleListState.articleList.length === articleListState.total
-          "
+          :infinite-scroll-disabled="articleListState.articleList.length === articleListState.total"
         >
           <!-- 文章删除过渡效果 -->
           <!-- <TransitionGroup name="list"> -->
@@ -42,10 +40,7 @@
         <p
           flex-c-c
           pd20_0
-          v-if="
-            !articleListState.loading &&
-            articleListState.articleList.length === articleListState.total
-          "
+          v-if="!articleListState.loading && articleListState.articleList.length === articleListState.total"
         >
           加载完毕
         </p>
@@ -116,10 +111,7 @@ const getArticleDataList = async () => {
     const { data, code, success } = res
     if (code !== 20000 || !success) return (articleListState.loading = false)
 
-    articleListState.articleList = [
-      ...articleListState.articleList,
-      ...data.list,
-    ]
+    articleListState.articleList = [...articleListState.articleList, ...data.list]
     articleListState.total = data.total
   } catch (e) {
     console.log(e)
@@ -171,9 +163,7 @@ const deleteArticle = async (uid: number, aid: number): Promise<boolean> => {
 }
 
 const removeArticleFromList = (aid: number) => {
-  const findItemIndex = articleListState.articleList.findIndex(
-    ({ id }) => id === aid
-  )
+  const findItemIndex = articleListState.articleList.findIndex(({ id }) => id === aid)
   if (findItemIndex === -1) return
   articleListState.articleList.splice(findItemIndex, 1)
 }
@@ -189,9 +179,7 @@ const handleEditArticle = (row: ArticleData) => {
 // 预览组件
 const previewDialogStatus = ref<boolean>(false)
 const previewRow = ref<ArticleData>()
-const PreviewArticleDialog = defineAsyncComponent(
-  () => import('./components/PreviewArticle.vue')
-)
+const PreviewArticleDialog = defineAsyncComponent(() => import('./components/PreviewArticle.vue'))
 // 处理预览操作
 const handlePreviewArticle = async (row: ArticleData) => {
   previewRow.value = row

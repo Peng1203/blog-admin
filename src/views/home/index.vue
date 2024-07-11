@@ -135,15 +135,7 @@
 </template>
 
 <script setup lang="ts" name="home">
-import {
-  reactive,
-  onMounted,
-  ref,
-  watch,
-  nextTick,
-  onActivated,
-  markRaw,
-} from 'vue'
+import { reactive, onMounted, ref, watch, nextTick, onActivated, markRaw } from 'vue'
 import * as echarts from 'echarts'
 import { storeToRefs } from 'pinia'
 import { useThemeConfig } from '@/stores/themeConfig'
@@ -268,11 +260,8 @@ const state = reactive({
 
 // 折线图
 const initLineChart = () => {
-  if (!state.global.dispose.some((b: any) => b === state.global.homeChartOne))
-    state.global.homeChartOne.dispose()
-  state.global.homeChartOne = markRaw(
-    echarts.init(homeLineRef.value, state.charts.theme)
-  )
+  if (!state.global.dispose.some((b: any) => b === state.global.homeChartOne)) state.global.homeChartOne.dispose()
+  state.global.homeChartOne = markRaw(echarts.init(homeLineRef.value, state.charts.theme))
   const option = {
     backgroundColor: state.charts.bgColor,
     title: {
@@ -284,20 +273,7 @@ const initLineChart = () => {
     tooltip: { trigger: 'axis' },
     legend: { data: ['预购队列', '最新成交价'], right: 0 },
     xAxis: {
-      data: [
-        '1月',
-        '2月',
-        '3月',
-        '4月',
-        '5月',
-        '6月',
-        '7月',
-        '8月',
-        '9月',
-        '10月',
-        '11月',
-        '12月',
-      ],
+      data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
     },
     yAxis: [
       {
@@ -316,9 +292,7 @@ const initLineChart = () => {
         symbolSize: 6,
         symbol: 'circle',
         smooth: true,
-        data: [
-          0, 41.1, 30.4, 65.1, 53.3, 53.3, 53.3, 41.1, 30.4, 65.1, 53.3, 10,
-        ],
+        data: [0, 41.1, 30.4, 65.1, 53.3, 53.3, 53.3, 41.1, 30.4, 65.1, 53.3, 10],
         lineStyle: { color: '#fe9a8b' },
         itemStyle: { color: '#fe9a8b', borderColor: '#fe9a8b' },
         areaStyle: {
@@ -371,18 +345,9 @@ const initLineChart = () => {
 }
 // 饼图
 const initPieChart = () => {
-  if (!state.global.dispose.some((b: any) => b === state.global.homeChartTwo))
-    state.global.homeChartTwo.dispose()
-  state.global.homeChartTwo = markRaw(
-    echarts.init(homePieRef.value, state.charts.theme)
-  )
-  var getname = [
-    '房屋及结构物',
-    '专用设备',
-    '通用设备',
-    '文物和陈列品',
-    '图书、档案',
-  ]
+  if (!state.global.dispose.some((b: any) => b === state.global.homeChartTwo)) state.global.homeChartTwo.dispose()
+  state.global.homeChartTwo = markRaw(echarts.init(homePieRef.value, state.charts.theme))
+  var getname = ['房屋及结构物', '专用设备', '通用设备', '文物和陈列品', '图书、档案']
   var getvalue = [34.2, 38.87, 17.88, 9.05, 2.05]
   var data = []
   for (var i = 0; i < getname.length; i++) {
@@ -465,11 +430,8 @@ const initPieChart = () => {
 }
 // 柱状图
 const initBarChart = () => {
-  if (!state.global.dispose.some((b: any) => b === state.global.homeCharThree))
-    state.global.homeCharThree.dispose()
-  state.global.homeCharThree = markRaw(
-    echarts.init(homeBarRef.value, state.charts.theme)
-  )
+  if (!state.global.dispose.some((b: any) => b === state.global.homeCharThree)) state.global.homeCharThree.dispose()
+  state.global.homeCharThree = markRaw(echarts.init(homeBarRef.value, state.charts.theme))
   const option = {
     backgroundColor: state.charts.bgColor,
     title: {

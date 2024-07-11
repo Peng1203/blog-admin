@@ -9,19 +9,13 @@ const getMyIcon = () => {
       let sheetsList = []
       let sheetsIconList = []
       for (let i = 0; i < styles.length; i++) {
-        if (
-          styles[i]?.rules[1]?.selectorText === '.iconfont' &&
-          styles[i].href === null
-        ) {
+        if (styles[i]?.rules[1]?.selectorText === '.iconfont' && styles[i].href === null) {
           sheetsList.push(styles[i])
         }
       }
       for (let i = 0; i < sheetsList.length; i++) {
         for (let j = 0; j < sheetsList[i].cssRules.length; j++) {
-          if (
-            sheetsList[i].cssRules[j].selectorText &&
-            sheetsList[i].cssRules[j].selectorText.indexOf('.icon-') > -1
-          ) {
+          if (sheetsList[i].cssRules[j].selectorText && sheetsList[i].cssRules[j].selectorText.indexOf('.icon-') > -1) {
             sheetsIconList.push(
               `${sheetsList[i].cssRules[j].selectorText
                 .substring(1, sheetsList[i].cssRules[j].selectorText.length)
@@ -50,10 +44,7 @@ const getAlicdnIconfont = () => {
       }
       for (let i = 0; i < sheetsList.length; i++) {
         for (let j = 0; j < sheetsList[i].cssRules.length; j++) {
-          if (
-            sheetsList[i].cssRules[j].selectorText &&
-            sheetsList[i].cssRules[j].selectorText.indexOf('.icon-') > -1
-          ) {
+          if (sheetsList[i].cssRules[j].selectorText && sheetsList[i].cssRules[j].selectorText.indexOf('.icon-') > -1) {
             sheetsIconList.push(
               `${sheetsList[i].cssRules[j].selectorText
                 .substring(1, sheetsList[i].cssRules[j].selectorText.length)
@@ -91,10 +82,7 @@ const getAwesomeIconfont = () => {
       let sheetsList = []
       let sheetsIconList = []
       for (let i = 0; i < styles.length; i++) {
-        if (
-          styles[i].href &&
-          styles[i].href.indexOf('netdna.bootstrapcdn.com') > -1
-        ) {
+        if (styles[i].href && styles[i].href.indexOf('netdna.bootstrapcdn.com') > -1) {
           sheetsList.push(styles[i])
         }
       }

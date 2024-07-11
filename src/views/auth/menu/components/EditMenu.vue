@@ -29,9 +29,7 @@ import Drawer from '@/components/Drawer'
 import { ElMessage } from 'element-plus'
 import { MenuData, EditMenuType, EditProps } from '../types'
 
-const IconSelector = defineAsyncComponent(
-  () => import('@/components/iconSelector/index.vue')
-)
+const IconSelector = defineAsyncComponent(() => import('@/components/iconSelector/index.vue'))
 const { updataMenu } = useMenuApi()
 
 const props = withDefaults(defineProps<EditProps>(), {

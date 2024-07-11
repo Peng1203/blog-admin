@@ -118,14 +118,12 @@ const initRouteSplit = (path: string) => {
   state.routeSplitFirst = `/${state.routeSplit[0]}`
   state.routeSplitIndex = 1
   getBreadcrumbList(routesList.value)
-  if (
-    route.name === 'home' ||
-    (route.name === 'notFound' && state.breadcrumbList.length > 1)
-  )
+  if (route.name === 'home' || (route.name === 'notFound' && state.breadcrumbList.length > 1))
     state.breadcrumbList.shift()
   if (state.breadcrumbList.length > 0)
-    state.breadcrumbList[state.breadcrumbList.length - 1].meta.tagsViewName =
-      other.setTagsViewNameI18n(<RouteToFrom>route)
+    state.breadcrumbList[state.breadcrumbList.length - 1].meta.tagsViewName = other.setTagsViewNameI18n(
+      <RouteToFrom>route
+    )
 }
 // 页面加载时
 onMounted(() => {

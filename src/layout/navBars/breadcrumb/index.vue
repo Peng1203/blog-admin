@@ -38,10 +38,7 @@ const state = reactive({
 // 设置 logo 显示/隐藏
 const setIsShowLogo = computed(() => {
   let { isShowLogo, layout } = themeConfig.value
-  return (
-    (isShowLogo && layout === 'classic') ||
-    (isShowLogo && layout === 'transverse')
-  )
+  return (isShowLogo && layout === 'classic') || (isShowLogo && layout === 'transverse')
 })
 // 设置是否显示横向导航菜单
 const isLayoutTransverse = computed(() => {

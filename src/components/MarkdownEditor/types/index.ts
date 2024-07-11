@@ -1,20 +1,5 @@
-type preThemes =
-  | 'default'
-  | 'github'
-  | 'vuepress'
-  | 'mk-cute'
-  | 'smart-blue'
-  | 'cyanosis'
-  | 'arknights'
-type codeTheme =
-  | 'atom'
-  | 'a11y'
-  | 'github'
-  | 'gradient'
-  | 'kimbie'
-  | 'paraiso'
-  | 'qtcreator'
-  | 'stackoverflow'
+type preThemes = 'default' | 'github' | 'vuepress' | 'mk-cute' | 'smart-blue' | 'cyanosis' | 'arknights'
+type codeTheme = 'atom' | 'a11y' | 'github' | 'gradient' | 'kimbie' | 'paraiso' | 'qtcreator' | 'stackoverflow'
 
 export interface MarkdownEditorAttibute {
   // toolbar配置

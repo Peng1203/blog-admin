@@ -1,10 +1,5 @@
 import qs from 'qs'
-import axios, {
-  AxiosInstance,
-  InternalAxiosRequestConfig,
-  AxiosError,
-  AxiosResponse,
-} from 'axios'
+import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosError, AxiosResponse } from 'axios'
 import { ElLoading } from 'element-plus'
 import { Local, Session } from '@/utils/storage'
 import { handleRefreshACToken } from './refreshToken'
@@ -82,8 +77,7 @@ service.interceptors.response.use(
     }
 
     // 请求超时 取消请求
-    if (code === 'ECONNABORTED')
-      return useNotificationMsg('', '请求超时', 'error')
+    if (code === 'ECONNABORTED') return useNotificationMsg('', '请求超时', 'error')
     else if (code === 'ERR_NETWORK' || message === 'Network Error')
       return useNotificationMsg('', '服务器连接错误!', 'error', 2)
 

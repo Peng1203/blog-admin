@@ -82,8 +82,7 @@ const saveEditCategory = async (): Promise<boolean> => {
 
 watch(
   () => props.editRow,
-  (val: CategoryData) =>
-    val && (editFormState.data = JSON.parse(JSON.stringify(val)))
+  (val: CategoryData) => val && (editFormState.data = JSON.parse(JSON.stringify(val)))
 )
 
 // 当窗口关闭时 重置表单校验 重置图标

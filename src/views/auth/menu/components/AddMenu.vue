@@ -29,9 +29,7 @@ import Dialog from '@/components/Dialog'
 import Form, { FormItem } from '@/components/Form'
 import { MenuData, AddMenuType } from '../types'
 
-const IconSelector = defineAsyncComponent(
-  () => import('@/components/iconSelector/index.vue')
-)
+const IconSelector = defineAsyncComponent(() => import('@/components/iconSelector/index.vue'))
 
 const { addMenu } = useMenuApi()
 
@@ -139,16 +137,7 @@ const handleAdd = async () => {
 
 const addNewMenu = async (): Promise<boolean> => {
   try {
-    const {
-      menuName,
-      menuUri,
-      menuPath,
-      menuIcon,
-      parentId,
-      orderNum,
-      isKeepalive,
-      isHidden,
-    } = addMenuState.data
+    const { menuName, menuUri, menuPath, menuIcon, parentId, orderNum, isKeepalive, isHidden } = addMenuState.data
     const params = {
       menuName,
       menuUri,

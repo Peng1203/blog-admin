@@ -217,8 +217,7 @@
           size="small"
           effect="light"
         >
-          总大小: {{ uploadInfo.filesTotalSize }} byte ≈
-          {{ byteToMb(uploadInfo.filesTotalSize) }} Mb
+          总大小: {{ uploadInfo.filesTotalSize }} byte ≈ {{ byteToMb(uploadInfo.filesTotalSize) }} Mb
         </el-tag>
       </div>
     </div>
@@ -297,13 +296,8 @@ const tableState = reactive({
 // 文件列表信息统计
 const uploadInfo = ref({
   files: computed(() => tableState.data.length),
-  successFiles: computed(
-    () =>
-      tableState.data.filter(file => file.status === StatusEnum.SUCCESS).length
-  ),
-  failFiles: computed(
-    () => tableState.data.filter(file => file.status === StatusEnum.FAIL).length
-  ),
+  successFiles: computed(() => tableState.data.filter(file => file.status === StatusEnum.SUCCESS).length),
+  failFiles: computed(() => tableState.data.filter(file => file.status === StatusEnum.FAIL).length),
   filesTotalSize: computed(() => _.sum(tableState.data.map(file => file.size))),
 })
 
@@ -354,9 +348,7 @@ const handleFileChange = (file: File, maxFileSize = MAX_SIZE_VALUE) => {
 }
 
 const handleUpload = () => {
-  tableState.data.forEach(
-    item => item.status === StatusEnum.PENDING && handleExeUploadMethod(item)
-  )
+  tableState.data.forEach(item => item.status === StatusEnum.PENDING && handleExeUploadMethod(item))
 }
 
 // 根据文件大小 判断走正常上传还是 大文件分片上传

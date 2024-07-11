@@ -92,9 +92,7 @@ watchEffect(() => {
   if (!props.viewRow) return
   viewRoleState.data = JSON.parse(JSON.stringify(props.viewRow))
   viewRoleState.data.menus = props.viewRow?.menus.map(({ id }) => id)!
-  viewRoleState.data.permissions = props.viewRow?.permissions.map(
-    ({ id }) => id
-  )!
+  viewRoleState.data.permissions = props.viewRow?.permissions.map(({ id }) => id)!
 })
 
 defineExpose({ viewRoleDialogStatus })

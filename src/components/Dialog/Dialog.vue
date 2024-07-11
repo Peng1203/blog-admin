@@ -64,13 +64,7 @@ const props = withDefaults(defineProps<DialogAttribute>(), {
   confirmBtnText: '确认',
 })
 
-const emits = defineEmits([
-  'update:modelValue',
-  'dialogClose',
-  'clickCancel',
-  'clickConfirm',
-  'open',
-])
+const emits = defineEmits(['update:modelValue', 'dialogClose', 'clickCancel', 'clickConfirm', 'open'])
 
 const dialogStatus = ref<boolean>(true)
 

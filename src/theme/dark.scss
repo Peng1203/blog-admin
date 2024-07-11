@@ -76,10 +76,7 @@
     --el-button-hover-text-color: var(--next-color-white) !important;
     --el-button-disabled-text-color: var(--next-color-white) !important;
     &:hover {
-      border-color: var(
-        --el-button-hover-border-color,
-        var(--el-button-hover-bg-color)
-      ) !important;
+      border-color: var(--el-button-hover-border-color, var(--el-button-hover-bg-color)) !important;
     }
   }
 

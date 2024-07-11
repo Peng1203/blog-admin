@@ -17,20 +17,7 @@
     <template
       :key="i"
       v-for="(
-        {
-          label,
-          prop,
-          width,
-          minWidth,
-          sort,
-          tooltip,
-          fixed,
-          align,
-          slotName,
-          childrenColumns,
-          classNname,
-        },
-        i
+        { label, prop, width, minWidth, sort, tooltip, fixed, align, slotName, childrenColumns, classNname }, i
       ) in tableColumns"
     >
       <!-- 自定义某列 -->
@@ -43,9 +30,7 @@
         :min-width="minWidth"
         :class-name="classNname"
         :show-overflow-tooltip="tooltip"
-        :fixed="
-          deviceClientType === 'pc' ? fixed : fixed === 'left' ? false : fixed
-        "
+        :fixed="deviceClientType === 'pc' ? fixed : fixed === 'left' ? false : fixed"
         :align="align || 'left'"
       >
         <template #default="scope">
@@ -121,12 +106,7 @@
 
 <script setup lang="tsx" generic="T">
 import { ref, useSlots, inject, onMounted } from 'vue'
-import {
-  TableAttribute_v2,
-  SlotProps,
-  SlotOperationProps,
-  ColumnItem,
-} from './'
+import { TableAttribute_v2, SlotProps, SlotOperationProps, ColumnItem } from './'
 
 const deviceClientType = inject('deviceClientType')
 

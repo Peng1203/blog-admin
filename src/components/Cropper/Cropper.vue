@@ -71,10 +71,7 @@ const previewInfo = ref({
 const handleRealPreview = _.debounce(async data => {
   previewInfo.value = data
 
-  const [base64_data, blob_data] = await Promise.all([
-    getCropData(),
-    getCropBlob(),
-  ])
+  const [base64_data, blob_data] = await Promise.all([getCropData(), getCropBlob()])
   previewInfo.value.base64 = base64_data
 
   model.value = blob_data

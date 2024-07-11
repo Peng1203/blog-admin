@@ -29,9 +29,7 @@ import Form, { FormItem } from '@/components/Form'
 import Drawer from '@/components/Drawer'
 import { TagData, EditProps } from '../'
 
-const IconSelector = defineAsyncComponent(
-  () => import('@/components/iconSelector/index.vue')
-)
+const IconSelector = defineAsyncComponent(() => import('@/components/iconSelector/index.vue'))
 const { updataTag } = useTagApi()
 
 const props = withDefaults(defineProps<EditProps>(), {

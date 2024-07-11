@@ -16,9 +16,7 @@
           :name="state.fontIconPrefix === '' ? prepend : state.fontIconPrefix"
           class="font14"
           v-if="
-            state.fontIconPrefix === ''
-              ? prepend?.indexOf('ele-') > -1
-              : state.fontIconPrefix?.indexOf('ele-') > -1
+            state.fontIconPrefix === '' ? prepend?.indexOf('ele-') > -1 : state.fontIconPrefix?.indexOf('ele-') > -1
           "
         />
         <i
@@ -100,15 +98,7 @@
 </template>
 
 <script setup lang="ts" name="iconSelector">
-import {
-  defineAsyncComponent,
-  ref,
-  reactive,
-  onMounted,
-  nextTick,
-  computed,
-  watch,
-} from 'vue'
+import { defineAsyncComponent, ref, reactive, onMounted, nextTick, computed, watch } from 'vue'
 import type { TabsPaneContext } from 'element-plus'
 import initIconfont from '@/utils/getStyleSheets'
 import '@/theme/iconSelector.scss'
@@ -160,9 +150,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'get', 'clear'])
 
 // 引入组件
-const IconList = defineAsyncComponent(
-  () => import('@/components/iconSelector/list.vue')
-)
+const IconList = defineAsyncComponent(() => import('@/components/iconSelector/list.vue'))
 
 // 定义变量内容
 const inputWidthRef = ref()
@@ -215,8 +203,7 @@ const fontIconTabNameList = () => {
 }
 // 处理 icon 双向绑定数值回显
 const initModeValueEcho = () => {
-  if (props.modelValue === '')
-    return ((<string | undefined>state.fontIconPlaceholder) = props.placeholder)
+  if (props.modelValue === '') return ((<string | undefined>state.fontIconPlaceholder) = props.placeholder)
   ;(<string | undefined>state.fontIconPlaceholder) = props.modelValue
   ;(<string | undefined>state.fontIconPrefix) = props.modelValue
 }

@@ -26,12 +26,7 @@
             <div class="columns-vertical-title font12">
               {{
                 v.meta.title && v.meta.title.length >= 4
-                  ? v.meta.title.substr(
-                      0,
-                      themeConfig.columnsAsideLayout === 'columns-vertical'
-                        ? 4
-                        : 3
-                    )
+                  ? v.meta.title.substr(0, themeConfig.columnsAsideLayout === 'columns-vertical' ? 4 : 3)
                   : v.meta.title
               }}
             </div>
@@ -48,12 +43,7 @@
               <div class="columns-vertical-title font12">
                 {{
                   v.meta.title && v.meta.title.length >= 4
-                    ? v.meta.title.substr(
-                        0,
-                        themeConfig.columnsAsideLayout === 'columns-vertical'
-                          ? 4
-                          : 3
-                      )
+                    ? v.meta.title.substr(0, themeConfig.columnsAsideLayout === 'columns-vertical' ? 4 : 3)
                     : v.meta.title
                 }}
               </div>
@@ -71,12 +61,7 @@
 
 <script setup lang="ts" name="layoutColumnsAside">
 import { reactive, ref, onMounted, nextTick, watch, onUnmounted } from 'vue'
-import {
-  useRoute,
-  useRouter,
-  onBeforeRouteUpdate,
-  RouteRecordRaw,
-} from 'vue-router'
+import { useRoute, useRouter, onBeforeRouteUpdate, RouteRecordRaw } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import pinia from '@/stores/index'
 import { useRoutesList } from '@/stores/routesList'
@@ -88,8 +73,7 @@ const columnsAsideOffsetTopRefs = ref<RefType>([])
 const columnsAsideActiveRef = ref()
 const stores = useRoutesList()
 const storesThemeConfig = useThemeConfig()
-const { routesList, isColumnsMenuHover, isColumnsNavHover } =
-  storeToRefs(stores)
+const { routesList, isColumnsMenuHover, isColumnsNavHover } = storeToRefs(stores)
 const { themeConfig } = storeToRefs(storesThemeConfig)
 const route = useRoute()
 const router = useRouter()
@@ -107,9 +91,7 @@ const state = reactive<ColumnsAsideState>({
 const setColumnsAsideMove = (k: number) => {
   if (k === undefined) return false
   state.liIndex = k
-  columnsAsideActiveRef.value.style.top = `${
-    columnsAsideOffsetTopRefs.value[k].offsetTop + state.difference
-  }px`
+  columnsAsideActiveRef.value.style.top = `${columnsAsideOffsetTopRefs.value[k].offsetTop + state.difference}px`
 }
 // 菜单高亮点击事件  k: number
 const onColumnsAsideMenuClick = (v: RouteItem) => {
@@ -138,8 +120,7 @@ const onColumnsAsideMenuMouseleave = async () => {
   await stores.setColumnsNavHover(false)
   // 添加延时器，防止拿到的 store.state.routesList 值不是最新的
   setTimeout(() => {
-    if (!isColumnsMenuHover && !isColumnsNavHover)
-      mittBus.emit('restoreDefault')
+    if (!isColumnsMenuHover && !isColumnsNavHover) mittBus.emit('restoreDefault')
   }, 100)
 }
 // 设置高亮动态位置
@@ -156,9 +137,7 @@ const setFilterRoutes = () => {
   onColumnsAsideDown(resData.item?.k)
   // 刷新时，初始化一个路由设置自动收起菜单
   // https://gitee.com/lyt-top/vue-next-admin/issues/I6HW7H
-  resData.children.length <= 1
-    ? (themeConfig.value.isCollapse = true)
-    : (themeConfig.value.isCollapse = false)
+  resData.children.length <= 1 ? (themeConfig.value.isCollapse = true) : (themeConfig.value.isCollapse = false)
   mittBus.emit('setSendColumnsChildren', resData)
 }
 // 传送当前子级数据到菜单中
@@ -190,9 +169,7 @@ const setColumnsMenuHighlight = (path: string) => {
   state.routeSplit = path.split('/')
   state.routeSplit.shift()
   const routeFirst = `/${state.routeSplit[0]}`
-  const currentSplitRoute = state.columnsAsideList.find(
-    (v: RouteItem) => v.path === routeFirst
-  )
+  const currentSplitRoute = state.columnsAsideList.find((v: RouteItem) => v.path === routeFirst)
   if (!currentSplitRoute) return false
   // 延迟拿值，防止取不到
   setTimeout(() => {
@@ -221,13 +198,8 @@ onBeforeRouteUpdate(to => {
 watch(
   pinia.state,
   val => {
-    val.themeConfig.themeConfig.columnsAsideStyle === 'columnsRound'
-      ? (state.difference = 3)
-      : (state.difference = 0)
-    if (
-      !val.routesList.isColumnsMenuHover &&
-      !val.routesList.isColumnsNavHover
-    ) {
+    val.themeConfig.themeConfig.columnsAsideStyle === 'columnsRound' ? (state.difference = 3) : (state.difference = 0)
+    if (!val.routesList.isColumnsMenuHover && !val.routesList.isColumnsNavHover) {
       state.liHoverIndex = null
       mittBus.emit('setSendColumnsChildren', setSendChildren(route.path))
     } else {

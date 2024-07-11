@@ -31,16 +31,7 @@
 </template>
 
 <script setup lang="ts" name="layoutParentView">
-import {
-  defineAsyncComponent,
-  computed,
-  reactive,
-  onBeforeMount,
-  onUnmounted,
-  nextTick,
-  watch,
-  onMounted,
-} from 'vue'
+import { defineAsyncComponent, computed, reactive, onBeforeMount, onUnmounted, nextTick, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useKeepALiveNames } from '@/stores/keepAliveNames'
@@ -49,9 +40,7 @@ import { Session } from '@/utils/storage'
 import mittBus from '@/utils/mitt'
 
 // 引入组件
-const Iframes = defineAsyncComponent(
-  () => import('@/layout/routerView/iframes.vue')
-)
+const Iframes = defineAsyncComponent(() => import('@/layout/routerView/iframes.vue'))
 
 // 定义变量内容
 const route = useRoute()
@@ -73,9 +62,7 @@ const setTransitionName = computed(() => {
 })
 // 获取组件缓存列表(name值)
 const getKeepAliveNames = computed(() => {
-  return themeConfig.value.isTagsview
-    ? cachedViews.value
-    : state.keepAliveNameList
+  return themeConfig.value.isTagsview ? cachedViews.value : state.keepAliveNameList
 })
 // 设置 iframe 显示/隐藏
 const isIframePage = computed(() => {
@@ -95,9 +82,7 @@ const getIframeListRoutes = async () => {
 onBeforeMount(() => {
   state.keepAliveNameList = keepAliveNames.value
   mittBus.on('onTagsViewRefreshRouterView', (fullPath: string) => {
-    state.keepAliveNameList = keepAliveNames.value.filter(
-      (name: string) => route.name !== name
-    )
+    state.keepAliveNameList = keepAliveNames.value.filter((name: string) => route.name !== name)
     state.refreshRouterViewKey = ''
     state.iframeRefreshKey = ''
     nextTick(() => {
@@ -117,9 +102,7 @@ onMounted(() => {
     setTimeout(() => {
       if (themeConfig.value.isCacheTagsView) {
         let tagsViewArr: RouteItem[] = Session.get('tagsViewList') || []
-        cachedViews.value = tagsViewArr
-          .filter(item => item.meta?.isKeepAlive)
-          .map(item => item.name as string)
+        cachedViews.value = tagsViewArr.filter(item => item.meta?.isKeepAlive).map(item => item.name as string)
       }
     }, 0)
   })

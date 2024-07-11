@@ -19,8 +19,7 @@ export const passwordStrengthLevelDetection = (value: string): number => {
 
   // 强
   //let strongRegex = /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)(?![a-zA-z\d]+$)(?![a-zA-z!@#$%^&*]+$)(?![\d!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]+$ /;
-  let strongRegex =
-    /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[,.?!@#$%^&*])[\w,.?!@#$%^&*]+$/
+  let strongRegex = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[,.?!@#$%^&*])[\w,.?!@#$%^&*]+$/
 
   if (enoughRegex.test(value)) level = 1
   if (mediumRegex.test(value)) level = 2

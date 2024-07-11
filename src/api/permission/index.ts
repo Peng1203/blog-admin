@@ -59,10 +59,7 @@ export function usePermissionApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    updateAuthPermInfo<T = any>(
-      id: number,
-      params: object
-    ): TransformedResponse<T> {
+    updateAuthPermInfo<T = any>(id: number, params: object): TransformedResponse<T> {
       return request({
         url: `/permission/${id}`,
         method: Method.PATCH,

@@ -32,14 +32,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Cropper from '@/components/Cropper'
-import {
-  ElUpload,
-  UploadFile,
-  UploadInstance,
-  UploadProps,
-  UploadRawFile,
-  genFileId,
-} from 'element-plus'
+import { ElUpload, UploadFile, UploadInstance, UploadProps, UploadRawFile, genFileId } from 'element-plus'
 import { useNotificationMsg } from '@/utils/notificationMsg'
 import { useUserInfo } from '@/stores/userInfo'
 import { useUserApi } from '@/api'
@@ -47,8 +40,7 @@ import { useUserApi } from '@/api'
 const { userInfos } = useUserInfo()
 const { uploadUserAvatar } = useUserApi()
 
-const defaultAvatar =
-  'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+const defaultAvatar = 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
 
 const MAX_SIZE = 1024 * 1024 * 2
 const dialogState = ref<boolean>(false)
@@ -79,10 +71,8 @@ const updateAvater = (url: string) => {
 
 const handleFileChange = (uploadFile: UploadFile) => {
   const { type, size } = uploadFile.raw
-  if (!type.includes('image'))
-    return useNotificationMsg('', '请选择图片类型的文件', 'warning', 2)
-  if (size > MAX_SIZE)
-    return useNotificationMsg('', '请选择小于2MB的图片', 'warning', 2)
+  if (!type.includes('image')) return useNotificationMsg('', '请选择图片类型的文件', 'warning', 2)
+  if (size > MAX_SIZE) return useNotificationMsg('', '请选择小于2MB的图片', 'warning', 2)
 
   const reader = new FileReader()
   reader.readAsDataURL(uploadFile.raw)
@@ -97,8 +87,7 @@ const handleExceed: UploadProps['onExceed'] = files => {
   uploadRef.value!.handleStart(file)
 }
 
-const handleOpenDialog = () =>
-  (imgDateUrl.value = userInfos.userAvatar || defaultAvatar)
+const handleOpenDialog = () => (imgDateUrl.value = userInfos.userAvatar || defaultAvatar)
 
 defineExpose({ dialogState })
 </script>

@@ -77,10 +77,7 @@ export function useUserApi() {
     /**
      * 上传用户头像
      */
-    uploadUserAvatar(
-      userId: number,
-      file: FormData
-    ): TransformedResponse<string> {
+    uploadUserAvatar(userId: number, file: FormData): TransformedResponse<string> {
       return request({
         url: `/user/${userId}/avater`,
         method: Method.POST,
@@ -93,10 +90,7 @@ export function useUserApi() {
     /**
      * 修改用户密码
      */
-    changePassword(
-      userId: number,
-      params: object
-    ): TransformedResponse<string> {
+    changePassword(userId: number, params: object): TransformedResponse<string> {
       return request({
         url: `/user/${userId}/password`,
         method: Method.PUT,

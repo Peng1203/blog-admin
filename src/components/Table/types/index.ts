@@ -29,12 +29,7 @@ export interface TableAttribute<T> {
 
 export type OperationType = 'add' | 'edit' | 'delete' | 'view' | ''
 
-export type OperationBtnsType = [
-  OperationType?,
-  OperationType?,
-  OperationType?,
-  OperationType?
-]
+export type OperationBtnsType = [OperationType?, OperationType?, OperationType?, OperationType?]
 
 export interface BaseTableAttribute {
   data: any[]

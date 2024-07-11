@@ -29,3 +29,5 @@ export const ARTICLE = {
     { label: '草稿箱', value: 3 },
   ],
 }
+
+export const MB = 1024 * 1024

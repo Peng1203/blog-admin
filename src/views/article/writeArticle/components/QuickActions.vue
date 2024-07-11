@@ -56,6 +56,8 @@ const getArticleOptions = async () => {
     const { code, message, data } = res
     if (code !== 20000 || !message) return
     articleOptions.value = data.list
+
+    route.params.aid && (aId.value = Number(route.params.aid))
   } catch (e) {
     console.log('e', e)
   }
@@ -69,7 +71,6 @@ const handleSelectEdit = () => {
 }
 
 onMounted(() => {
-  route.params.aid && (aId.value = Number(route.params.aid))
   // 获取当前用户可编辑文章 下拉数据
   // isEdit.value ||
   getArticleOptions()

@@ -31,13 +31,13 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
       port: env.VITE_PORT as unknown as number,
       open: JSON.parse(env.VITE_OPEN),
       hmr: true,
-      // proxy: {
-      //   '/api': {
-      //     target: env.VITE_SERVER_GATEWAY as string,
-      //     changeOrigin: true,
-      //     rewrite: path => path.replace(/^\/api/, ''),
-      //   },
-      // },
+      proxy: {
+        '/api': {
+          target: env.VITE_DEV_SERVER_GATEWAY as string,
+          changeOrigin: true,
+          rewrite: path => path.replace(/^\/api/, ''),
+        },
+      },
     },
     build: {
       outDir: 'dist',

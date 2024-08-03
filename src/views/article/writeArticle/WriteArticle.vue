@@ -63,14 +63,12 @@
           @fastSave="handleFastSave"
           @pasteUploadImg="handlePasteUploadImg"
         />
-
         <!-- 文章信息表单 -->
         <InfoForm
           ref="infoFormRef"
           v-show="activeStep === 2"
           v-model="articleForm"
         />
-        <!-- :formItemList="formItemList" -->
       </Peng-Skeleton>
     </el-card>
   </div>
@@ -80,7 +78,7 @@
 import { ref, reactive, onMounted, computed } from 'vue'
 import MarkdownEditor from '@/components/MarkdownEditor'
 import { useRoute, useRouter } from 'vue-router'
-import { AddArticleType, OperationArticleData, ArticleData } from '../article/types'
+import { AddArticleType, OperationArticleData, ArticleData, ArticleStatusEnum } from '../article/types'
 import { FormItem } from '@/components/Form'
 import AiEditor from '@/components/AiEditor'
 import StepHeadend from './components/StepHeadend.vue'
@@ -199,11 +197,14 @@ const handleAddArticle = async (actionType: 0 | 1) => {
 // 更新文章
 const handleUpdateArticle = async () => {
   try {
-    const { author, id, category, ...args } = articleForm
+    const { author, id, category, accessPassword, status, ...args } = articleForm
     const params = {
+      status,
       category: category || 0,
+      accessPassword: status === ArticleStatusEnum.PRIVATE ? accessPassword : '',
       ...args,
     }
+
     const { data: res } = await updateArticle<ArticleData>(author, id, params)
     const { code, message, success } = res
     if (code !== 20001 && success) return

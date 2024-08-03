@@ -3,7 +3,6 @@
   <el-button
     mr
     type="primary"
-    size="mini"
     @click="$router.push({ name: 'WriteArticle' })"
   >
     写文章

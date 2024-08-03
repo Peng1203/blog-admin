@@ -51,6 +51,7 @@
               height = 80,
               accept,
               limit,
+              change,
               ...args
             },
             i
@@ -111,7 +112,6 @@
                 :clearable="clearable || true"
                 :autocomplete="autocomplete ? 'on' : 'off'"
                 aria-autocomplete="none"
-                auto-complete="new-password"
                 v-model="formData[prop]"
               >
                 <!-- @focus="(e: any) => e.target.removeAttribute('readonly')" -->
@@ -252,7 +252,12 @@
                 :options="options"
                 v-bind="args"
                 v-model="formData[prop]"
-                @change="$event => handleSelectChange($event, prop, i)"
+                @change="
+                  $event => {
+                    $event => handleSelectChange($event, prop, i)
+                    change && change($event)
+                  }
+                "
               />
             </el-form-item>
           </el-col>
@@ -287,7 +292,12 @@
                 :inactive-value="fValue"
                 :inactive-icon="fIcon"
                 :inline-prompt="isInline === undefined ? false : isInline"
-                @change="$event => handleSwitchChange($event, prop, i)"
+                @change="
+                  $event => {
+                    handleSwitchChange($event, prop, i)
+                    change && change($event)
+                  }
+                "
                 v-model="formData[prop]"
               />
               <!-- :style="`--el-switch-on-color: ${tBgColor || '#13ce66'} ; --el-switch-off-color: ${
@@ -319,7 +329,12 @@
               <el-radio-group
                 :disabled="disabled"
                 v-model="formData[prop]"
-                @change="handleRadioChange($event, prop, i)"
+                @change="
+                  $event => {
+                    handleRadioChange($event, prop, i)
+                    change && change($event)
+                  }
+                "
               >
                 <el-radio
                   v-for="item in options"

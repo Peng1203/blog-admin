@@ -87,6 +87,8 @@ export interface BaseFormItem<T = any> {
   width?: number
   /** 高度 */
   height?: number
+  /** change事件 */
+  change?: Function
   [key: string]: any
 }
 

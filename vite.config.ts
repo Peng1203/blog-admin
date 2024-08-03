@@ -5,18 +5,13 @@ import DefineOptions from 'unplugin-vue-define-options/vite'
 import viteCompression from 'vite-plugin-compression'
 import UnoCSS from 'unocss/vite'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import vueDevTools from 'vite-plugin-vue-devtools'
 
 const viteConfig = defineConfig((mode: ConfigEnv) => {
   const env = loadEnv(mode.mode, process.cwd())
   return {
     // vueSetupExtend(),
-    plugins: [
-      vue(),
-      DefineOptions(),
-      viteCompression(),
-      UnoCSS({ presets: [] }),
-      vueJsx(),
-    ],
+    plugins: [vue(), DefineOptions(), viteCompression(), UnoCSS({ presets: [] }), vueJsx(), vueDevTools()],
     root: process.cwd(),
     resolve: {
       alias: {

@@ -66,6 +66,7 @@
     "unplugin-vue-define-options": "^1.4.5",
     "vite": "^5.2.12",
     "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-vue-devtools": "^7.3.7",
     "vue-eslint-parser": "^9.4.3"
   },
   "browserslist": [

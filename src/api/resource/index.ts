@@ -29,5 +29,13 @@ export function useResourceApi() {
         cancelToken: new axios.CancelToken(c => (item.cancel = c)),
       })
     },
+    /** 创建大文件合成目录 */
+    createLargeFileDir<T = string>(params): TransformedResponse<T> {
+      return request({
+        url: '/resource/chunk/upload',
+        method: Method.POST,
+        data: JSON.stringify(params),
+      })
+    },
   }
 }

@@ -18,14 +18,17 @@
 </template>
 
 <script setup lang="ts">
-// import { ref } from 'vue'
 import { ElUpload, UploadFile } from 'element-plus'
 import { MB } from '@/constants'
 import { FileData, StatusEnum } from '../types'
 import { useNotificationMsg } from '@/utils/notificationMsg'
-import { onMounted } from 'vue'
+import { useResourceApi } from '@/api'
+import { getFileArrayBuffer } from '@/utils/file'
 
 const emits = defineEmits(['change'])
+
+const { createLargeFileDir } = useResourceApi()
+
 // 大上传文件大小
 const LARGE_FILE_MAX_SIZE_MB = 500
 const LARGE_FILE_MAX_SIZE_VALUE = MB * LARGE_FILE_MAX_SIZE_MB
@@ -53,6 +56,45 @@ const handleFileChange = (file: File, maxFileSize = LARGE_FILE_MAX_SIZE_VALUE) =
     isCompress: type.includes('image') && !type.includes('gif'),
   }
   emits('change', fileItem)
+}
+
+const handleUploadLargeFile = async (fileItem: FileData) => {
+  try {
+    await handleCreateFileDir(fileItem)
+  } catch (e) {
+    console.log('e', e)
+  }
+}
+
+// 创建大文件合成目录
+const handleCreateFileDir = async (fileItem: FileData): Promise<boolean> => {
+  try {
+    fileItem.status = StatusEnum.CALC_HASH
+    const arrayBuffer = await getFileArrayBuffer(fileItem.fileData)
+    const fileHash = await getFileHash(arrayBuffer)
+
+    console.log(`%c fileHash ----`, 'color: #fff;background-color: #000;font-size: 18px', fileHash)
+
+    // console.log(`%c filehash ----`, 'color: #fff;background-color: #000;font-size: 18px', filehash)
+    const params = {
+      dirName: '',
+    }
+
+    const { data: res } = await createLargeFileDir(params)
+    console.log(`%c res ----`, 'color: #fff;background-color: #000;font-size: 18px', res)
+    return true
+  } catch (e) {
+    console.log('e', e)
+    return false
+  }
+}
+
+const getFileHash = (arrayBuffer: ArrayBuffer): Promise<string> => {
+  return new Promise(resolve => {
+    const worker = new Worker('/worker/createdFileHash.js')
+    worker.postMessage(arrayBuffer)
+    worker.onmessage = e => resolve(e.data)
+  })
 }
 
 // 分片上传
@@ -100,22 +142,5 @@ const createFileChunks = (file: File): Blob[] => {
   return fileChunks
 }
 
-onMounted(() => {
-  const options: WorkerOptions = {
-    type: 'classic',
-  }
-  const worker = new Worker('/worker/createdFileChunk.js', options)
-
-  // addEventListener 添加监听子进程传递回来的事件
-  worker.addEventListener('message', event => {
-    console.log('event ------', event)
-  })
-
-  worker.dispatchEvent(event)
-
-  // 像子线程发送消息
-  worker.postMessage({ name: 'zs' }, {})
-})
-
-defineExpose({ chunkUpload })
+defineExpose({ handleUploadLargeFile })
 </script>

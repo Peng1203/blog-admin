@@ -5,6 +5,8 @@ export enum StatusEnum {
   UPLOADING = 1,
   SUCCESS = 2,
   FAIL = 3,
+
+  CALC_HASH = 99,
 }
 
 export interface FileData {

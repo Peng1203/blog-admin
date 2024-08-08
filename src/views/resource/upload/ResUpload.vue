@@ -109,6 +109,14 @@
         >
           上传失败 {{ row.errMsg }}
         </el-tag>
+
+        <el-tag
+          size="small"
+          type="danger"
+          v-else-if="row.status === StatusEnum.CALC_HASH"
+        >
+          上传失败 {{ row.errMsg }}
+        </el-tag>
       </template>
 
       <!-- 大小 -->
@@ -354,7 +362,7 @@ const handleUpload = () => {
 // 根据文件大小 判断走正常上传还是 大文件分片上传
 const handleExeUploadMethod = (row: FileData) => {
   if (row.size <= MAX_SIZE_VALUE) uploadFile(row)
-  else uploadLargeFileRef.value.chunkUpload(row)
+  else uploadLargeFileRef.value.handleUploadLargeFile(row)
 }
 
 // 正常上传

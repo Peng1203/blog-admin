@@ -1,5 +1,7 @@
 // import { saveAs } from 'file-saver';
 
+import SparkMD5 from 'spark-md5'
+
 /** 是否是图片 */
 export const isImage = (file: File): boolean => {
   return file.type.includes('image')
@@ -85,4 +87,23 @@ export function blobToFile(blob: Blob, fileName: string = Date.now() + '') {
     lastModified: Date.now(),
   })
   return file
+}
+
+export const getFileHash = (file: File): Promise<string> => {
+  return new Promise(resolve => {
+    const spark = new SparkMD5.ArrayBuffer()
+    getFileArrayBuffer(file).then(arrayBuffer => {
+      spark.append(arrayBuffer)
+      resolve(spark.end())
+    })
+  })
+}
+export const getFileArrayBuffer = async (file: File): Promise<ArrayBuffer> => {
+  return new Promise(resolve => {
+    const fileReader = new FileReader()
+    fileReader.readAsArrayBuffer(file)
+    fileReader.onload = e => {
+      resolve(e.target.result as ArrayBuffer)
+    }
+  })
 }

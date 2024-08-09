@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
-    "@types/crypto-js": "^4.2.2",
     "@vavt/md-editor-extension": "^3.0.0",
     "@vue/compiler-sfc": "^3.4.27",
     "@wangeditor/editor": "^5.1.23",
@@ -47,6 +46,7 @@
     "vue-router": "^4.3.2"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
     "@types/event-source-polyfill": "^1.0.5",
     "@types/file-saver": "^2.0.7",
     "@types/lodash": "^4.17.4",

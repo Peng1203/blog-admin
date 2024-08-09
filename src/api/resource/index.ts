@@ -37,5 +37,17 @@ export function useResourceApi() {
         data: JSON.stringify(params),
       })
     },
+    /** 上传文件分片 */
+    uploadFileChunk<T>(params, file: FormData): TransformedResponse<T> {
+      return request({
+        url: '/resource/chunk/upload',
+        method: Method.PUT,
+        params,
+        data: file,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+    },
   }
 }

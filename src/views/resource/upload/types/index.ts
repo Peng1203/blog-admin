@@ -15,7 +15,7 @@ export interface FileData {
   size: number
   /** 上传成功 资源路径 */
   url: string
-  /** 文件的状态 有三种状态 上传前(待上传) 上传中(上传进度条) 上传后(成功 / 失败) */
+  /** 文件的状态 上传前(待上传) 上传中(上传进度条) 上传后(成功 / 失败) */
   status: StatusEnum
   /** 文件的 MIME 类型 */
   mimeType: string
@@ -29,5 +29,24 @@ export interface FileData {
   cancel?: Canceler
   /** 暂停状态 当 status 为上次中时生效 */
   pause?: boolean
+  fileHash?: string
   [key: string]: any
+}
+
+export interface CreateFileDirData {
+  existingChunks?: string[]
+  message: string
+}
+
+export interface ChunkItem {
+  /** 分片开始字节 */
+  start: number
+  /** 分片结束字节 */
+  end: number
+  /** 第几片切片数 */
+  index: number
+  /** 文件块 */
+  blob: Blob
+  /** 文件的总大小 */
+  size: number
 }

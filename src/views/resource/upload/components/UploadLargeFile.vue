@@ -20,14 +20,17 @@
 <script setup lang="ts">
 import { ElUpload, UploadFile } from 'element-plus'
 import { MB } from '@/constants'
-import { FileData, StatusEnum } from '../types'
+import { ChunkItem, CreateFileDirData, FileData, StatusEnum } from '../types'
 import { useNotificationMsg } from '@/utils/notificationMsg'
 import { useResourceApi } from '@/api'
 import { getFileArrayBuffer } from '@/utils/file'
+import { useUserInfo } from '@/stores/userInfo'
 
 const emits = defineEmits(['change'])
 
-const { createLargeFileDir } = useResourceApi()
+const { createLargeFileDir, uploadFileChunk } = useResourceApi()
+
+const userStore = useUserInfo()
 
 // 大上传文件大小
 const LARGE_FILE_MAX_SIZE_MB = 500
@@ -60,32 +63,89 @@ const handleFileChange = (file: File, maxFileSize = LARGE_FILE_MAX_SIZE_VALUE) =
 
 const handleUploadLargeFile = async (fileItem: FileData) => {
   try {
-    await handleCreateFileDir(fileItem)
+    const { fileData } = fileItem
+
+    fileItem.status = StatusEnum.CALC_HASH
+    const arrayBuffer = await getFileArrayBuffer(fileData)
+    if (!fileItem.fileHash) {
+      const fileHash = await getFileHash(arrayBuffer)
+      fileItem.fileHash = fileHash
+    }
+
+    const existingChunks = await handleCreateFileDir(fileItem)
+
+    console.log(`%c existingChunks ----`, 'color: #fff;background-color: #000;font-size: 18px', existingChunks)
+
+    // slice 类似数组中的方法 表示 取当前文件的字节范围 0~99 字节
+    // const chunk = fileData.slice(0, 100);
+    const chunks = createFileChunks(fileData)
+
+    const uploadChunks =
+      existingChunks === true
+        ? chunks
+        : chunks.filter(chunkItem => !(existingChunks as number[]).includes(chunkItem.index))
+
+    console.log(
+      `%c chunks, uploadChunks ----`,
+      'color: #fff;background-color: #000;font-size: 18px',
+      chunks,
+      uploadChunks
+    )
+
+    fileItem.status = StatusEnum.UPLOADING
+
+    let finishCount = 0
+    if (Array.isArray(existingChunks) && existingChunks.length === chunks.length) {
+      console.log('上传完成 ------')
+    }
+    // 上传分片
+    await Promise.all(
+      uploadChunks.map(chunk =>
+        handleUploadChunk(chunk, `${fileItem.fileHash}_${userStore.userInfos.id}`).then(() => {
+          finishCount++
+
+          fileItem.uploadProcess =
+            (((Array.isArray(existingChunks) ? existingChunks.length : 0) + finishCount) / chunks.length) * 100
+        })
+      )
+    )
+
+    // 合成分片
+
+    // fileItem.status = StatusEnum.SUCCESS
   } catch (e) {
     console.log('e', e)
   }
 }
 
 // 创建大文件合成目录
-const handleCreateFileDir = async (fileItem: FileData): Promise<boolean> => {
+const handleCreateFileDir = async (fileItem: FileData): Promise<boolean | number[]> => {
   try {
-    fileItem.status = StatusEnum.CALC_HASH
-    const arrayBuffer = await getFileArrayBuffer(fileItem.fileData)
-    const fileHash = await getFileHash(arrayBuffer)
-
-    console.log(`%c fileHash ----`, 'color: #fff;background-color: #000;font-size: 18px', fileHash)
-
-    // console.log(`%c filehash ----`, 'color: #fff;background-color: #000;font-size: 18px', filehash)
     const params = {
-      dirName: '',
+      dirName: `${fileItem.fileHash}_${userStore.userInfos.id}`,
     }
-
-    const { data: res } = await createLargeFileDir(params)
-    console.log(`%c res ----`, 'color: #fff;background-color: #000;font-size: 18px', res)
+    const { data: res } = await createLargeFileDir<CreateFileDirData>(params)
+    const { code, success, data } = res
+    if (code !== 20100 || !success) return
+    if (data.existingChunks) return data.existingChunks.map(chunk => Number(chunk))
     return true
   } catch (e) {
     console.log('e', e)
     return false
+  }
+}
+
+// 分片上传
+const handleUploadChunk = async (chunk: ChunkItem, uploadId: string) => {
+  try {
+    const { blob, ...params } = chunk
+    const formData = new FormData()
+    formData.append('files', blob)
+
+    const { data: res } = await uploadFileChunk({ ...params, uploadId }, formData)
+    console.log('res ------', res)
+  } catch (e) {
+    console.log('e', e)
   }
 }
 
@@ -96,25 +156,6 @@ const getFileHash = (arrayBuffer: ArrayBuffer): Promise<string> => {
     worker.onmessage = e => resolve(e.data)
   })
 }
-
-// 分片上传
-const chunkUpload = async (fileItem: FileData) => {
-  try {
-    console.log('分片上传 ------', fileItem)
-    const { fileData } = fileItem
-
-    // slice 类似数组中的方法 表示 取当前文件的字节范围 0~99 字节
-    // const chunk = fileData.slice(0, 100);
-    const chunks = createFileChunks(fileData)
-    console.log('chunks ------', chunks)
-    // 上传切片前 先在服务器创建相关资源
-
-    // fileItem.status = StatusEnum.UPLOADING
-  } catch (e) {
-    console.log('e', e)
-  }
-}
-
 // const createResource = () => {
 //   try {
 //   } catch (e) {
@@ -123,12 +164,21 @@ const chunkUpload = async (fileItem: FileData) => {
 // }
 
 // 将文件按照指定大小切分
-const createFileChunks = (file: File): Blob[] => {
-  const fileChunks: Blob[] = []
+const createFileChunks = (file: File): ChunkItem[] => {
+  const fileChunks: ChunkItem[] = []
   const currentChunkSize = () => fileChunks.length * SLICE_SIZE
   while (file.size > currentChunkSize()) {
     const chunk = file.slice(currentChunkSize(), currentChunkSize() + SLICE_SIZE)
-    fileChunks.push(chunk)
+
+    const chunkItem: ChunkItem = {
+      blob: chunk,
+      start: currentChunkSize(),
+      end: Math.min(currentChunkSize() + SLICE_SIZE, file.size),
+      index: fileChunks.length,
+      size: file.size,
+    }
+
+    fileChunks.push(chunkItem)
   }
 
   // console.time('for 切割耗时');

@@ -112,10 +112,10 @@
 
         <el-tag
           size="small"
-          type="danger"
+          type="primary"
           v-else-if="row.status === StatusEnum.CALC_HASH"
         >
-          上传失败 {{ row.errMsg }}
+          生成文件Hash... {{ row.errMsg }}
         </el-tag>
       </template>
 
@@ -159,7 +159,7 @@
           :title="row.pause ? '继续' : '暂停'"
           size="small"
           type="info"
-          icon="ele-Delete"
+          :icon="'iconfont ' + row.pause ? 'icon-kaishi' : 'icon-zanting'"
           @click="handleDelete(row, scope)"
         />
 

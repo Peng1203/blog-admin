@@ -190,7 +190,7 @@ export function oneClickCopy(app: App) {
   app.directive('copy', {
     // 定义实例变量 用于不同钩子之间调用
     // clipboard: '',
-    created(el, binding, vnode: any) {
+    mounted(el, binding, vnode: any) {
       // 初始化创建 复制对象实例
       vnode.dirs[0].dir.clipboard = new ClipboardJS(el, {
         text: () => binding.value,
@@ -199,12 +199,12 @@ export function oneClickCopy(app: App) {
       vnode.dirs[0].dir.clipboard.on('success', () => ElMessage.success('复制成功'))
       vnode.dirs[0].dir.clipboard.on('error', () => ElMessage.error('复制失败!'))
     },
-    updated(el, binding, vnode: any) {
-      const clipboard = vnode.dirs[0].dir.clipboard
-      // 更新绑的的复制值
-      clipboard.text = () => binding.value
-    },
-    unmounted(el, binding, vnode: any, prevVnode) {
+    // updated(el, binding, vnode: any) {
+    //   const clipboard = vnode.dirs[0].dir.clipboard
+    //   // 更新绑的的复制值
+    //   clipboard.text = () => binding.value
+    // },
+    unmounted(el, binding, vnode: any) {
       const clipboard = vnode.dirs[0].dir.clipboard
       // 组件卸载时 删除
       clipboard.destroy()

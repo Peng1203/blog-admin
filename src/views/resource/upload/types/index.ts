@@ -27,10 +27,12 @@ export interface FileData {
   errMsg?: string
   /** 取消上传的函数 */
   cancel?: Canceler
-  /** 暂停状态 当 status 为上次中时生效 */
+  /** 暂停状态 当 status 为上传中时生效 (只针对于大文件上传有效) */
   pause?: boolean
+  /** 文件的hash (只针对于大文件上传有效) */
   fileHash?: string
-  [key: string]: any
+  /** 取消分片上传的函数列表 (只针对于大文件上传有效) */
+  cancelList?: Canceler[]
 }
 
 export interface CreateFileDirData {

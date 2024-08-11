@@ -60,6 +60,9 @@
       </el-button>
     </div>
 
+    <!-- 文件状态过滤操作行 -->
+
+    <!-- 文件列表 -->
     <Peng-Table
       flex1
       empty-text="暂无文件"
@@ -80,9 +83,9 @@
 
         <!-- 上传中 进度条 0 ~ 100 -->
         <!-- :color="row.uploadProcess === 100 ? '#67c23a' : '#409eff'" -->
+        <!-- :status="row.uploadProcess === 100 ? 'success' : ''" -->
         <el-progress
           :show-text="false"
-          :status="row.uploadProcess === 100 ? 'success' : ''"
           :percentage="row.uploadProcess"
           v-else-if="row.status === StatusEnum.UPLOADING"
         />
@@ -115,7 +118,7 @@
           type="primary"
           v-else-if="row.status === StatusEnum.CALC_HASH"
         >
-          生成文件Hash... {{ row.errMsg }}
+          生成文件Hash {{ row.errMsg }}
         </el-tag>
       </template>
 
@@ -143,6 +146,7 @@
       <template #operationSlot="{ row, scope }">
         <!-- {{ row }} -->
 
+        <!-- 上传 -->
         <el-button
           circle
           title="上传"
@@ -153,16 +157,25 @@
           @click="handleExeUploadMethod(row)"
         />
 
+        <!-- 暂停/继续 -->
         <el-button
-          v-if="row.status === StatusEnum.UPLOADING"
+          v-if="isLargeFile(row.size)"
           circle
-          :title="row.pause ? '继续' : '暂停'"
           size="small"
           type="info"
-          :icon="'iconfont ' + row.pause ? 'icon-kaishi' : 'icon-zanting'"
-          @click="handleDelete(row, scope)"
-        />
+          :title="row.pause ? '继续' : '暂停'"
+          :color="row.pause ? '#007BFF' : '#6C757D'"
+          :disabled="!(row.status === StatusEnum.UPLOADING)"
+          @click="handleUploadToggle(row)"
+        >
+          <i
+            style="margin-right: 0 !important"
+            class="iconfont"
+            :class="row.pause ? 'icon-kaishi' : 'icon-zanting'"
+          />
+        </el-button>
 
+        <!-- 删除 -->
         <el-button
           circle
           title="删除"
@@ -172,6 +185,7 @@
           @click="handleDelete(row, scope)"
         />
 
+        <!-- 预览 -->
         <el-button
           circle
           title="预览"
@@ -181,6 +195,29 @@
           @click="handlePreView(row)"
           v-if="row.mimeType.includes('image')"
         />
+
+        <!-- 复制 url -->
+        <el-button
+          circle
+          title="复制"
+          size="small"
+          type="info"
+          icon="CopyDocument"
+          color="#007BFF"
+          v-copy="row.url"
+          v-if="row.url"
+        />
+
+        <!-- 下载 -->
+        <!-- <el-button
+          circle
+          title="下载"
+          size="small"
+          type="info"
+          icon="Download"
+          color="#28A745"
+          v-if="row.url"
+        /> -->
       </template>
     </Peng-Table>
 
@@ -245,7 +282,7 @@ import {
   // UploadRawFile,
   // genFileId,
 } from 'element-plus'
-import { useNotificationMsg } from '@/utils/notificationMsg'
+// import { useNotificationMsg } from '@/utils/notificationMsg'
 import { useResourceApi } from '@/api'
 import { blobToFile, compressImage, imageToBase64 } from '@/utils/file'
 import { api as viewerApi } from 'v-viewer'
@@ -259,6 +296,9 @@ const uploadLargeFileRef = ref<RefType>(null)
 // 正常上传文件大小
 const MAX_SIZE_MB = 5
 const MAX_SIZE_VALUE = MB * MAX_SIZE_MB
+
+// 是否是大文件
+const isLargeFile = size => size > MAX_SIZE_VALUE
 
 const tableState = reactive({
   data: <FileData[]>[],
@@ -295,7 +335,7 @@ const tableState = reactive({
     {
       label: '操作',
       prop: 'operation',
-      width: 150,
+      width: 200,
       slotName: 'operationSlot',
     },
   ],
@@ -339,7 +379,8 @@ const handleFileChange = (file: File, maxFileSize = MAX_SIZE_VALUE) => {
   if (!type) return
 
   // prettier-ignore
-  if (size > maxFileSize) return useNotificationMsg('', `请选择小于${maxFileSize / MB}MB的文件`, 'warning', 2);
+  // if (size > maxFileSize) return useNotificationMsg('', `请选择小于${maxFileSize / MB}MB的文件`, 'warning', 2);
+  if (size > maxFileSize) return uploadLargeFileRef.value.handleFileChange(file)
 
   const fileItem: FileData = {
     url: '',
@@ -376,16 +417,18 @@ const uploadFile = async (fileItem: FileData) => {
       fileItem
     )
     // 当 res 响应时 onUploadProgress 事件 回调函数将不会再执行 但可能会触发1~2次 res 响应之前 已经触发的回调
-    const { success, code } = res
+    const { success, code, data } = res
     if (code !== 20100 || !success) return
     fileItem.uploadProcess = 1
     fileItem.status = StatusEnum.SUCCESS
+    fileItem.url = data
   } catch (e) {
     console.log('e', e)
     fileItem.errMsg = e.message
     fileItem.status = StatusEnum.FAIL
   }
 }
+
 // 获取文件的 FormData 并且判断是否是 图片类型且开启了压缩
 const fileToFormData = async (fileItem: FileData): Promise<FormData> => {
   const { fileData, isCompress } = fileItem
@@ -429,6 +472,8 @@ const handlePasteEvent = (event: ClipboardEvent) => {
     handleFileChange(files[i])
   }
 }
+
+const handleUploadToggle = row => uploadLargeFileRef.value.handleUploadToggle(row)
 
 onMounted(() => {
   el.value && el.value.addEventListener(PASTE_EVENT, handlePasteEvent)

@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import { TransformedResponse } from 'Api'
 import { Method } from '../types'
-import axios, { AxiosProgressEvent } from 'axios'
+import axios, { AxiosProgressEvent, Canceler } from 'axios'
 // Canceler
 
 export function useResourceApi() {
@@ -38,15 +38,26 @@ export function useResourceApi() {
       })
     },
     /** 上传文件分片 */
-    uploadFileChunk<T>(params, file: FormData): TransformedResponse<T> {
+    uploadFileChunk<T>(params, file: FormData, cancelList: Canceler[]): TransformedResponse<T> {
       return request({
         url: '/resource/chunk/upload',
         method: Method.PUT,
         params,
         data: file,
         headers: {
+          // prettier-ignore
+          'x-log': 'false',
           'Content-Type': 'multipart/form-data',
         },
+        cancelToken: new axios.CancelToken(c => cancelList.push(c)),
+      })
+    },
+    /** 合成文件切片 */
+    mergeFileChunks<T>(params): TransformedResponse<T> {
+      return request({
+        url: '/resource/chunk/merge',
+        method: Method.POST,
+        data: JSON.stringify(params),
       })
     },
   }

@@ -51,7 +51,7 @@ export interface ColumnItem<T = any> {
   sort?: boolean | 'custom'
   tooltip?: boolean
   fixed?: boolean | 'left' | 'right'
-  slotName?: string
+  slotName?: string | `${keyof T & string}Slot` | 'operation'
   align?: 'left' | 'center' | 'right'
   childrenColumns?: ColumnItem<T>[]
   classNname?: string

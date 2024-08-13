@@ -27,7 +27,7 @@ const routerRules: RouteRecordRaw[] = [
           isLink: '',
           isHide: false,
           isKeepAlive: false,
-          isAffix: false,
+          isAffix: true,
           isIframe: false,
           // icon: 'iconfont icon-tianchongxing-',
           icon: 'iconfont icon-weibiaoti--',

@@ -158,8 +158,8 @@
         />
 
         <!-- 暂停/继续 -->
-        <el-button
-          v-if="isLargeFile(row.size)"
+        <!-- <el-button
+          v-if="isLargeFile(row.size) && row.status === StatusEnum.UPLOADING"
           circle
           size="small"
           type="info"
@@ -173,7 +173,7 @@
             class="iconfont"
             :class="row.pause ? 'icon-kaishi' : 'icon-zanting'"
           />
-        </el-button>
+        </el-button> -->
 
         <!-- 删除 -->
         <el-button
@@ -296,9 +296,6 @@ const uploadLargeFileRef = ref<RefType>(null)
 // 正常上传文件大小
 const MAX_SIZE_MB = 5
 const MAX_SIZE_VALUE = MB * MAX_SIZE_MB
-
-// 是否是大文件
-const isLargeFile = size => size > MAX_SIZE_VALUE
 
 const tableState = reactive({
   data: <FileData[]>[],
@@ -473,6 +470,10 @@ const handlePasteEvent = (event: ClipboardEvent) => {
   }
 }
 
+// 是否是大文件
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+const isLargeFile = size => size > MAX_SIZE_VALUE
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 const handleUploadToggle = row => uploadLargeFileRef.value.handleUploadToggle(row)
 
 onMounted(() => {

@@ -25,6 +25,7 @@ import { useNotificationMsg } from '@/utils/notificationMsg'
 import { useResourceApi } from '@/api'
 import { getFileArrayBuffer } from '@/utils/file'
 import { useUserInfo } from '@/stores/userInfo'
+import { concurRequest } from '@/utils/concurRequest'
 
 const emits = defineEmits(['change'])
 
@@ -104,21 +105,30 @@ const handleUploadLargeFile = async (fileItem: FileData) => {
       fileItem.uploadProcess = 100
     } else {
       let finishCount = 0
-      // 上传分片
-      await Promise.all(
-        uploadChunks.map(chunk =>
-          handleUploadChunk(chunk, `${fileItem.fileHash}_${userStore.userInfos.id}`, fileItem)
-            .then(() => {
-              finishCount++
 
-              fileItem.uploadProcess = ((existingChunks.length + finishCount) / chunks.length) * 100
-            })
-            .catch(e => {
-              // 抛出错误 阻止剩下代码执行
-              throw new Error(e)
-            })
-        )
-      )
+      const paramsArr = uploadChunks.map(chunk => ({
+        chunk,
+        uploadId: `${fileItem.fileHash}_${userStore.userInfos.id}`,
+        fileItem,
+      }))
+
+      const request = params =>
+        handleUploadChunk(params)
+          .then(res => {
+            finishCount++
+
+            fileItem.uploadProcess = ((existingChunks.length + finishCount) / chunks.length) * 100
+
+            return res
+          })
+          .catch(e => {
+            throw new Error(e)
+          })
+
+      const uploadResult = await concurRequest(paramsArr, request)
+
+      // 抛出错误 阻止剩下代码执行
+      if (!uploadResult.every(result => result === true)) throw new Error('分片上传失败')
     }
 
     // 合成分片
@@ -147,13 +157,18 @@ const handleCreateFileDir = async (fileItem: FileData): Promise<number[]> => {
 }
 
 // 分片上传
-const handleUploadChunk = async (chunk: ChunkItem, uploadId: string, fileItem: FileData) => {
+const handleUploadChunk = async (params: {
+  chunk: ChunkItem
+  uploadId: string
+  fileItem: FileData
+}): Promise<boolean> => {
   try {
-    const { blob, index, ...params } = chunk
+    const { chunk, uploadId, fileItem } = params
+    const { blob, index, ...args } = chunk
     const formData = new FormData()
     formData.append('files', blob)
 
-    const { data: res } = await uploadFileChunk({ index, ...params, uploadId }, formData, fileItem.cancelList)
+    const { data: res } = await uploadFileChunk({ index, ...args, uploadId }, formData, fileItem.cancelList)
     const { code, success } = res
     if (code !== 20000 || !success) return false
     return true

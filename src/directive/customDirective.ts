@@ -211,3 +211,20 @@ export function oneClickCopy(app: App) {
     },
   })
 }
+
+/** 滚轮控制横向滚动 */
+export function setXScrollWheel(app: App) {
+  app.directive('XScroll', {
+    mounted(el) {
+      el.wheelEventHandle = event => {
+        el.scrollLeft += event.deltaY
+        event.stopPropagation()
+      }
+
+      el.addEventListener('wheel', el.wheelEventHandle)
+    },
+    unmounted(el) {
+      el.removeEventListener('wheel', el.wheelEventHandle)
+    },
+  })
+}

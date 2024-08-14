@@ -1,6 +1,6 @@
 import type { App } from 'vue'
 import { authDirective } from '@/directive/authDirective'
-import { wavesDirective, dragDirective, oneClickCopy } from '@/directive/customDirective'
+import { wavesDirective, dragDirective, oneClickCopy, setXScrollWheel } from '@/directive/customDirective'
 import { slideIn } from './animationDirective'
 
 /**
@@ -20,4 +20,6 @@ export function directive(app: App) {
   oneClickCopy(app)
   // 列表滚动过渡
   slideIn(app)
+  // 滚轮控制横向滚动
+  setXScrollWheel(app)
 }

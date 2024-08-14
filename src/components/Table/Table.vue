@@ -472,7 +472,23 @@ onUnmounted(() => clearXScrollWhell())
   </el-table-column>
 </template> -->
 
-<style lang="scss">
+<style scoped lang="scss">
+// :deep(.el-table__row) {
+//   position: relative;
+//   &::after {
+//     content: '';
+//     width: 100%;
+//     height: 2px;
+//     position: absolute;
+//     left: 0;
+//     bottom: 0;
+//     z-index: 9999;
+//     background-color: red;
+//   }
+// }
+</style>
+
+<style>
 .el-table .fail-row {
   --el-table-tr-bg-color: rgba(244, 67, 54, 0.1);
 }

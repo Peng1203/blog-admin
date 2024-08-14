@@ -15,27 +15,20 @@
       <div class="row category-row">
         <span class="row-label">分类：</span>
 
-        <div>
+        <div
+          class="x-scroll-container"
+          v-XScroll
+        >
           <el-check-tag
-            :key="value"
             size="small"
             class="ml15 pseudo-link"
+            :key="value"
             :checked="value === filterParams.categoryId"
             v-for="{ label, value } in filterState.categoryList"
             @click="handleFilterByCatagory(value)"
           >
             {{ label }}
           </el-check-tag>
-          <!-- <el-tag
-            v-for="{ label, value } in filterState.categoryList"
-            :key="value"
-            :effect="value === filterParams.categoryId ? 'dark' : 'plain'"
-            size="small"
-            class="ml15 pseudo-link"
-            @click="handleFilterByCatagory(value)"
-          >
-            {{ label }}
-          </el-tag> -->
         </div>
       </div>
 
@@ -44,7 +37,10 @@
       <div class="row category-row">
         <span class="row-label">标签：</span>
 
-        <div>
+        <div
+          v-XScroll
+          class="x-scroll-container"
+        >
           <el-tag
             v-for="{ label, value } in filterState.tagList"
             :key="value"

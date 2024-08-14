@@ -171,12 +171,14 @@ const handlePublish = async () => {
 const handleAddArticle = async (actionType: 0 | 1) => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-    const { summary, author, category, id, ...args } = articleForm
+    const { summary, author, category, id, accessPassword, status, ...args } = articleForm
     const { data: res } = await addArticle<ArticleData>({
-      ...args,
+      status,
       category: category || 0,
       authorId: author,
+      accessPassword: status === ArticleStatusEnum.PRIVATE ? accessPassword : '',
       summary: summary || args.content.substring(0, 300),
+      ...args,
     })
     const [errMsg, successMsg] = [
       ['暂存失败!', '暂存成功!'],

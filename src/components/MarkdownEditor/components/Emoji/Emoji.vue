@@ -32,7 +32,7 @@
 import { reactive } from 'vue'
 import type { PropType } from 'vue'
 import { InsertContentGenerator, DropdownToolbar } from 'md-editor-v3'
-import { emojis } from './date'
+import { emojis } from './data'
 import 'md-editor-v3/lib/style.css'
 
 const props = defineProps({

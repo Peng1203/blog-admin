@@ -31,7 +31,7 @@ export const useRolesInfo = defineStore('rolesInfo', {
           value: id,
         }))
       } catch (error) {
-        throw error
+        console.log('error ------', error)
       }
     },
   },

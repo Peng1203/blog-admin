@@ -32,7 +32,7 @@ export const useUsersInfo = defineStore('usersInfo', {
           value: id,
         }))
       } catch (e) {
-        throw e
+        console.log('e ------', e)
       }
     },
   },

@@ -4,6 +4,7 @@
     v-bind="$attrs"
     v-loading="props.loading"
     row-key="id"
+    :row-style="getRowStyle"
     :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
     :stripe="props.stripe"
     :border="props.border"
@@ -17,6 +18,7 @@
     @row-dblclick="handleDbRowClick"
     @row-click="handleRowClick"
     @row-contextmenu="handleMouseRightRowClick"
+    @header-dragend="handleHeaderDragend"
   >
     <el-table-column
       v-if="props.isSelection"
@@ -125,11 +127,15 @@
       :width="operationColumnWidth"
       v-if="props.operationColumn"
     >
+      <template #header>
+        <slot name="operationHeaderSlot" />
+      </template>
+
       <template #default="scope">
         <slot
-          name="operationStartSlot"
           :scope="scope"
           :row="scope.row"
+          name="operationStartSlot"
         />
 
         <el-button
@@ -182,9 +188,9 @@
         />
 
         <slot
-          name="operationEndSlot"
           :scope="scope"
           :row="scope.row"
+          name="operationEndSlot"
         />
       </template>
     </el-table-column>
@@ -457,6 +463,14 @@ const handleWhell = (event: WheelEvent) => {
   tableRef.value.setScrollLeft(xScorllToValue.value)
 }
 
+const handleHeaderDragend = (newWidth: number) => {
+  console.log('新列宽 ------', newWidth)
+}
+
+const getRowStyle = ({ row }) => {
+  return { '--process': `${row.process}%` }
+}
+
 onMounted(() => {
   tableColumns.value = props.columns
   setXScrollWhell()
@@ -473,19 +487,21 @@ onUnmounted(() => clearXScrollWhell())
 </template> -->
 
 <style scoped lang="scss">
-// :deep(.el-table__row) {
-//   position: relative;
-//   &::after {
-//     content: '';
-//     width: 100%;
-//     height: 2px;
-//     position: absolute;
-//     left: 0;
-//     bottom: 0;
-//     z-index: 9999;
-//     background-color: red;
-//   }
-// }
+:deep(.el-table__row) {
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 99;
+    // width: 100%;
+    width: var(--process);
+    height: 2px;
+    transition: width 0.3s ease;
+    background-color: #409eff;
+  }
+}
 </style>
 
 <style>

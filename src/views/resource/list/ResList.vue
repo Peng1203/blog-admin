@@ -4,12 +4,40 @@
       shadow="hover"
       class="layout-padding-auto"
     >
+      <!-- :border="false" -->
+
       <Peng-Table
-        :data="tableState.data"
+        operationColumn
+        :operationColumnWidth="200"
+        :operationColumnBtns="['delete']"
+        :data="dataList"
         :columns="tableState.columns"
         :is-need-pager="false"
+        :default-sort="{ prop: 'atime', order: 'descending' }"
+        @deleteBtn="handleDelete"
       >
-        <template #operationSlot="{ row }">
+        <template #nameSlot="{ row, prop }">
+          <span v-html="queryStrHighlight(row[prop!], tableState.queryStr)" />
+        </template>
+
+        <template #operationHeaderSlot>
+          <div flex-sb-c>
+            <el-input
+              size="small"
+              v-model="tableState.queryStr"
+            />
+
+            <el-button
+              ml5
+              size="small"
+              type="primary"
+              icon="RefreshRight"
+              @click="handleRefreshList"
+            />
+          </div>
+        </template>
+
+        <template #operationStartSlot="{ row }">
           <el-button
             circle
             title="复制"
@@ -26,7 +54,16 @@
             size="small"
             type="success"
             icon="Download"
-            @click="handleDownload(row.url)"
+            @click="handleDownload(row)"
+          />
+
+          <el-button
+            circle
+            title="预览"
+            size="small"
+            type="info"
+            icon="ele-View"
+            @click="handlePreView(row)"
           />
         </template>
       </Peng-Table>
@@ -35,44 +72,107 @@
 </template>
 
 <script setup lang="ts" name="ResourceList">
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { ColumnItem } from '@/components/Table'
 import { useResourceStore } from '@/stores/resource'
-import type { ResourceData } from './types'
+import type { ResourceListItem } from './types'
+import request from '@/utils/request'
+import FileSaver from 'file-saver'
+import axios, { AxiosProgressEvent, Canceler } from 'axios'
+import { useNotificationMsg } from '@/utils/notificationMsg'
+import { queryStrHighlight } from '@/utils/queryStrHighlight'
 
 const store = useResourceStore()
 
 const tableState = reactive({
-  data: <ResourceData[]>[],
-  columns: ref<ColumnItem<ResourceData>[]>([
+  queryStr: '',
+  columns: ref<ColumnItem<ResourceListItem>[]>([
     {
       label: '名称',
       prop: 'name',
+      tooltip: true,
+      slotName: 'nameSlot',
     },
     {
       label: '修改日期',
       prop: 'atime',
+      sort: true,
+      width: 165,
     },
     {
       label: '类型',
       prop: 'type',
+      width: 80,
     },
     {
       label: '大小',
       prop: 'size',
-    },
-    {
-      label: '操作',
-      prop: 'operation',
-      slotName: 'operationSlot',
       width: 100,
+      sort: true,
+      formatter: ({ size }) => {
+        const kb = size / 1024
+        const mb = kb / 1024
+        const gb = mb / 1024
+        if (kb < 1024) return `${kb.toFixed(0)} KB`
+        if (mb < 1024) return `${mb.toFixed(2)} MB`
+        return `${gb.toFixed(2)} GB`
+      },
     },
   ]),
 })
 
-const handleDownload = (url: string) => window.open(url, '_blank')
+// 取消请求的函数
+const cancelCbs = ref<Canceler[]>([])
+const handleDownload = async (row: ResourceListItem) => {
+  try {
+    // 重新下载时 重置下载进度为 0
+    row.process = 0
+    // FileSaver 也可以通过传入 url 触发下载
+    // FileSaver.saveAs(row.url, row.name)
+
+    const { data: blobRes } = await request({
+      url: row.url,
+      method: 'GET',
+      responseType: 'blob',
+      withCredentials: false,
+      cancelToken: new axios.CancelToken(c => cancelCbs.value.push(c)),
+      onDownloadProgress(event: AxiosProgressEvent) {
+        if (row.process === 100) return
+        row.process = event.progress * 100
+      },
+    })
+    // 当触发 blobRes 表示下载完毕 进度设置为 100%
+    row.process = 100
+    // blobRes 为一个 blob 类型的数据
+    FileSaver.saveAs(blobRes, row.name)
+  } catch (e) {
+    console.log('e', e)
+  }
+}
+
+const dataList = computed<ResourceListItem[]>(() => {
+  const tableData = store.list.map(item => ({ ...item, process: 0 }))
+  if (!tableState.queryStr) return tableData
+  return tableData.filter(
+    data => !tableState.queryStr || data.name.toLowerCase().includes(tableState.queryStr.toLowerCase())
+  )
+})
+
+const handlePreView = (row: ResourceListItem) => window.open(row.url, '_blank')
+
+const handleDelete = (row: ResourceListItem) => {
+  if (row.process > 0 && row.process < 100)
+    return useNotificationMsg('操作失败', '当前文件正在下载 无法删除', 'warning')
+  store.deleteResource(row.name)
+}
+
+const handleRefreshList = () => store.getResourceList(true)
 
 onMounted(() => {
-  store.getResourceList().then(() => (tableState.data = store.list))
+  store.getResourceList()
+})
+
+onUnmounted(() => {
+  cancelCbs.value.forEach(c => c && c())
 })
 </script>

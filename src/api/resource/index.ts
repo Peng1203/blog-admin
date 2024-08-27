@@ -60,5 +60,12 @@ export function useResourceApi() {
         data: JSON.stringify(params),
       })
     },
+    /** 删除文件资源 */
+    deleteResourceFile(fileName: string): TransformedResponse<string> {
+      return request({
+        url: `/resource/${fileName}`,
+        method: Method.DELETE,
+      })
+    },
   }
 }

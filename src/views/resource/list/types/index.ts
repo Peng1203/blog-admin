@@ -25,5 +25,9 @@ export interface ResourceData {
   url: string
 }
 
+export interface ResourceListItem extends ResourceData {
+  process: number
+}
+
 // export type ResourceListData = ListApiBaseResponse<ResourceData>
 export type ResourceListData = ResourceData[]

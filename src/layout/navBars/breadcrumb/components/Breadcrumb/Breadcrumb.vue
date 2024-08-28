@@ -25,8 +25,9 @@
               class="layout-navbars-breadcrumb-iconfont"
               v-if="themeConfig.isBreadcrumbIcon"
             />
-            <div v-if="!v.meta.tagsViewName">{{ v.meta.title }}</div>
-            <div v-else>{{ v.meta.tagsViewName }}</div>
+            <!-- v-if="!v.meta.tagsViewName" -->
+            <div>{{ v.meta.title }}</div>
+            <!-- <div v-else>{{ v.meta.tagsViewName }}--{{ v.meta }}</div> -->
           </span>
 
           <a

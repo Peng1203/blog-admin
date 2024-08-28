@@ -345,7 +345,7 @@ const handleColumnSort = ({ prop, order }: { prop: string; order: keyof OrderPro
 const defaultPageSizeList = [5, 10, 30, 50, 100, 200]
 const handleFilterTable = (filters: any) => {
   const { filter } = filters
-
+  if (!filter) return
   if (!filter.length) return (tableColumns.value = props.columns)
   tableColumns.value = props.columns.filter((column: ColumnItem) => !filter.includes(column.prop))
 }

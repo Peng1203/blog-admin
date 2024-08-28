@@ -1,5 +1,5 @@
 <template>
-  <span>
+  <span flex-c-c>
     <i
       v-if="isShowIconSvg"
       class="el-icon"

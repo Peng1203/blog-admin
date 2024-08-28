@@ -25,7 +25,7 @@ const routerRules: RouteRecordRaw[] = [
           isKeepAlive: false,
           isAffix: false,
           isIframe: false,
-          icon: 'ele-UploadFilled',
+          icon: 'iconfont icon-ziyuanliebiao',
           orderNum: 1,
         },
       },

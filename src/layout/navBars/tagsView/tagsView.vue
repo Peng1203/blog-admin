@@ -378,12 +378,15 @@ const getCurrentRouteItem = (item: RouteItem): any => {
 // 当前项右键菜单点击
 const onCurrentContextmenuClick = async (item: RouteItem) => {
   item.commonUrl = transUrlParams(item)
+
   if (!getCurrentRouteItem(item))
     return ElMessage({
       type: 'warning',
       message: '请正确输入路径及完整参数（query、params）',
     })
+
   const { path, name, params, query, meta, url } = getCurrentRouteItem(item)
+
   switch (item.contextMenuClickId) {
     case 0:
       // 刷新当前
@@ -408,6 +411,10 @@ const onCurrentContextmenuClick = async (item: RouteItem) => {
     case 4:
       // 开启当前页面全屏
       openCurrenFullscreen(getThemeConfig.value.isShareTagsView ? path : url)
+      break
+    case 5:
+      // 新标签页中打开
+      openInNewTab(name)
       break
   }
 }
@@ -564,6 +571,12 @@ const initSortable = async () => {
 const onSortableResize = async () => {
   await initSortable()
   if (other.isMobile()) state.sortable.el && state.sortable.destroy()
+}
+
+const openInNewTab = name => {
+  let routeUrl = router.resolve({ name })
+  console.log(`%c 触发了 ----`, 'color: #fff;background-color: #000;font-size: 18px', routeUrl)
+  window.open(routeUrl.href, '_blank')
 }
 // 页面加载前
 onBeforeMount(() => {

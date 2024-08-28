@@ -78,7 +78,13 @@ const state = reactive({
       contextMenuClickId: 4,
       txt: '当前页全屏',
       affix: false,
-      icon: 'iconfont icon-fullscreen',
+      icon: 'ele-FullScreen',
+    },
+    {
+      contextMenuClickId: 5,
+      txt: '新标签页中打开',
+      affix: false,
+      icon: 'iconfont icon-xinbiaoqianyedakai',
     },
   ],
   item: {},
@@ -153,5 +159,9 @@ defineExpose({
       font-size: 12px !important;
     }
   }
+}
+
+:deep(.el-icon) {
+  height: 100%;
 }
 </style>

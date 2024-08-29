@@ -132,6 +132,7 @@ import { queryStrHighlight } from '@/utils/queryStrHighlight'
 import { api as viewerApi } from 'v-viewer'
 import { concurRequest } from '@/utils/concurRequest'
 import { BroadcastChannelEnum } from '@/constants'
+import { formatByteSize } from '@/utils/file'
 
 const store = useResourceStore()
 
@@ -159,6 +160,7 @@ const tableState = reactive({
     {
       label: '类型',
       prop: 'type',
+      sort: true,
       width: 80,
       filters: [
         { text: '图片', value: 'image' },
@@ -184,14 +186,7 @@ const tableState = reactive({
       prop: 'size',
       width: 100,
       sort: true,
-      formatter: ({ size }) => {
-        const kb = size / 1024
-        const mb = kb / 1024
-        const gb = mb / 1024
-        if (kb < 1024) return `${kb.toFixed(0)} KB`
-        if (mb < 1024) return `${mb.toFixed(2)} MB`
-        return `${gb.toFixed(2)} GB`
-      },
+      formatter: ({ size }) => formatByteSize(size),
     },
   ]),
 })

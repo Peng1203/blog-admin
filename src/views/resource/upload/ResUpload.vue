@@ -122,12 +122,6 @@
         </el-tag>
       </template>
 
-      <!-- 大小 -->
-      <template #sizeSlot="{ row, prop }">
-        <!-- {{ row[prop] }} -->
-        {{ byteToMb(row[prop]) }} Mb
-      </template>
-
       <!-- 上传压缩 -->
       <template #isCompressSlot="{ row }">
         <div v-if="row.size > MAX_SIZE_VALUE"></div>
@@ -262,7 +256,7 @@
           size="small"
           effect="light"
         >
-          总大小: {{ uploadInfo.filesTotalSize }} byte ≈ {{ byteToMb(uploadInfo.filesTotalSize) }} Mb
+          总大小: {{ uploadInfo.filesTotalSize }} byte ≈ {{ formatByteSize(uploadInfo.filesTotalSize) }}
         </el-tag>
       </div>
     </div>
@@ -284,7 +278,7 @@ import {
 } from 'element-plus'
 // import { useNotificationMsg } from '@/utils/notificationMsg'
 import { useResourceApi } from '@/api'
-import { blobToFile, compressImage, imageToBase64 } from '@/utils/file'
+import { blobToFile, compressImage, formatByteSize, imageToBase64 } from '@/utils/file'
 import { api as viewerApi } from 'v-viewer'
 import { BroadcastChannelEnum, MB } from '@/constants'
 import UploadLargeFile from './components/UploadLargeFile.vue'
@@ -314,10 +308,10 @@ const tableState = reactive({
       sort: true,
     },
     {
-      label: '文件大小',
+      label: '大小',
       prop: 'size',
       sort: true,
-      slotName: 'sizeSlot',
+      formatter: ({ size }) => formatByteSize(size),
     },
     {
       label: '状态',
@@ -347,9 +341,6 @@ const uploadInfo = ref({
   failFiles: computed(() => tableState.data.filter(file => file.status === StatusEnum.FAIL).length),
   filesTotalSize: computed(() => _.sum(tableState.data.map(file => file.size))),
 })
-
-// 字节转换mb单位
-const byteToMb = (size: number) => (size / 1024 / 1024).toFixed(2)
 
 // 选择文件夹上传
 const handleSelectDirectory = () => {

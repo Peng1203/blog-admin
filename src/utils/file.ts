@@ -107,3 +107,13 @@ export const getFileArrayBuffer = async (file: File): Promise<ArrayBuffer> => {
     }
   })
 }
+
+/** 文件字节单位转换 */
+export const formatByteSize = (byte: number) => {
+  const kb = byte / 1024
+  const mb = kb / 1024
+  const gb = mb / 1024
+  if (kb < 1024) return `${kb.toFixed(0)} KB`
+  if (mb < 1024) return `${mb.toFixed(2)} MB`
+  return `${gb.toFixed(2)} GB`
+}

@@ -107,12 +107,19 @@
         </el-tag>
 
         <el-tag
-          ml5
-          type="primary"
+          type="success"
           size="small"
           effect="light"
         >
           选中文件数: {{ tableState.selectVal.length }}
+        </el-tag>
+
+        <el-tag
+          size="small"
+          effect="light"
+          type="primary"
+        >
+          总大小: {{ formatByteSize(filesTotalSize) }}
         </el-tag>
       </div>
     </el-card>
@@ -133,6 +140,7 @@ import { api as viewerApi } from 'v-viewer'
 import { concurRequest } from '@/utils/concurRequest'
 import { BroadcastChannelEnum } from '@/constants'
 import { formatByteSize } from '@/utils/file'
+import _ from 'lodash'
 
 const store = useResourceStore()
 
@@ -161,7 +169,7 @@ const tableState = reactive({
       label: '类型',
       prop: 'type',
       sort: true,
-      width: 80,
+      width: 100,
       filters: [
         { text: '图片', value: 'image' },
         { text: '视频', value: 'video' },
@@ -271,6 +279,8 @@ const handleRowDbClikc = (row: ResourceListItem) => {
   viewerApi({ images: [row.url] })
 }
 
+const filesTotalSize = computed(() => _.sum(dataList.value.map(file => file.size)))
+
 onMounted(() => {
   getDataList()
   handleAcceptBroadcasts()
@@ -280,3 +290,9 @@ onUnmounted(() => {
   cancelCbs.value.forEach(c => c && c())
 })
 </script>
+
+<style scoped>
+.el-tag + .el-tag {
+  margin-left: 5px;
+}
+</style>

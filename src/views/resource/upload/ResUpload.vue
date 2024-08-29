@@ -256,7 +256,8 @@
           size="small"
           effect="light"
         >
-          总大小: {{ uploadInfo.filesTotalSize }} byte ≈ {{ formatByteSize(uploadInfo.filesTotalSize) }}
+          <!-- {{ uploadInfo.filesTotalSize }} byte ≈  -->
+          总大小: {{ formatByteSize(uploadInfo.filesTotalSize) }}
         </el-tag>
       </div>
     </div>
@@ -421,11 +422,11 @@ const uploadFile = async (fileItem: FileData) => {
 
 // 获取文件的 FormData 并且判断是否是 图片类型且开启了压缩
 const fileToFormData = async (fileItem: FileData): Promise<FormData> => {
-  const { fileData, isCompress } = fileItem
+  const { fileData, isCompress, name, type } = fileItem
   const formData = new FormData()
   if (isCompress) {
     const compressFile = (await compressImage(fileData)) as Blob
-    const newFile = blobToFile(compressFile)
+    const newFile = blobToFile(compressFile, name.replace(`.${type}`, ''))
     formData.append('file', newFile)
   } else formData.append('file', fileData)
   return formData

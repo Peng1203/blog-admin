@@ -286,8 +286,10 @@ import {
 import { useResourceApi } from '@/api'
 import { blobToFile, compressImage, imageToBase64 } from '@/utils/file'
 import { api as viewerApi } from 'v-viewer'
-import { MB } from '@/constants'
+import { BroadcastChannelEnum, MB } from '@/constants'
 import UploadLargeFile from './components/UploadLargeFile.vue'
+import { watch } from 'vue'
+import { useResourceStore } from '@/stores/resource'
 
 const { uploadResource } = useResourceApi()
 
@@ -475,6 +477,25 @@ const handlePasteEvent = (event: ClipboardEvent) => {
 const isLargeFile = size => size > MAX_SIZE_VALUE
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
 const handleUploadToggle = row => uploadLargeFileRef.value.handleUploadToggle(row)
+
+// 获取文件列表所有状态
+const listStatus = computed(() => tableState.data.map(item => item.status))
+
+const resourceStore = useResourceStore()
+// 监听文件列状态变化 有新的成功上传时 更新文件列表
+watch(
+  () => listStatus,
+  val => {
+    const uploadFinish = val.value.every(status => status === StatusEnum.SUCCESS)
+    if (!uploadFinish) return
+    // 通知当前tab页的文件列表更新
+    resourceStore.getResourceList(true)
+    // 通知其他tab页的状态列表更新
+    const channel = new BroadcastChannel(BroadcastChannelEnum.RESOURCE_CHANNEL)
+    channel.postMessage('update')
+  },
+  { deep: true }
+)
 
 onMounted(() => {
   el.value && el.value.addEventListener(PASTE_EVENT, handlePasteEvent)

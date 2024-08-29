@@ -17,7 +17,7 @@ export interface ResourceData {
   birthtimeMs: number
   name: string
   type: string
-  mimeType: string
+  mimeType: string | false
   atime: string
   mtime: string
   ctime: string

@@ -21,12 +21,12 @@ export const useResourceStore = defineStore('resource', {
         console.log('e', e)
       }
     },
-    async deleteResource(fileName: string) {
+    async deleteResource(fileName: string, notification: boolean = true) {
       try {
         const { data: res } = await deleteResourceFile(fileName)
         const { data, code, success } = res
         if (code !== 20000 || !success) return
-        useNotificationMsg('', data)
+        notification && useNotificationMsg('', data)
         const delIndex = this.list.findIndex(item => item.name === fileName)
         if (delIndex === -1) return
         this.list.splice(delIndex, 1)

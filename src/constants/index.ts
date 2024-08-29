@@ -31,3 +31,8 @@ export const ARTICLE = {
 }
 
 export const MB = 1024 * 1024
+
+export enum BroadcastChannelEnum {
+  /** 资源列表通信信道 */
+  RESOURCE_CHANNEL = 'resourceChannel',
+}

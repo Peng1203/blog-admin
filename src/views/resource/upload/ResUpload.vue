@@ -366,9 +366,6 @@ const handleSelectDirectory = () => {
 
 const handleFileChange = (file: File, maxFileSize = MAX_SIZE_VALUE) => {
   const { name, size, type } = file
-  // type 为空时 file 为目录
-  if (!type) return
-
   // prettier-ignore
   // if (size > maxFileSize) return useNotificationMsg('', `请选择小于${maxFileSize / MB}MB的文件`, 'warning', 2);
   if (size > maxFileSize) return uploadLargeFileRef.value.handleFileChange(file)

@@ -287,6 +287,7 @@ const emits = defineEmits([
 
 defineSlots<{
   operationSlot(props: { scope: any; row: T }): any
+  operationStartSlot(props: { scope: any; row: T }): any
   [key: string]: any
 }>()
 

@@ -575,7 +575,6 @@ const onSortableResize = async () => {
 
 const openInNewTab = name => {
   let routeUrl = router.resolve({ name })
-  console.log(`%c 触发了 ----`, 'color: #fff;background-color: #000;font-size: 18px', routeUrl)
   window.open(routeUrl.href, '_blank')
 }
 // 页面加载前

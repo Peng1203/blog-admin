@@ -42,6 +42,7 @@
         :is-need-pager="false"
         :default-sort="{ prop: 'atime', order: 'descending' }"
         @deleteBtn="handleDelete"
+        @dbRowClick="handleRowDbClikc"
         @selectionChange="val => (tableState.selectVal = val)"
       >
         <template #nameSlot="{ row, prop }">
@@ -128,6 +129,7 @@ import FileSaver from 'file-saver'
 import axios, { AxiosProgressEvent, Canceler } from 'axios'
 import { useNotificationMsg } from '@/utils/notificationMsg'
 import { queryStrHighlight } from '@/utils/queryStrHighlight'
+import { api as viewerApi } from 'v-viewer'
 import { concurRequest } from '@/utils/concurRequest'
 import { BroadcastChannelEnum } from '@/constants'
 
@@ -266,6 +268,12 @@ const handleAcceptBroadcasts = () => {
   channel.onmessage = e => {
     e.data === 'update' && getDataList(true)
   }
+}
+
+const handleRowDbClikc = (row: ResourceListItem) => {
+  if (!row.mimeType) return
+  if (!row.mimeType.includes('image')) return
+  viewerApi({ images: [row.url] })
 }
 
 onMounted(() => {

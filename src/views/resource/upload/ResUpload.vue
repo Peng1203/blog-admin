@@ -486,6 +486,7 @@ const resourceStore = useResourceStore()
 watch(
   () => listStatus,
   val => {
+    if (!val.value.length) return
     const uploadFinish = val.value.every(status => status === StatusEnum.SUCCESS)
     if (!uploadFinish) return
     // 通知当前tab页的文件列表更新

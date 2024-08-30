@@ -288,6 +288,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   cancelCbs.value.forEach(c => c && c())
+  console.log(`%c 执行了 ----`, 'color: #fff;background-color: #000;font-size: 18px')
 })
 </script>
 

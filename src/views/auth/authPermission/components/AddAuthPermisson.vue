@@ -8,14 +8,14 @@
     <Peng-Form
       ref="addAuthFormRef"
       :labelW="'120px'"
-      :formItems="addAuthState.formItemList"
+      :formItems="formItemList"
       v-model="addAuthState.data"
     />
   </Dialog>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watchEffect, PropType } from 'vue'
+import { ref, reactive, PropType, computed } from 'vue'
 import { usePermissionApi } from '@/api'
 import Dialog from '@/components/Dialog'
 import { FormItem } from '@/components/Form'
@@ -48,46 +48,6 @@ const addAuthState = reactive({
     parentId: 0,
     description: '',
   }),
-  formItemList: ref<FormItem<PermissionData>[]>([
-    {
-      type: 'input',
-      label: '名称',
-      prop: 'permissionName',
-      placeholder: '',
-      rules: [{ required: true, trigger: 'blur' }],
-    },
-    {
-      type: 'select',
-      label: '标识CODE',
-      prop: 'permissionCode',
-      isShow: false,
-      options: props.permissionCodeOptions,
-      rules: [{ required: true, trigger: 'change' }],
-    },
-    {
-      type: 'input',
-      label: '请求资源',
-      prop: 'resourceUrl',
-      isShow: false,
-      rules: [
-        { required: true, trigger: 'blur' },
-        { min: 2, trigger: 'blur' },
-      ],
-    },
-    {
-      type: 'select',
-      label: '请求方式',
-      prop: 'resourceMethod',
-      isShow: false,
-      options: resourceMethodOptions,
-    },
-    {
-      type: 'textarea',
-      label: '描述',
-      prop: 'description',
-      placeholder: '请输入权限标识描述',
-    },
-  ]),
 })
 
 const addAuthFormRef = ref<RefType>(null)
@@ -145,14 +105,47 @@ const handleDialogClose = () => {
   addAuthPermissonDialogStatus.value = false
 }
 
-watchEffect(() => {
-  addAuthState.formItemList.find(item => item.prop === 'permissionCode')!.isShow = props.parentId !== 0
-  addAuthState.formItemList.find(item => item.prop === 'resourceUrl')!.isShow = props.parentId !== 0
-  addAuthState.formItemList.find(item => item.prop === 'resourceMethod')!.isShow = props.parentId !== 0
-
-  addAuthPermissonDialogStatus.value &&
-    (addAuthState.formItemList.find(item => item.prop === 'permissionCode').options = props.permissionCodeOptions)
-})
+const isAddChildren = computed<boolean>(() => !!props.parentId)
+const formItemList = computed<FormItem<PermissionData>[]>(() => [
+  {
+    type: 'input',
+    label: '名称',
+    prop: 'permissionName',
+    placeholder: '',
+    rules: [{ required: true, trigger: 'blur' }],
+  },
+  {
+    type: 'select',
+    label: '标识CODE',
+    prop: 'permissionCode',
+    isShow: isAddChildren.value,
+    options: props.permissionCodeOptions,
+    rules: [{ required: true, trigger: 'change' }],
+  },
+  {
+    type: 'input',
+    label: '请求资源',
+    prop: 'resourceUrl',
+    isShow: isAddChildren.value,
+    rules: [
+      { required: true, trigger: 'blur' },
+      { min: 2, trigger: 'blur' },
+    ],
+  },
+  {
+    type: 'select',
+    label: '请求方式',
+    prop: 'resourceMethod',
+    isShow: isAddChildren.value,
+    options: resourceMethodOptions,
+  },
+  {
+    type: 'textarea',
+    label: '描述',
+    prop: 'description',
+    placeholder: '请输入权限标识描述',
+  },
+])
 
 defineExpose({ addAuthPermissonDialogStatus })
 </script>

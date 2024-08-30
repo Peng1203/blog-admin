@@ -8,14 +8,15 @@
       ref="editFormRef"
       label-p="top"
       :labelW="80"
-      :formItems="editFormState.formItemList"
+      :formItems="formItemList"
       v-model="editFormState.data"
     />
+    <!-- :formItems="editFormState.formItemList" -->
   </Drawer>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, PropType, watch, watchEffect } from 'vue'
+import { ref, reactive, PropType, watchEffect, computed } from 'vue'
 import { usePermissionApi } from '@/api'
 import { FormItem } from '@/components/Form'
 import Drawer from '@/components/Drawer'
@@ -52,47 +53,49 @@ const editFormState = reactive({
     createTime: '',
     children: [],
   }),
-  formItemList: ref<FormItem<PermissionData>[]>([
-    {
-      type: 'input',
-      label: '名称',
-      prop: 'permissionName',
-      placeholder: '',
-      rules: [{ required: true, trigger: 'blur' }],
-    },
-    {
-      type: 'select',
-      label: '标识CODE',
-      prop: 'permissionCode',
-      isShow: false,
-      options: props.permissionCodeOptions,
-      rules: [{ required: true, trigger: 'blur' }],
-    },
-    {
-      type: 'input',
-      label: '请求资源',
-      prop: 'resourceUrl',
-      isShow: false,
-      rules: [
-        { required: true, trigger: 'blur' },
-        { min: 2, trigger: 'blur' },
-      ],
-    },
-    {
-      type: 'select',
-      label: '请求方式',
-      prop: 'resourceMethod',
-      isShow: false,
-      options: resourceMethodOptions,
-    },
-    {
-      type: 'textarea',
-      label: '描述',
-      prop: 'description',
-      placeholder: '请输入权限标识描述',
-    },
-  ]),
 })
+
+const isEditChildren = computed<boolean>(() => !['', null, undefined].includes(props.editRow?.permissionCode) || false)
+const formItemList = computed<FormItem<PermissionData>[]>(() => [
+  {
+    type: 'input',
+    label: '名称',
+    prop: 'permissionName',
+    placeholder: '',
+    rules: [{ required: true, trigger: 'blur' }],
+  },
+  {
+    type: 'select',
+    label: '标识CODE',
+    prop: 'permissionCode',
+    isShow: isEditChildren.value,
+    options: props.permissionCodeOptions,
+    rules: [{ required: true, trigger: 'blur' }],
+  },
+  {
+    type: 'input',
+    label: '请求资源',
+    prop: 'resourceUrl',
+    isShow: isEditChildren.value,
+    rules: [
+      { required: true, trigger: 'blur' },
+      { min: 2, trigger: 'blur' },
+    ],
+  },
+  {
+    type: 'select',
+    label: '请求方式',
+    prop: 'resourceMethod',
+    isShow: isEditChildren.value,
+    options: resourceMethodOptions,
+  },
+  {
+    type: 'textarea',
+    label: '描述',
+    prop: 'description',
+    placeholder: '请输入权限标识描述',
+  },
+])
 
 const editFormRef = ref<any>(null)
 // 处理保存修改
@@ -129,23 +132,8 @@ const saveEditAuthPermisson = async (): Promise<boolean> => {
 
 watchEffect(() => {
   if (!Object.keys(props.editRow).length) return
-  const isEditParent = ['', null, undefined].includes(props.editRow?.permissionCode)
-
-  editFormState.formItemList.find(item => item.prop === 'permissionCode')!.isShow = !isEditParent
-  editFormState.formItemList.find(item => item.prop === 'resourceUrl')!.isShow = !isEditParent
-  editFormState.formItemList.find(item => item.prop === 'resourceMethod')!.isShow = !isEditParent
-
-  editDrawerStatus.value &&
-    (editFormState.formItemList.find(item => item.prop === 'permissionCode').options = props.permissionCodeOptions)
+  editFormState.data = JSON.parse(JSON.stringify(props.editRow))
 })
-
-watch(
-  () => props.editRow,
-  val => !Object.keys(val).length && (editFormState.data = JSON.parse(JSON.stringify(val))),
-  { deep: true }
-)
 
 defineExpose({ editDrawerStatus })
 </script>
-
-<style lang="scss" scoped></style>

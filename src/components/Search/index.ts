@@ -1,2 +1,2 @@
-export { default as default } from './Search.vue'
+export { default as default } from './PengSearch.vue'
 export * from './types'

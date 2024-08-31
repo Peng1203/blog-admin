@@ -1,3 +1,3 @@
-export { default as default } from './Skeleton.vue'
+export { default as default } from './PengSkeleton.vue'
 
 export * from './types'

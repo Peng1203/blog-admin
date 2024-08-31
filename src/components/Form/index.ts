@@ -1,3 +1,3 @@
-export { default as default } from './Form.vue'
+export { default as default } from './PengForm.vue'
 
 export * from './types'

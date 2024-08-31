@@ -1,24 +1,7 @@
-import { Component } from 'vue'
+import { ButtonProps } from 'element-plus'
 
-export type ButtonTypeEnum = '' | 'primary' | 'success' | 'info' | 'warning' | 'danger'
+// export interface Props extends Partial<ButtonProps> {
+//   process?: () => void
+// }
 
-export interface ButtonAttribute {
-  label?: string
-  size?: SizeEnum
-  // 用于按钮内部
-  icon?: string
-  // 用于属性的icon
-  iconClass?: string
-  type?: ButtonTypeEnum
-  primary?: boolean
-  success?: boolean
-  info?: boolean
-  warning?: boolean
-  danger?: boolean
-  plain?: boolean
-  round?: boolean
-  circle?: boolean
-  loading?: boolean
-  dark?: boolean
-  color?: string
-}
+export type Props = Partial<Omit<ButtonProps, 'loading'>> & {}

@@ -1,9 +1,9 @@
-export interface TableAttribute<T> {
+export interface Props<T> {
   data: T[]
   columns: ColumnItem<T>[]
   border?: boolean
   isSelection?: boolean
-  checkBoxIsEnableCallBack?: Function
+  checkBoxIsEnableCallBack?: (...args) => boolean
   loading?: boolean
   /** 过滤列 */
   isFilterShowColumn?: boolean
@@ -45,7 +45,8 @@ export interface BaseTableAttribute {
 // 表格column 可选属性
 export interface ColumnItem<T = any> {
   label: string
-  prop: keyof T | 'operation'
+  // prop: keyof T | 'operation'
+  prop: (keyof T extends string ? keyof T : never) | 'operation'
   width?: number | string | 'auto'
   minWidth?: number | string
   sort?: boolean | 'custom'

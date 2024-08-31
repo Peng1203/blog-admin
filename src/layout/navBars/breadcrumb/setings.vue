@@ -628,7 +628,7 @@
             type="warning"
             :closable="false"
           ></el-alert>
-          <el-button
+          <PengButton
             size="default"
             class="copy-config-btn"
             type="primary"
@@ -639,8 +639,8 @@
               <ele-CopyDocument />
             </el-icon>
             一键复制配置
-          </el-button>
-          <el-button
+          </PengButton>
+          <PengButton
             size="default"
             class="copy-config-btn-reset"
             type="info"
@@ -650,7 +650,7 @@
               <ele-RefreshRight />
             </el-icon>
             一键恢复默认
-          </el-button>
+          </PengButton>
         </div>
       </el-scrollbar>
     </el-drawer>

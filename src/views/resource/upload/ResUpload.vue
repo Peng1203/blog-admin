@@ -23,16 +23,16 @@
         :on-change="(uploadInfo: UploadFile)=> handleFileChange(uploadInfo.raw)"
       >
         <!-- :on-change="test" -->
-        <el-button
+        <PengButton
           type="primary"
           size="default"
           icon="ele-Files"
         >
           选择文件
-        </el-button>
+        </PengButton>
       </el-upload>
 
-      <el-button
+      <PengButton
         ml10
         type="primary"
         size="default"
@@ -41,7 +41,7 @@
         @click="handleSelectDirectory"
       >
         选择文件夹
-      </el-button>
+      </PengButton>
 
       <!-- 上传大文件 -->
       <UploadLargeFile
@@ -49,7 +49,7 @@
         @change="item => tableState.data.unshift(item)"
       />
 
-      <el-button
+      <PengButton
         ml10
         type="info"
         size="default"
@@ -57,13 +57,13 @@
         @click="tableState.data = []"
       >
         清空
-      </el-button>
+      </PengButton>
     </div>
 
     <!-- 文件状态过滤操作行 -->
 
     <!-- 文件列表 -->
-    <Peng-Table
+    <PengTable
       flex1
       empty-text="暂无文件"
       :border="false"
@@ -71,6 +71,21 @@
       :data="tableState.data"
       :columns="tableState.columns"
     >
+      <!-- 文件名称 -->
+      <template #nameSlot="{ row }">
+        <span>
+          <!-- {{ row.name }} -->
+          <el-input
+            size="small"
+            v-model="row.name"
+            :disabled="row.status === StatusEnum.SUCCESS"
+            placeholder="请输入文件名"
+          >
+            <!-- <template #append>.{{ row.type }}</template> -->
+          </el-input>
+        </span>
+      </template>
+
       <!-- 状态 -->
       <template #statusSlot="{ row }">
         <el-tag
@@ -124,7 +139,7 @@
 
       <!-- 上传压缩 -->
       <template #isCompressSlot="{ row }">
-        <div v-if="row.size > MAX_SIZE_VALUE"></div>
+        <div v-if="row.size > MAX_SIZE_VALUE">大文件不支持压缩</div>
         <div v-else-if="row.mimeType.includes('image')">
           <span v-if="row.mimeType.includes('gif')">不支持压缩gif图</span>
           <el-switch
@@ -141,7 +156,7 @@
         <!-- {{ row }} -->
 
         <!-- 上传 -->
-        <el-button
+        <PengButton
           circle
           title="上传"
           size="small"
@@ -152,7 +167,7 @@
         />
 
         <!-- 暂停/继续 -->
-        <!-- <el-button
+        <!-- <PengButton
           v-if="isLargeFile(row.size) && row.status === StatusEnum.UPLOADING"
           circle
           size="small"
@@ -167,10 +182,10 @@
             class="iconfont"
             :class="row.pause ? 'icon-kaishi' : 'icon-zanting'"
           />
-        </el-button> -->
+        </PengButton> -->
 
         <!-- 删除 -->
-        <el-button
+        <PengButton
           circle
           title="删除"
           size="small"
@@ -180,7 +195,7 @@
         />
 
         <!-- 预览 -->
-        <el-button
+        <PengButton
           circle
           title="预览"
           size="small"
@@ -191,7 +206,7 @@
         />
 
         <!-- 复制 url -->
-        <el-button
+        <PengButton
           circle
           title="复制"
           size="small"
@@ -203,7 +218,7 @@
         />
 
         <!-- 下载 -->
-        <!-- <el-button
+        <!-- <PengButton
           circle
           title="下载"
           size="small"
@@ -213,14 +228,14 @@
           v-if="row.url"
         /> -->
       </template>
-    </Peng-Table>
+    </PengTable>
 
     <!-- 上传按钮 上传文件信息统计 -->
     <div
       class="upload-inof-row"
       flex-sb-c
     >
-      <el-button
+      <PengButton
         type="primary"
         size="default"
         icon="ele-UploadFilled"
@@ -228,7 +243,7 @@
         @click="handleUpload"
       >
         开始上传
-      </el-button>
+      </PengButton>
 
       <div>
         <el-tag
@@ -269,14 +284,7 @@ import { ColumnItem } from '@/components/Table'
 import { ref, reactive, computed, onMounted, onUnmounted } from 'vue'
 import _ from 'lodash'
 import { FileData, StatusEnum } from './types'
-import {
-  ElUpload,
-  UploadFile,
-  // UploadInstance,
-  // UploadProps,
-  // UploadRawFile,
-  // genFileId,
-} from 'element-plus'
+import { ElUpload, UploadFile } from 'element-plus'
 // import { useNotificationMsg } from '@/utils/notificationMsg'
 import { useResourceApi } from '@/api'
 import { blobToFile, compressImage, formatByteSize, imageToBase64 } from '@/utils/file'
@@ -301,7 +309,8 @@ const tableState = reactive({
       label: '文件名',
       prop: 'name',
       sort: true,
-      tooltip: true,
+      // tooltip: true,
+      slotName: 'nameSlot',
     },
     {
       label: '类型',
@@ -364,8 +373,9 @@ const handleSelectDirectory = () => {
   }
 }
 
-const handleFileChange = (file: File, maxFileSize = MAX_SIZE_VALUE) => {
+const handleFileChange = async (file: File, maxFileSize = MAX_SIZE_VALUE) => {
   const { name, size, type } = file
+
   // prettier-ignore
   // if (size > maxFileSize) return useNotificationMsg('', `请选择小于${maxFileSize / MB}MB的文件`, 'warning', 2);
   if (size > maxFileSize) return uploadLargeFileRef.value.handleFileChange(file)

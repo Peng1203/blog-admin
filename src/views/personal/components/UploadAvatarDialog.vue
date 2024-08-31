@@ -24,7 +24,7 @@
       :on-exceed="handleExceed"
       :on-change="handleFileChange"
     >
-      <el-button type="primary">选择图片</el-button>
+      <PengButton type="primary">选择图片</PengButton>
     </el-upload>
   </Peng-Dialog>
 </template>

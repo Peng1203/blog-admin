@@ -7,13 +7,13 @@
     :on-change="(uploadInfo: UploadFile)=> handleFileChange(uploadInfo.raw, LARGE_FILE_MAX_SIZE_VALUE)"
   >
     <!-- :on-change="test" -->
-    <el-button
+    <PengButton
       type="primary"
       size="default"
       icon="ele-Files"
     >
       上传大文件
-    </el-button>
+    </PengButton>
   </el-upload>
 </template>
 
@@ -53,8 +53,8 @@ const handleFileChange = async (file: File, maxFileSize = LARGE_FILE_MAX_SIZE_VA
   }
 
   const { name, size, type } = file
-  // type 为空时 file 为目录
-  if (!type) return
+  // // type 为空时 file 为目录
+  // if (!type) return
 
   // prettier-ignore
   if (size > maxFileSize) return useNotificationMsg('', `请选择小于${maxFileSize / MB}MB的文件`, 'warning', 2);
@@ -108,7 +108,7 @@ const handleUploadLargeFile = async (fileItem: FileData) => {
 
       const paramsArr = uploadChunks.map(chunk => ({
         chunk,
-        uploadId: `${fileItem.fileHash}_${userStore.userInfos.id}`,
+        uploadId: getUploadId(fileItem),
         fileItem,
       }))
 
@@ -144,7 +144,8 @@ const handleUploadLargeFile = async (fileItem: FileData) => {
 const handleCreateFileDir = async (fileItem: FileData): Promise<number[]> => {
   try {
     const params = {
-      uploadId: `${fileItem.fileHash}_${userStore.userInfos.id}`,
+      uploadId: getUploadId(fileItem),
+      // uploadId: `${fileItem.fileHash}_${userStore.userInfos.id}:${window.crypto.randomUUID()}`,
     }
     const { data: res } = await createLargeFileDir<CreateFileDirData>(params)
     const { code, success, data } = res
@@ -181,7 +182,7 @@ const handleUploadChunk = async (params: {
 const handleMergeFileChunks = async (fileItem: FileData): Promise<string> => {
   try {
     const params = {
-      uploadId: `${fileItem.fileHash}_${userStore.userInfos.id}`,
+      uploadId: getUploadId(fileItem),
       fileName: fileItem.name,
       extName: fileItem.type,
     }
@@ -249,6 +250,8 @@ const createFileChunks = (file: File): ChunkItem[] => {
   // console.log('fileChunks2 ------', fileChunks2);
   return fileChunks
 }
+
+const getUploadId = (fileItem: FileData) => `${fileItem.name}_${fileItem.fileHash}_${userStore.userInfos.id}`
 
 defineExpose({ handleUploadLargeFile, handleFileChange, handleUploadToggle })
 </script>

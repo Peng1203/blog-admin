@@ -211,19 +211,19 @@ const handleClickActionBnt = event => emits(event, props.article)
 // 文章uv 数据组件
 const InfoIcons = () => {
   return (
-    <div class="icon-con">
-      {iconHashMapping.map(info => (
-        <span class="item">
-          <Peng-Icon
-            type="class"
-            size={18}
-            key={info.prop}
-            name={info.name}
-          />
-          <span class="value">{props.article[info.prop] || 0}</span>
-        </span>
-      ))}
-    </div>
+      <div class="icon-con">
+        {iconHashMapping.map(info => (
+          <span class="item">
+            <Peng-Icon
+              type="class"
+              size={18}
+              key={info.prop}
+              name={info.name}
+            />
+            <span class="value">{props.article[info.prop] || 0}</span>
+          </span>
+        ))}
+      </div>
   )
 }
 </script>

@@ -50,11 +50,11 @@
                 @keyup.enter.native.stop="onLockScreenSubmit()"
               >
                 <template #append>
-                  <el-button @click="onLockScreenSubmit">
+                  <PengButton @click="onLockScreenSubmit">
                     <el-icon class="el-input__icon">
                       <ele-Right />
                     </el-icon>
-                  </el-button>
+                  </PengButton>
                 </template>
               </el-input>
             </div>
@@ -154,7 +154,8 @@ const onEnd = () => {
   state.isFlags = false
   state.transparency = 1
   if (state.moveDifference >= -400) {
-    ;(<HTMLElement>state.querySelectorEl).setAttribute('style', `top:0px;opacity:1;transition:all 0.3s ease;`)
+    // prettier-ignore
+    (<HTMLElement>state.querySelectorEl).setAttribute('style', `top:0px;opacity:1;transition:all 0.3s ease;`)
   }
 }
 // 获取要拖拽的初始元素

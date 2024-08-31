@@ -34,18 +34,18 @@
       <el-col :span="1"></el-col>
       <el-col :span="8">
         <!-- v-waves -->
-        <el-button class="login-content-code">获取验证码</el-button>
+        <PengButton class="login-content-code">获取验证码</PengButton>
       </el-col>
     </el-form-item>
     <el-form-item class="login-animation3">
-      <el-button
+      <PengButton
         round
         type="primary"
         v-waves
         class="login-content-submit"
       >
         <span>登 录</span>
-      </el-button>
+      </PengButton>
     </el-form-item>
   </el-form>
 </template>

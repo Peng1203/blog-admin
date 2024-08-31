@@ -8,14 +8,14 @@
             <div class="left-item-animation left-item-title">您未被授权，没有操作权限~</div>
             <div class="left-item-animation left-item-msg"></div>
             <div class="left-item-animation left-item-btn">
-              <el-button
+              <PengButton
                 type="primary"
                 size="default"
                 round
                 @click="onSetAuth"
               >
                 重新授权
-              </el-button>
+              </PengButton>
             </div>
           </div>
         </div>

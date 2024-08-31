@@ -168,7 +168,7 @@
                 :formItems="state.userInfoFormItems"
               >
                 <template #updata>
-                  <el-button
+                  <PengButton
                     type="primary"
                     @click="handleUpdatePersonalInfo"
                   >
@@ -176,7 +176,7 @@
                       <ele-Position />
                     </el-icon>
                     更新个人信息
-                  </el-button>
+                  </PengButton>
                 </template>
               </Peng-Form>
             </template>
@@ -190,13 +190,13 @@
                 <div class="personal-edit-safe-item-left-value">当前密码强度：强</div>
               </div>
               <div class="personal-edit-safe-item-right">
-                <el-button
+                <PengButton
                   text
                   type="primary"
                   @click="handleShowChangePasswordDialog"
                 >
                   立即修改
-                </el-button>
+                </PengButton>
               </div>
             </div>
           </div>
@@ -207,12 +207,12 @@
                 <div class="personal-edit-safe-item-left-value">已绑定手机：132****4108</div>
               </div>
               <div class="personal-edit-safe-item-right">
-                <el-button
+                <PengButton
                   text
                   type="primary"
                 >
                   立即修改
-                </el-button>
+                </PengButton>
               </div>
             </div>
           </div>
@@ -223,12 +223,12 @@
                 <div class="personal-edit-safe-item-left-value">已设置密保问题，账号安全大幅度提升</div>
               </div>
               <div class="personal-edit-safe-item-right">
-                <el-button
+                <PengButton
                   text
                   type="primary"
                 >
                   立即设置
-                </el-button>
+                </PengButton>
               </div>
             </div>
           </div>
@@ -239,12 +239,12 @@
                 <div class="personal-edit-safe-item-left-value">已绑定QQ：110****566</div>
               </div>
               <div class="personal-edit-safe-item-right">
-                <el-button
+                <PengButton
                   text
                   type="primary"
                 >
                   立即设置
-                </el-button>
+                </PengButton>
               </div>
             </div>
           </div> -->

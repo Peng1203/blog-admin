@@ -7,7 +7,7 @@
       <!-- 顶部 -->
       <!-- <IconSelector v-model="test" /> -->
       <div class="mb15 flex-sb-c">
-        <el-button
+        <PengButton
           size="default"
           type="success"
           @click="addDialogRef.addRoleDialogStatus = true"
@@ -15,7 +15,7 @@
           <!-- @click="addAuthDialogRef.addAuthPermissonDialogStatus = true" -->
           <Peng-Icon name="icon-jiaoseguanli1" />
           <span ml5>添加角色</span>
-        </el-button>
+        </PengButton>
 
         <Search
           placeholder="角色名称 / 角色描述"

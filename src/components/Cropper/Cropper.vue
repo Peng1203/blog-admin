@@ -30,14 +30,6 @@
       />
     </div>
 
-    <!-- <div v-html="previewInfo?.html" /> -->
-    <!-- <el-button
-      :disabled="!img"
-      @click="handleUpload"
-    >
-      上 传
-    </el-button> -->
-
     <slot></slot>
   </div>
 </template>

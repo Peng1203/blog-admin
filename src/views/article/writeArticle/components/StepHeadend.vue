@@ -26,7 +26,7 @@
       <div flex-sp-c>
         <span mr10></span>
 
-        <el-button
+        <PengButton
           :size="size"
           type="warning"
           v-show="activeStep === 1"
@@ -34,9 +34,9 @@
           @click="handleSaveDraftBox"
         >
           暂存草稿箱
-        </el-button>
+        </PengButton>
 
-        <el-button
+        <PengButton
           type="success"
           :size="size"
           v-show="activeStep === 2"
@@ -44,9 +44,9 @@
           @click="handlePublishArticle"
         >
           发 布
-        </el-button>
+        </PengButton>
 
-        <el-button
+        <PengButton
           type="success"
           :size="size"
           v-show="activeStep === 2"
@@ -54,9 +54,9 @@
           @click="handleSaveEdit"
         >
           保 存
-        </el-button>
+        </PengButton>
 
-        <el-button
+        <PengButton
           type="primary"
           :size="size"
           :icon="ArrowLeft"
@@ -64,9 +64,9 @@
           @click="handleBackStep"
         >
           上一步
-        </el-button>
+        </PengButton>
 
-        <el-button
+        <PengButton
           type="primary"
           :size="size"
           :disabled="activeStep === stepData.length"
@@ -76,7 +76,7 @@
           <el-icon class="el-icon--right">
             <ArrowRight />
           </el-icon>
-        </el-button>
+        </PengButton>
       </div>
     </div>
   </div>

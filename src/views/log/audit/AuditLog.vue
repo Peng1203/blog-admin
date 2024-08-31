@@ -12,7 +12,7 @@
             @change="getDataList"
           />
 
-          <el-button
+          <PengButton
             ml10
             size="default"
             type="danger"
@@ -23,7 +23,7 @@
               <Delete />
             </el-icon>
             删 除
-          </el-button>
+          </PengButton>
         </div>
 
         <DatePicker
@@ -98,7 +98,7 @@
             :content="row.ipInfo || '暂无IP信息'"
           >
             <template #reference>
-              <el-button
+              <PengButton
                 circle
                 title="解析IP"
                 size="small"
@@ -106,7 +106,7 @@
                 @click="handleParseIpInfo(row)"
               >
                 <el-icon class="iconfont icon-weixiefenxi-keyiIPshijian" />
-              </el-button>
+              </PengButton>
             </template>
           </el-popover>
         </template>

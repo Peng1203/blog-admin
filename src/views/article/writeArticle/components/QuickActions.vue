@@ -1,13 +1,13 @@
 <template>
   <!-- v-if="isEdit" -->
-  <el-button
+  <PengButton
     mr
     type="primary"
     size="default"
     @click="$router.push({ name: 'WriteArticle' })"
   >
     写文章
-  </el-button>
+  </PengButton>
 
   <!-- v-else -->
   <Peng-Select

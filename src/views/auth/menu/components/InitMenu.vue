@@ -1,12 +1,12 @@
 <template>
-  <el-button
+  <PengButton
     size="default"
     type="primary"
     @click="handleInitMenus"
   >
     <i class="iconfont icon-chushihua" />
     初始化菜单
-  </el-button>
+  </PengButton>
 </template>
 
 <script setup lang="ts">

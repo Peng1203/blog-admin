@@ -7,7 +7,7 @@
       <!-- 顶部操作 -->
       <div class="mb15 flex-sb-c">
         <div>
-          <el-button
+          <PengButton
             size="default"
             type="success"
             @click="() => (addDialogRef.addUserDialogStatus = true)"
@@ -16,9 +16,9 @@
               <ele-FolderAdd />
             </el-icon>
             新增用户
-          </el-button>
+          </PengButton>
 
-          <el-button
+          <PengButton
             size="default"
             type="danger"
             :disabled="!tableState.selectVal.length"
@@ -28,7 +28,7 @@
               <Delete />
             </el-icon>
             删 除
-          </el-button>
+          </PengButton>
 
           <!-- virtual -->
           <Peng-Select
@@ -102,7 +102,7 @@
         </template>
 
         <template #operationEndSlot="{ row }">
-          <el-button
+          <PengButton
             circle
             title="重置密码"
             size="small"
@@ -112,7 +112,7 @@
             <template #icon>
               <el-icon class="iconfont icon-zhongzhimima" />
             </template>
-          </el-button>
+          </PengButton>
         </template>
       </Peng-Table>
     </el-card>

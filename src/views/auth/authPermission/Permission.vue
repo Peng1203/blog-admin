@@ -6,14 +6,14 @@
     >
       <!-- 顶部 -->
       <div class="mb15 flex-sb-c">
-        <el-button
+        <PengButton
           size="default"
           type="success"
           @click="handleAddPermission(0)"
         >
           <i class="iconfont icon-permissions-o" />
           创建权限分组
-        </el-button>
+        </PengButton>
 
         <Peng-Search
           placeholder="请输入权限标识名称"
@@ -58,7 +58,7 @@
 
         <!-- 操作 -->
         <template #operationStartSlot="{ row }">
-          <el-button
+          <PengButton
             circle
             title="添加"
             size="small"

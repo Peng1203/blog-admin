@@ -5,7 +5,7 @@
       class="layout-padding-auto"
     >
       <div mb15>
-        <el-button
+        <PengButton
           size="default"
           type="primary"
           :disabled="!tableState.selectVal.length"
@@ -15,9 +15,9 @@
             <Download />
           </el-icon>
           下 载
-        </el-button>
+        </PengButton>
 
-        <el-button
+        <PengButton
           size="default"
           type="danger"
           :disabled="!tableState.selectVal.length"
@@ -27,7 +27,7 @@
             <Delete />
           </el-icon>
           删 除
-        </el-button>
+        </PengButton>
       </div>
       <!-- :border="false" -->
 
@@ -56,7 +56,7 @@
               v-model="tableState.queryStr"
             />
 
-            <el-button
+            <PengButton
               ml5
               size="small"
               type="primary"
@@ -67,7 +67,7 @@
         </template>
 
         <template #operationStartSlot="{ row }">
-          <el-button
+          <PengButton
             circle
             title="复制"
             size="small"
@@ -77,7 +77,7 @@
             v-copy="row.url"
           />
 
-          <el-button
+          <PengButton
             circle
             title="下载"
             size="small"
@@ -86,7 +86,7 @@
             @click="handleDownload(row)"
           />
 
-          <el-button
+          <PengButton
             circle
             title="预览"
             size="small"

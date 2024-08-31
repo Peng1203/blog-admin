@@ -8,7 +8,7 @@
       <!-- <IconSelector v-model="test" /> -->
       <div class="mb15 flex-sb-c">
         <div>
-          <el-button
+          <PengButton
             size="default"
             type="success"
             @click="
@@ -23,7 +23,7 @@
               <Menu />
             </el-icon>
             添加菜单
-          </el-button>
+          </PengButton>
 
           <!-- 初始化菜单操作 -->
           <InitMenu @updateList="handleUpdate" />

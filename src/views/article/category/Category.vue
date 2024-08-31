@@ -7,7 +7,7 @@
       <!-- 顶部 -->
       <div class="mb15 flex-sb-c">
         <div>
-          <el-button
+          <PengButton
             size="default"
             type="success"
             @click="addDialogRef.addCategoryDialogStatus = true"
@@ -17,9 +17,9 @@
               class="mr5"
             />
             添加分类
-          </el-button>
+          </PengButton>
 
-          <el-button
+          <PengButton
             size="default"
             type="danger"
             :disabled="!tableState.selectVal.length"
@@ -29,7 +29,7 @@
               <Delete />
             </el-icon>
             删 除
-          </el-button>
+          </PengButton>
         </div>
 
         <Peng-Search

@@ -24,7 +24,7 @@
         <div class="mt5"></div>
       </div>
       <div class="upgrade-btn">
-        <el-button
+        <PengButton
           round
           size="default"
           type="info"
@@ -32,8 +32,8 @@
           @click="onCancel"
         >
           残忍拒绝
-        </el-button>
-        <el-button
+        </PengButton>
+        <PengButton
           type="primary"
           round
           size="default"
@@ -41,7 +41,7 @@
           @click="onUpgrade"
         >
           {{ state.btnTxt }}
-        </el-button>
+        </PengButton>
       </div>
     </el-dialog>
   </div>
@@ -151,7 +151,7 @@ defineExpose({
       display: flex;
       justify-content: space-around;
       padding: 15px 20px;
-      .el-button {
+      .PengButton {
         width: 100%;
       }
     }

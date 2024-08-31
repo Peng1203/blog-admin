@@ -33,7 +33,9 @@ defineOptions({
 
 const attrs = useAttrs()
 const slots = useSlots()
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  size: 'small',
+})
 
 const loading = ref<boolean>(false)
 

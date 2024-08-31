@@ -1,4 +1,4 @@
-import { defineConfig, presetAttributify, presetIcons, presetUno } from 'unocss';
+import { defineConfig, presetAttributify, presetIcons, presetUno } from 'unocss'
 
 export default defineConfig({
   rules: [
@@ -16,10 +16,10 @@ export default defineConfig({
     [/^pb(\d+)$/, match => ({ 'padding-bottom': `${match[1]}px` })],
     [/^pl(\d+)$/, match => ({ 'padding-left': `${match[1]}px` })],
 
-    [/^w([1-9]\d?|100)$/, ([, d]) => ({ width: `${d}%` })],
-    [/^w(\d+)px$/, ([, d]) => ({ width: `${d}px` })],
-    [/^h([1-9]\d?|100)$/, ([, d]) => ({ height: `${d}%` })],
-    [/^h(\d+)px$/, ([, d]) => ({ height: `${d}px` })],
+    [/^w([1-9]\d?|100)$/, ([, d]) => ({ width: `${d}% !important` })],
+    [/^w(\d+)px$/, ([, d]) => ({ width: `${d}px !important` })],
+    [/^h([1-9]\d?|100)$/, ([, d]) => ({ height: `${d}% !important` })],
+    [/^h(\d+)px$/, ([, d]) => ({ height: `${d}px !important` })],
     [/^fz(\d+)$/, ([, d]) => ({ 'font-size': `${d}px` })],
     [
       'flex-c-c',
@@ -97,4 +97,4 @@ export default defineConfig({
       ignoreAttributes: [],
     }),
   ],
-});
+})

@@ -8,7 +8,7 @@ import other from '@/utils/other'
 import ElementPlus from 'element-plus'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 // import locale from 'element-plus/lib/locale/lang/zh-cn'
-import ComponentHashMap from '@/utils/registerGlobalComponent'
+
 import VueViewer from 'v-viewer'
 import '@/assets/icons/iconfont.css'
 import '@/assets/icons/iconfont.js'
@@ -25,11 +25,6 @@ const app = createApp(App)
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
-}
-
-// 注册全局组件
-for (const key in ComponentHashMap) {
-  app.component(key, ComponentHashMap[key])
 }
 
 directive(app)

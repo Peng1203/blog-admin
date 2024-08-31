@@ -6,12 +6,28 @@ import viteCompression from 'vite-plugin-compression'
 import UnoCSS from 'unocss/vite'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import vueDevTools from 'vite-plugin-vue-devtools'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 const viteConfig = defineConfig((mode: ConfigEnv) => {
   const env = loadEnv(mode.mode, process.cwd())
   return {
     // vueSetupExtend(),
-    plugins: [vue(), DefineOptions(), viteCompression(), UnoCSS({ presets: [] }), vueJsx(), vueDevTools()],
+    plugins: [
+      vue(),
+      DefineOptions(),
+      viteCompression(),
+      UnoCSS({ presets: [] }),
+      vueJsx(),
+      vueDevTools(),
+      AutoImport({
+        resolvers: [ElementPlusResolver()],
+      }),
+      Components({
+        resolvers: [ElementPlusResolver()],
+      }),
+    ],
     root: process.cwd(),
     resolve: {
       alias: {

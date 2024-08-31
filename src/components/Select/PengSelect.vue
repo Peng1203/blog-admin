@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { SelectAttribute } from './'
+import { SelectAttribute } from '.'
 import { ElSelect, ElSelectV2 } from 'element-plus'
 import { useComponentRef } from '@/composables/useComponentRef'
 

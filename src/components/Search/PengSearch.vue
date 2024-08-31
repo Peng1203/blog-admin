@@ -13,7 +13,7 @@
     @input="handleUpdateValue"
   >
     <template #append>
-      <el-button
+      <PengButton
         type="primary"
         :icon="Search"
         :size="props.size"
@@ -39,7 +39,7 @@ const props = defineProps({
     default: '请输入搜索关键字',
   },
   size: {
-    type: String,
+    type: String as PropType<'' | 'large' | 'default' | 'small'>,
     default: 'default', // large default small
   },
   loading: {

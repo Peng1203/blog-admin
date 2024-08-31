@@ -23,19 +23,13 @@
       <template #footer>
         <slot name="footer">
           <div class="mb10 mr10 flex-e-c">
-            <el-button
-              size="small"
-              @click="handleCancelBtn"
-            >
-              取消
-            </el-button>
-            <el-button
-              size="small"
+            <PengButton @click="handleCancelBtn">取消</PengButton>
+            <PengButton
               type="primary"
               @click="handleConfirmBtn"
             >
               保存
-            </el-button>
+            </PengButton>
           </div>
         </slot>
       </template>

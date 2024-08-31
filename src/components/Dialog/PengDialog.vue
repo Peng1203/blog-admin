@@ -25,19 +25,15 @@
       >
         <slot name="footer">
           <div>
-            <el-button
-              size="small"
-              @click="handleClickCancel"
-            >
+            <PengButton @click="handleClickCancel">
               {{ cancleBtnText }}
-            </el-button>
-            <el-button
+            </PengButton>
+            <PengButton
               type="primary"
-              size="small"
               @click="handleClickConfirm"
             >
               {{ confirmBtnText }}
-            </el-button>
+            </PengButton>
           </div>
         </slot>
       </template>

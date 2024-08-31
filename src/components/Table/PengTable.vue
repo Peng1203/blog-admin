@@ -138,20 +138,18 @@
           name="operationStartSlot"
         />
 
-        <el-button
+        <PengButton
           circle
           title="添加"
-          size="small"
           type="success"
           :icon="Plus"
           @click="handleAddBtn(scope.row)"
           v-if="operationColumnBtns.includes('add')"
         />
 
-        <el-button
+        <PengButton
           circle
           title="修改信息"
-          size="small"
           type="primary"
           :icon="Edit"
           @click="handleEditBtn(scope.row)"
@@ -167,20 +165,18 @@
           v-if="operationColumnBtns.includes('delete')"
         >
           <template #reference>
-            <el-button
+            <PengButton
               circle
               title="删除"
-              size="small"
               type="danger"
               :icon="Delete"
             />
           </template>
         </el-popconfirm>
 
-        <el-button
+        <PengButton
           circle
           title="查看"
-          size="small"
           type="info"
           :icon="View"
           @click="handleView(scope.row)"
@@ -232,14 +228,14 @@
 
 <script setup lang="ts" generic="T">
 import { ref, reactive, watch, onMounted, inject, computed, onUnmounted } from 'vue'
-import { ColumnItem, TableAttribute } from './types'
+import { ColumnItem, Props } from './types'
 import { Plus, Edit, Delete, View } from '@element-plus/icons-vue'
 import { useComponentRef } from '@/composables/useComponentRef'
 import { ElTable } from 'element-plus'
 
 const deviceClientType = inject('deviceClientType')
 
-const props = withDefaults(defineProps<TableAttribute<T>>(), {
+const props = withDefaults(defineProps<Props<T>>(), {
   border: true,
 
   // 是否有复选
@@ -294,7 +290,7 @@ defineSlots<{
 const tableRef = useComponentRef(ElTable)
 
 // 表格展示的 columns
-let tableColumns = ref<ColumnItem[]>([])
+let tableColumns = ref<ColumnItem<T>[]>([])
 
 // 操作列的宽度
 const operationColumnWidth = computed<number>(() => {
@@ -347,7 +343,9 @@ const defaultPageSizeList = [5, 10, 30, 50, 100, 200]
 const handleFilterTable = (filters: any) => {
   const { filter } = filters
   if (!filter) return
+  // @ts-ignore
   if (!filter.length) return (tableColumns.value = props.columns)
+  // @ts-ignore
   tableColumns.value = props.columns.filter((column: ColumnItem) => !filter.includes(column.prop))
 }
 const Page = ref<number>(0)
@@ -473,6 +471,7 @@ const getRowStyle = ({ row }) => {
 }
 
 onMounted(() => {
+  // @ts-ignore
   tableColumns.value = props.columns
   setXScrollWhell()
 })

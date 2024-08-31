@@ -47,3 +47,11 @@ const handleClick = async () => {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.el-button {
+  :deep(.el-icon + span) {
+    margin-left: 0px !important;
+  }
+}
+</style>

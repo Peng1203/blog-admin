@@ -1,5 +1,5 @@
 // import { saveAs } from 'file-saver';
-
+import _ from 'lodash'
 import SparkMD5 from 'spark-md5'
 
 /** 是否是图片 */
@@ -116,4 +116,28 @@ export const formatByteSize = (byte: number) => {
   if (kb < 1024) return `${kb.toFixed(0)} KB`
   if (mb < 1024) return `${mb.toFixed(2)} MB`
   return `${gb.toFixed(2)} GB`
+}
+
+/** 对比2个文件是否相同 */
+export const compareFiles = (file1: File, file2: File): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    const reader1 = new FileReader()
+    const reader2 = new FileReader()
+
+    reader1.onload = () => {
+      reader2.onload = () => {
+        if (reader1.result instanceof ArrayBuffer && reader2.result instanceof ArrayBuffer) {
+          // 比较两个文件的 ArrayBuffer
+          const isEqual = _.isEqual(new Uint8Array(reader1.result), new Uint8Array(reader2.result))
+          resolve(isEqual)
+        } else {
+          reject(new Error('读取文件失败'))
+        }
+      }
+      reader2.onerror = reject
+      reader2.readAsArrayBuffer(file2)
+    }
+    reader1.onerror = reject
+    reader1.readAsArrayBuffer(file1)
+  })
 }

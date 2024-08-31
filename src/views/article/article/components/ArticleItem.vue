@@ -172,7 +172,7 @@
 <script setup lang="tsx">
 import { ArticleItemProps, IconHashMappingItem } from '../'
 import { useUserInfo } from '@/stores/userInfo'
-import Icon from '@/components/SymbolIcon/index.vue'
+
 import { Picture as IconPicture, View, Delete, Edit } from '@element-plus/icons-vue'
 
 const userInfoStore = useUserInfo()
@@ -214,7 +214,7 @@ const InfoIcons = () => {
     <div class="icon-con">
       {iconHashMapping.map(info => (
         <span class="item">
-          <Icon
+          <Peng-Icon
             type="class"
             size={18}
             key={info.prop}

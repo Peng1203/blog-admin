@@ -168,3 +168,7 @@ watch(
   }
 )
 </script>
+
+<style lang="scss">
+@import '@/theme/element.scss';
+</style>

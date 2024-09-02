@@ -42,11 +42,13 @@ export interface BaseTableAttribute {
   isNeedPager?: boolean
   pagerInfo?: PageInfo
 }
+
+type PropType<T> = (keyof T extends string ? keyof T : never) | 'operation'
 // 表格column 可选属性
 export interface ColumnItem<T = any> {
   label: string
   // prop: keyof T | 'operation'
-  prop: (keyof T extends string ? keyof T : never) | 'operation'
+  prop: PropType<T>
   width?: number | string | 'auto'
   minWidth?: number | string
   sort?: boolean | 'custom'
@@ -83,19 +85,10 @@ export interface SlotProps<T> {
   scope: any
   row: T
   // prop: keyof T | 'operation';
-  prop: keyof T
+  prop: PropType<T>
 }
 
 export interface SlotOperationProps<T> {
   scope: any
   row: T
-}
-
-export interface TableAttribute_v2<T> {
-  /** 数据列表 */
-  data: T[]
-  columns: ColumnItem<T>[]
-  loading?: boolean
-  selection?: boolean
-  hasFilterColumn?: boolean
 }

@@ -13,6 +13,7 @@
       :total="114"
       v-model:page="page"
       v-model:pageSize="pageSize"
+      :getData="getDataList"
     >
       <template #nameSlot="{ row, prop }">
         row --- {{ row.age }}
@@ -65,6 +66,14 @@ const state = reactive({
     },
   ],
 })
+
+const getDataList = async () => {
+  try {
+    await new Promise(res => setTimeout(res, 1500))
+  } catch (e) {
+    console.log('e', e)
+  }
+}
 
 const page = ref(1)
 const pageSize = ref(10)

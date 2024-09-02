@@ -12,6 +12,10 @@
   pageSize ---{{ pageSize }}
   <br />
   myPageSize ---{{ myPageSize }}
+  <br />
+  {{ tableColumns }}
+  <br />
+  {{ loading }}
   <el-table
     v-bind="$props"
     v-loading="loading"
@@ -202,7 +206,7 @@ export type Props<T> = TableProps<T> & {
   /** 数据列表 */
   data: T[]
   columns: ColumnProps<T>[]
-  loading?: boolean
+  // loading?: boolean
   selection?: boolean
   /** 过滤列 */
   filterColumn?: boolean
@@ -219,6 +223,8 @@ export type Props<T> = TableProps<T> & {
   // page?: number
   // pageSize?: number
   total?: number
+
+  getData?: () => Promise<any>
 }
 
 export type ColumnProps<T> = Omit<TableColumnCtx<T>, 'sortable' | 'showOverflowTooltip'> & {
@@ -236,7 +242,7 @@ export type ColumnProps<T> = Omit<TableColumnCtx<T>, 'sortable' | 'showOverflowT
 // 定义组件属性
 const props = withDefaults(defineProps<Props<T>>(), {
   // 扩展属性默认值
-  loading: false,
+  // loading: false,
   selection: false,
   filterColumn: false,
   index: false,
@@ -282,6 +288,18 @@ type SlotsType = {
 } & { [K in keyof typeof slots]: (props: SlotProps<T>) => any }
 defineSlots<SlotsType>()
 
+const loading = defineModel<boolean>('loading')
+const handleGetData = async () => {
+  try {
+    loading.value = true
+    await props?.getData?.()
+  } catch (e) {
+    console.log('e', e)
+  } finally {
+    loading.value = false
+  }
+}
+
 // 表格展示的 columns
 interface filterItem {
   text: string
@@ -291,18 +309,15 @@ const filterData = ref<Array<keyof T>>([])
 
 const tableColumns = computed<ColumnItem<T>[]>(() => {
   if (!filterData.value.length) return props.columns
-  return props.columns.filter(colums => filterData.value.includes(colums.prop as any))
+  return props.columns.filter(colums => !filterData.value.includes(colums.prop as any))
 })
 
-const filterList = computed<filterItem[]>(() =>
-  tableColumns.value.map(item => ({ text: item.label, value: item.prop }))
-)
+const filterList = computed<filterItem[]>(() => props.columns.map(item => ({ text: item.label, value: item.prop })))
 const handleFilterTable = (filters: any) => {
   const { filter } = filters
   if (!filter) return
   // @ts-ignore
-  if (!filter.length) return (tableColumns.value = props.columns)
-  // @ts-ignore
+  // if (!filter.length) return (tableColumns.value = props.columns)
   filterData.value = filter
 }
 
@@ -336,14 +351,17 @@ let myPageSize = defineModel<number>('pageSize')
 
 const handlePageChange = (newPage: number) => {
   myPage.value = newPage
+  handleGetData()
 }
 
 const handlePageSzieChange = (newPageSize: number) => {
   myPage.value = 1
   myPageSize.value = newPageSize
+  handleGetData()
 }
 
 onMounted(() => {
   // tableColumns.value = props.columns;
+  handleGetData()
 })
 </script>

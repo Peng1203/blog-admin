@@ -229,7 +229,7 @@
 
 <script setup lang="ts" generic="T">
 import { ref, reactive, watch, onMounted, inject, computed, onUnmounted } from 'vue'
-import { ColumnItem, Props } from './types'
+import { ColumnItem, Props } from './types/index_backup'
 import { Plus, Edit, Delete, View } from '@element-plus/icons-vue'
 import { useComponentRef } from '@/composables/useComponentRef'
 import { ElTable } from 'element-plus'

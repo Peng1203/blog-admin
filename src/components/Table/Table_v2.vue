@@ -5,7 +5,7 @@
   <br /> -->
   <!-- v-bind="$attrs" -->
   <!-- {{ Object.keys(slots) }} -->
-  page --- {{ page }}
+  <!-- page --- {{ page }}
   <br />
   myPage --- {{ myPage }}
   <br />
@@ -15,13 +15,16 @@
   <br />
   {{ tableColumns }}
   <br />
-  {{ loading }}
+  {{ loading }} -->
   <el-table
+    ref="tableRef"
     v-bind="$props"
     v-loading="loading"
+    :row-style="getRowStyle"
     :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
     @selection-change="handleSelectionChange"
     @filter-change="handleFilterTable"
+    @sort-change="handleColumnSort"
   >
     <!-- 复选功能 -->
     <el-table-column
@@ -162,6 +165,8 @@
       :filters="filterList"
       v-if="filterColumn"
     >
+      <!-- :filter-method="handleFilterTable" -->
+      <!-- :filterM -->
       <template #header>
         <el-icon>
           <Tools />
@@ -195,49 +200,12 @@
 
 <script setup lang="ts" generic="T">
 import { useSlots, onMounted, computed, ref } from 'vue'
-import { SlotProps, SlotOperationProps, ColumnItem, OperationType } from './'
+import { Props, ColumnItem, SlotProps, OrderProp, SlotsType, Emits, SortInfo } from './'
 import { ElTable, ElTableColumn, ElPagination } from 'element-plus'
-import type { TableProps, TableInstance, TableColumnInstance, TableColumnCtx } from 'element-plus'
+import type { TableInstance } from 'element-plus'
 
 // 获取 ElTable 组件的实例类型
 // type ElTableInstance = InstanceType<typeof ElTable>
-
-export type Props<T> = TableProps<T> & {
-  /** 数据列表 */
-  data: T[]
-  columns: ColumnProps<T>[]
-  // loading?: boolean
-  selection?: boolean
-  /** 过滤列 */
-  filterColumn?: boolean
-  /** 索引列 */
-  index?: boolean
-  /** 自定义索引 */
-  indexMethod?: (index: number) => number
-  /** 操作列 */
-  operationColumn?: boolean
-  operationColumnBtns?: [OperationType?, OperationType?, OperationType?, OperationType?]
-
-  /** 分页器 */
-  pager?: boolean
-  // page?: number
-  // pageSize?: number
-  total?: number
-
-  getData?: () => Promise<any>
-}
-
-export type ColumnProps<T> = Omit<TableColumnCtx<T>, 'sortable' | 'showOverflowTooltip'> & {
-  label: string
-  // prop: keyof T | 'operation'
-  prop: keyof T extends string ? keyof T : never
-  sort?: boolean | 'custom'
-  tooltip?: boolean
-  fixed?: boolean | 'left' | 'right'
-  slotName?: `${keyof T extends string ? keyof T : never}Slot`
-  align?: 'left' | 'center' | 'right'
-  // [key: string]: any
-}
 
 // 定义组件属性
 const props = withDefaults(defineProps<Props<T>>(), {
@@ -264,6 +232,8 @@ const props = withDefaults(defineProps<Props<T>>(), {
   showHeader: true,
   emptyText: '暂无数据',
   defaultExpandAll: false,
+
+  autoLoadData: true,
 })
 
 // 为组件命名 方便递归调用
@@ -273,23 +243,11 @@ defineOptions({
 
 // 定义插槽 为插槽接受值添加类型
 const slots = useSlots()
-type SlotsType = {
-  /** 展开行内容插槽 */
-  expand(scope: { row: T; expanded: boolean; $index: number; store: any }): any
-  /** 插入至表格最后一行之后的内容 */
-  append(): any
-
-  /** 操作列 自动表头内容 */
-  operationHeaderSlot(): any
-  /** 操作行 内容前插槽 */
-  operationStartSlot(props: SlotOperationProps<T>): any
-  /** 操作行 内容后插槽 */
-  operationEndSlot(props: SlotOperationProps<T>): any
-} & { [K in keyof typeof slots]: (props: SlotProps<T>) => any }
-defineSlots<SlotsType>()
+defineSlots<SlotsType<T> & { [K in keyof typeof slots]: (props: SlotProps<T>) => any }>()
 
 const loading = defineModel<boolean>('loading')
 const handleGetData = async () => {
+  if (!props.autoLoadData) return
   try {
     loading.value = true
     await props?.getData?.()
@@ -301,10 +259,6 @@ const handleGetData = async () => {
 }
 
 // 表格展示的 columns
-interface filterItem {
-  text: string
-  value: any
-}
 const filterData = ref<Array<keyof T>>([])
 
 const tableColumns = computed<ColumnItem<T>[]>(() => {
@@ -312,7 +266,7 @@ const tableColumns = computed<ColumnItem<T>[]>(() => {
   return props.columns.filter(colums => !filterData.value.includes(colums.prop as any))
 })
 
-const filterList = computed<filterItem[]>(() => props.columns.map(item => ({ text: item.label, value: item.prop })))
+const filterList = computed<any[]>(() => props.columns.map(item => ({ text: item.label, value: item.prop })))
 const handleFilterTable = (filters: any) => {
   const { filter } = filters
   if (!filter) return
@@ -321,6 +275,7 @@ const handleFilterTable = (filters: any) => {
   filterData.value = filter
 }
 
+// const emits = defineEmits<Emits>()
 const emits = defineEmits([
   'columnSort',
   'pageChange',
@@ -337,7 +292,9 @@ const emits = defineEmits([
 ])
 
 // 复选内容变化事件
-const handleSelectionChange = (selectVal: T[]) => emits('selectionChange', selectVal)
+const handleSelectionChange = (selectVal: T[]) => {
+  emits('selectionChange', selectVal)
+}
 
 // 操作按钮事件
 const handleAddBtn = (row: T) => emits('addBtn', row)
@@ -351,17 +308,83 @@ let myPageSize = defineModel<number>('pageSize')
 
 const handlePageChange = (newPage: number) => {
   myPage.value = newPage
+  emits('pageChange', newPage)
+  emits('pagerChange', { page: newPage, pageSize: myPageSize.value })
   handleGetData()
 }
 
 const handlePageSzieChange = (newPageSize: number) => {
   myPage.value = 1
   myPageSize.value = newPageSize
+  emits('pageSizeChange', newPageSize)
+  emits('pagerChange', { page: 1, pageSize: newPageSize })
   handleGetData()
 }
 
+// 排序
+const myColumn = defineModel<string>('column')
+const myOrder = defineModel<string>('order')
+const handleColumnSort = (sortInfo: SortInfo) => {
+  const orderProp: OrderProp = {
+    ascending: 'ASC',
+    descending: 'DESC',
+  }
+  const column = orderProp[sortInfo.order] ? sortInfo.prop : ''
+  const order = orderProp[sortInfo.order] || ''
+  myColumn.value = column
+  myOrder.value = order
+  emits('columnSort', { column, order })
+  handleGetData()
+}
+
+const getRowStyle = ({ row }) => {
+  return { '--process': `${row.process}%` }
+}
+
+// const tableRef = useComponentRef(ElTable)
+const tableRef = ref<TableInstance | null>(null)
+
+defineExpose(
+  new Proxy(
+    {},
+    {
+      get(_target, key) {
+        return tableRef.value?.[key]
+      },
+      has(_target, key) {
+        return key in tableRef.value
+      },
+    }
+  )
+)
+
 onMounted(() => {
-  // tableColumns.value = props.columns;
   handleGetData()
 })
 </script>
+<style scoped lang="scss">
+:deep(.el-table__row) {
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 99;
+    // width: 100%;
+    width: var(--process);
+    height: 2px;
+    transition: width 0.3s ease;
+    background-color: #409eff;
+  }
+}
+</style>
+
+<style>
+.el-table .fail-row {
+  --el-table-tr-bg-color: rgba(244, 67, 54, 0.1);
+}
+.el-table .success-row {
+  --el-table-tr-bg-color: rgba(76, 175, 80, 0.1);
+}
+</style>

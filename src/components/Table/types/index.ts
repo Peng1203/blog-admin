@@ -1,85 +1,80 @@
-export interface Props<T> {
+import type { TableProps, TableColumnCtx } from 'element-plus'
+
+export type Props<T> = TableProps<T> & {
+  /** 数据列表 */
   data: T[]
   columns: ColumnItem<T>[]
-  border?: boolean
-  isSelection?: boolean
-  checkBoxIsEnableCallBack?: (...args) => boolean
-  loading?: boolean
+  selection?: boolean
   /** 过滤列 */
-  isFilterShowColumn?: boolean
-  /** 是否需要分页器 */
-  isNeedPager?: boolean
-  /** 分页器信息 */
-  pagerInfo?: PageInfo
-  /** 尺寸 */
-  size?: SizeEnum
-  /** 斑马纹 */
-  stripe?: boolean
-  /** 空数据描述 */
-  emptyText?: string
-  /** 是否展开树形数据 */
-  defaultExpandAll?: boolean
+  filterColumn?: boolean
+  /** 索引列 */
+  index?: boolean
+  /** 自定义索引 */
+  indexMethod?: (index: number) => number
   /** 操作列 */
   operationColumn?: boolean
-  /** 操作列的按钮 */
-  operationColumnBtns?: OperationBtnsType
-  /** 操作列宽 */
-  operationColumnWidth?: number
+  operationColumnBtns?: [OperationType?, OperationType?, OperationType?, OperationType?]
+
+  /**
+   * 是否需要分页器
+   */
+  pager?: boolean
+  total?: number
+
+  /**
+   * 获取数据的方法
+   */
+  getData?: (...args: any[]) => Promise<any>
+  /**
+   * 自动加载数据 开启后初始化和切换分页排序时会自动加载数据
+   */
+  autoLoadData?: boolean
+}
+
+export type ColumnItem<T> = Omit<TableColumnCtx<T>, 'sortable' | 'showOverflowTooltip'> & {
+  label: string
+  // prop: keyof T | 'operation'
+  prop: PropType<T>
+  sort?: boolean | 'custom'
+  tooltip?: boolean
+  fixed?: boolean | 'left' | 'right'
+  slotName?: `${PropType<T>}Slot`
+  align?: 'left' | 'center' | 'right'
+  childrenColumns?: ColumnItem<T>[]
+  /**
+   * 当前行进度条 0 ~ 100
+   */
+  process?: number
+  // [key: string]: any
+}
+
+export type SlotsType<T> = {
+  /** 展开行内容插槽 */
+  expand(scope: { row: T; expanded: boolean; $index: number; store: any }): any
+  /** 插入至表格最后一行之后的内容 */
+  append(): any
+
+  /** 操作列 自动表头内容 */
+  operationHeaderSlot(): any
+  /** 操作行 内容前插槽 */
+  operationStartSlot(props: SlotOperationProps<T>): any
+  /** 操作行 内容后插槽 */
+  operationEndSlot(props: SlotOperationProps<T>): any
+}
+
+export type OrderProp = {
+  ascending: string
+  descending: string
 }
 
 export type OperationType = 'add' | 'edit' | 'delete' | 'view' | ''
 
 export type OperationBtnsType = [OperationType?, OperationType?, OperationType?, OperationType?]
 
-export interface BaseTableAttribute {
-  data: any[]
-  columns: ColumnItem[]
-  border?: boolean
-  isSelection?: boolean
-  checkBoxIsEnableCallBack?: () => {}
-  loading?: boolean
-  isFilterShowColumn?: boolean
-  isNeedPager?: boolean
-  pagerInfo?: PageInfo
-}
-
-type PropType<T> = (keyof T extends string ? keyof T : never) | 'operation'
+export type PropType<T> = keyof T extends string ? keyof T : never
 // 表格column 可选属性
-export interface ColumnItem<T = any> {
-  label: string
-  // prop: keyof T | 'operation'
-  prop: PropType<T>
-  width?: number | string | 'auto'
-  minWidth?: number | string
-  sort?: boolean | 'custom'
-  tooltip?: boolean
-  fixed?: boolean | 'left' | 'right'
-  slotName?: string | `${keyof T & string}Slot` | 'operation'
-  align?: 'left' | 'center' | 'right'
-  childrenColumns?: ColumnItem<T>[]
-  classNname?: string
-  [key: string]: any
-}
-// 分页器信息
-export interface PageInfo {
-  page: number
-  pageSize: number
-  total: number
-  pageSizeList?: number[]
-}
 
 export type OrderEnum = 'ASC' | 'DESC' | ''
-
-// 表格排序切换 参数
-export interface ColumnChangeParams {
-  column: string
-  order: OrderEnum
-}
-// 分页器切换 参数
-export interface PageChangeParams {
-  page: number
-  pageSize: number
-}
 
 export interface SlotProps<T> {
   scope: any
@@ -91,4 +86,18 @@ export interface SlotProps<T> {
 export interface SlotOperationProps<T> {
   scope: any
   row: T
+}
+
+export interface SortInfo {
+  prop: string
+  order: keyof OrderProp
+  // order: string
+}
+
+export interface ColumnSort {
+  column: string
+  order: string
+}
+export type Emits = {
+  (e: 'columnSort', value: ColumnSort): void
 }

@@ -41,15 +41,15 @@
     <el-table-column
       width="40"
       type="selection"
+      align="center"
       v-if="selection"
-      :align="'center'"
     />
 
     <!-- 展开行功能 -->
     <el-table-column
       width="50"
       type="expand"
-      :align="'center'"
+      align="center"
       v-if="slots.expand"
     >
       <template #default="scope">
@@ -100,7 +100,7 @@
     <!-- 操作列 -->
     <el-table-column
       label="操作"
-      :align="'center'"
+      align="center"
       :width="operationColumnWidth"
       v-if="operationColumn"
     >
@@ -217,7 +217,7 @@
 <script setup lang="tsx" generic="T">
 import { useSlots, onMounted, computed, ref } from 'vue'
 import { Props, ColumnItem, SlotProps, OrderProp, SlotsType, SortInfo } from './types'
-import { ElTable, ElTableColumn, ElPagination, ElTag } from 'element-plus'
+import { ElTable, ElTableColumn, ElPagination } from 'element-plus'
 import type { TableInstance } from 'element-plus'
 
 // 获取 ElTable 组件的实例类型
@@ -226,7 +226,6 @@ import type { TableInstance } from 'element-plus'
 // 定义组件属性
 const props = withDefaults(defineProps<Props<T>>(), {
   // 扩展属性默认值
-  // loading: false,
   selection: false,
   filterColumn: false,
   index: false,
@@ -240,8 +239,6 @@ const props = withDefaults(defineProps<Props<T>>(), {
 
   // 分页器属性
   pager: true,
-  // page: 0,
-  // pageSize: 0,
   total: 0,
 
   // eltable 选填属性默认值

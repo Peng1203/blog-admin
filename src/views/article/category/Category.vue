@@ -39,32 +39,32 @@
           @search="handleSearch"
         />
       </div>
-
-      <Peng-Table
-        is-selection
+      <PengTable
+        selection
         operationColumn
         :operationColumnBtns="['edit', 'delete']"
-        :isFilterShowColumn="false"
         :data="tableState.data"
-        :loading="tableState.loading"
-        :pagerInfo="tableState.pagerInfo"
-        :columns="tableState.tableColumns"
-        @columnSort="handleColumnChange"
-        @pageNumOrSizeChange="handlePageInfoChange"
+        :columns="tableState.columns"
+        :getData="getCategoryTableData"
+        :total="tableState.total"
+        v-model:page="tableState.page"
+        v-model:pageSize="tableState.pageSize"
+        v-model:loading="tableState.loading"
+        v-model:order="tableState.order"
+        v-model:column="tableState.column"
         @editBtn="handleEditCategory"
         @deleteBtn="handleDelCategory"
         @selectionChange="value => (tableState.selectVal = value)"
       >
-        <!-- 权限标识名称 权限标识代码 查询高亮 -->
-        <template #queryHighNight="{ row, prop }">
+        <template #categoryNameSlot="{ row }">
           <div class="flex-s-c">
             <span
               class="ml5"
-              v-html="queryStrHighlight(row[prop], tableState.queryStr)"
+              v-html="queryStrHighlight(row.categoryName, tableState.queryStr)"
             />
           </div>
         </template>
-      </Peng-Table>
+      </PengTable>
     </el-card>
 
     <!-- 编辑分类抽屉 -->
@@ -83,95 +83,74 @@
 </template>
 
 <script setup lang="ts" name="ArticleCategory">
-import { defineAsyncComponent, ref, onMounted, reactive } from 'vue'
-import { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table'
+import { defineAsyncComponent, ref, onMounted } from 'vue'
 import { queryStrHighlight } from '@/utils/queryStrHighlight'
 import { useCategoryApi } from '@/api/category/index'
 import { CategoryData, CategoryListDate } from './types'
 import { useArticleInfo } from '@/stores/articleInfo'
 import { useNotificationMsg } from '@/utils/notificationMsg'
+import { useTableState } from '@/hooks/useTableState'
 
 const { getCategorys, deleteCategory, batchDelete } = useCategoryApi()
 
 const articleInfoStore = useArticleInfo()
 
-// 表格参数
-const tableState = reactive({
-  selectVal: ref<CategoryData[]>([]),
-  loading: false,
-  data: ref<CategoryData[]>([]),
-  tableColumns: ref<ColumnItem<CategoryData>[]>([
-    {
-      label: '分类名称',
-      prop: 'categoryName',
-      minWidth: 130,
-      tooltip: true,
-      fixed: 'left',
-      slotName: 'queryHighNight',
-    },
-    {
-      label: '文章数',
-      prop: 'articles',
-      width: 130,
-      align: 'center',
-    },
-    { label: '更新时间', prop: 'updateTime', minWidth: 200, sort: true },
-    { label: '创建时间', prop: 'createTime', minWidth: 200, sort: true },
-  ]),
-  column: '',
-  order: '',
-  queryStr: '',
+const {
+  tableState, //
+  setData,
+  setTotal,
+  setColumns,
+  startLoading,
+  stopLoading,
+} = useTableState<CategoryData>()
 
-  // 分页器信息
-  pagerInfo: ref<PageInfo>({
-    page: 1,
-    pageSize: 50,
-    total: 0,
-  }),
-})
+setColumns([
+  {
+    label: '分类名称',
+    prop: 'categoryName',
+    minWidth: 130,
+    tooltip: true,
+    fixed: 'left',
+    slotName: 'categoryNameSlot',
+  },
+  {
+    label: '文章数',
+    prop: 'articles',
+    width: 130,
+    align: 'center',
+  },
+  { label: '更新时间', prop: 'updateTime', minWidth: 200, sort: 'custom' },
+  { label: '创建时间', prop: 'createTime', minWidth: 200, sort: 'custom' },
+])
 
 // 获取分类表格数据
 const getCategoryTableData = async () => {
   try {
-    tableState.loading = true
-    const { pagerInfo, column, order, queryStr } = tableState
+    startLoading()
+    const { column, order, queryStr, page, pageSize } = tableState
     const params = {
-      queryStr,
       column,
       order,
-      page: pagerInfo.page,
-      pageSize: pagerInfo.pageSize,
+      queryStr,
+      page,
+      pageSize,
     }
     const { data: res } = await getCategorys<CategoryListDate>(params)
     const { code, data, success } = res
 
     if (code !== 20000 || !success) return
-    tableState.data = data.list
-    tableState.pagerInfo.total = data.total
+    setData(data.list)
+    setTotal(data.total)
   } catch (e) {
     console.log(e)
   } finally {
-    tableState.loading = false
+    stopLoading()
   }
-}
-
-// 分页器修改时触发
-const handlePageInfoChange = ({ page, pageSize }: PageChangeParams) => {
-  tableState.pagerInfo.page = page
-  tableState.pagerInfo.pageSize = pageSize
-  getCategoryTableData()
 }
 
 // 搜索
 const handleSearch = () => {
-  tableState.pagerInfo.page = 1
-  getCategoryTableData()
-}
-
-// 表格排序
-const handleColumnChange = ({ column, order }: ColumnChangeParams) => {
-  tableState.column = column
-  tableState.order = order
+  tableState.page = 1
   getCategoryTableData()
 }
 
@@ -234,7 +213,7 @@ const handleUpdate = () => {
 
 // 页面加载时
 onMounted(() => {
-  getCategoryTableData()
+  // getCategoryTableData()
 })
 </script>
 

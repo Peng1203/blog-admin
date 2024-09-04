@@ -1,193 +1,172 @@
 <template>
+  <!-- $attrs ---
+  {{ $attrs }} ---
+  {{ Object.keys($attrs) }}
+  <br />
+  $props ---
+  {{ $props }} ---
+  {{ Object.keys($props) }}
+  <br /> -->
+  <!-- v-bind="$attrs" -->
+  <!-- {{ Object.keys(slots) }} -->
+  <!-- page --- {{ page }}
+  <br />
+  myPage --- {{ myPage }}
+  <br />
+  pageSize ---{{ pageSize }}
+  <br />
+  myPageSize ---{{ myPageSize }}
+  <br />
+  {{ tableColumns }}
+  <br />
+  {{ loading }} -->
+  <!-- v-bind="$props" -->
+
   <el-table
     ref="tableRef"
-    v-bind="$attrs"
-    v-loading="props.loading"
-    row-key="id"
+    v-bind="{ ...$props, ...$attrs }"
+    v-loading="loading"
+    :row-key="(rowKey as string)"
     :row-style="getRowStyle"
     :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-    :stripe="props.stripe"
-    :border="props.border"
-    :data="tableData"
-    :size="props.size"
-    :empty-text="props.emptyText"
-    :default-expand-all="props.defaultExpandAll"
     @filter-change="handleFilterTable"
     @sort-change="handleColumnSort"
     @selection-change="handleSelectionChange"
-    @row-dblclick="handleDbRowClick"
     @row-click="handleRowClick"
+    @row-dblclick="handleDbRowClick"
     @row-contextmenu="handleMouseRightRowClick"
     @header-dragend="handleHeaderDragend"
   >
+    <!-- 复选功能 -->
     <el-table-column
-      v-if="props.isSelection"
+      width="40"
       type="selection"
-      width="45"
-      :selectable="checkBoxIsEnableCallBack"
+      v-if="selection"
+      :align="'center'"
     />
-    <!-- :selectable="handleCheckboxIsEnable" -->
-    <slot name="expand"></slot>
+
+    <!-- 展开行功能 -->
+    <el-table-column
+      width="50"
+      type="expand"
+      :align="'center'"
+      v-if="slots.expand"
+    >
+      <template #default="scope">
+        <slot
+          name="expand"
+          v-bind="scope"
+        />
+      </template>
+    </el-table-column>
+
+    <!-- 索引列 -->
+    <el-table-column
+      type="index"
+      v-if="index"
+      :index="indexMethod"
+    />
 
     <template
       :key="i"
-      v-for="(
-        { label, prop, width, minWidth, sort, tooltip, fixed, align, slotName, childrenColumns, classNname, ...args }, i
-      ) in tableColumns"
+      v-for="({ sort, tooltip, slotName, ...argsAttr }, i) of tableColumns"
     >
       <!-- 自定义某列 -->
       <el-table-column
         v-if="slotName"
-        :prop="prop"
-        :label="label"
-        :width="width || 'auto'"
+        v-bind="argsAttr"
         :sortable="sort"
-        :min-width="minWidth"
-        :class-name="classNname"
+        :column-key="argsAttr.prop"
         :show-overflow-tooltip="tooltip"
-        :fixed="deviceClientType === 'pc' ? fixed : fixed === 'left' ? false : fixed"
-        :align="align || 'left'"
-        v-bind="args"
       >
         <template #default="scope">
           <slot
-            :prop="prop"
-            :name="slotName"
+            :prop="argsAttr.prop"
             :scope="scope"
             :row="scope.row"
+            :name="slotName"
           />
-        </template>
-      </el-table-column>
-
-      <!-- 二级表头 -->
-      <!-- :width="width || 'auto'" -->
-      <el-table-column
-        :label="label"
-        :align="align || 'center'"
-        :class-name="classNname"
-        v-else-if="childrenColumns && childrenColumns.length"
-      >
-        <template
-          :key="childrenItem.prop"
-          v-for="childrenItem in childrenColumns"
-        >
-          <!-- 自定义内容 -->
-          <el-table-column
-            v-if="childrenItem.slotName"
-            :class-name="classNname"
-            :label="childrenItem.label"
-            :prop="childrenItem.prop"
-            :min-width="childrenItem.minWidth"
-            :sortable="childrenItem.sort"
-            :show-overflow-tooltip="childrenItem.tooltip"
-            :width="childrenItem.width || 'auto'"
-          >
-            <template #default="scope">
-              <slot
-                :row="scope.row"
-                :name="childrenItem.slotName"
-                :prop="childrenItem.prop"
-              ></slot>
-            </template>
-          </el-table-column>
-
-          <el-table-column
-            v-else
-            :class-name="classNname"
-            :label="childrenItem.label"
-            :prop="childrenItem.prop"
-            :min-width="childrenItem.minWidth"
-            :sortable="childrenItem.sort"
-            :show-overflow-tooltip="childrenItem.tooltip"
-            :width="childrenItem.width || 'auto'"
-          ></el-table-column>
         </template>
       </el-table-column>
 
       <el-table-column
         v-else
-        v-bind="args"
-        :prop="prop"
-        :label="label"
-        :width="width"
+        v-bind="argsAttr"
         :sortable="sort"
-        :class-name="classNname"
-        :min-width="minWidth || ''"
         :show-overflow-tooltip="tooltip"
-        :fixed="deviceClientType === 'pc' ? fixed : false"
-        :align="align || 'left'"
       />
     </template>
 
     <!-- 操作列 -->
     <el-table-column
       label="操作"
-      fixed="right"
-      align="center"
+      :align="'center'"
       :width="operationColumnWidth"
-      v-if="props.operationColumn"
+      v-if="operationColumn"
     >
       <template #header>
         <slot name="operationHeaderSlot" />
       </template>
 
       <template #default="scope">
-        <slot
-          :scope="scope"
-          :row="scope.row"
-          name="operationStartSlot"
-        />
+        <div class="operation-cell">
+          <slot
+            :scope="scope"
+            :row="scope.row"
+            name="operationStartSlot"
+          />
 
-        <PengButton
-          circle
-          title="添加"
-          type="success"
-          :icon="Plus"
-          @click="handleAddBtn(scope.row)"
-          v-if="operationColumnBtns.includes('add')"
-        />
+          <PengButton
+            circle
+            title="添加"
+            type="success"
+            icon="Plus"
+            @click="handleAddBtn(scope.row)"
+            v-if="operationColumnBtns.includes('add')"
+          />
 
-        <PengButton
-          circle
-          title="修改信息"
-          type="primary"
-          :icon="Edit"
-          @click="handleEditBtn(scope.row)"
-          v-if="operationColumnBtns.includes('edit')"
-        />
+          <PengButton
+            circle
+            title="修改信息"
+            type="primary"
+            icon="Edit"
+            @click="handleEditBtn(scope.row)"
+            v-if="operationColumnBtns.includes('edit')"
+          />
 
-        <el-popconfirm
-          width="auto"
-          icon="DeleteFilled"
-          icon-color="#f56c6c"
-          :title="`是否删除 ?`"
-          @confirm="handleDelBtn(scope.row)"
-          v-if="operationColumnBtns.includes('delete')"
-        >
-          <template #reference>
-            <PengButton
-              circle
-              title="删除"
-              type="danger"
-              :icon="Delete"
-            />
-          </template>
-        </el-popconfirm>
+          <el-popconfirm
+            width="auto"
+            icon="DeleteFilled"
+            icon-color="#f56c6c"
+            :title="`是否删除 ?`"
+            @confirm="handleDelBtn(scope.row)"
+            v-if="operationColumnBtns.includes('delete')"
+          >
+            <template #reference>
+              <PengButton
+                circle
+                title="删除"
+                type="danger"
+                icon="Delete"
+              />
+            </template>
+          </el-popconfirm>
 
-        <PengButton
-          circle
-          title="查看"
-          type="info"
-          :icon="View"
-          @click="handleView(scope.row)"
-          v-if="operationColumnBtns.includes('view')"
-        />
+          <PengButton
+            circle
+            title="查看"
+            type="info"
+            icon="View"
+            @click="handleView(scope.row)"
+            v-if="operationColumnBtns.includes('view')"
+          />
 
-        <slot
-          :scope="scope"
-          :row="scope.row"
-          name="operationEndSlot"
-        />
+          <slot
+            :scope="scope"
+            :row="scope.row"
+            name="operationEndSlot"
+          />
+        </div>
       </template>
     </el-table-column>
 
@@ -200,78 +179,140 @@
       class-name="filter-column-header"
       filter-placement="bottom"
       :filters="filterList"
-      v-if="isFilterShowColumn"
+      v-if="filterColumn"
     >
+      <!-- :filter-method="handleFilterTable" -->
+      <!-- :filterM -->
       <template #header>
         <el-icon>
           <Tools />
         </el-icon>
       </template>
     </el-table-column>
+
+    <template
+      #append
+      v-if="slots.append"
+    >
+      <slot name="append" />
+    </template>
   </el-table>
 
-  <!-- 分页器 -->
+  <!-- :disabled="disabled" -->
   <el-pagination
-    v-if="props.isNeedPager"
-    size="default"
-    class="mt15"
+    mt15
+    v-if="pager"
     background
-    :pager-count="5"
-    :page-sizes="pagerInfo?.pageSizeList || defaultPageSizeList"
-    :total="Total"
+    :size="size"
+    :total="total"
+    :page-sizes="[5, 10, 30, 50, 100, 200]"
+    v-model:current-page="myPage"
+    v-model:page-size="myPageSize"
     layout="total, sizes, prev, pager, next, jumper"
-    v-model:current-page="Page"
-    v-model:page-size="PageSize"
     @size-change="handlePageSzieChange"
     @current-change="handlePageChange"
   />
 </template>
 
-<script setup lang="ts" generic="T">
-import { ref, reactive, watch, onMounted, inject, computed, onUnmounted } from 'vue'
-import { ColumnItem, Props } from './types'
-import { Plus, Edit, Delete, View } from '@element-plus/icons-vue'
-import { useComponentRef } from '@/composables/useComponentRef'
-import { ElTable } from 'element-plus'
+<script setup lang="tsx" generic="T">
+import { useSlots, onMounted, computed, ref } from 'vue'
+import { Props, ColumnItem, SlotProps, OrderProp, SlotsType, SortInfo } from './types'
+import { ElTable, ElTableColumn, ElPagination, ElTag } from 'element-plus'
+import type { TableInstance } from 'element-plus'
 
-const deviceClientType = inject('deviceClientType')
+// 获取 ElTable 组件的实例类型
+// type ElTableInstance = InstanceType<typeof ElTable>
 
+// 定义组件属性
 const props = withDefaults(defineProps<Props<T>>(), {
-  border: true,
-
-  // 是否有复选
-  isSelection: false,
-
-  // 表格项复选框 启用条件函数
-  checkBoxIsEnableCallBack: () => true,
-
-  loading: false,
-
-  // 是否展示过滤表格
-  isFilterShowColumn: false,
-
-  // 是否需要分页
-  isNeedPager: true,
-
-  // 分页器信息
-  pagerInfo: () => ({ page: 1, pageSize: 10, total: 0 }),
-
-  // 表格尺寸
+  // 扩展属性默认值
+  // loading: false,
+  selection: false,
+  filterColumn: false,
+  index: false,
+  indexMethod: index => index + 1,
+  rowKey: 'id',
   size: 'default',
-
   stripe: true,
-
-  emptyText: '暂无数据',
-  defaultExpandAll: false,
   operationColumn: false,
   operationColumnBtns: () => ['edit', 'delete'],
+  operationColumnWidth: 100,
+
+  // 分页器属性
+  pager: true,
+  // page: 0,
+  // pageSize: 0,
+  total: 0,
+
+  // eltable 选填属性默认值
+  fit: true,
+  showHeader: true,
+  emptyText: '暂无数据',
+  defaultExpandAll: false,
+
+  autoLoadData: true,
 })
 
+// 为组件命名 方便递归调用
+defineOptions({
+  name: 'PengTable',
+  inheritAttrs: true,
+})
+
+// 定义插槽 为插槽接受值添加类型
+const slots = useSlots()
+defineSlots<SlotsType<T> & { [K in keyof typeof slots]: (props: SlotProps<T>) => any }>()
+
+const loading = defineModel<boolean>('loading')
+const handleGetData = async () => {
+  if (!props.autoLoadData) return
+  try {
+    loading.value = true
+    await props?.getData?.()
+  } catch (e) {
+    console.log('e', e)
+  } finally {
+    loading.value = false
+  }
+}
+
+// 表格展示的 columns
+const filterData = ref<Array<keyof T>>([])
+
+const tableColumns = computed<ColumnItem<T>[]>(() => {
+  if (!filterData.value.length) return props.columns
+  return props.columns.filter(colums => !filterData.value.includes(colums.prop as any))
+})
+
+// tableV2 columns
+// const tableV2Columns = computed<Column<T>[]>(() => {
+//   return tableColumns.value.map(column => {
+//     const { prop, label, fixed, slotName, ...other } = column
+//     return {
+//       title: label,
+//       key: prop,
+//       dataKey: prop,
+//       cellRenderer: slotName,
+//       ...other,
+//     }
+//   })
+// })
+
+const filterList = computed<any[]>(() => props.columns.map(item => ({ text: item.label, value: item.prop })))
+const handleFilterTable = (filters: any) => {
+  const { filter } = filters
+  if (!filter) return
+  // @ts-ignore
+  // if (!filter.length) return (tableColumns.value = props.columns)
+  filterData.value = filter
+}
+
+// const emits = defineEmits<Emits>()
 const emits = defineEmits([
   'columnSort',
   'pageChange',
   'pageSizeChange',
-  'pageNumOrSizeChange',
+  'pagerChange',
   'selectionChange',
   'rowClick',
   'dbRowClick',
@@ -282,185 +323,62 @@ const emits = defineEmits([
   'viewBtn',
 ])
 
-defineSlots<{
-  operationSlot(props: { scope: any; row: T }): any
-  operationStartSlot(props: { scope: any; row: T }): any
-  [key: string]: any
-}>()
-
-const tableRef = useComponentRef(ElTable)
-
-// 表格展示的 columns
-let tableColumns = ref<ColumnItem<T>[]>([])
-
-// 操作列的宽度
-const operationColumnWidth = computed<number>(() => {
-  const width = props.operationColumnWidth || 45 * props.operationColumnBtns.length
-  return width > 60 ? width : 60
-})
-
-// 过滤数据
-interface filterItem {
-  text: string
-  value: any
+// 复选内容变化事件
+const handleSelectionChange = (selectVal: T[]) => {
+  emits('selectionChange', selectVal)
 }
-const filterList = reactive<filterItem[]>([])
-watch(
-  () => props.isFilterShowColumn,
-  val => {
-    if (!val) return
-    props.columns.forEach(({ label, prop }) => prop && filterList.push({ text: label, value: prop }))
-  },
-  {
-    deep: true,
-    immediate: true,
-  }
-)
 
-const tableData = computed(() => props.data)
+// 操作按钮事件
+const handleAddBtn = (row: T) => emits('addBtn', row)
+const handleEditBtn = (row: T) => emits('editBtn', row)
+const handleDelBtn = (row: T) => emits('deleteBtn', row)
+const handleView = (row: T) => emits('viewBtn', row)
 
-// column排序
-type OrderProp = {
-  ascending: string
-  descending: string
+// 分页器
+let myPage = defineModel<number>('page')
+let myPageSize = defineModel<number>('pageSize')
+
+const handlePageChange = (newPage: number) => {
+  myPage.value = newPage
+  emits('pageChange', newPage)
+  emits('pagerChange', { page: newPage, pageSize: myPageSize.value })
+  handleGetData()
 }
-const handleColumnSort = ({ prop, order }: { prop: string; order: keyof OrderProp }) => {
+
+const handlePageSzieChange = (newPageSize: number) => {
+  myPage.value = 1
+  myPageSize.value = newPageSize
+  emits('pageSizeChange', newPageSize)
+  emits('pagerChange', { page: 1, pageSize: newPageSize })
+  handleGetData()
+}
+
+// 排序
+const myColumn = defineModel<string>('column')
+const myOrder = defineModel<string>('order')
+const handleColumnSort = (sortInfo: SortInfo) => {
   const orderProp: OrderProp = {
     ascending: 'ASC',
     descending: 'DESC',
   }
-
-  emits('columnSort', {
-    column: orderProp[order] ? prop : '',
-    order: orderProp[order] || '',
-  })
+  const column = orderProp[sortInfo.order] ? sortInfo.prop : ''
+  const order = orderProp[sortInfo.order] || ''
+  myColumn.value = column
+  myOrder.value = order
+  emits('columnSort', { column, order })
+  handleGetData()
 }
 
-/**
- * 分页器
- */
-// 默认可选的page大小列表
-const defaultPageSizeList = [5, 10, 30, 50, 100, 200]
-const handleFilterTable = (filters: any) => {
-  const { filter } = filters
-  if (!filter) return
-  // @ts-ignore
-  if (!filter.length) return (tableColumns.value = props.columns)
-  // @ts-ignore
-  tableColumns.value = props.columns.filter((column: ColumnItem) => !filter.includes(column.prop))
-}
-const Page = ref<number>(0)
-const PageSize = ref<number>(0)
-const Total = ref<number>(0)
-// 分页器
-watch(
-  () => props.pagerInfo,
-  val => {
-    if (!val || !props.isNeedPager) return
-    const { page, pageSize, total } = val
-    Page.value = page
-    PageSize.value = pageSize
-    Total.value = total
-  },
-  {
-    deep: true,
-    immediate: true,
-  }
-)
-const handlePageChange = (val: number) => {
-  Page.value = val
-  emits('pageChange', val)
-  emits('pageNumOrSizeChange', { page: Page.value, pageSize: PageSize.value })
-}
-
-const handlePageSzieChange = (val: number) => {
-  PageSize.value = val
-  Page.value = 1
-  emits('pageSizeChange', val)
-  emits('pageNumOrSizeChange', { page: Page.value, pageSize: PageSize.value })
-}
-
-const handleSelectionChange = (val: any, column: any, event: any) => {
-  emits('selectionChange', val, column, event)
-}
-
-const handleDbRowClick = (val: any, column: any, event: any) => {
+const handleDbRowClick = (val: T, column: any, event: any) => {
   emits('dbRowClick', val, column, event)
 }
 
-const handleRowClick = (val: any, column: any, event: any) => {
+const handleRowClick = (val: T, column: any, event: any) => {
   emits('rowClick', val, column, event)
 }
 
-const handleMouseRightRowClick = (val: any, column: any, event: any) => {
+const handleMouseRightRowClick = (val: T, column: any, event: any) => {
   emits('mouseRightRowClick', val, column, event)
-}
-
-// 操作按钮事件
-const handleAddBtn = (row: any) => emits('addBtn', row)
-const handleEditBtn = (row: any) => emits('editBtn', row)
-const handleDelBtn = (row: any) => emits('deleteBtn', row)
-const handleView = (row: any) => emits('viewBtn', row)
-
-const tableContenDom = ref<RefType<HTMLDivElement>>()
-// 计算出表格 fixed 的列 宽总和
-const fixedTotalWidth = computed<number>({
-  get: () => {
-    let totalWidth = 0
-    tableColumns.value.forEach(item => {
-      if (item.fixed) {
-        const width = item?.minWidth || item.width
-        totalWidth += Number(width)
-      }
-    })
-
-    return totalWidth + (props.isSelection ? 45 : 0) + (props.isFilterShowColumn ? 30 : 0) + operationColumnWidth.value
-  },
-  set: () => {},
-})
-// 设置滚轮控制表格x轴滚动 (当不存在y轴滚动条时)
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-const WHEEL_EVENT = 'wheel'
-const setXScrollWhell = () => {
-  const rootDom = tableRef.value.$el as HTMLDivElement
-  tableContenDom.value = rootDom.querySelector<HTMLDivElement>('.el-table__inner-wrapper .el-table__body-wrapper')
-
-  tableContenDom.value.addEventListener(WHEEL_EVENT, handleWhell)
-}
-
-const clearXScrollWhell = () => tableContenDom.value.removeEventListener(WHEEL_EVENT, handleWhell)
-
-const xScorllToValue = ref<number>(0)
-const handleWhell = (event: WheelEvent) => {
-  // console.log('event ------', event, event.deltaY);
-  const dom = tableContenDom.value
-
-  // 实际内容的容器
-  const dateContentDom = document.querySelector('.el-table__body')
-  const { clientWidth, clientHeight } = dateContentDom
-
-  // 当没有出现横向滚动条时 则不生效
-  if (clientWidth <= dom.clientWidth) return
-
-  // 当容器存在x轴滚动条时 则不生效
-  if (clientHeight > dom.clientHeight) return
-
-  // event.deltaY 滚轮下滚动 为 100 上滚动为 -100
-  // 当横向滚动 处于最右侧 只能接收负值
-  if (xScorllToValue.value >= clientWidth - fixedTotalWidth.value) {
-    if (event.deltaY < 0) {
-      xScorllToValue.value += event.deltaY
-    }
-  } else if (xScorllToValue.value <= 0) {
-    // 只能接收正值
-    if (event.deltaY > 0) {
-      xScorllToValue.value += event.deltaY
-    }
-  } else {
-    xScorllToValue.value += event.deltaY
-  }
-
-  tableRef.value.setScrollLeft(xScorllToValue.value)
 }
 
 const handleHeaderDragend = (newWidth: number) => {
@@ -471,21 +389,27 @@ const getRowStyle = ({ row }) => {
   return { '--process': `${row.process}%` }
 }
 
+// const tableRef = useComponentRef(ElTable)
+const tableRef = ref<TableInstance | null>(null)
+
+defineExpose(
+  new Proxy(
+    {},
+    {
+      get(_target, key) {
+        return tableRef.value?.[key]
+      },
+      has(_target, key) {
+        return key in tableRef.value
+      },
+    }
+  )
+)
+
 onMounted(() => {
-  // @ts-ignore
-  tableColumns.value = props.columns
-  setXScrollWhell()
+  handleGetData()
 })
-
-onUnmounted(() => clearXScrollWhell())
 </script>
-
-<!-- expand 展开column 插槽 -->
-<!-- <template #expand>
-  <el-table-column width="30" type="expand" fixed="left">
-    <template #default="props"> {{ props.row }} </template>
-  </el-table-column>
-</template> -->
 
 <style scoped lang="scss">
 :deep(.el-table__row) {

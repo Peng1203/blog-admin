@@ -13,7 +13,9 @@ export type Props<T> = TableProps<T> & {
   indexMethod?: (index: number) => number
   /** 操作列 */
   operationColumn?: boolean
+  operationColumnWidth?: number
   operationColumnBtns?: [OperationType?, OperationType?, OperationType?, OperationType?]
+  rowKey?: PropType<T> | 'id'
 
   /**
    * 是否需要分页器
@@ -31,7 +33,7 @@ export type Props<T> = TableProps<T> & {
   autoLoadData?: boolean
 }
 
-export type ColumnItem<T> = Omit<TableColumnCtx<T>, 'sortable' | 'showOverflowTooltip'> & {
+export type ColumnItem<T> = Partial<Omit<TableColumnCtx<T>, 'sortable' | 'showOverflowTooltip'>> & {
   label: string
   // prop: keyof T | 'operation'
   prop: PropType<T>
@@ -72,9 +74,6 @@ export type OperationType = 'add' | 'edit' | 'delete' | 'view' | ''
 export type OperationBtnsType = [OperationType?, OperationType?, OperationType?, OperationType?]
 
 export type PropType<T> = keyof T extends string ? keyof T : never
-// 表格column 可选属性
-
-export type OrderEnum = 'ASC' | 'DESC' | ''
 
 export interface SlotProps<T> {
   scope: any
@@ -82,6 +81,9 @@ export interface SlotProps<T> {
   // prop: keyof T | 'operation';
   prop: PropType<T>
 }
+
+// 表格column 可选属性
+export type OrderEnum = 'ASC' | 'DESC' | ''
 
 export interface SlotOperationProps<T> {
   scope: any

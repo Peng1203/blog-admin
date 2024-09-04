@@ -214,6 +214,7 @@ const handleDownload = async (row: ResourceListItem) => {
     // FileSaver.saveAs(row.url, row.name)
 
     const { data: blobRes } = await request({
+      timeout: 0,
       url: row.url,
       method: 'GET',
       responseType: 'blob',

@@ -1,4 +1,3 @@
-import babelParser from '@babel/eslint-parser'
 module.exports = {
   root: true,
   env: {
@@ -6,14 +5,19 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  // parser: 'vue-eslint-parser',
-  parser: babelParser,
+  parser: 'vue-eslint-parser',
   parserOptions: {
     ecmaVersion: 12,
     parser: '@typescript-eslint/parser',
     sourceType: 'module',
   },
-  extends: ['plugin:vue/vue3-essential', 'plugin:vue/essential', 'eslint:recommended'],
+  extends: [
+    'plugin:vue/vue3-essential',
+    'plugin:vue/essential',
+    'eslint:recommended',
+    '@vue/eslint-config-typescript',
+    '@vue/eslint-config-prettier/skip-formatting',
+  ],
   plugins: ['vue', '@typescript-eslint'],
   overrides: [
     {

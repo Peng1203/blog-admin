@@ -67,7 +67,7 @@
       flex1
       empty-text="暂无文件"
       :border="false"
-      :isNeedPager="false"
+      :pager="false"
       :data="tableState.data"
       :columns="tableState.columns"
     >
@@ -472,9 +472,9 @@ const handlePasteEvent = (event: ClipboardEvent) => {
 }
 
 // 是否是大文件
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+// eslint-disable-next-line  , no-unused-vars
 const isLargeFile = size => size > MAX_SIZE_VALUE
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+// eslint-disable-next-line  , no-unused-vars
 const handleUploadToggle = row => uploadLargeFileRef.value.handleUploadToggle(row)
 
 // 获取文件列表所有状态

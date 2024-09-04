@@ -31,22 +31,23 @@
       </div>
       <!-- :border="false" -->
 
-      <Peng-Table
-        isSelection
+      <PengTable
+        selection
+        row-key="url"
         operationColumn
-        :operationColumnWidth="200"
+        :operationColumnWidth="180"
         :operationColumnBtns="['delete']"
+        :pager="false"
         :data="dataList"
         :columns="tableState.columns"
-        :loading="tableState.loading"
-        :is-need-pager="false"
         :default-sort="{ prop: 'atime', order: 'descending' }"
+        v-model:loading="tableState.loading"
         @deleteBtn="handleDelete"
         @dbRowClick="handleRowDbClikc"
         @selectionChange="val => (tableState.selectVal = val)"
       >
-        <template #nameSlot="{ row, prop }">
-          <span v-html="queryStrHighlight(row[prop!], tableState.queryStr)" />
+        <template #nameSlot="{ row }">
+          <span v-html="queryStrHighlight(row.name, tableState.queryStr)" />
         </template>
 
         <template #operationHeaderSlot>
@@ -95,7 +96,7 @@
             @click="handlePreView(row)"
           />
         </template>
-      </Peng-Table>
+      </PengTable>
 
       <div mt10>
         <el-tag
@@ -141,6 +142,10 @@ import { concurRequest } from '@/utils/concurRequest'
 import { BroadcastChannelEnum } from '@/constants'
 import { formatByteSize } from '@/utils/file'
 import _ from 'lodash'
+
+defineOptions({
+  name: 'ResourceList',
+})
 
 const store = useResourceStore()
 
@@ -288,7 +293,6 @@ onMounted(() => {
 
 onUnmounted(() => {
   cancelCbs.value.forEach(c => c && c())
-  console.log(`%c 执行了 ----`, 'color: #fff;background-color: #000;font-size: 18px')
 })
 </script>
 

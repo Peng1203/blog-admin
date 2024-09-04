@@ -40,7 +40,7 @@
         :pager="false"
         :data="dataList"
         :columns="tableState.columns"
-        :default-sort="{ prop: 'atime', order: 'descending' }"
+        :default-sort="{ prop: 'ctime', order: 'descending' }"
         v-model:loading="tableState.loading"
         @deleteBtn="handleDelete"
         @dbRowClick="handleRowDbClikc"
@@ -163,6 +163,12 @@ const tableState = reactive({
     {
       label: '修改日期',
       prop: 'atime',
+      sort: true,
+      width: 165,
+    },
+    {
+      label: '创建日期',
+      prop: 'ctime',
       sort: true,
       width: 165,
     },

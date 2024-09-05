@@ -20,7 +20,7 @@ import { usePermissionApi } from '@/api'
 import Dialog from '@/components/Dialog'
 import { FormItem } from '@/components/Form'
 import { PermissionData, AddPermissionType, resourceMethodOptions } from '../'
-import { useNotificationMsg } from '@/utils/notificationMsg'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import { SelectOptionItem } from '@/components/Select'
 
 const emits = defineEmits(['updateList'])

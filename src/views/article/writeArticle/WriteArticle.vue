@@ -85,7 +85,7 @@ import StepHeadend from './components/StepHeadend.vue'
 import InfoForm from './components/InfoForm.vue'
 import { useUserInfo } from '@/stores/userInfo'
 import { useArticleApi } from '@/api'
-import { useNotificationMsg } from '@/utils/notificationMsg'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import QuickActions from './components/QuickActions.vue'
 
 const { addArticle, updateArticle, getArticleDetailById, uploadImage } = useArticleApi()

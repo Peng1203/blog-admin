@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useMenuApi } from '@/api/menu'
-import { useNotificationMsg } from '@/utils/notificationMsg'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import { allDynamicRoutes } from '@/router/dynamicRoutes'
 
 const { initMenus } = useMenuApi()

@@ -124,7 +124,7 @@ import DatePicker from '@/components/Date'
 import { AuditLogData, AuditLogListData } from './types'
 import { resourceMethodOptions } from '@/views/auth/authPermission'
 import UserSelect from '@/views/user/user/components/UserSelect.vue'
-import { useNotificationMsg } from '@/utils/notificationMsg'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 
 const { getAuditLogs, deleteById, deletes } = useAuditApi()
 const { getIPInfo } = useCommonApi()

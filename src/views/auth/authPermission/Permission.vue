@@ -99,7 +99,7 @@ import { PermissionData, PermissionListData } from './types'
 import { queryStrHighlight } from '@/utils/queryStrHighlight'
 import { resourceMethodOptions } from './'
 import { SelectOptionItem } from '@/components/Select'
-import { useNotificationMsg } from '@/utils/notificationMsg'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import { isObject } from 'lodash'
 
 const permissionStore = usePermissionInfo()

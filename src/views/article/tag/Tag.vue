@@ -42,8 +42,8 @@
           @search="handleSearch"
         />
       </div>
-      <Peng-Table
-        is-selection
+      <PengTable
+        selection
         operationColumn
         :operationColumnBtns="['edit', 'delete']"
         :isFilterShowColumn="false"
@@ -79,7 +79,7 @@
             {{ '未设置图标' }}
           </span>
         </template>
-      </Peng-Table>
+      </PengTable>
     </el-card>
 
     <!-- 编辑标签抽屉 -->
@@ -104,7 +104,7 @@ import { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/co
 import { useTagApi } from '@/api/tag/index'
 import { TagData, TagListData } from './'
 import { useArticleInfo } from '@/stores/articleInfo'
-import { useNotificationMsg } from '@/utils/notificationMsg'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 
 const { getTags, deleteTag, batchDeleteTag } = useTagApi()
 

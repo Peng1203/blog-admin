@@ -20,7 +20,7 @@ import Dialog from '@/components/Dialog'
 import Form, { FormItem } from '@/components/Form'
 import { useCategoryApi } from '@/api/category/index'
 import { CategoryData } from '../types'
-import { useNotificationMsg } from '@/utils/notificationMsg'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 
 const { addCategory } = useCategoryApi()
 

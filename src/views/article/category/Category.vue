@@ -41,8 +41,6 @@
       </div>
       <PengTable
         selection
-        operationColumn
-        :operationColumnBtns="['edit', 'delete']"
         :data="tableState.data"
         :columns="tableState.columns"
         :getData="getCategoryTableData"
@@ -88,7 +86,7 @@ import { queryStrHighlight } from '@/utils/queryStrHighlight'
 import { useCategoryApi } from '@/api/category/index'
 import { CategoryData, CategoryListDate } from './types'
 import { useArticleInfo } from '@/stores/articleInfo'
-import { useNotificationMsg } from '@/utils/notificationMsg'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import { useTableState } from '@/hooks/useTableState'
 
 const { getCategorys, deleteCategory, batchDelete } = useCategoryApi()

@@ -4,7 +4,7 @@ import { ElLoading } from 'element-plus'
 import { Local, Session } from '@/utils/storage'
 import { handleRefreshACToken } from './refreshToken'
 import router from '@/router'
-import { useNotificationMsg } from './notificationMsg'
+import { useNotificationMsg } from '../hooks/useNotificationMsg'
 
 // 配置新建一个 axios 实例
 const service: AxiosInstance = axios.create({

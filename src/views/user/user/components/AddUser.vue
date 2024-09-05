@@ -23,7 +23,7 @@ import { passwordStrengthLevelDetection } from '@/utils/pwd'
 import { UserData, AddProps, AddEditUserType } from '../types'
 import { UploadRequestOptions } from 'element-plus'
 import { passwordEncryption } from '@/utils/encryption'
-import { useNotificationMsg } from '@/utils/notificationMsg'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 
 const props = defineProps<AddProps>()
 

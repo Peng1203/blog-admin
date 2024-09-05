@@ -142,7 +142,7 @@ import { useUserApi } from '@/api/user'
 import { UserData, UserListData } from './types'
 import { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table'
 import { queryStrHighlight } from '@/utils/queryStrHighlight'
-import { useNotificationMsg } from '@/utils/notificationMsg'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 
 const { getUsers, deleteUserById, deleteUsers, resetPassword } = useUserApi()
 

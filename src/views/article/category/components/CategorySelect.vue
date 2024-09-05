@@ -18,7 +18,7 @@ import { onMounted, ref, computed } from 'vue'
 import PengSelect from '@/components/Select'
 import { useComponentRef } from '@/composables/useComponentRef'
 import { useCategoryApi } from '@/api'
-import { useNotificationMsg } from '@/utils/notificationMsg'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import { storeToRefs } from 'pinia'
 import { CategoryData } from '../types'
 

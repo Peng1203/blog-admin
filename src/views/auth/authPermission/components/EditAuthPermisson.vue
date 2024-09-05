@@ -22,7 +22,7 @@ import { FormItem } from '@/components/Form'
 import Drawer from '@/components/Drawer'
 import { PermissionData, resourceMethodOptions } from '../'
 import { SelectOptionItem } from '@/components/Select'
-import { useNotificationMsg } from '@/utils/notificationMsg'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 
 const { updateAuthPermInfo } = usePermissionApi()
 

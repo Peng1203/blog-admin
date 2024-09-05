@@ -21,7 +21,7 @@
 import { ElUpload, UploadFile } from 'element-plus'
 import { MB } from '@/constants'
 import { ChunkItem, CreateFileDirData, FileData, StatusEnum } from '../types'
-import { useNotificationMsg } from '@/utils/notificationMsg'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import { useResourceApi } from '@/api'
 import { getFileArrayBuffer } from '@/utils/file'
 import { useUserInfo } from '@/stores/userInfo'

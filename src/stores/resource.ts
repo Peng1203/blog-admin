@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { useResourceApi } from '@/api'
 import type { ResourceListData, ResourceData } from '@/views/resource/list'
-import { useNotificationMsg } from '@/utils/notificationMsg'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 
 const { getResourceList, deleteResourceFile } = useResourceApi()
 

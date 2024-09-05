@@ -27,7 +27,7 @@ import Form from '@/components/Form'
 import { passwordEncryption } from '@/utils/encryption'
 import { useUserApi } from '@/api'
 import { passwordStrengthLevelDetection } from '@/utils/pwd'
-import { useNotificationMsg } from '@/utils/notificationMsg'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 
 const { changePassword } = useUserApi()
 const { userInfos, userLogout } = useUserInfo()

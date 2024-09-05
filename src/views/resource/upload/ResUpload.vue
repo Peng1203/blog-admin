@@ -66,6 +66,8 @@
     <PengTable
       flex1
       empty-text="暂无文件"
+      operation-column-width="200"
+      :operation-column-btns="[]"
       :border="false"
       :pager="false"
       :data="tableState.data"
@@ -152,7 +154,7 @@
       </template>
 
       <!-- 操作列 -->
-      <template #operationSlot="{ row, scope }">
+      <template #operationStartSlot="{ row, scope }">
         <!-- {{ row }} -->
 
         <!-- 上传 -->
@@ -272,7 +274,7 @@
           effect="light"
         >
           <!-- {{ uploadInfo.filesTotalSize }} byte ≈  -->
-          总大小: {{ formatByteSize(uploadInfo.filesTotalSize) }}
+          总大小: {{ formatByteSize(uploadInfo.filesTotalSize as number) }}
         </el-tag>
       </div>
     </div>
@@ -280,12 +282,10 @@
 </template>
 
 <script setup lang="ts">
-import { ColumnItem } from '@/components/Table'
-import { ref, reactive, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import _ from 'lodash'
 import { FileData, StatusEnum } from './types'
 import { ElUpload, UploadFile } from 'element-plus'
-// import { useNotificationMsg } from '@/utils/notificationMsg'
 import { useResourceApi } from '@/api'
 import { blobToFile, compressImage, formatByteSize, imageToBase64 } from '@/utils/file'
 import { api as viewerApi } from 'v-viewer'
@@ -293,6 +293,7 @@ import { BroadcastChannelEnum, MB } from '@/constants'
 import UploadLargeFile from './components/UploadLargeFile.vue'
 import { watch } from 'vue'
 import { useResourceStore } from '@/stores/resource'
+import { useTableState } from '@/hooks/useTableState'
 
 const { uploadResource } = useResourceApi()
 
@@ -302,54 +303,47 @@ const uploadLargeFileRef = ref<RefType>(null)
 const MAX_SIZE_MB = 5
 const MAX_SIZE_VALUE = MB * MAX_SIZE_MB
 
-const tableState = reactive({
-  data: <FileData[]>[],
-  columns: <ColumnItem<FileData>[]>[
-    {
-      label: '文件名',
-      prop: 'name',
-      sort: true,
-      // tooltip: true,
-      slotName: 'nameSlot',
-    },
-    {
-      label: '类型',
-      prop: 'type',
-      sort: true,
-    },
-    {
-      label: '大小',
-      prop: 'size',
-      sort: true,
-      formatter: ({ size }) => formatByteSize(size),
-    },
-    {
-      label: '状态',
-      prop: 'status',
-      sort: true,
-      slotName: 'statusSlot',
-    },
-    {
-      label: '上传压缩',
-      prop: 'isCompress',
-      slotName: 'isCompressSlot',
-      tooltip: true,
-    },
-    {
-      label: '操作',
-      prop: 'operation',
-      width: 200,
-      slotName: 'operationSlot',
-    },
-  ],
-})
+const { tableState, setColumns } = useTableState<FileData>()
+
+setColumns([
+  {
+    label: '文件名',
+    prop: 'name',
+    sort: true,
+    // tooltip: true,
+    slotName: 'nameSlot',
+  },
+  {
+    label: '类型',
+    prop: 'type',
+    sort: true,
+  },
+  {
+    label: '大小',
+    prop: 'size',
+    sort: true,
+    formatter: ({ size }) => formatByteSize(size),
+  },
+  {
+    label: '状态',
+    prop: 'status',
+    sort: true,
+    slotName: 'statusSlot',
+  },
+  {
+    label: '上传压缩',
+    prop: 'isCompress',
+    slotName: 'isCompressSlot',
+    tooltip: true,
+  },
+])
 
 // 文件列表信息统计
 const uploadInfo = ref({
   files: computed(() => tableState.data.length),
   successFiles: computed(() => tableState.data.filter(file => file.status === StatusEnum.SUCCESS).length),
   failFiles: computed(() => tableState.data.filter(file => file.status === StatusEnum.FAIL).length),
-  filesTotalSize: computed(() => _.sum(tableState.data.map(file => file.size))),
+  filesTotalSize: computed<number>(() => _.sum(tableState.data.map(file => file.size))),
 })
 
 // 选择文件夹上传
@@ -472,10 +466,9 @@ const handlePasteEvent = (event: ClipboardEvent) => {
 }
 
 // 是否是大文件
-// eslint-disable-next-line  , no-unused-vars
-const isLargeFile = size => size > MAX_SIZE_VALUE
-// eslint-disable-next-line  , no-unused-vars
-const handleUploadToggle = row => uploadLargeFileRef.value.handleUploadToggle(row)
+
+const _isLargeFile = size => size > MAX_SIZE_VALUE
+const _handleUploadToggle = row => uploadLargeFileRef.value.handleUploadToggle(row)
 
 // 获取文件列表所有状态
 const listStatus = computed(() => tableState.data.map(item => item.status))

@@ -21,7 +21,7 @@ import { useArticleInfo } from '@/stores/articleInfo'
 import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref } from 'vue'
 import { TagData } from '../types'
-import { useNotificationMsg } from '@/utils/notificationMsg'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 
 const { addTag } = useTagApi()
 

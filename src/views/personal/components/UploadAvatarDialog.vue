@@ -33,7 +33,7 @@
 import { ref } from 'vue'
 import Cropper from '@/components/Cropper'
 import { ElUpload, UploadFile, UploadInstance, UploadProps, UploadRawFile, genFileId } from 'element-plus'
-import { useNotificationMsg } from '@/utils/notificationMsg'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import { useUserInfo } from '@/stores/userInfo'
 import { useUserApi } from '@/api'
 

@@ -1,5 +1,6 @@
 import { AxiosResponse } from 'axios'
 
+// 定义接口 公用类型
 declare module 'Api' {
   export enum Method {
     GET = 'GET',

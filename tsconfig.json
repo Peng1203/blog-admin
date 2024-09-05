@@ -47,7 +47,8 @@
     "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
     "baseUrl": "." /* Base directory to resolve non-absolute module names. */,
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "Api": ["./src/types/api.d.ts"]
     } /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */,
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
     // "typeRoots": [],                       /* List of folders to include type definitions from. */
@@ -72,6 +73,12 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
     // "suppressImplicitAnyIndexErrors": true,
   },
-  "include": ["src/**/*.ts", "src/**/*.vue", "src/**/*.tsx", "src/**/*.d.ts", "./*.d.ts"], // **Represents any directory, and * represents any file. Indicates that all files in the src directory will be compiled
+  "include": [
+    "src/**/*.ts", //
+    "src/**/*.vue",
+    "src/**/*.tsx",
+    "src/**/*.d.ts",
+    "./*.d.ts"
+  ], // **Represents any directory, and * represents any file. Indicates that all files in the src directory will be compiled
   "exclude": ["node_modules", "dist"] // Indicates the file directory that does not need to be compiled
 }

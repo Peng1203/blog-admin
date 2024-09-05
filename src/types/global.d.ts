@@ -152,6 +152,3 @@ interface OptionItem {
   label: string
   value: any
 }
-
-// 定义接口 公用类型
-declare module 'Api' {}

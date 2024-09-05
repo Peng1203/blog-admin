@@ -40,7 +40,13 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-redeclare': 'error',
     '@typescript-eslint/no-non-null-asserted-optional-chain': 'off',
-    '@typescript-eslint/no-unused-vars': [2],
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        varsIgnorePattern: '^_',
+        argsIgnorePattern: '^_',
+      },
+    ],
     'vue/custom-event-name-casing': 'off',
     'vue/attributes-order': 'off',
     'vue/one-component-per-file': 'off',
@@ -72,7 +78,13 @@ module.exports = {
     'generator-star-spacing': 'off',
     'no-unreachable': 'off',
     'no-multiple-template-root': 'off',
-    'no-unused-vars': 'error',
+    'no-unused-vars': [
+      'error',
+      {
+        varsIgnorePattern: '^_',
+        argsIgnorePattern: '^_',
+      },
+    ],
     'no-v-model-argument': 'off',
     'no-case-declarations': 'off',
     'no-console': 'off',

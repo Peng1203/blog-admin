@@ -13,7 +13,7 @@ export type Props<T> = TableProps<T> & {
   indexMethod?: (index: number) => number
   /** 操作列 */
   operationColumn?: boolean
-  operationColumnWidth?: number
+  operationColumnWidth?: number | string
   operationColumnBtns?: [OperationType?, OperationType?, OperationType?, OperationType?]
   rowKey?: PropType<T> | 'id'
 
@@ -40,7 +40,7 @@ export type ColumnItem<T> = Partial<Omit<TableColumnCtx<T>, 'sortable' | 'showOv
   sort?: boolean | 'custom'
   tooltip?: boolean
   fixed?: boolean | 'left' | 'right'
-  slotName?: `${PropType<T>}Slot`
+  slotName?: `${PropType<T>}Slot` | 'queryHighNightSlot'
   align?: 'left' | 'center' | 'right'
   childrenColumns?: ColumnItem<T>[]
   /**

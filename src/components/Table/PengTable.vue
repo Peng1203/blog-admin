@@ -1,27 +1,4 @@
 <template>
-  <!-- $attrs ---
-  {{ $attrs }} ---
-  {{ Object.keys($attrs) }}
-  <br />
-  $props ---
-  {{ $props }} ---
-  {{ Object.keys($props) }}
-  <br /> -->
-  <!-- v-bind="$attrs" -->
-  <!-- {{ Object.keys(slots) }} -->
-  <!-- page --- {{ page }}
-  <br />
-  myPage --- {{ myPage }}
-  <br />
-  pageSize ---{{ pageSize }}
-  <br />
-  myPageSize ---{{ myPageSize }}
-  <br />
-  {{ tableColumns }}
-  <br />
-  {{ loading }} -->
-  <!-- v-bind="$props" -->
-
   <el-table
     ref="tableRef"
     v-bind="{ ...$props, ...$attrs }"
@@ -216,9 +193,9 @@
 
 <script setup lang="tsx" generic="T">
 import { useSlots, onMounted, computed, ref } from 'vue'
-import { Props, ColumnItem, SlotProps, OrderProp, SlotsType, SortInfo } from './types'
 import { ElTable, ElTableColumn, ElPagination } from 'element-plus'
 import type { TableInstance } from 'element-plus'
+import type { Props, ColumnItem, SlotProps, OrderProp, SlotsType, SortInfo } from './types'
 
 // 获取 ElTable 组件的实例类型
 // type ElTableInstance = InstanceType<typeof ElTable>
@@ -233,7 +210,7 @@ const props = withDefaults(defineProps<Props<T>>(), {
   rowKey: 'id',
   size: 'default',
   stripe: true,
-  operationColumn: false,
+  operationColumn: true,
   operationColumnBtns: () => ['edit', 'delete'],
   operationColumnWidth: 100,
 

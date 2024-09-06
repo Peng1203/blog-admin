@@ -1,7 +1,8 @@
-import { ref, reactive, type Ref } from 'vue'
-import { RequestListParams } from 'Api'
+import { reactive } from 'vue'
 import _ from 'lodash'
+import { RequestListParams } from 'Api'
 import { ColumnItem } from '@/components/Table'
+
 interface CommonParams {
   page: number
   pageSize: number
@@ -9,12 +10,12 @@ interface CommonParams {
   column: string
   order: string
 }
- 
+
 interface TableState<T> {
   loading: boolean
-  selectVal: Ref<T[]>
-  data: Ref<T[]>
-  columns: Ref<ColumnItem<T>[]>
+  selectVal: T[]
+  data: T[]
+  columns: ColumnItem<T>[]
   column: string
   order: string
   queryStr: string
@@ -29,12 +30,13 @@ type Return1<T> = {
   setColumns: (columns: ColumnItem<T>[]) => void
   setData: (data: T[]) => void
   setTotal: (total: number) => void
-  setPageInfo: (page: any, pageSize: any) => void
+  setPageInfo: (page: number, pageSize: number) => void
   startLoading: () => boolean
   stopLoading: () => boolean
   getCommonParams: (exclude?: Array<keyof CommonParams>) => RequestListParams
 }
 
+// #region
 type Return2<T, K extends string> = {
   [P in K as `${K}TableState`]: TableState<T>
 } & {
@@ -46,7 +48,7 @@ type Return2<T, K extends string> = {
 } & {
   [P in K as `set${Capitalize<P>}Total`]: (total: number) => void
 } & {
-  [P in K as `set${Capitalize<P>}PageInfo`]: (page: any, pageSize: any) => void
+  [P in K as `set${Capitalize<P>}PageInfo`]: (page: number, pageSize: number) => void
 } & {
   [P in K as `start${Capitalize<P>}Loading`]: () => boolean
 } & {
@@ -54,18 +56,24 @@ type Return2<T, K extends string> = {
 } & {
   [P in K as `get${Capitalize<P>}CommonParams`]: (exclude?: Array<keyof CommonParams>) => RequestListParams
 }
+// #endregion
+
+function capitalize<T extends string>(str: T): Capitalize<T> {
+  return (str.charAt(0).toUpperCase() + str.slice(1)) as Capitalize<T>
+}
 
 // 函数重载声明
 export function useTableState<T>(): Return1<T>
+export function useTableState<T, K extends string = string>(key: K): Return2<T, K>
 export function useTableState<T, K extends string>(key: K): Return2<T, K>
 
-export function useTableState<T, K extends string>(key?: K) {
+export function useTableState<T, K extends string>(key?: K): Return1<T> | Return2<T, K> {
   const tableState = reactive({
     loading: false,
-    selectVal: ref<T[]>([]),
+    selectVal: <T[]>[],
 
-    data: ref<T[]>([]),
-    columns: ref<ColumnItem<T>[]>([]),
+    data: <T[]>[],
+    columns: <ColumnItem<T>[]>[],
     column: '',
     order: '',
     queryStr: '',
@@ -86,11 +94,11 @@ export function useTableState<T, K extends string>(key?: K) {
   }
 
   const setColumns = (columns: ColumnItem<T>[]) => {
-    tableState.columns = columns
+    tableState.columns = columns as any
   }
 
   const setData = (data: T[]) => {
-    tableState.data = data
+    tableState.data = data as any
   }
 
   const setTotal = (total: number) => {
@@ -129,8 +137,4 @@ export function useTableState<T, K extends string>(key?: K) {
         stopLoading,
         getCommonParams,
       } as unknown as Return1<T>)
-}
-
-function capitalize<T extends string>(str: T): Capitalize<T> {
-  return (str.charAt(0).toUpperCase() + str.slice(1)) as Capitalize<T>
 }

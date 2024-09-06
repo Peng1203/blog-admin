@@ -5,9 +5,9 @@ import router from './router'
 import { directive } from '@/directive/index'
 import other from '@/utils/other'
 
-import ElementPlus from 'element-plus'
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+// import ElementPlus from 'element-plus'
 // import locale from 'element-plus/lib/locale/lang/zh-cn'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 import VueViewer from 'v-viewer'
 import '@/assets/icons/iconfont.css'
@@ -34,6 +34,5 @@ app
   .use(pinia)
   // .use(ElementPlus, { locale })
   .use(router)
-  .use(ElementPlus)
   .use(VueViewer)
   .mount('#app')

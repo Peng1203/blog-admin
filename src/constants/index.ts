@@ -36,3 +36,18 @@ export enum BroadcastChannelEnum {
   /** 资源列表通信信道 */
   RESOURCE_CHANNEL = 'resourceChannel',
 }
+
+export enum CodeEnum {
+  /**
+   * 获取成功
+   */
+  GET_SUCCESS = 20000,
+  /**
+   * 创建成功
+   */
+  POST_SUCCESS = 20100,
+  /**
+   * 更新成功
+   */
+  UPDATE_SUCCESS = 20001,
+}

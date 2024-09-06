@@ -32,7 +32,7 @@
           </PengButton>
         </div>
 
-        <Peng-Search
+        <PengSearch
           placeholder="请输入分类名称"
           :loading="tableState.loading"
           v-model="tableState.queryStr"
@@ -81,13 +81,14 @@
 </template>
 
 <script setup lang="ts" name="ArticleCategory">
-import { defineAsyncComponent, ref, onMounted } from 'vue'
+import { defineAsyncComponent, ref, onMounted, useTemplateRef } from 'vue'
 import { queryStrHighlight } from '@/utils/queryStrHighlight'
 import { useCategoryApi } from '@/api/category/index'
 import { CategoryData, CategoryListDate } from './types'
 import { useArticleInfo } from '@/stores/articleInfo'
 import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import { useTableState } from '@/hooks/useTableState'
+import { CodeEnum } from '@/constants'
 
 const { getCategorys, deleteCategory, batchDelete } = useCategoryApi()
 
@@ -100,6 +101,7 @@ const {
   setColumns,
   startLoading,
   stopLoading,
+  getCommonParams,
 } = useTableState<CategoryData>()
 
 setColumns([
@@ -125,18 +127,10 @@ setColumns([
 const getCategoryTableData = async () => {
   try {
     startLoading()
-    const { column, order, queryStr, page, pageSize } = tableState
-    const params = {
-      column,
-      order,
-      queryStr,
-      page,
-      pageSize,
-    }
+    const params = getCommonParams()
     const { data: res } = await getCategorys<CategoryListDate>(params)
     const { code, data, success } = res
-
-    if (code !== 20000 || !success) return
+    if (code !== CodeEnum.GET_SUCCESS || !success) return
     setData(data.list)
     setTotal(data.total)
   } catch (e) {
@@ -194,7 +188,7 @@ const handleBatchDelete = async () => {
 // 处理编辑分类
 const editRow = ref<CategoryData>()
 const EditCategoryDrawer = defineAsyncComponent(() => import('./components/EditCategory.vue'))
-const editDrawerRef = ref<RefType>(null)
+const editDrawerRef = useTemplateRef('editDrawerRef')
 const handleEditCategory = (row: CategoryData) => {
   editRow.value = JSON.parse(JSON.stringify(row))
   editDrawerRef.value.editDrawerStatus = true
@@ -202,7 +196,7 @@ const handleEditCategory = (row: CategoryData) => {
 
 // 处理添加分类
 const AddCategoryDialog = defineAsyncComponent(() => import('./components/AddCategory.vue'))
-const addDialogRef = ref<RefType>(null)
+const addDialogRef = useTemplateRef('addDialogRef')
 
 const handleUpdate = () => {
   getCategoryTableData()

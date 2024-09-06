@@ -9,6 +9,7 @@
           size="default"
           type="primary"
           :disabled="!tableState.selectVal.length"
+          v-model:loading="tableState.loading"
           @click="handleBatchDown"
         >
           <el-icon>
@@ -21,6 +22,7 @@
           size="default"
           type="danger"
           :disabled="!tableState.selectVal.length"
+          v-model:loading="tableState.loading"
           @click="handleBatchDel"
         >
           <el-icon>
@@ -39,6 +41,7 @@
         :operationColumnBtns="['delete']"
         :pager="false"
         :data="dataList"
+        :getData="getDataList"
         :columns="tableState.columns"
         :default-sort="{ prop: 'ctime', order: 'descending' }"
         v-model:loading="tableState.loading"
@@ -128,8 +131,7 @@
 </template>
 
 <script setup lang="ts" name="ResourceList">
-import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
-import { ColumnItem } from '@/components/Table'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useResourceStore } from '@/stores/resource'
 import type { ResourceListItem } from './types'
 import request from '@/utils/request'
@@ -142,6 +144,7 @@ import { concurRequest } from '@/utils/concurRequest'
 import { BroadcastChannelEnum } from '@/constants'
 import { formatByteSize } from '@/utils/file'
 import _ from 'lodash'
+import { useTableState } from '@/hooks/useTableState'
 
 defineOptions({
   name: 'ResourceList',
@@ -149,66 +152,63 @@ defineOptions({
 
 const store = useResourceStore()
 
-const tableState = reactive({
-  loading: false,
-  selectVal: [],
-  queryStr: '',
-  columns: ref<ColumnItem<ResourceListItem>[]>([
-    {
-      label: '名称',
-      prop: 'name',
-      tooltip: true,
-      slotName: 'nameSlot',
-    },
-    {
-      label: '修改日期',
-      prop: 'atime',
-      sort: true,
-      width: 165,
-    },
-    {
-      label: '创建日期',
-      prop: 'ctime',
-      sort: true,
-      width: 165,
-    },
-    // {
-    //   label: 'Mime类型',
-    //   prop: 'mimeType',
-    // },
-    {
-      label: '类型',
-      prop: 'type',
-      sort: true,
-      width: 100,
-      filters: [
-        { text: '图片', value: 'image' },
-        { text: '视频', value: 'video' },
-        { text: '音频', value: 'audio' },
-        { text: '文本', value: 'text' },
-        { text: '其他', value: '' },
-      ],
-      filterMethod(
-        value: string,
-        row: ResourceListItem
-        // column: TableColumnCtx<ResourceListItem>
-      ) {
-        if (!row.mimeType) return true
+const { tableState, setColumns } = useTableState<ResourceListItem>()
 
-        if (value === 'text') return row.mimeType.includes(value) || ['js', 'ts'].includes(row.type)
+setColumns([
+  {
+    label: '名称',
+    prop: 'name',
+    tooltip: true,
+    slotName: 'nameSlot',
+  },
+  {
+    label: '修改日期',
+    prop: 'atime',
+    sort: true,
+    width: 165,
+  },
+  {
+    label: '创建日期',
+    prop: 'ctime',
+    sort: true,
+    width: 165,
+  },
+  // {
+  //   label: 'Mime类型',
+  //   prop: 'mimeType',
+  // },
+  {
+    label: '类型',
+    prop: 'type',
+    sort: true,
+    width: 100,
+    filters: [
+      { text: '图片', value: 'image' },
+      { text: '视频', value: 'video' },
+      { text: '音频', value: 'audio' },
+      { text: '文本', value: 'text' },
+      { text: '其他', value: '' },
+    ],
+    filterMethod(
+      value: string,
+      row: ResourceListItem
+      // column: TableColumnCtx<ResourceListItem>
+    ) {
+      if (!row.mimeType) return true
 
-        return row.mimeType.includes(value)
-      },
+      if (value === 'text') return row.mimeType.includes(value) || ['js', 'ts'].includes(row.type)
+
+      return row.mimeType.includes(value)
     },
-    {
-      label: '大小',
-      prop: 'size',
-      width: 100,
-      sort: true,
-      formatter: ({ size }) => formatByteSize(size),
-    },
-  ]),
-})
+  },
+  {
+    label: '大小',
+    prop: 'size',
+    width: 100,
+    sort: true,
+    formatter: ({ size }) => formatByteSize(size),
+  },
+])
 
 // 取消请求的函数
 const cancelCbs = ref<Canceler[]>([])
@@ -259,23 +259,18 @@ const handleDelete = (row: ResourceListItem) => {
 const handleRefreshList = () => getDataList(true)
 
 const handleBatchDel = async () => {
-  tableState.loading = true
   const params = tableState.selectVal.map(item => item.name)
   await concurRequest(params, fileName => store.deleteResource(fileName, false))
-  tableState.loading = false
+
   useNotificationMsg('', '批量删除成功')
 }
 
 const handleBatchDown = async () => {
-  tableState.loading = true
   await concurRequest(tableState.selectVal, handleDownload)
-  tableState.loading = false
 }
 
 const getDataList = async (refresh: boolean = false) => {
-  tableState.loading = true
   await store.getResourceList(refresh)
-  tableState.loading = false
 }
 
 const handleAcceptBroadcasts = () => {
@@ -294,7 +289,6 @@ const handleRowDbClikc = (row: ResourceListItem) => {
 const filesTotalSize = computed(() => _.sum(dataList.value.map(file => file.size)))
 
 onMounted(() => {
-  getDataList()
   handleAcceptBroadcasts()
 })
 

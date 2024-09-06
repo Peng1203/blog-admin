@@ -24,20 +24,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, useAttrs, useSlots } from 'vue'
+import { useAttrs, useSlots } from 'vue'
 import { Props } from './types'
 
 defineOptions({
   inheritAttrs: false,
 })
 
-const attrs = useAttrs()
 const slots = useSlots()
+const attrs = useAttrs()
 const props = withDefaults(defineProps<Props>(), {
   size: 'small',
 })
 
-const loading = ref<boolean>(false)
+const loading = defineModel<boolean>('loading')
 
 const handleClick = async () => {
   try {

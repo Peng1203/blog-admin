@@ -50,4 +50,8 @@ export enum CodeEnum {
    * 更新成功
    */
   UPDATE_SUCCESS = 20001,
+  /**
+   * 删除成功
+   */
+  DELETE_SUCCESS = 20000,
 }

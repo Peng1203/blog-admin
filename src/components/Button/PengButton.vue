@@ -16,8 +16,7 @@
       #[name]
       v-for="(_, name, i) in slots"
     >
-      <slot name />
-      <!-- <slot :name="name" /> -->
+      <slot :name="name" />
     </template>
     <slot />
   </el-button>

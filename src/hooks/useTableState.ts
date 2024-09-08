@@ -70,10 +70,10 @@ export function useTableState<T, K extends string>(key: K): Return2<T, K>
 export function useTableState<T, K extends string>(key?: K): Return1<T> | Return2<T, K> {
   const tableState = reactive({
     loading: false,
-    selectVal: <T[]>[],
+    selectVal: [],
 
-    data: <T[]>[],
-    columns: <ColumnItem<T>[]>[],
+    data: [],
+    columns: [],
     column: '',
     order: '',
     queryStr: '',
@@ -94,11 +94,11 @@ export function useTableState<T, K extends string>(key?: K): Return1<T> | Return
   }
 
   const setColumns = (columns: ColumnItem<T>[]) => {
-    tableState.columns = columns as any
+    tableState.columns = columns
   }
 
   const setData = (data: T[]) => {
-    tableState.data = data as any
+    tableState.data = data
   }
 
   const setTotal = (total: number) => {

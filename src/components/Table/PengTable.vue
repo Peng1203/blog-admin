@@ -78,7 +78,7 @@
     <el-table-column
       label="操作"
       align="center"
-      :width="operationColumnWidth"
+      :width="operationColumnWidth || calcOperationColumnWidth"
       v-if="operationColumn"
     >
       <template #header>
@@ -192,7 +192,7 @@
 </template>
 
 <script setup lang="tsx" generic="T">
-import { useSlots, onMounted, computed, ref } from 'vue'
+import { useSlots, onMounted, computed, ref, useTemplateRef, onUnmounted } from 'vue'
 import { ElTable, ElTableColumn, ElPagination } from 'element-plus'
 import type { TableInstance } from 'element-plus'
 import type { Props, ColumnItem, SlotProps, OrderProp, SlotsType, SortInfo } from './types'
@@ -212,7 +212,7 @@ const props = withDefaults(defineProps<Props<T>>(), {
   stripe: true,
   operationColumn: true,
   operationColumnBtns: () => ['edit', 'delete'],
-  operationColumnWidth: 100,
+  operationColumnWidth: 0,
 
   // 分页器属性
   pager: true,
@@ -232,6 +232,8 @@ defineOptions({
   name: 'PengTable',
   inheritAttrs: true,
 })
+
+const calcOperationColumnWidth = computed<number>(() => props.operationColumnBtns.length * 40)
 
 // 定义插槽 为插槽接受值添加类型
 const slots = useSlots()
@@ -364,7 +366,68 @@ const getRowStyle = ({ row }) => {
 }
 
 // const tableRef = useComponentRef(ElTable)
-const tableRef = ref<TableInstance | null>(null)
+let tableRef = useTemplateRef<TableInstance>('tableRef')
+
+const tableContenDom = ref<RefType<HTMLDivElement>>()
+// 计算出表格 fixed 的列 宽总和
+const fixedTotalWidth = computed<number>({
+  get: () => {
+    let totalWidth = 0
+    tableColumns.value.forEach(item => {
+      if (item.fixed) {
+        const width = item?.minWidth || item.width
+        totalWidth += Number(width)
+      }
+    })
+
+    return totalWidth + (props.selection ? 40 : 0) + (props.filterColumn ? 30 : 0) + calcOperationColumnWidth.value
+  },
+  set: () => {},
+})
+// 设置滚轮控制表格x轴滚动 (当不存在y轴滚动条时)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+const WHEEL_EVENT = 'wheel'
+const setXScrollWhell = () => {
+  const rootDom = tableRef.value.$el as HTMLDivElement
+  tableContenDom.value = rootDom.querySelector<HTMLDivElement>('.el-table__inner-wrapper .el-table__body-wrapper')
+
+  tableContenDom.value.addEventListener(WHEEL_EVENT, handleWhell)
+}
+
+const clearXScrollWhell = () => tableContenDom.value.removeEventListener(WHEEL_EVENT, handleWhell)
+
+const xScorllToValue = ref<number>(0)
+const handleWhell = (event: WheelEvent) => {
+  // console.log('event ------', event, event.deltaY);
+  const dom = tableContenDom.value
+
+  // 实际内容的容器
+  const dateContentDom = document.querySelector('.el-table__body')
+  const { clientWidth, clientHeight } = dateContentDom
+
+  // 当没有出现横向滚动条时 则不生效
+  if (clientWidth <= dom.clientWidth) return
+
+  // 当容器存在x轴滚动条时 则不生效
+  if (clientHeight > dom.clientHeight) return
+
+  // event.deltaY 滚轮下滚动 为 100 上滚动为 -100
+  // 当横向滚动 处于最右侧 只能接收负值
+  if (xScorllToValue.value >= clientWidth - fixedTotalWidth.value) {
+    if (event.deltaY < 0) {
+      xScorllToValue.value += event.deltaY
+    }
+  } else if (xScorllToValue.value <= 0) {
+    // 只能接收正值
+    if (event.deltaY > 0) {
+      xScorllToValue.value += event.deltaY
+    }
+  } else {
+    xScorllToValue.value += event.deltaY
+  }
+
+  tableRef.value.setScrollLeft(xScorllToValue.value)
+}
 
 defineExpose(
   new Proxy(
@@ -382,6 +445,11 @@ defineExpose(
 
 onMounted(() => {
   handleGetData()
+  setXScrollWhell()
+})
+
+onUnmounted(() => {
+  clearXScrollWhell()
 })
 </script>
 

@@ -73,7 +73,6 @@
         :show-overflow-tooltip="tooltip"
       />
     </template>
-
     <!-- 操作列 -->
     <el-table-column
       label="操作"
@@ -233,7 +232,7 @@ defineOptions({
   inheritAttrs: true,
 })
 
-const calcOperationColumnWidth = computed<number>(() => props.operationColumnBtns.length * 40)
+const calcOperationColumnWidth = computed<number>(() => props.operationColumnBtns.length * 45)
 
 // 定义插槽 为插槽接受值添加类型
 const slots = useSlots()
@@ -444,7 +443,7 @@ defineExpose(
 )
 
 onMounted(() => {
-  handleGetData()
+  // handleGetData()
   setXScrollWhell()
 })
 

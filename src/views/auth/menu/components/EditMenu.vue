@@ -11,7 +11,7 @@
       :formItems="editFormState.formItemList"
       v-model="formData"
     >
-      <template #iconSlot="{ prop }">
+      <template #iconSlot>
         <IconSelector
           :prepend="preIcon"
           v-model="formData.menuIcon"
@@ -26,8 +26,10 @@ import { ref, reactive, watch, defineAsyncComponent, computed } from 'vue'
 import { useMenuApi } from '@/api/menu/index'
 import Form, { FormItem } from '@/components/Form'
 import Drawer from '@/components/Drawer'
-import { ElMessage } from 'element-plus'
 import { MenuData, EditMenuType, EditProps } from '../types'
+import { CodeEnum } from '@/constants'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
+import { useFormWatcher } from '@/hooks/useFormWatcher'
 
 const IconSelector = defineAsyncComponent(() => import('@/components/iconSelector/index.vue'))
 const { updataMenu } = useMenuApi()
@@ -41,11 +43,11 @@ const emits = defineEmits(['updateList'])
 const editDrawerStatus = ref<boolean>(false)
 
 const formData = ref<EditMenuType>({
+  id: 0,
   menuName: '',
   menuUri: '',
   menuPath: '',
   menuIcon: '',
-  parentId: 0,
   orderNum: 0,
   isKeepalive: 0,
   isHidden: 0,
@@ -136,11 +138,11 @@ const handleSaveEdit = async () => {
 // 保存修改数据
 const saveEditMenu = async (): Promise<boolean> => {
   try {
-    const { id, createTime, updateTime, children, ...params } = formData.value
-    const { data: res } = await updataMenu<string>(id!, params)
-    const { code, data, message, success } = res
-    if (code !== 20001 || !success) return false
-    ElMessage.success(data)
+    const { id, ...params } = formData.value
+    const { data: res } = await updataMenu<string>(id, params)
+    const { code, data, success } = res
+    if (code !== CodeEnum.UPDATE_SUCCESS || !success) return false
+    useNotificationMsg(data, '')
     return true
   } catch (e) {
     console.log(e)
@@ -148,16 +150,7 @@ const saveEditMenu = async (): Promise<boolean> => {
   }
 }
 
-// 获取当前点击的 icon 图标
-const handleGetIcon = (icon: string) => (formData.value.menuIcon = icon)
-
-watch(
-  () => props.editRow,
-  val => {
-    formData.value = JSON.parse(JSON.stringify(val))
-    formData.value.menuIcon = formData.value.menuIcon || ''
-  }
-)
+useFormWatcher(() => props.editRow, formData)
 
 // 当窗口关闭时 重置表单校验 重置图标
 watch(editDrawerStatus, val => {
@@ -166,5 +159,3 @@ watch(editDrawerStatus, val => {
 
 defineExpose({ editDrawerStatus })
 </script>
-
-<style lang="scss" scoped></style>

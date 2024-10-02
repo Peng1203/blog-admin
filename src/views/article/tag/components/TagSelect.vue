@@ -22,6 +22,7 @@ import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref } from 'vue'
 import { TagData } from '../types'
 import { useNotificationMsg } from '@/hooks/useNotificationMsg'
+import { CodeEnum } from '@/constants'
 
 const { addTag } = useTagApi()
 
@@ -54,7 +55,7 @@ const addNewTag = async (tagName): Promise<boolean> => {
     const params = { tagName, icon: '' }
     const { data: res } = await addTag<TagData>(params)
     const { code, message, success, data } = res
-    if (code !== 20100 || !success) return false
+    if (code !== CodeEnum.POST_SUCCESS || !success) return false
     useNotificationMsg('成功', message)
     newTag.value = data
     return true

@@ -113,6 +113,7 @@
                 :autocomplete="autocomplete ? 'on' : 'off'"
                 aria-autocomplete="none"
                 v-model="formData[prop]"
+                @input="change && change($event)"
               >
                 <!-- @focus="(e: any) => e.target.removeAttribute('readonly')" -->
                 <template

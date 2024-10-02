@@ -27,6 +27,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ArticleOptionData } from '../types'
 import { useUserInfo } from '@/stores/userInfo'
+import { CodeEnum } from '@/constants'
 
 const route = useRoute()
 const router = useRouter()
@@ -51,7 +52,7 @@ const getArticleOptions = async () => {
     }
     const { data: res } = await getUserArticles<ArticleOptionData>(userInfos.id, params)
     const { code, message, data } = res
-    if (code !== 20000 || !message) return
+    if (code !== CodeEnum.GET_SUCCESS || !message) return
     articleOptions.value = data.list
 
     route.params.aid && (aId.value = Number(route.params.aid))

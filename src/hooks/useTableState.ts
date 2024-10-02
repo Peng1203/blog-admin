@@ -13,7 +13,7 @@ interface CommonParams {
 
 interface TableState<T> {
   loading: boolean
-  selectVal: T[]
+  selectVal: []
   data: T[]
   columns: ColumnItem<T>[]
   column: string

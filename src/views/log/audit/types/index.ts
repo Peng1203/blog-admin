@@ -15,6 +15,9 @@ export interface AuditLogData {
   createTime: string
   userId: number | null
   userName: string | null
+
+  // 自定义扩展属性
+  ipInfo?: string
 }
 
 export enum RequestMethodEnum {

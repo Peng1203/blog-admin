@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { usePermissionApi } from '@/api'
 import { PermissionData, PermissionListData } from '@/views/auth/authPermission'
+import { CodeEnum } from '@/constants'
 
 const { getPermissions } = usePermissionApi()
 
@@ -20,7 +21,7 @@ export const usePermissionInfo = defineStore('permissionInfo', {
         order: '',
       })
       const { code, success, data } = res
-      if (code !== 20000 || !success) return
+      if (code !== CodeEnum.GET_SUCCESS || !success) return
       this.permissionList = data.list
     },
   },

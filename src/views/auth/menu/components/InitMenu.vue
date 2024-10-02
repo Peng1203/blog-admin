@@ -10,10 +10,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useMenuApi } from '@/api/menu'
 import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import { allDynamicRoutes } from '@/router/dynamicRoutes'
+import { CodeEnum } from '@/constants'
 
 const { initMenus } = useMenuApi()
 
@@ -30,7 +30,7 @@ const addInitMenu = async (): Promise<boolean> => {
     const params = getInitMenuData()
     const { data: res } = await initMenus<string>(params)
     const { data, success, message, code } = res
-    if (code !== 20100 || !success) return false
+    if (code !== CodeEnum.POST_SUCCESS || !success) return false
     useNotificationMsg(message, data)
     return true
   } catch (e) {

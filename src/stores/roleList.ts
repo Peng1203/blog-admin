@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useRoleApi } from '@/api'
 import { RoleData, RoleListData } from '@/views/auth/role'
+import { CodeEnum } from '@/constants'
 
 const { getRole } = useRoleApi()
 
@@ -24,7 +25,7 @@ export const useRolesInfo = defineStore('rolesInfo', {
           order: '',
         })
         const { code, success, data } = res
-        if (code !== 20000 || !success) return
+        if (code !== CodeEnum.GET_SUCCESS || !success) return
         this.roleList = data.list
         this.roleOption = data.list.map(({ roleName, id }) => ({
           label: roleName,

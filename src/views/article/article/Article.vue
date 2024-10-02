@@ -64,6 +64,7 @@ import { ArticleListData, ArticleData, FilterParamsInfo } from './'
 import FilterHeadend from './components/FilterHeadend.vue'
 import ArticleItem from './components/ArticleItem.vue'
 import { ElNotification } from 'element-plus'
+import { CodeEnum } from '@/constants'
 
 const router = useRouter()
 const { getArticles, delArticle } = useArticleApi()
@@ -109,7 +110,7 @@ const getArticleDataList = async () => {
     }
     const { data: res } = await getArticles<ArticleListData>(params)
     const { data, code, success } = res
-    if (code !== 20000 || !success) return (articleListState.loading = false)
+    if (code !== CodeEnum.GET_SUCCESS || !success) return (articleListState.loading = false)
 
     articleListState.articleList = [...articleListState.articleList, ...data.list]
     articleListState.total = data.total
@@ -148,7 +149,7 @@ const deleteArticle = async (uid: number, aid: number): Promise<boolean> => {
   try {
     const { data: res } = await delArticle<string>(uid, aid)
     const { code, data, message, success } = res
-    if (code !== 20000 || !success) return false
+    if (code !== CodeEnum.DELETE_SUCCESS || !success) return false
     ElNotification({
       title: message,
       message: data,

@@ -17,9 +17,9 @@ export interface MenuData {
 
 export type MenuListData = ListApiBaseResponse<MenuData>
 
-export type AddMenuType = Partial<MenuData>
+export type AddMenuType = Omit<MenuData, 'id' | 'children' | 'createTime' | 'updateTime' | 'parentId'>
 
-export type EditMenuType = AddMenuType
+export type EditMenuType = Omit<MenuData, 'children' | 'createTime' | 'updateTime' | 'parentId'>
 
 export interface EditProps {
   editRow: MenuData

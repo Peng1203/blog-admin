@@ -1,5 +1,5 @@
 <template>
-  <Peng-Dialog
+  <PengDialog
     width="80%"
     height="80vh"
     :operationRow="false"
@@ -10,7 +10,7 @@
       height="calc(70vh - 45px)"
       v-model="articleInfo.content"
     />
-  </Peng-Dialog>
+  </PengDialog>
 </template>
 
 <script lang="ts" setup>

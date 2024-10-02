@@ -16,6 +16,8 @@ export interface RoleData<T = number, V = number> {
 
 export type RoleEntityData = RoleData<MenuData, PermissionData>
 
-export type AddEditRoleType = Partial<RoleData>
+export type AddRoleType = Omit<RoleData, 'id' | 'createTime' | 'updateTime'>
+
+export type EditRoleType = Omit<RoleData, 'createTime' | 'updateTime'>
 
 export type RoleListData = ListApiBaseResponse<RoleData>

@@ -16,8 +16,8 @@
             <!-- @click="addAuthDialogRef.addAuthPermissonDialogStatus = true" -->
 
             <Peng-Icon
-              name="icon-tags"
               class="mr5"
+              name="icon-tags"
             />
             添加标签
           </PengButton>
@@ -35,7 +35,7 @@
           </PengButton>
         </div>
 
-        <Peng-Search
+        <PengSearch
           placeholder="请输入标签名称"
           :loading="tableState.loading"
           v-model="tableState.queryStr"
@@ -44,35 +44,33 @@
       </div>
       <PengTable
         selection
-        operationColumn
-        :operationColumnBtns="['edit', 'delete']"
-        :isFilterShowColumn="false"
         :data="tableState.data"
-        :loading="tableState.loading"
-        :pagerInfo="tableState.pagerInfo"
-        :columns="tableState.tableColumns"
-        @columnSort="handleColumnChange"
-        @pageNumOrSizeChange="handlePageInfoChange"
+        :get-data="getTagTableData"
+        :total="tableState.total"
+        :columns="tableState.columns"
+        v-model:page="tableState.page"
+        v-model:pageSize="tableState.pageSize"
+        v-model:loading="tableState.loading"
         @editBtn="handleEditTag"
         @deleteBtn="handleDelTag"
-        @selectionChange="(value: TagData[]) => (tableState.selectVal = value)"
+        @selectionChange="value => (tableState.selectVal = value)"
       >
         <!-- 权限标识名称 权限标识代码 查询高亮 -->
-        <template #queryHighNight="{ row, prop }">
+        <template #queryHighNightSlot="{ row, prop }">
           <div class="flex-s-c">
             <span
               class="ml5"
-              v-html="queryStrHighlight(row[prop], tableState.queryStr)"
+              v-html="queryStrHighlight(row[prop] as string, tableState.queryStr)"
             />
           </div>
         </template>
 
         <!-- 标签图标 -->
-        <template #tagIcon="{ row, prop }">
+        <template #iconSlot="{ row }">
           <!-- type="class" -->
           <Peng-Icon
-            v-if="row[prop]"
-            :name="row[prop]"
+            v-if="row.icon"
+            :name="row.icon"
             size="30"
           />
           <span v-else>
@@ -98,102 +96,93 @@
 </template>
 
 <script setup lang="tsx" name="ArticleTag">
-import { defineAsyncComponent, ref, onMounted, reactive } from 'vue'
+import { defineAsyncComponent, ref, onMounted, useTemplateRef } from 'vue'
 import { queryStrHighlight } from '@/utils/queryStrHighlight'
-import { ColumnItem, PageInfo, PageChangeParams, ColumnChangeParams } from '@/components/Table'
 import { useTagApi } from '@/api/tag/index'
 import { TagData, TagListData } from './'
 import { useArticleInfo } from '@/stores/articleInfo'
 import { useNotificationMsg } from '@/hooks/useNotificationMsg'
+import { useTableState } from '@/hooks/useTableState'
+import { CodeEnum } from '@/constants'
 
 const { getTags, deleteTag, batchDeleteTag } = useTagApi()
 
 const articleInfoStore = useArticleInfo()
+const {
+  tableState, //
+  setData,
+  setTotal,
+  setColumns,
+  startLoading,
+  stopLoading,
+  getCommonParams,
+} = useTableState<TagData>()
+
+setColumns([
+  {
+    label: '标签名',
+    prop: 'tagName',
+    minWidth: 130,
+    tooltip: true,
+    fixed: 'left',
+    slotName: 'queryHighNightSlot',
+  },
+  {
+    label: '图标',
+    prop: 'icon',
+    minWidth: 100,
+    tooltip: true,
+    slotName: 'iconSlot',
+    align: 'center',
+  },
+  {
+    label: '文章数',
+    prop: 'articles',
+    width: 130,
+    align: 'center',
+  },
+  { label: '更新时间', prop: 'updateTime', minWidth: 200, sort: true },
+  { label: '创建时间', prop: 'createTime', minWidth: 200, sort: true },
+])
 
 // 表格参数
-const tableState = reactive({
-  selectVal: ref<TagData[]>([]),
-  loading: false,
-  data: ref<TagData[]>([]),
-  tableColumns: ref<ColumnItem<TagData>[]>([
-    {
-      label: '标签名',
-      prop: 'tagName',
-      minWidth: 130,
-      tooltip: true,
-      fixed: 'left',
-      slotName: 'queryHighNight',
-    },
-    {
-      label: '图标',
-      prop: 'icon',
-      minWidth: 100,
-      tooltip: true,
-      slotName: 'tagIcon',
-      align: 'center',
-    },
-    {
-      label: '文章数',
-      prop: 'articles',
-      width: 130,
-      align: 'center',
-    },
-    { label: '更新时间', prop: 'updateTime', minWidth: 200, sort: true },
-    { label: '创建时间', prop: 'createTime', minWidth: 200, sort: true },
-  ]),
-  column: '',
-  order: '',
-  queryStr: '',
+// const tableState = reactive({
+//   selectVal: ref<TagData[]>([]),
+//   loading: false,
+//   data: ref<TagData[]>([]),
+//   tableColumns: ref<ColumnItem<TagData>[]>(),
+//   column: '',
+//   order: '',
+//   queryStr: '',
 
-  // 分页器信息
-  pagerInfo: ref<PageInfo>({
-    page: 1,
-    pageSize: 50,
-    total: 0,
-  }),
-})
+//   // 分页器信息
+//   pagerInfo: ref<PageInfo>({
+//     page: 1,
+//     pageSize: 50,
+//     total: 0,
+//   }),
+// })
 
 // 获取标签表格数据
 const getTagTableData = async () => {
   try {
-    tableState.loading = true
-    const { pagerInfo, column, order, queryStr } = tableState
-    const params = {
-      queryStr,
-      column,
-      order,
-      page: pagerInfo.page,
-      pageSize: pagerInfo.pageSize,
-    }
+    startLoading()
+    const params = getCommonParams()
     const { data: res } = await getTags<TagListData>(params)
     const { code, data, success } = res
-    if (code !== 20000 || !success) return
-    tableState.data = data.list
-    tableState.pagerInfo.total = data.total
+    if (code !== CodeEnum.GET_SUCCESS || !success) return
+    setData(data.list)
+    setTotal(data.total)
   } catch (e) {
     console.log(e)
   } finally {
-    tableState.loading = false
+    stopLoading()
   }
-}
-
-// 分页器修改时触发
-const handlePageInfoChange = ({ page, pageSize }: PageChangeParams) => {
-  tableState.pagerInfo.page = page
-  tableState.pagerInfo.pageSize = pageSize
-  getTagTableData()
 }
 
 // 搜索
 const handleSearch = () => {
-  tableState.pagerInfo.page = 1
-  getTagTableData()
-}
-
-// 表格排序
-const handleColumnChange = ({ column, order }: ColumnChangeParams) => {
-  tableState.column = column
-  tableState.order = order
+  tableState.page = 1
   getTagTableData()
 }
 
@@ -213,7 +202,7 @@ const deleteTagById = async (id: number): Promise<boolean> => {
   try {
     const { data: res } = await deleteTag<string>(id)
     const { code, data, success } = res
-    if (code !== 20000 || !success) return false
+    if (code !== CodeEnum.DELETE_SUCCESS || !success) return false
     useNotificationMsg('成功', data)
     return true
   } catch (e) {
@@ -225,10 +214,10 @@ const deleteTagById = async (id: number): Promise<boolean> => {
 // 批量删除标签
 const deleteTags = async () => {
   try {
-    const ids = tableState.selectVal.map(tag => tag.id)
+    const ids = tableState.selectVal.map((tag: TagData) => tag.id)
     const { data: res } = await batchDeleteTag<string>(ids)
     const { code, data, success } = res
-    if (code !== 20000 || !success) return false
+    if (code !== CodeEnum.DELETE_SUCCESS || !success) return false
     useNotificationMsg('成功', data)
     return true
   } catch (e) {
@@ -245,7 +234,7 @@ const handleBatchDelete = async () => {
 // 处理编辑标签
 const editRow = ref()
 const EditTagDrawer = defineAsyncComponent(() => import('./components/EditTag.vue'))
-const editDrawerRef = ref<any>(null)
+const editDrawerRef = useTemplateRef('editDrawerRef')
 const handleEditTag = (row: any) => {
   editRow.value = JSON.parse(JSON.stringify(row))
   editDrawerRef.value.editDrawerStatus = true
@@ -253,12 +242,10 @@ const handleEditTag = (row: any) => {
 
 // 处理添加标签
 const AddTagDialog = defineAsyncComponent(() => import('./components/AddTag.vue'))
-const addDialogRef = ref<any>(null)
+const addDialogRef = useTemplateRef('addDialogRef')
 
 // 页面加载时
 onMounted(() => {
   getTagTableData()
 })
 </script>
-
-<style lang="scss" scoped></style>

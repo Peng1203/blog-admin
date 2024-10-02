@@ -42,7 +42,7 @@
         >
           <!-- @click-next-step="handleNextStep" -->
           <template #titleSlot>
-            <Peng-Form
+            <PengForm
               ref="titleFormRef"
               :formItems="formItemList"
               v-model="articleForm"
@@ -87,6 +87,7 @@ import { useUserInfo } from '@/stores/userInfo'
 import { useArticleApi } from '@/api'
 import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import QuickActions from './components/QuickActions.vue'
+import { CodeEnum } from '@/constants'
 
 const { addArticle, updateArticle, getArticleDetailById, uploadImage } = useArticleApi()
 
@@ -184,7 +185,7 @@ const handleAddArticle = async (actionType: 0 | 1) => {
       ['暂存失败!', '暂存成功!'],
       ['发布失败', '发布成功'],
     ][actionType]
-    if (res.code !== 20100) return useNotificationMsg('', errMsg, 'error')
+    if (res.code !== CodeEnum.POST_SUCCESS) return useNotificationMsg('', errMsg, 'error')
     useNotificationMsg('', successMsg)
     articleForm.id = res.data.id
     router.push({
@@ -209,7 +210,7 @@ const handleUpdateArticle = async () => {
 
     const { data: res } = await updateArticle<ArticleData>(author, id, params)
     const { code, message, success } = res
-    if (code !== 20001 && success) return
+    if (code !== CodeEnum.UPDATE_SUCCESS && success) return
     useNotificationMsg('更新成功', message)
   } catch (e) {
     console.log('e ------', e)
@@ -228,7 +229,7 @@ const getArticleDetail = async () => {
     loadingStatus.value = true
     const { data: res } = await getArticleDetailById<ArticleData>(userInfoStore.userInfos.id, Number(route.params.aid))
     const { code, success, data } = res
-    if (code !== 20000 && success) return
+    if (code !== CodeEnum.GET_SUCCESS && success) return
     const { tags, category, author, ...args } = data
     for (const key in articleForm) {
       articleForm[key] = args[key]
@@ -269,7 +270,7 @@ const handleUploadImage = async (file: File): Promise<string> => {
     formData.append('file', file)
     const { data: res } = await uploadImage(formData)
     const { data, code, success } = res
-    if (!success || code !== 20100) return
+    if (!success || code !== CodeEnum.POST_SUCCESS) return
     return data
   } catch (e) {
     console.log('e', e)

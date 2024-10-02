@@ -1,5 +1,5 @@
 <template>
-  <Peng-Dialog
+  <PengDialog
     operationRow
     title="修改密码"
     width="40%"
@@ -8,13 +8,13 @@
     @clickCancel="dialogState = false"
     @clickConfirm="handleChangePwd"
   >
-    <Peng-Form
+    <PengForm
       labelW="150px"
       ref="changePwdFormRef"
       v-model="changePwdState.dataForm"
       :formItems="changePwdState.formItems"
     />
-  </Peng-Dialog>
+  </PengDialog>
 </template>
 
 <script setup lang="ts">

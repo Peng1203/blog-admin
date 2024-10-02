@@ -17,7 +17,7 @@ type NotificationTypeEnum = 1 | 2
  */
 export const useNotificationMsg = (
   title: string,
-  message: string,
+  message: string = '',
   msgType: MsgTypeEnum = 'success',
   notificationType: NotificationTypeEnum = 1,
   duration: number = 3000

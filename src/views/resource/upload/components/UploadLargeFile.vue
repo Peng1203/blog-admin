@@ -4,7 +4,7 @@
     multiple
     :auto-upload="false"
     :show-file-list="false"
-    :on-change="(uploadInfo: UploadFile)=> handleFileChange(uploadInfo.raw, LARGE_FILE_MAX_SIZE_VALUE)"
+    :on-change="(uploadInfo: UploadFile) => handleFileChange(uploadInfo.raw)"
   >
     <!-- :on-change="test" -->
     <PengButton
@@ -15,17 +15,20 @@
       上传大文件
     </PengButton>
   </el-upload>
+  uploadRecordCatch -- {{ uploadRecordCatch }}
 </template>
 
 <script setup lang="ts">
 import { ElUpload, UploadFile } from 'element-plus'
-import { MB } from '@/constants'
+import { CodeEnum, MB } from '@/constants'
 import { ChunkItem, CreateFileDirData, FileData, StatusEnum } from '../types'
-import { useNotificationMsg } from '@/hooks/useNotificationMsg'
+// import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import { useResourceApi } from '@/api'
 import { getFileArrayBuffer } from '@/utils/file'
 import { useUserInfo } from '@/stores/userInfo'
 import { concurRequest } from '@/utils/concurRequest'
+import { computed } from 'vue'
+import { Local } from '@/utils/storage'
 
 const emits = defineEmits(['change'])
 
@@ -35,29 +38,34 @@ const userStore = useUserInfo()
 
 // 大上传文件大小
 const LARGE_FILE_MAX_SIZE_MB = 1024
-const LARGE_FILE_MAX_SIZE_VALUE = MB * LARGE_FILE_MAX_SIZE_MB
+
+const _LARGE_FILE_MAX_SIZE_VALUE = MB * LARGE_FILE_MAX_SIZE_MB
 
 // 切片大小
 const SLICE_SIZE = MB * 2
 
+// 文件
+const UPLOAD_RECORD_CATCH_LOCAL_KEY = 'uploadRecords'
+const uploadRecordCatch = computed(() => Local.get(UPLOAD_RECORD_CATCH_LOCAL_KEY) || [])
+console.log('uploadRecordCatch ------', uploadRecordCatch.value)
 // 选中大文件
-const handleFileChange = async (file: File, maxFileSize = LARGE_FILE_MAX_SIZE_VALUE) => {
-  let chunckArr = []
-  let isDone = false
-  const reader = file.stream().getReader()
+const handleFileChange = async (file: File) => {
+  // , maxFileSize = LARGE_FILE_MAX_SIZE_VALUE
 
-  while (!isDone) {
-    const { value, done } = await reader.read()
-    chunckArr.push(value)
-    isDone = done
-  }
+  // let chunckArr = []
+  // let isDone = false
+  // const reader = file.stream().getReader()
+  // while (!isDone) {
+  //   const { value, done } = await reader.read()
+  //   chunckArr.push(value)
+  //   isDone = done
+  // }
 
   const { name, size, type } = file
   // // type 为空时 file 为目录
   // if (!type) return
 
-  // prettier-ignore
-  if (size > maxFileSize) return useNotificationMsg('', `请选择小于${maxFileSize / MB}MB的文件`, 'warning', 2);
+  // if (size > maxFileSize) return useNotificationMsg('', `请选择小于${maxFileSize / MB}MB的文件`, 'warning', 2);
 
   const fileItem: FileData = {
     url: '',
@@ -70,6 +78,7 @@ const handleFileChange = async (file: File, maxFileSize = LARGE_FILE_MAX_SIZE_VA
     status: StatusEnum.PENDING,
     isCompress: type.includes('image') && !type.includes('gif'),
     cancelList: [],
+    fileHash: '',
   }
   emits('change', fileItem)
 }
@@ -91,6 +100,7 @@ const handleUploadLargeFile = async (fileItem: FileData) => {
       }
     }
 
+    // 上传文件前 先判断local中是否有存储和当前选择上传文件信息相似的文件 存在则进对hash进行赋值 用于断点续传
     const existingChunks = await handleCreateFileDir(fileItem)
     const chunks = createFileChunks(fileData)
 
@@ -149,7 +159,7 @@ const handleCreateFileDir = async (fileItem: FileData): Promise<number[]> => {
     }
     const { data: res } = await createLargeFileDir<CreateFileDirData>(params)
     const { code, success, data } = res
-    if (code !== 20100 || !success) return
+    if (code !== CodeEnum.POST_SUCCESS || !success) return
     if (data.existingChunks) return data.existingChunks.map(chunk => Number(chunk))
     return []
   } catch (e) {
@@ -171,7 +181,7 @@ const handleUploadChunk = async (params: {
 
     const { data: res } = await uploadFileChunk({ index, ...args, uploadId }, formData, fileItem.cancelList)
     const { code, success } = res
-    if (code !== 20000 || !success) return false
+    if (code !== CodeEnum.PATCH_SUCCESS || !success) return false
     return true
   } catch (e) {
     throw new Error(e)
@@ -188,7 +198,7 @@ const handleMergeFileChunks = async (fileItem: FileData): Promise<string> => {
     }
     const { data: res } = await mergeFileChunks<string>(params)
     const { code, success, data } = res
-    if (code !== 20100 || !success) return
+    if (code !== CodeEnum.POST_SUCCESS || !success) return
     return data
   } catch (e) {
     console.log('e', e)

@@ -119,6 +119,12 @@ setColumns([
     width: 130,
     align: 'center',
   },
+  {
+    label: '描述',
+    prop: 'description',
+    minWidth: 300,
+    align: 'center',
+  },
   { label: '更新时间', prop: 'updateTime', minWidth: 200, sort: 'custom' },
   { label: '创建时间', prop: 'createTime', minWidth: 200, sort: 'custom' },
 ])
@@ -157,7 +163,7 @@ const deleteCategoryById = async (id: number): Promise<boolean> => {
   try {
     const { data: res } = await deleteCategory<string>(id)
     const { code, data, success } = res
-    if (code !== 20000 || !success) return false
+    if (code !== CodeEnum.DELETE_SUCCESS || !success) return false
     useNotificationMsg('成功', data)
     return true
   } catch (e) {
@@ -171,7 +177,7 @@ const deleteCategorys = async () => {
     const ids = tableState.selectVal.map(({ id }) => id)
     const { data: res } = await batchDelete<string>(ids)
     const { code, data, success } = res
-    if (code !== 20000 || !success) return false
+    if (code !== CodeEnum.DELETE_SUCCESS || !success) return false
     useNotificationMsg('成功', data)
     return true
   } catch (e) {
@@ -203,10 +209,7 @@ const handleUpdate = () => {
   articleInfoStore.getCategoryData(true)
 }
 
-// 页面加载时
 onMounted(() => {
-  // getCategoryTableData()
+  getCategoryTableData()
 })
 </script>
-
-<style lang="scss" scoped></style>

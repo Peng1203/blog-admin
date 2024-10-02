@@ -11,7 +11,7 @@
       :formItems="editFormState.formItemList"
       v-model="editFormState.data"
     >
-      <template #iconSlot="{ prop }">
+      <template #iconSlot>
         <IconSelector
           :prepend="preIcon"
           v-model="editFormState.data.icon"
@@ -24,10 +24,11 @@
 <script lang="ts" setup>
 import { ref, reactive, watch, defineAsyncComponent, computed } from 'vue'
 import { useTagApi } from '@/api/tag/index'
-import { ElMessage } from 'element-plus'
 import Form, { FormItem } from '@/components/Form'
 import Drawer from '@/components/Drawer'
 import { TagData, EditProps } from '../'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
+import { CodeEnum } from '@/constants'
 
 const IconSelector = defineAsyncComponent(() => import('@/components/iconSelector/index.vue'))
 const { updataTag } = useTagApi()
@@ -91,9 +92,9 @@ const saveEditTag = async (): Promise<boolean> => {
   try {
     const { id, tagName, icon } = editFormState.data
     const { data: res } = await updataTag<string>(id, { tagName, icon })
-    const { code, message, data, success } = res
-    if (code !== 20001 || !success) return false
-    ElMessage.success(data)
+    const { code, data, success } = res
+    if (code !== CodeEnum.UPDATE_SUCCESS || !success) return false
+    useNotificationMsg(data, '')
     return true
   } catch (e) {
     console.log(e)

@@ -25,4 +25,6 @@ export interface EditProps extends AddProps {
   editRow: UserData
 }
 
-export type AddEditUserType = Partial<UserData & { roleIds: number[] }>
+export type AddUserType = Omit<UserData, 'id' | 'roles' | 'createTime' | 'updateTime'> & { roleIds: number[] }
+export type EditUserType = Omit<UserData, 'createTime' | 'updateTime'> & { roleIds: number[] }
+//

@@ -158,7 +158,7 @@
             </template>
 
             <template #default>
-              <Peng-Form
+              <PengForm
                 class="mt35 mb35"
                 size="default"
                 :gutter="35"
@@ -178,7 +178,7 @@
                     更新个人信息
                   </PengButton>
                 </template>
-              </Peng-Form>
+              </PengForm>
             </template>
           </el-skeleton>
 

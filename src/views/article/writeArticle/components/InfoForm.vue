@@ -1,5 +1,5 @@
 <template>
-  <Peng-Form
+  <PengForm
     ref="infoFormRef"
     labelW="200"
     v-model="articleForm"
@@ -13,7 +13,7 @@
     <template #tagSlot="{ prop }">
       <TagSelect v-model="articleForm[prop]" />
     </template>
-  </Peng-Form>
+  </PengForm>
 </template>
 
 <script setup lang="ts">

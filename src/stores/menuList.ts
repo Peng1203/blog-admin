@@ -1,4 +1,5 @@
 import { useMenuApi } from '@/api'
+import { CodeEnum } from '@/constants'
 import { MenuData, MenuListData } from '@/views/auth/menu'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -18,7 +19,7 @@ export const useMenuInfo = defineStore('menuInfo', {
         order: '',
       })
       const { code, success, data } = res
-      if (code !== 20000 || !success) return
+      if (code !== CodeEnum.GET_SUCCESS || !success) return
       this.menuList = data.list
     },
   },

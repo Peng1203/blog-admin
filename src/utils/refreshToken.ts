@@ -1,5 +1,6 @@
 import { useAuthApi } from '@/api'
 import { Local, Session } from './storage'
+import { CodeEnum } from '@/constants'
 
 const { refreshToken } = useAuthApi()
 
@@ -13,11 +14,12 @@ let promise: null | Promise<any> = null
  */
 export async function handleRefreshACToken(): Promise<boolean> {
   if (promise) return promise
+  // eslint-disable-next-line no-async-promise-executor
   promise = new Promise(async resolve => {
     try {
       const { data: res } = await refreshToken()
       const { code, success, data } = res
-      if (code !== 20000 || !success) return resolve(false)
+      if (code !== CodeEnum.GET_SUCCESS || !success) return resolve(false)
       Local.setRFToken(data.refresh_token)
       Session.setACToken(data.access_token)
       resolve(true)

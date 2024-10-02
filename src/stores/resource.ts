@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { useResourceApi } from '@/api'
 import type { ResourceListData, ResourceData } from '@/views/resource/list'
 import { useNotificationMsg } from '@/hooks/useNotificationMsg'
+import { CodeEnum } from '@/constants'
 
 const { getResourceList, deleteResourceFile } = useResourceApi()
 
@@ -15,7 +16,7 @@ export const useResourceStore = defineStore('resource', {
         if (this.list.length && !refresh) return
         const { data: res } = await getResourceList<ResourceListData>()
         const { code, success, data } = res
-        if (code !== 20000 || !success) return
+        if (code !== CodeEnum.GET_SUCCESS || !success) return
         this.list = data
       } catch (e) {
         console.log('e', e)
@@ -25,7 +26,7 @@ export const useResourceStore = defineStore('resource', {
       try {
         const { data: res } = await deleteResourceFile(fileName)
         const { data, code, success } = res
-        if (code !== 20000 || !success) return
+        if (code !== CodeEnum.DELETE_SUCCESS || !success) return
         notification && useNotificationMsg('', data)
         const delIndex = this.list.findIndex(item => item.name === fileName)
         if (delIndex === -1) return

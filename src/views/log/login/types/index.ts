@@ -15,6 +15,9 @@ export interface LoginAuditLogData {
   loginTime: string
   logoutTime: string
   ip: string
+
+  // 自定义扩展属性
+  ipInfo?: string
 }
 
 export enum RequestMethodEnum {

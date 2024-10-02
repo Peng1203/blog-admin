@@ -29,6 +29,7 @@ import { useTagApi } from '@/api/tag/index'
 import Dialog from '@/components/Dialog'
 import Form, { FormItem } from '@/components/Form'
 import { AddTagType, TagData } from '../types'
+import { CodeEnum } from '@/constants'
 
 const IconSelector = defineAsyncComponent(() => import('@/components/iconSelector/index.vue'))
 
@@ -83,7 +84,7 @@ const addNewTag = async (): Promise<boolean> => {
     const params = { tagName, icon }
     const { data: res } = await addTag<TagData>(params)
     const { code, message, success } = res
-    if (code !== 20100 || !success) return false
+    if (code !== CodeEnum.POST_SUCCESS || !success) return false
     ElMessage.success(message)
     return true
   } catch (e) {

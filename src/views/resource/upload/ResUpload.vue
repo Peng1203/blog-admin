@@ -289,7 +289,7 @@ import { ElUpload, UploadFile } from 'element-plus'
 import { useResourceApi } from '@/api'
 import { blobToFile, compressImage, formatByteSize, imageToBase64 } from '@/utils/file'
 import { api as viewerApi } from 'v-viewer'
-import { BroadcastChannelEnum, MB } from '@/constants'
+import { BroadcastChannelEnum, CodeEnum, MB } from '@/constants'
 import UploadLargeFile from './components/UploadLargeFile.vue'
 import { watch } from 'vue'
 import { useResourceStore } from '@/stores/resource'
@@ -410,7 +410,7 @@ const uploadFile = async (fileItem: FileData) => {
     )
     // 当 res 响应时 onUploadProgress 事件 回调函数将不会再执行 但可能会触发1~2次 res 响应之前 已经触发的回调
     const { success, code, data } = res
-    if (code !== 20100 || !success) return
+    if (code !== CodeEnum.POST_SUCCESS || !success) return
     fileItem.uploadProcess = 1
     fileItem.status = StatusEnum.SUCCESS
     fileItem.url = data

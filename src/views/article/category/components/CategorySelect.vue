@@ -21,6 +21,7 @@ import { useCategoryApi } from '@/api'
 import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import { storeToRefs } from 'pinia'
 import { CategoryData } from '../types'
+import { CodeEnum } from '@/constants'
 
 // const { getCategoryData, categoryOption } = useArticleInfo();
 const store = useArticleInfo()
@@ -69,7 +70,7 @@ const addNewCategory = async (categoryName: string): Promise<boolean> => {
   try {
     const { data: res } = await addCategory<CategoryData>({ categoryName })
     const { code, message, success, data } = res
-    if (code !== 20100 || !success) return false
+    if (code !== CodeEnum.POST_SUCCESS || !success) return false
     useNotificationMsg('成功', message)
     newCategory.value = data
     return true

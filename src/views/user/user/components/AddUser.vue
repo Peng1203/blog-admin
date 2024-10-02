@@ -1,17 +1,17 @@
 <template>
-  <Peng-Dialog
+  <PengDialog
     title="添加用户"
     v-model="addUserDialogStatus"
     @clickConfirm="handleAdd"
     @dialogClose="handleDialogClose"
   >
-    <Peng-Form
+    <PengForm
       ref="addFormRef"
       :labelW="'120px'"
       v-model="formData"
       :formItems="addUserState.formItemList"
     />
-  </Peng-Dialog>
+  </PengDialog>
 </template>
 
 <script lang="ts" setup>
@@ -20,10 +20,11 @@ import { useUserApi } from '@/api/user'
 import { UploadRawFile } from 'element-plus'
 import { FormItem } from '@/components/Form'
 import { passwordStrengthLevelDetection } from '@/utils/pwd'
-import { UserData, AddProps, AddEditUserType } from '../types'
+import { UserData, AddProps, AddUserType } from '../types'
 import { UploadRequestOptions } from 'element-plus'
 import { passwordEncryption } from '@/utils/encryption'
 import { useNotificationMsg } from '@/hooks/useNotificationMsg'
+import { CodeEnum } from '@/constants'
 
 const props = defineProps<AddProps>()
 
@@ -46,7 +47,7 @@ const passwordStrengthDetection = (rule: any, value: any, callback: any): any =>
 const addUserDialogStatus = ref<boolean>(false)
 
 // 表单数据
-const formData = ref<AddEditUserType>({
+const formData = ref<AddUserType>({
   userName: '',
   nickName: '',
   password: '',
@@ -57,7 +58,7 @@ const formData = ref<AddEditUserType>({
 })
 
 const addUserState = reactive({
-  formItemList: ref<FormItem<AddEditUserType>[]>([
+  formItemList: ref<FormItem<AddUserType>[]>([
     {
       type: 'input',
       label: '用户名',
@@ -163,7 +164,7 @@ const addNewUser = async (): Promise<boolean> => {
     }
     const { data: res } = await addUser<UserData>(params as any)
     const { code, message, success } = res
-    if (code !== 20100 || !success) return false
+    if (code !== CodeEnum.POST_SUCCESS || !success) return false
     useNotificationMsg('', message)
     return true
   } catch (e) {

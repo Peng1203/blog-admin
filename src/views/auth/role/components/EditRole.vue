@@ -34,15 +34,17 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive } from 'vue'
 import { useRoleApi } from '@/api/role/index'
-import { ElMessage } from 'element-plus'
-import { AddEditRoleType, RoleEntityData } from '../types'
+import { EditRoleType, RoleEntityData } from '../types'
 import Drawer from '@/components/Drawer'
 import Form, { FormItem } from '@/components/Form'
 import { MenuTree } from '@/views/auth/menu'
 import { PermissionTree } from '@/views/auth/authPermission'
 import { usePermissionInfo } from '@/stores/permissionList'
+import { CodeEnum } from '@/constants'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
+import { useFormWatcher } from '@/hooks/useFormWatcher'
 
 const { updateRole } = useRoleApi()
 
@@ -61,16 +63,14 @@ const permissionStore = usePermissionInfo()
 const editDrawerStatus = ref<boolean>(false)
 
 const editFormState = reactive({
-  data: ref<AddEditRoleType>({
+  data: ref<EditRoleType>({
     id: 0,
     roleName: '',
     menus: [],
     permissions: [],
-    updateTime: '',
-    createTime: '',
     description: '',
   }),
-  formItemList: ref<FormItem<AddEditRoleType>[]>([
+  formItemList: ref<FormItem<EditRoleType>[]>([
     {
       type: 'input',
       label: '角色名称',
@@ -117,16 +117,16 @@ const handleSaveEdit = async () => {
 // 保存修改数据
 const saveEditRole = async (): Promise<boolean> => {
   try {
-    const { id, permissions: pIds, createTime, updateTime, ...args } = editFormState.data
+    const { id, permissions: pIds, ...args } = editFormState.data
     const permissions = pIds?.filter(id => !permissionStore.permissionList.find(p => p.id === id))
     const params = {
       ...args,
       permissions,
     }
     const { data: res } = await updateRole<string>(id!, params)
-    const { code, data, message, success } = res
-    if (code !== 20001 || !success) return false
-    ElMessage.success(data)
+    const { code, data, success } = res
+    if (code !== CodeEnum.UPDATE_SUCCESS || !success) return false
+    useNotificationMsg(data, '')
     return true
   } catch (e) {
     console.log(e)
@@ -134,14 +134,26 @@ const saveEditRole = async (): Promise<boolean> => {
   }
 }
 
-watch(
+// watch(
+//   () => props.editRow,
+//   val => {
+//     if (!val) return
+//     for (const key in editFormState.data) {
+//       editFormState.data[key] = val[key]
+//     }
+
+//     editFormState.data.permissions = val.permissions.map(({ id }) => id)
+//     editFormState.data.menus = val.menus.map(({ id }) => id)
+//   },
+//   { deep: true }
+// )
+useFormWatcher(
   () => props.editRow,
+  editFormState.data,
   val => {
-    editFormState.data = JSON.parse(JSON.stringify(val))
     editFormState.data.permissions = val.permissions.map(({ id }) => id)
     editFormState.data.menus = val.menus.map(({ id }) => id)
-  },
-  { deep: true }
+  }
 )
 
 defineExpose({ editDrawerStatus })

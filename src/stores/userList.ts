@@ -2,6 +2,7 @@ import { UserData, UserListData } from '@/views/user/user'
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useUserApi } from '@/api'
+import { CodeEnum } from '@/constants'
 
 const { getUsers } = useUserApi()
 
@@ -25,7 +26,7 @@ export const useUsersInfo = defineStore('usersInfo', {
           order: '',
         })
         const { code, success, data } = res
-        if (code !== 20000 || !success) return
+        if (code !== CodeEnum.GET_SUCCESS || !success) return
         this.userList = data.list
         this.userOption = data.list.map(({ userName, nickName, id }) => ({
           label: nickName || userName,

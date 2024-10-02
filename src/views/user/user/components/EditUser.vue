@@ -4,7 +4,7 @@
     v-model="editDrawerStatus"
     @clickConfirm="handleSaveEdit"
   >
-    <Form
+    <PengForm
       ref="editFormRef"
       label-p="top"
       :labelW="80"
@@ -16,11 +16,12 @@
 
 <script lang="ts" setup>
 import { ref, reactive, watch } from 'vue'
-import { ElMessage } from 'element-plus'
 import { useUserApi } from '@/api/user/index'
-import Form, { FormItem } from '@/components/Form'
 import Drawer from '@/components/Drawer'
-import { EditProps, AddEditUserType, UserData } from '../types'
+import { EditProps, UserData, EditUserType } from '../types'
+import { CodeEnum } from '@/constants'
+import { useFormWatcher, useNotificationMsg } from '@/hooks'
+import { FormItem } from '@/components/Form'
 
 const { updateUser } = useUserApi()
 
@@ -32,9 +33,11 @@ const emits = defineEmits(['updateList'])
 // 抽屉状态
 const editDrawerStatus = ref<boolean>(false)
 
-const formData = ref<AddEditUserType>({
+const formData = ref<EditUserType>({
+  id: 0,
   userName: '',
   nickName: '',
+  roles: [],
   roleIds: [],
   email: '',
   userEnabled: 1,
@@ -43,7 +46,7 @@ const formData = ref<AddEditUserType>({
 
 // 编辑状态信息
 const editFormState = reactive({
-  formItemList: ref<FormItem<AddEditUserType>[]>([
+  formItemList: ref<FormItem<EditUserType>[]>([
     {
       type: 'input',
       label: '用户名',
@@ -97,7 +100,7 @@ const editFormState = reactive({
 // 保存编辑信息
 const saveEditUserInfo = async (): Promise<boolean> => {
   try {
-    const { userName, nickName, userAvatar, userEnabled, roleIds, email } = formData.value
+    const { id, userName, nickName, userAvatar, userEnabled, roleIds, email } = formData.value
     const params = {
       userName,
       nickName,
@@ -106,11 +109,11 @@ const saveEditUserInfo = async (): Promise<boolean> => {
       roleIds,
       email: email === '' ? null : email,
     }
-    const { data: res } = await updateUser<UserData>(props.editRow.id, params as any)
+    const { data: res } = await updateUser<UserData>(id, params)
     const { code, message, success } = res
-    if (code !== 20001 || !success) return false
+    if (code !== CodeEnum.UPDATE_SUCCESS || !success) return false
 
-    ElMessage.success(message)
+    useNotificationMsg(message, '')
     return true
   } catch (e) {
     // ElMessage.error('更新失败')
@@ -129,10 +132,10 @@ const handleSaveEdit = async () => {
 
 const editFormRef = ref<RefType>(null)
 
-watch(
+useFormWatcher(
   () => props.editRow,
-  val => {
-    formData.value = JSON.parse(JSON.stringify(val))
+  formData,
+  () => {
     formData.value.roleIds = formData.value.roles?.map(role => role.id)
   }
 )

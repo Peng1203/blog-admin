@@ -8,7 +8,7 @@
         <div>
           <!-- bindValue="name" -->
           <UserSelect
-            v-model="tableState.userId"
+            v-model="userId"
             @change="getDataList"
           />
 
@@ -16,7 +16,7 @@
             ml10
             size="default"
             type="danger"
-            :disabled="!tableState.selectVal.length"
+            :disabled="!!!tableState.selectVal.length"
             @click="handleDelete({} as any, 2)"
           >
             <el-icon>
@@ -28,24 +28,26 @@
 
         <DatePicker
           :type="2"
-          v-model="tableState.timeVal"
+          v-model="timeVal"
           @change="getDataList"
         />
       </div>
-      <Peng-Table
-        isSelection
-        operationColumn
+      <PengTable
+        selection
+        filterColumn
         isFilterShowColumn
+        :operationColumnWidth="120"
         :stripe="false"
         :data="tableState.data"
-        :loading="tableState.loading"
-        :operationColumnWidth="100"
+        :get-data="getDataList"
+        :total="tableState.total"
+        :columns="tableState.columns"
+        v-model:page="tableState.page"
+        v-model:pageSize="tableState.pageSize"
+        v-model:loading="tableState.loading"
         :row-class-name="tableRowStatus"
-        :pagerInfo="tableState.pagerInfo"
-        :columns="tableState.tableColumns"
         :operationColumnBtns="['delete']"
         @deleteBtn="row => handleDelete(row, 1)"
-        @pageNumOrSizeChange="handlePagerChange"
         @selectionChange="(val: any) => tableState.selectVal = val.map((item: any)=> item.id)"
       >
         <!-- 请求方式 -->
@@ -78,7 +80,7 @@
           </el-tag>
         </template>
 
-        <template #requestTimeSlot="{ row, prop }">
+        <template #loginTimeSlot="{ row, prop }">
           <el-tooltip
             effect="dark"
             placement="top-start"
@@ -110,155 +112,139 @@
             </template>
           </el-popover>
         </template>
-      </Peng-Table>
+      </PengTable>
     </el-card>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useLoginAuditApi, useCommonApi } from '@/api'
 import { getFromNow } from '@/utils/date'
-import { ColumnItem, PageChangeParams, PageInfo } from '@/components/Table'
 import DatePicker from '@/components/Date'
 import { LoginAuditLogData, LoginAuditLogListData } from './types'
 import { resourceMethodOptions } from '@/views/auth/authPermission'
 import UserSelect from '@/views/user/user/components/UserSelect.vue'
 import { useNotificationMsg } from '@/hooks/useNotificationMsg'
+import { useTableState } from '@/hooks'
+import { CodeEnum } from '@/constants'
 
 const { getLoginAuditLogs, deleteById, deletes } = useLoginAuditApi()
 const { getIPInfo } = useCommonApi()
 
-const tableState = reactive({
-  selectVal: ref<number[]>([]),
-  loading: false,
-  data: <LoginAuditLogData[]>[],
-  tableColumns: ref<ColumnItem<LoginAuditLogData>[]>([
-    // {
-    //   label: 'ID',
-    //   prop: 'id',
-    //   minWidth: 100,
-    // },
-    {
-      label: '用户名',
-      prop: 'userName',
-      minWidth: 130,
-      tooltip: true,
-    },
-    {
-      label: '设备',
-      prop: 'device',
-      minWidth: 100,
-    },
-    {
-      label: '状态码',
-      prop: 'loginStatus',
-      minWidth: 100,
-      formatter: (row: LoginAuditLogData) => {
-        if (row.loginStatus === 1) return '成功'
-        return row.loginStatus
-      },
-    },
-    {
-      label: '失败原因',
-      prop: 'failureReason',
-      minWidth: 150,
-    },
-    {
-      label: '登录时长',
-      prop: 'loginDuration',
-      minWidth: 120,
-    },
-    {
-      label: '登录地点',
-      prop: 'location',
-      minWidth: 120,
-      tooltip: true,
-    },
-    {
-      label: '登录方式',
-      prop: 'loginMethod',
-      minWidth: 120,
-      tooltip: true,
-    },
-    {
-      label: '浏览器',
-      prop: 'browser',
-      width: 130,
-      tooltip: true,
-    },
-    {
-      label: '操作系统',
-      prop: 'os',
-      width: 130,
-      tooltip: true,
-    },
+const {
+  tableState, //
+  setData,
+  setTotal,
+  setColumns,
+  startLoading,
+  stopLoading,
+  getCommonParams,
+} = useTableState<LoginAuditLogData>()
+const timeVal = ref<string[]>([])
+const userId = ref<number>(0)
+tableState.pageSize = 30
 
-    {
-      label: '用户代理',
-      prop: 'userAgent',
-      minWidth: 100,
-      tooltip: true,
+setColumns([
+  {
+    label: '用户名',
+    prop: 'userName',
+    minWidth: 130,
+    tooltip: true,
+  },
+  {
+    label: '设备',
+    prop: 'device',
+    minWidth: 100,
+  },
+  {
+    label: '状态码',
+    prop: 'loginStatus',
+    minWidth: 100,
+    formatter: (row: any) => {
+      if (row.loginStatus === 1) return '成功'
+      return row.loginStatus
     },
-    {
-      label: 'IP',
-      prop: 'ip',
-      minWidth: 130,
-    },
-    {
-      label: '用户ID',
-      prop: 'userId',
-      minWidth: 100,
-    },
-    {
-      label: '登录时间',
-      prop: 'loginTime',
-      minWidth: 100,
-      slotName: 'requestTimeSlot',
-    },
-  ]),
-  timeVal: <string[]>[],
-  column: '',
-  order: '',
-  queryStr: '',
-  userId: 0,
-  pagerInfo: ref<PageInfo>({
-    page: 1,
-    pageSize: 50,
-    total: 0,
-  }),
-})
+  },
+  {
+    label: '失败原因',
+    prop: 'failureReason',
+    minWidth: 150,
+  },
+  {
+    label: '登录时长',
+    prop: 'loginDuration',
+    minWidth: 120,
+  },
+  {
+    label: '登录地点',
+    prop: 'location',
+    minWidth: 120,
+    tooltip: true,
+  },
+  {
+    label: '登录方式',
+    prop: 'loginMethod',
+    minWidth: 120,
+    tooltip: true,
+  },
+  {
+    label: '浏览器',
+    prop: 'browser',
+    width: 130,
+    tooltip: true,
+  },
+  {
+    label: '操作系统',
+    prop: 'os',
+    width: 130,
+    tooltip: true,
+  },
+
+  {
+    label: '用户代理',
+    prop: 'userAgent',
+    minWidth: 100,
+    tooltip: true,
+  },
+  {
+    label: 'IP',
+    prop: 'ip',
+    minWidth: 130,
+  },
+  {
+    label: '用户ID',
+    prop: 'userId',
+    minWidth: 100,
+  },
+  {
+    label: '登录时间',
+    prop: 'loginTime',
+    minWidth: 100,
+    slotName: 'loginTimeSlot',
+  },
+])
 
 const getDataList = async () => {
   try {
-    tableState.loading = true
-    const [startTime, endTime] = tableState.timeVal
+    startLoading()
+    const [startTime, endTime] = timeVal.value
     const params = {
-      queryStr: tableState.queryStr,
-      column: tableState.column,
-      order: tableState.order,
-      page: tableState.pagerInfo.page,
-      pageSize: tableState.pagerInfo.pageSize,
-      userId: tableState.userId,
       startTime,
       endTime,
+      userId: userId.value,
+      ...getCommonParams(),
     }
     const { data: res } = await getLoginAuditLogs<LoginAuditLogListData>(params)
     const { code, data, success } = res
-    if (code !== 20000 || !success) return
-    tableState.data = data.list
-    tableState.pagerInfo.total = data.total
+    if (code !== CodeEnum.GET_SUCCESS || !success) return
+    setData(data.list)
+    setTotal(data.total)
   } catch (e) {
     console.log('e', e)
   } finally {
-    tableState.loading = false
+    stopLoading()
   }
-}
-
-const handlePagerChange = ({ page, pageSize }: PageChangeParams) => {
-  tableState.pagerInfo.page = page
-  tableState.pagerInfo.pageSize = pageSize
-  getDataList()
 }
 
 const handleMethodTagColor = (value: any) => {
@@ -284,7 +270,7 @@ const deleteAudit = async (id: number) => {
     const { data: res } = await deleteById(id)
     const { code, message, data, success } = res
 
-    if (code !== 20000 || !success) return false
+    if (code !== CodeEnum.DELETE_SUCCESS || !success) return false
     useNotificationMsg(message, data)
     return true
   } catch (e) {
@@ -297,7 +283,7 @@ const batchDelete = async () => {
   try {
     const { data: res } = await deletes(tableState.selectVal)
     const { code, message, data, success } = res
-    if (code !== 20000 || !success) return false
+    if (code !== CodeEnum.DELETE_SUCCESS || !success) return false
     useNotificationMsg(message, data)
     return true
   } catch (e) {
@@ -308,18 +294,19 @@ const batchDelete = async () => {
 
 const handleParseIpInfo = async row => {
   if (row.ipInfo) return
-  const parseResult = await parseIP(row.ip)
+  const parseResult = await getIPParseInfo(row.ip)
   row.ipInfo = parseResult.region
 }
 
-const parseIP = async (ip: string) => {
+const getIPParseInfo = async (ip: string) => {
   try {
     const { data: res } = await getIPInfo(ip)
     const { code, data, success } = res
-    if (code !== 20000 || !success) return
+    if (code !== CodeEnum.GET_SUCCESS || !success) return
     return data
   } catch (e) {
     console.log('e', e)
+    return { region: '' }
   }
 }
 

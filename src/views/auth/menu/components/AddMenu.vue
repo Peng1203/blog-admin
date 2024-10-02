@@ -11,7 +11,7 @@
       :formItems="addMenuState.formItemList"
       v-model="addMenuState.data"
     >
-      <template #iconSlot="{ prop }">
+      <template #iconSlot>
         <IconSelector
           :prepend="preIcon"
           v-model="addMenuState.data.menuIcon"
@@ -23,11 +23,12 @@
 
 <script lang="ts" setup>
 import { ref, reactive, PropType, computed, defineAsyncComponent } from 'vue'
-import { ElMessage } from 'element-plus'
 import { useMenuApi } from '@/api/menu/index'
 import Dialog from '@/components/Dialog'
 import Form, { FormItem } from '@/components/Form'
 import { MenuData, AddMenuType } from '../types'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
+import { CodeEnum } from '@/constants'
 
 const IconSelector = defineAsyncComponent(() => import('@/components/iconSelector/index.vue'))
 
@@ -54,7 +55,6 @@ const addMenuState = reactive({
     menuUri: '',
     menuPath: '',
     menuIcon: '',
-    parentId: 0,
     orderNum: 0,
     isKeepalive: 0,
     isHidden: 0,
@@ -137,21 +137,16 @@ const handleAdd = async () => {
 
 const addNewMenu = async (): Promise<boolean> => {
   try {
-    const { menuName, menuUri, menuPath, menuIcon, parentId, orderNum, isKeepalive, isHidden } = addMenuState.data
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+
     const params = {
-      menuName,
-      menuUri,
-      menuPath,
-      menuIcon,
+      ...addMenuState.data,
       parentId: props.isAddChildren ? props.parentRow.id : 0,
-      orderNum,
-      isKeepalive,
-      isHidden,
-    } as any
+    }
     const { data: res } = await addMenu<MenuData>(params)
     const { code, success, message } = res
-    if (code !== 20100 || !success) return false
-    ElMessage.success(message)
+    if (code !== CodeEnum.POST_SUCCESS || !success) return false
+    useNotificationMsg(message, '')
     return true
   } catch (error) {
     console.log('error ------', error)
@@ -179,9 +174,6 @@ const resetAddForm = () => {
   addMenuState.data.menuPath = ''
   addMenuState.data.menuUri = ''
   addMenuState.data.menuIcon = ''
-  addMenuState.data.parentId = 0
-  addMenuState.data.updateTime = ''
-  addMenuState.data.createTime = ''
   addMenuState.data.isKeepalive = 0
   addMenuState.data.isHidden = 0
 }

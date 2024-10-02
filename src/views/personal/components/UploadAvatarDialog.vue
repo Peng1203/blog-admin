@@ -1,5 +1,5 @@
 <template>
-  <Peng-Dialog
+  <PengDialog
     title="上传头像"
     v-model="dialogState"
     confirm-btn-text="上传"
@@ -26,7 +26,7 @@
     >
       <PengButton type="primary">选择图片</PengButton>
     </el-upload>
-  </Peng-Dialog>
+  </PengDialog>
 </template>
 
 <script setup lang="ts">
@@ -36,6 +36,7 @@ import { ElUpload, UploadFile, UploadInstance, UploadProps, UploadRawFile, genFi
 import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import { useUserInfo } from '@/stores/userInfo'
 import { useUserApi } from '@/api'
+import { CodeEnum } from '@/constants'
 
 const { userInfos } = useUserInfo()
 const { uploadUserAvatar } = useUserApi()
@@ -56,7 +57,7 @@ const handleUpload = async () => {
 
     const { data: res } = await uploadUserAvatar(userInfos.id, formData)
     const { data, message, code, success } = res
-    if (!success || code !== 20100) return
+    if (!success || code !== CodeEnum.POST_SUCCESS) return
     useNotificationMsg('操作成功', message)
     updateAvater(data)
     dialogState.value = false

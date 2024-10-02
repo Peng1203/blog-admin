@@ -259,7 +259,7 @@ const handleDelete = (row: ResourceListItem) => {
 const handleRefreshList = () => getDataList(true)
 
 const handleBatchDel = async () => {
-  const params = tableState.selectVal.map(item => item.name)
+  const params = tableState.selectVal.map((item: ResourceListItem) => item.name)
   await concurRequest(params, fileName => store.deleteResource(fileName, false))
 
   useNotificationMsg('', '批量删除成功')
@@ -289,6 +289,7 @@ const handleRowDbClikc = (row: ResourceListItem) => {
 const filesTotalSize = computed(() => _.sum(dataList.value.map(file => file.size)))
 
 onMounted(() => {
+  getDataList()
   handleAcceptBroadcasts()
 })
 

@@ -10,7 +10,6 @@ declare module 'vue' {
     AiEditor: typeof import('./src/components/AiEditor/AiEditor.vue')['default']
     Chart: typeof import('./src/components/Chart/Chart.vue')['default']
     ContextMenu: typeof import('./src/components/ContextMenu/ContextMenu.vue')['default']
-    copy: typeof import('./src/components/Table/PengTable copy.vue')['default']
     Cropper: typeof import('./src/components/Cropper/Cropper.vue')['default']
     Date: typeof import('./src/components/Date/Date.vue')['default']
     ElAlert: typeof import('element-plus/es')['ElAlert']
@@ -49,7 +48,6 @@ declare module 'vue' {
     ElMenu: typeof import('element-plus/es')['ElMenu']
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
     ElOption: typeof import('element-plus/es')['ElOption']
-    ElPagination: typeof import('element-plus/es')['ElPagination']
     ElPopconfirm: typeof import('element-plus/es')['ElPopconfirm']
     ElPopover: typeof import('element-plus/es')['ElPopover']
     ElProgress: typeof import('element-plus/es')['ElProgress']
@@ -64,9 +62,6 @@ declare module 'vue' {
     ElSteps: typeof import('element-plus/es')['ElSteps']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
-    ElTable: typeof import('element-plus/es')['ElTable']
-    ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
-    ElTableV2: typeof import('element-plus/es')['ElTableV2']
     ElTabPane: typeof import('element-plus/es')['ElTabPane']
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElTag: typeof import('element-plus/es')['ElTag']
@@ -91,7 +86,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SvgIcon: typeof import('./src/components/svgIcon/index.vue')['default']
-    Table_v2: typeof import('./src/components/Table/Table_v2.vue')['default']
   }
   export interface ComponentCustomProperties {
     vInfiniteScroll: typeof import('element-plus/es')['ElInfiniteScroll']

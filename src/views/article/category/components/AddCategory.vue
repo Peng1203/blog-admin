@@ -5,22 +5,23 @@
     @clickConfirm="handleAdd"
     @dialogClose="handleDialogClose"
   >
-    <Form
+    <PengForm
       ref="addFormRef"
       :labelW="'120px'"
-      :formItems="addCategoryState.formItemList"
-      v-model="addCategoryState.data"
+      :formItems="formItems"
+      v-model="form"
     />
   </Dialog>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import Dialog from '@/components/Dialog'
-import Form, { FormItem } from '@/components/Form'
 import { useCategoryApi } from '@/api/category/index'
-import { CategoryData } from '../types'
+import { AddCategoryType, CategoryData } from '../types'
 import { useNotificationMsg } from '@/hooks/useNotificationMsg'
+import { CodeEnum } from '@/constants'
+import { useFormState } from '@/hooks'
 
 const { addCategory } = useCategoryApi()
 
@@ -28,23 +29,26 @@ const emits = defineEmits(['updateList'])
 
 const addCategoryDialogStatus = ref<boolean>(false)
 
-const addCategoryState = reactive({
-  data: ref<CategoryData>({
-    id: 0,
-    categoryName: '',
-    createTime: '',
-    updateTime: '',
-  }),
-  formItemList: ref<FormItem<CategoryData>[]>([
-    {
-      type: 'input',
-      label: '分类名',
-      prop: 'categoryName',
-      placeholder: '',
-      rules: [{ required: true, trigger: 'change' }],
-    },
-  ]),
+const { form, formItems, setFormItems, handleInitForm } = useFormState<AddCategoryType>({
+  categoryName: '',
+  description: '',
 })
+
+setFormItems([
+  {
+    type: 'input',
+    label: '分类名',
+    prop: 'categoryName',
+    placeholder: '',
+    rules: [{ required: true, trigger: 'change' }],
+  },
+  {
+    type: 'input',
+    label: '描述',
+    prop: 'description',
+    placeholder: '',
+  },
+])
 
 const addFormRef = ref<RefType>(null)
 // 处理添加操作
@@ -63,10 +67,9 @@ const handleAdd = async () => {
 // 添加分类
 const addNewCategory = async (): Promise<boolean> => {
   try {
-    const { categoryName } = addCategoryState.data
-    const { data: res } = await addCategory<CategoryData>({ categoryName })
+    const { data: res } = await addCategory<CategoryData>(form.value)
     const { code, message, success } = res
-    if (code !== 20100 || !success) return false
+    if (code !== CodeEnum.POST_SUCCESS || !success) return false
     useNotificationMsg('成功', message)
     return true
   } catch (e) {
@@ -75,17 +78,12 @@ const addNewCategory = async (): Promise<boolean> => {
   }
 }
 
-const resetAddForm = () => {
-  addCategoryState.data.categoryName = ''
-}
-
 const handleDialogClose = () => {
-  resetAddForm()
+  handleInitForm()
+
   addFormRef.value.getRef().resetFields()
   addCategoryDialogStatus.value = false
 }
 
 defineExpose({ addCategoryDialogStatus })
 </script>
-
-<style lang="scss" scoped></style>

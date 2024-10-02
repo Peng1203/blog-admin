@@ -4,7 +4,7 @@
     v-model="editDrawerStatus"
     @clickConfirm="handleSaveEdit"
   >
-    <Peng-Form
+    <PengForm
       ref="editFormRef"
       label-p="top"
       :labelW="80"
@@ -23,6 +23,7 @@ import Drawer from '@/components/Drawer'
 import { PermissionData, resourceMethodOptions } from '../'
 import { SelectOptionItem } from '@/components/Select'
 import { useNotificationMsg } from '@/hooks/useNotificationMsg'
+import { CodeEnum } from '@/constants'
 
 const { updateAuthPermInfo } = usePermissionApi()
 
@@ -121,7 +122,7 @@ const saveEditAuthPermisson = async (): Promise<boolean> => {
     const { id, updateTime, createTime, children, ...params } = editFormState.data
     const { data: res } = await updateAuthPermInfo<string>(id, params)
     const { code, data, success } = res
-    if (code !== 20001 || !success) return false
+    if (code !== CodeEnum.UPDATE_SUCCESS || !success) return false
     useNotificationMsg('', data)
     return true
   } catch (e) {

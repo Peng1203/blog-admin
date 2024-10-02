@@ -15,13 +15,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, PropType, watch } from 'vue'
-import { AxiosResponse } from 'axios'
-import { ElMessage } from 'element-plus'
+import { ref, reactive, watch } from 'vue'
 import Form, { FormItem } from '@/components/Form'
 import Drawer from '@/components/Drawer'
 import { useCategoryApi } from '@/api/category/index'
 import { CategoryData, EditProps } from '../types'
+import { useNotificationMsg } from '@/hooks/useNotificationMsg'
+import { CodeEnum } from '@/constants'
 
 const { updateCategory } = useCategoryApi()
 
@@ -37,6 +37,7 @@ const editFormState = reactive({
   data: ref<CategoryData>({
     id: 0,
     categoryName: '',
+    description: '',
     createTime: '',
     updateTime: '',
   }),
@@ -47,6 +48,12 @@ const editFormState = reactive({
       prop: 'categoryName',
       placeholder: '',
       rules: [{ required: true, trigger: 'change' }],
+    },
+    {
+      type: 'input',
+      label: '描述',
+      prop: 'description',
+      placeholder: '',
     },
   ]),
 })
@@ -68,11 +75,11 @@ const handleSaveEdit = async () => {
 // 保存修改数据
 const saveEditCategory = async (): Promise<boolean> => {
   try {
-    const { id, categoryName } = editFormState.data
-    const { data: res } = await updateCategory<string>(id, { categoryName })
-    const { code, message, data, success } = res
-    if (code !== 20001 || !success) return false
-    ElMessage.success(data)
+    const { id, categoryName, description } = editFormState.data
+    const { data: res } = await updateCategory<string>(id, { categoryName, description })
+    const { code, data, success } = res
+    if (code !== CodeEnum.UPDATE_SUCCESS || !success) return false
+    useNotificationMsg(data, '')
     return true
   } catch (e) {
     console.log(e)

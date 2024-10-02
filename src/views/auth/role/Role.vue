@@ -34,9 +34,9 @@
         :total="tableState.total"
         v-model:page="tableState.page"
         v-model:pageSize="tableState.pageSize"
-        v-model:loading="tableState.loading"
         v-model:order="tableState.order"
         v-model:column="tableState.column"
+        v-model:loading="tableState.loading"
         @editBtn="handleEditRole"
         @deleteBtn="handleDelRole"
         @viewBtn="handleViewRole"
@@ -78,6 +78,7 @@ import { RoleData, RoleListData, RoleEntityData } from './types'
 import Search from '@/components/Search'
 import { useTableState } from '@/hooks/useTableState'
 import { useNotificationMsg } from '@/hooks/useNotificationMsg'
+import { CodeEnum } from '@/constants'
 
 const { getRole, deleteRole } = useRoleApi()
 
@@ -122,7 +123,7 @@ const getRoleTableData = async () => {
     const { data: res } = await getRole<RoleListData>(params)
 
     const { code, data, success } = res
-    if (code !== 20000 || !success) return
+    if (code !== CodeEnum.GET_SUCCESS || !success) return
     setData(data.list)
     setTotal(data.total)
   } catch (e) {
@@ -150,7 +151,7 @@ const deleteRoleById = async (id: number): Promise<boolean> => {
   try {
     const { data: res } = await deleteRole<string>(id)
     const { code, data, success } = res
-    if (code !== 20000 || !success) return false
+    if (code !== CodeEnum.DELETE_SUCCESS || !success) return false
     ElMessage.success(data)
     useNotificationMsg('', data)
     return true
@@ -189,7 +190,7 @@ const handleUpdate = () => {
 }
 
 // 页面加载时
-onMounted(async () => {
+onMounted(() => {
   getRoleTableData()
 })
 </script>

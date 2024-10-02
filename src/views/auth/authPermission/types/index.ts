@@ -16,4 +16,4 @@ export interface PermissionData {
 
 export type PermissionListData = ListApiBaseResponse<PermissionData>
 
-export type AddPermissionType = Partial<PermissionData>
+export type AddPermissionType = Omit<PermissionData, 'id' | 'updateTime' | 'createTime' | 'children'>

@@ -141,3 +141,30 @@ export const compareFiles = (file1: File, file2: File): Promise<boolean> => {
     reader1.readAsArrayBuffer(file1)
   })
 }
+
+/**
+ * 获取图片的宽度和高度
+ */
+interface ImageFileInfo {
+  width: number
+  height: number
+  url: string
+}
+export const getImageDimensions = (file: File): Promise<ImageFileInfo> => {
+  return new Promise<ImageFileInfo>((resolve, reject) => {
+    const img = new Image()
+    img.src = URL.createObjectURL(file)
+
+    img.onload = () => {
+      const { width, height } = img
+      resolve({ width, height, url: img.src })
+      // 确保在 resolve 后释放 URL
+      // URL.revokeObjectURL(img.src)
+    }
+
+    img.onerror = () => {
+      reject(new Error('图片加载失败'))
+      URL.revokeObjectURL(img.src)
+    }
+  })
+}

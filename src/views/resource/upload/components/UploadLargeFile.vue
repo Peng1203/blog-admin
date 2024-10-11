@@ -15,7 +15,6 @@
       上传大文件
     </PengButton>
   </el-upload>
-  uploadRecordCatch -- {{ uploadRecordCatch }}
 </template>
 
 <script setup lang="ts">

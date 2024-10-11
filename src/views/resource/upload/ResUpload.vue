@@ -4,6 +4,7 @@
     class="table-container layout-padding resource-upload-container"
   >
     <el-upload
+      class="hidden md:block"
       drag
       multiple
       :auto-upload="false"
@@ -54,6 +55,7 @@
         type="info"
         size="default"
         icon="ele-DeleteFilled"
+        class="hidden md:block"
         @click="tableState.data = []"
       >
         清空
@@ -247,7 +249,7 @@
         开始上传
       </PengButton>
 
-      <div>
+      <div class="hidden md:block">
         <el-tag
           type="info"
           size="small"
@@ -310,6 +312,7 @@ setColumns([
     label: '文件名',
     prop: 'name',
     sort: true,
+    minWidth: 100,
     // tooltip: true,
     slotName: 'nameSlot',
   },

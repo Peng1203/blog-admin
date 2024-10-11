@@ -152,7 +152,7 @@ defineOptions({
 
 const store = useResourceStore()
 
-const { tableState, setColumns } = useTableState<ResourceListItem>()
+const { tableState, setColumns, startLoading, stopLoading } = useTableState<ResourceListItem>()
 
 setColumns([
   {
@@ -270,7 +270,14 @@ const handleBatchDown = async () => {
 }
 
 const getDataList = async (refresh: boolean = false) => {
-  await store.getResourceList(refresh)
+  try {
+    startLoading()
+    await store.getResourceList(refresh)
+  } catch (e) {
+    console.log('e', e)
+  } finally {
+    stopLoading()
+  }
 }
 
 const handleAcceptBroadcasts = () => {

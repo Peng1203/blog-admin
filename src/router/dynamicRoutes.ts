@@ -8,6 +8,7 @@ import systemConfigRouterRules from './modules/configRouter'
 import personalRouterRules from './modules/personalRouter'
 import homeRouterRules from './modules/homeRouter'
 import logRouterRules from './modules/logRouter'
+import momentRouter from './modules/momentRouter'
 
 /**
  * 需要权限的路由表
@@ -32,6 +33,8 @@ export const allDynamicRoutes: Array<RouteRecordRaw> = [
       ...userRouterRules,
       // 文章管理
       ...articleRouterRules,
+      // 动态
+      ...momentRouter,
       // 资源管理
       ...resourceRouterRules,
       // 测试

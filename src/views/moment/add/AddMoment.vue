@@ -16,7 +16,7 @@
           </PengButton>
         </div>
       </template>
-
+      {{ form }}
       <PengForm
         ref="formRef"
         :labelW="'120px'"
@@ -87,6 +87,7 @@ import { concurRequest } from '@/utils/concurRequest'
 import { startFullFoading, endFullFoading } from '@/utils/fullLoading'
 import { useRouter } from 'vue-router'
 import { compressImage } from '@/utils/file'
+import { omit } from 'lodash'
 
 const { uploadImage } = useCommonApi()
 const { addMoment } = useMomentApi()
@@ -101,6 +102,7 @@ const { form, formItems, setFormItems } = useFormState<AddMomentForm>({
   mediaUrls: [],
   status: 1,
   userId: store.userInfos.id,
+  originalDrawing: [],
 })
 
 const formRules = reactive<FormRules<AddMomentForm>>({
@@ -122,6 +124,14 @@ setFormItems([
     span: 16,
   },
   {
+    type: 'checkbox',
+    label: '原图',
+    prop: 'originalDrawing',
+    slotName: 'originSlot',
+    span: 16,
+    options: [{ label: '', value: true }],
+  },
+  {
     type: 'switch',
     label: '置顶',
     prop: 'isTop',
@@ -129,6 +139,7 @@ setFormItems([
     fValue: 0,
     span: 16,
   },
+
   {
     type: 'radio',
     label: '状态',
@@ -161,7 +172,8 @@ const handlePublish = async () => {
   if (!isValidate) return
   startFullFoading()
   // 上传图片
-  await batchUpload()
+  const updateStatus = await batchUpload()
+  if (!updateStatus) return endFullFoading()
   // 发布动态
   const publishStatus = await publishMoment()
   endFullFoading()
@@ -172,9 +184,10 @@ const handlePublish = async () => {
 // 上传图片
 const handleUploadImage = async (file: File) => {
   try {
-    const compressFile = (await compressImage(file)) as Blob
+    const uploadFile = form.value.originalDrawing.length ? file : ((await compressImage(file)) as Blob)
+
     const formData = new FormData()
-    formData.append('file', compressFile)
+    formData.append('file', uploadFile)
     const { data: res } = await uploadImage(formData)
     const { data, code, success } = res
     if (!success || code !== CodeEnum.POST_SUCCESS) return
@@ -189,14 +202,18 @@ const handleUploadImage = async (file: File) => {
 const batchUpload = async () => {
   const paramsArr = fileList.value.map(item => item.raw)
   const request = file => handleUploadImage(file).then(res => res)
-  const uploadResult = await concurRequest(paramsArr, request)
 
-  form.value.mediaUrls = uploadResult
+  const uploadResult = await concurRequest(paramsArr, request)
+  if (uploadResult.includes('')) return false
+
+  form.value.mediaUrls = uploadResult.filter(url => url) as string[]
+  return true
 }
 
 const publishMoment = async () => {
   try {
-    const { data: res } = await addMoment<MomentData>(form.value)
+    const params = omit(form.value, 'originalDrawing')
+    const { data: res } = await addMoment<MomentData>(params)
     const { code, success } = res
     if (code !== CodeEnum.POST_SUCCESS || !success) return false
     useNotificationMsg('', '发布成功')

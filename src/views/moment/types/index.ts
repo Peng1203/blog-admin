@@ -14,4 +14,6 @@ export interface MomentData {
 
 export type LoginAuditLogListData = ListApiBaseResponse<MomentData>
 
-export type AddMomentForm = Omit<MomentData, 'id' | 'createTime' | 'updateTime' | 'user'>
+export type AddMomentForm = Omit<MomentData, 'id' | 'createTime' | 'updateTime' | 'user'> & {
+  originalDrawing: boolean[]
+}

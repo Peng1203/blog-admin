@@ -74,19 +74,6 @@ export function useArticleApi() {
         method: Method.DELETE,
       })
     },
-    /**
-     * 上传文章图片资源
-     */
-    uploadImage<T = string>(file: FormData): TransformedResponse<T> {
-      return request({
-        url: `/article/image`,
-        method: Method.POST,
-        data: file,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-    },
     getUserArticles<T>(uid, params): TransformedResponse<T> {
       return request({
         url: `/article/${uid}`,

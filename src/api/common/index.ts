@@ -15,5 +15,19 @@ export function useCommonApi() {
         params: { ip },
       })
     },
+
+    /**
+     * 上传文章图片资源
+     */
+    uploadImage<T = string>(file: FormData): TransformedResponse<T> {
+      return request({
+        url: `/common/upload/image`,
+        method: Method.POST,
+        data: file,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+    },
   }
 }

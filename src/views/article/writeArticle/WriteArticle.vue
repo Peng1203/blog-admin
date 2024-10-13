@@ -84,13 +84,13 @@ import AiEditor from '@/components/AiEditor'
 import StepHeadend from './components/StepHeadend.vue'
 import InfoForm from './components/InfoForm.vue'
 import { useUserInfo } from '@/stores/userInfo'
-import { useArticleApi } from '@/api'
+import { useArticleApi, useCommonApi } from '@/api'
 import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import QuickActions from './components/QuickActions.vue'
 import { CodeEnum } from '@/constants'
 
-const { addArticle, updateArticle, getArticleDetailById, uploadImage } = useArticleApi()
-
+const { addArticle, updateArticle, getArticleDetailById } = useArticleApi()
+const { uploadImage } = useCommonApi()
 const userInfoStore = useUserInfo()
 
 const route = useRoute()

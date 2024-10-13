@@ -1,11 +1,15 @@
 import { SelectOptionItem } from '@/components/Select'
-import { UploadRequestOptions } from 'element-plus'
+import { FormRules, UploadRequestOptions } from 'element-plus'
 
-export interface FormAttribute {
+export interface FormAttribute<T> {
   /**
    * 表单数据
    */
-  modelValue: Record<string, unknown>
+  modelValue: T
+  /**
+   * 表单规则
+   */
+  rules?: FormRules<T>
   /**
    * 表单配置项
    */

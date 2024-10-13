@@ -86,6 +86,7 @@ import { CodeEnum } from '@/constants'
 import { concurRequest } from '@/utils/concurRequest'
 import { startFullFoading, endFullFoading } from '@/utils/fullLoading'
 import { useRouter } from 'vue-router'
+import { compressImage } from '@/utils/file'
 
 const { uploadImage } = useCommonApi()
 const { addMoment } = useMomentApi()
@@ -171,9 +172,9 @@ const handlePublish = async () => {
 // 上传图片
 const handleUploadImage = async (file: File) => {
   try {
+    const compressFile = (await compressImage(file)) as Blob
     const formData = new FormData()
-
-    formData.append('file', file)
+    formData.append('file', compressFile)
     const { data: res } = await uploadImage(formData)
     const { data, code, success } = res
     if (!success || code !== CodeEnum.POST_SUCCESS) return

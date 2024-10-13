@@ -41,7 +41,7 @@ const routerRules: Array<RouteRecordRaw> = [
           isLink: '',
           isHide: false,
           isKeepAlive: false,
-          isAffix: false,
+          isAffix: true,
           isIframe: false,
           icon: 'iconfont icon-shuoshuo',
           orderNum: 2,

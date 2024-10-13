@@ -3,6 +3,7 @@
     <el-form
       ref="formRef"
       :size="size"
+      :rules="rules"
       :model="formData"
       :disabled="disabled"
       :label-width="labelW"
@@ -491,7 +492,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="T">
 import { FormAttribute, UploadLimit } from './types'
 import { UploadRawFile, ElMessage, ElForm } from 'element-plus'
 import { useComponentRef } from '@/composables/useComponentRef'
@@ -500,7 +501,7 @@ const formData = defineModel()
 
 const emits = defineEmits(['update:modelValue', 'switchChange', 'selectChange', 'radioChange'])
 
-withDefaults(defineProps<FormAttribute>(), {
+withDefaults(defineProps<FormAttribute<T>>(), {
   // formItems: () => [],
   labelW: 'auto',
   labelP: 'right', // left right top

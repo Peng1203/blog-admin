@@ -24,12 +24,12 @@
 
 <script lang="ts" setup>
 import { ref, reactive, computed, defineAsyncComponent } from 'vue'
-import { ElMessage } from 'element-plus'
 import { useTagApi } from '@/api/tag/index'
 import Dialog from '@/components/Dialog'
 import Form, { FormItem } from '@/components/Form'
 import { AddTagType, TagData } from '../types'
 import { CodeEnum } from '@/constants'
+import { useNotificationMsg } from '@/hooks'
 
 const IconSelector = defineAsyncComponent(() => import('@/components/iconSelector/index.vue'))
 
@@ -85,7 +85,7 @@ const addNewTag = async (): Promise<boolean> => {
     const { data: res } = await addTag<TagData>(params)
     const { code, message, success } = res
     if (code !== CodeEnum.POST_SUCCESS || !success) return false
-    ElMessage.success(message)
+    useNotificationMsg('', message)
     return true
   } catch (e) {
     console.log(e)
@@ -112,5 +112,3 @@ const handleDialogClose = () => {
 
 defineExpose({ addTagDialogStatus })
 </script>
-
-<style lang="scss" scoped></style>

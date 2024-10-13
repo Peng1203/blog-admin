@@ -1,10 +1,10 @@
 import qs from 'qs'
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosError, AxiosResponse } from 'axios'
-import { ElLoading } from 'element-plus'
+import router from '@/router'
 import { Local, Session } from '@/utils/storage'
 import { handleRefreshACToken } from './refreshToken'
-import router from '@/router'
 import { useNotificationMsg } from '../hooks/useNotificationMsg'
+import { startFullFoading, endFullFoading } from './fullLoading'
 
 // 配置新建一个 axios 实例
 const service: AxiosInstance = axios.create({
@@ -20,7 +20,6 @@ const service: AxiosInstance = axios.create({
 })
 // 全屏loading 计数器
 let fullscreenLoadingCounter: number = 0
-let loading: any = null
 
 window.httpRequestList = []
 // 添加请求拦截器
@@ -39,14 +38,7 @@ service.interceptors.request.use(
     // 是否开启全屏loading
     if ((<any>config)?.headers.fullscreenLoading) {
       // 第一个需要开启全屏loading的请求
-      if (!fullscreenLoadingCounter) {
-        loading = ElLoading.service({
-          lock: true,
-          text: 'Loading',
-          fullscreen: true,
-          background: 'rgba(0, 0, 0, 0.7)',
-        })
-      }
+      if (!fullscreenLoadingCounter) startFullFoading()
       fullscreenLoadingCounter++
     }
 
@@ -64,7 +56,7 @@ service.interceptors.response.use(
     if (response.config.headers.fullscreenLoading) {
       fullscreenLoadingCounter--
       // 全屏loading 响应完成关闭
-      !fullscreenLoadingCounter && loading.close()
+      !fullscreenLoadingCounter && endFullFoading()
     }
     return response
   },
@@ -73,7 +65,7 @@ service.interceptors.response.use(
     if (config.headers.fullscreenLoading) {
       fullscreenLoadingCounter--
       // 全屏loading 响应完成关闭
-      !fullscreenLoadingCounter && loading.close()
+      !fullscreenLoadingCounter && endFullFoading()
     }
 
     // 请求超时 取消请求

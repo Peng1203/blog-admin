@@ -10,5 +10,6 @@ export * from './resource'
 export * from './audit'
 export * from './log'
 export * from './common'
+export * from './moment'
 
 export * from './types'

@@ -16,7 +16,7 @@
           </PengButton>
         </div>
       </template>
-      {{ form }}
+      <!-- {{ form }} -->
       <PengForm
         ref="formRef"
         :labelW="'120px'"

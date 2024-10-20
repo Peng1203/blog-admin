@@ -10,7 +10,6 @@ declare module 'vue' {
     AiEditor: typeof import('./src/components/AiEditor/AiEditor.vue')['default']
     Chart: typeof import('./src/components/Chart/Chart.vue')['default']
     ContextMenu: typeof import('./src/components/ContextMenu/ContextMenu.vue')['default']
-    copy: typeof import('./src/components/MarkdownEditor/components/Emoji/Emoji copy.vue')['default']
     Cropper: typeof import('./src/components/Cropper/Cropper.vue')['default']
     Date: typeof import('./src/components/Date/Date.vue')['default']
     ElAlert: typeof import('element-plus/es')['ElAlert']

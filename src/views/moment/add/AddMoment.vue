@@ -16,6 +16,7 @@
           </PengButton>
         </div>
       </template>
+
       <!-- {{ form }} -->
       <PengForm
         ref="formRef"
@@ -24,6 +25,15 @@
         :formItems="formItems"
         v-model="form"
       >
+        <template #contentSlot>
+          <el-input
+            ref="textareaRef"
+            type="textarea"
+            v-model="form.content"
+          />
+          <EmojiSelect @change="handleEmojiSelectChange" />
+        </template>
+
         <template #mediaUrlSlot>
           <div style="width: 100%; min-height: 12rem">
             <el-upload
@@ -111,9 +121,11 @@ const formRules = reactive<FormRules<AddMomentForm>>({
 
 setFormItems([
   {
-    type: 'textarea',
+    // type: 'textarea',
+    type: 'slot',
     label: '内容',
     prop: 'content',
+    slotName: 'contentSlot',
     span: 16,
   },
   {
@@ -139,7 +151,6 @@ setFormItems([
     fValue: 0,
     span: 16,
   },
-
   {
     type: 'radio',
     label: '状态',
@@ -157,6 +168,27 @@ const formRef = useTemplateRef('formRef')
 
 const ElUploadInstance = useComponentRef(ElUpload)
 const uploadRef = useTemplateRef<typeof ElUploadInstance.value>('uploadRef')
+
+const textareaRef = useTemplateRef('textareaRef')
+const getCursorPosition = (): number => textareaRef.value.ref.selectionStart
+
+const handleEmojiSelectChange = (emoji: string) => {
+  const index = getCursorPosition()
+  form.value.content = insertStringAt(form.value.content, index, emoji)
+
+  setTimeout(() => {
+    const focusIndex = index + emoji.length
+    textareaRef.value.ref.setSelectionRange(focusIndex, focusIndex)
+    textareaRef.value.focus()
+  })
+}
+
+const insertStringAt = (str: string, index: number = 0, content: string = '') => {
+  const start = str.slice(0, index)
+  const end = str.slice(index)
+
+  return `${start}${content}${end}`
+}
 
 const handleSelectFileChange = (uploadFile: UploadFile) => {
   console.log(`%c uploadFile ----`, 'color: #fff;background-color: #000;font-size: 18px', uploadFile)

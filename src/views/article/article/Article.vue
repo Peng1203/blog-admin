@@ -23,11 +23,12 @@
           <!-- <TransitionGroup name="list"> -->
           <template
             :key="item.id"
-            v-for="item in articleListState.articleList"
+            v-for="(item, i) in articleListState.articleList"
           >
+            <!-- :article="item" -->
             <ArticleItem
+              v-model="articleListState.articleList[i]"
               v-slide-in="100"
-              :article="item"
               @click-delete-dtn="handleDelete"
               @click-edit-btn="handleEditArticle"
               @click-view-btn="handlePreviewArticle"
@@ -81,7 +82,7 @@ let filterParams = reactive<FilterParamsInfo>({
 })
 
 // 文章列表参数
-const articleListState = reactive({
+let articleListState = reactive({
   loading: false,
   page: 1,
   pageSize: 10,

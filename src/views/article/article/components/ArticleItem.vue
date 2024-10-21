@@ -137,9 +137,34 @@
         </div>
 
         <div>
-          <span :style="{ color: statusMapping[article.status][1] }">
+          <!-- <span :style="{ color: statusMapping[article.status][1] }">
             {{ statusMapping[article.status][0] }}
-          </span>
+          </span> -->
+
+          <el-dropdown
+            trigger="click"
+            @command="handleChangeStatus"
+          >
+            <span class="pseudo-c-p flex-c-c">
+              <span :style="{ color: statusMapping[article.status][1] }">
+                {{ statusMapping[article.status][0] }}
+              </span>
+              <el-icon class="el-icon--right"><arrow-down /></el-icon>
+            </span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item
+                  :key="status"
+                  :style="{ color: value[1] }"
+                  :command="Number(status)"
+                  :disabled="Number(status) === article.status"
+                  v-for="(value, status) in statusMapping"
+                >
+                  {{ value[0] }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </div>
       </div>
 
@@ -170,16 +195,21 @@
 </template>
 
 <script setup lang="tsx">
-import { ArticleItemProps, IconHashMappingItem } from '../'
+import { useArticleApi } from '@/api'
+import { ArticleData, IconHashMappingItem } from '../'
 import { useUserInfo } from '@/stores/userInfo'
 
 import { Picture as IconPicture, View, Delete, Edit } from '@element-plus/icons-vue'
+import { CodeEnum } from '@/constants'
+import { useNotificationMsg } from '@/hooks'
+
+const { updateArticle } = useArticleApi()
 
 const userInfoStore = useUserInfo()
 
 const emits = defineEmits(['clickViewBtn', 'clickEditBtn', 'clickDeleteDtn'])
 
-const props = defineProps<ArticleItemProps>()
+const article = defineModel<ArticleData>()
 
 // 文章状态映射
 const statusMapping = {
@@ -206,25 +236,41 @@ const iconHashMapping: IconHashMappingItem[] = [
 ]
 
 // 点击顶部操作行按钮
-const handleClickActionBnt = event => emits(event, props.article)
+const handleClickActionBnt = event => emits(event, article.value)
 
 // 文章uv 数据组件
 const InfoIcons = () => {
   return (
-      <div class="icon-con">
-        {iconHashMapping.map(info => (
-          <span class="item">
-            <Peng-Icon
-              type="class"
-              size={18}
-              key={info.prop}
-              name={info.name}
-            />
-            <span class="value">{props.article[info.prop] || 0}</span>
-          </span>
-        ))}
-      </div>
+    <div class="icon-con">
+      {iconHashMapping.map(info => (
+        <span class="item">
+          <Peng-Icon
+            type="class"
+            size={18}
+            key={info.prop}
+            name={info.name}
+          />
+          <span class="value">{article.value[info.prop] || 0}</span>
+        </span>
+      ))}
+    </div>
   )
+}
+
+const handleChangeStatus = async (newStatus: number) => {
+  try {
+    const params = {
+      status: newStatus,
+    }
+
+    const { data: res } = await updateArticle<ArticleData>(article.value.author.id, article.value.id, params)
+    const { code, message, success } = res
+    if (code !== CodeEnum.UPDATE_SUCCESS && success) return
+    useNotificationMsg('更新成功', message)
+    article.value.status = newStatus
+  } catch (e) {
+    console.log('e ------', e)
+  }
 }
 </script>
 

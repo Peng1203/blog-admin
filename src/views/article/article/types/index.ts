@@ -108,11 +108,6 @@ export interface FilterHeadendProps {
   modelValue: FilterParamsInfo
 }
 
-// 文章列表item 组件props
-export interface ArticleItemProps {
-  article: ArticleData
-}
-
 // 文章 图标信息映射项
 export interface IconHashMappingItem {
   name: string
@@ -121,3 +116,4 @@ export interface IconHashMappingItem {
   color?: string
   size?: number
 }
+

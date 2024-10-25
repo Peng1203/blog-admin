@@ -264,4 +264,7 @@ const publishMoment = async () => {
   width: 70px;
   height: 70px;
 }
+:deep(.el-card__body) {
+  overflow: auto;
+}
 </style>

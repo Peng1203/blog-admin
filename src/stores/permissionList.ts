@@ -14,8 +14,6 @@ export const usePermissionInfo = defineStore('permissionInfo', {
     async getPermissionData(isUpdate?: boolean) {
       if (!isUpdate && this.permissionList.length) return
       const { data: res } = await getPermissions<PermissionListData>({
-        page: 1,
-        pageSize: 9999,
         queryStr: '',
         column: '',
         order: '',

@@ -1,11 +1,11 @@
 import { ListApiBaseResponse } from 'Api'
+import { RequestMethodEnum } from '@/constants/permission'
 
-export type ResourceMethodType = 1 | 2 | 3 | 4 | 5 | 6 | null
 export interface PermissionData {
   id: number
   permissionName: string
   permissionCode: string | null
-  resourceMethod: ResourceMethodType
+  resourceMethod: RequestMethodEnum | null
   resourceUrl: string | null
   parentId: number
   description: string | null

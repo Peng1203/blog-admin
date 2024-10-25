@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { TransformedResponse, RequestListParams } from 'Api'
+import { TransformedResponse } from 'Api'
 import { Method } from '../types'
 
 /**
@@ -14,10 +14,10 @@ export function usePermissionApi() {
      * 获取权限标识列表
      * @author Peng
      * @date 2023-04-16
-     * @param {any} params:RequestListParams
+     * @param {any} params:any
      * @returns {any}
      */
-    getPermissions<T = any>(params: RequestListParams): TransformedResponse<T> {
+    getPermissions<T = any>(params: any): TransformedResponse<T> {
       return request({
         url: '/permission',
         method: Method.GET,
@@ -31,11 +31,12 @@ export function usePermissionApi() {
      * @param {any} params:object
      * @returns {any}
      */
-    addPermission<T = any>(params: object): TransformedResponse<T> {
+    addPermission<T = any>(params: object, fullscreenLoading: boolean = false): TransformedResponse<T> {
       return request({
         url: '/permission',
         method: Method.POST,
         data: params,
+        headers: { fullscreenLoading },
       })
     },
     /**

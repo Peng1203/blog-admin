@@ -5,6 +5,7 @@
     @clickConfirm="handleAdd"
     @dialogClose="handleDialogClose"
   >
+    {{ permissionOptions }}
     <PengForm
       ref="addAuthFormRef"
       :labelW="'120px'"
@@ -51,6 +52,11 @@ const { form, handleInitForm } = useFormState<AddPermissionType>({
 })
 
 const isAddChildren = computed<boolean>(() => !!props.parentId)
+const permissionOptions = computed(() => {
+  return isAddChildren.value
+    ? props.permissionCodeOptions.filter(item => !(item.value as string).includes('parent'))
+    : props.permissionCodeOptions.filter(item => (item.value as string).includes('parent'))
+})
 const formItemList = computed<FormItem<AddPermissionType>[]>(() => [
   {
     type: 'input',
@@ -63,8 +69,8 @@ const formItemList = computed<FormItem<AddPermissionType>[]>(() => [
     type: 'select',
     label: '标识CODE',
     prop: 'permissionCode',
-    isShow: isAddChildren.value,
-    options: props.permissionCodeOptions,
+    // isShow: isAddChildren.value,
+    options: permissionOptions.value,
     rules: [{ required: true, trigger: 'change' }],
   },
   {
@@ -142,5 +148,3 @@ const handleDialogClose = () => {
 
 defineExpose({ addAuthPermissonDialogStatus })
 </script>
-
-<style lang="scss" scoped></style>

@@ -6,14 +6,22 @@
     >
       <!-- 顶部 -->
       <div class="mb15 flex-sb-c">
-        <PengButton
-          size="default"
-          type="success"
-          @click="handleAddPermission(0)"
-        >
-          <i class="iconfont icon-permissions-o" />
-          创建权限分组
-        </PengButton>
+        <div class="flex-s-c">
+          <PengButton
+            size="default"
+            type="success"
+            @click="handleAddPermission(0)"
+          >
+            <i class="iconfont icon-permissions-o" />
+            创建权限分组
+          </PengButton>
+
+          <InitPermissionButton
+            ml10
+            :data="tableState.data"
+            @updateList="handleUpdate"
+          />
+        </div>
 
         <Peng-Search
           placeholder="请输入权限标识名称"
@@ -61,7 +69,7 @@
             size="small"
             type="success"
             :icon="Plus"
-            v-if="[null, ''].includes(row.permissionCode)"
+            v-if="!row.resourceMethod"
             @click="handleAddPermission(row)"
           />
         </template>
@@ -88,6 +96,7 @@
 
 <script lang="ts" setup name="SystemAuthPermission">
 import { ref, onMounted, defineAsyncComponent, useTemplateRef } from 'vue'
+import InitPermissionButton from './components/InitPermission.vue'
 import { usePermissionInfo } from '@/stores/permissionList'
 import { usePermissionApi } from '@/api'
 import { Plus } from '@element-plus/icons-vue'
@@ -110,7 +119,6 @@ const {
   setColumns,
   startLoading,
   stopLoading,
-  getCommonParams,
 } = useTableState<PermissionData>()
 
 setColumns([
@@ -148,7 +156,11 @@ setColumns([
 const getAuthPermissionTableData = async (): Promise<void> => {
   try {
     startLoading()
-    const params = getCommonParams()
+    const params = {
+      queryStr: tableState.queryStr,
+      column: tableState.column,
+      order: tableState.order,
+    }
     const { data: res } = await getPermissions<PermissionListData>(params)
     const { code, success, data } = res
     if (code !== CodeEnum.GET_SUCCESS || !success) return

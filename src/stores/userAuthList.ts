@@ -3,11 +3,11 @@ import { useRoleApi } from '@/api/role/index'
 import { useMenuApi } from '@/api/menu/index'
 import { usePermissionApi } from '@/api/permission/index'
 
-const { getRoleList } = useRoleApi()
+const { getRole } = useRoleApi()
 
-const { getMenuList } = useMenuApi()
+const { getMenus } = useMenuApi()
 
-const { getAuthPermissionList } = usePermissionApi()
+const { getPermissions } = usePermissionApi()
 
 export const useUserAuthList = defineStore('userAuthList', {
   state: (): UserAuthState => ({
@@ -41,14 +41,14 @@ export const useUserAuthList = defineStore('userAuthList', {
         const params = {
           ...this.allParams,
         }
-        const { data: res } = await getRoleList(params)
+        const { data: res } = await getRole(params)
         const { code, message, data } = res
         if (code !== 200 || message !== 'Success') {
           this.allRoleList = []
           this.allRoleOptions = []
         } else {
           this.allRoleList = data
-          this.allRoleOptions = data.map(({ roleName, id }: any) => ({
+          this.allRoleOptions = (data as any).map(({ roleName, id }: any) => ({
             label: roleName,
             value: id,
           }))
@@ -68,7 +68,7 @@ export const useUserAuthList = defineStore('userAuthList', {
           column: '',
           order: '',
         }
-        const { data: res } = await getMenuList(params)
+        const { data: res } = await getMenus(params)
         const { code, message, data } = res
         if (code !== 200 || message !== 'Success') {
           this.allMenuList = []
@@ -85,8 +85,8 @@ export const useUserAuthList = defineStore('userAuthList', {
     async getAllAuthPermissionList(updata?: boolean) {
       if (this.allAuthPermissionList.length && this.allAuthPermissionOptions && !updata) return
       try {
-        const params = { ...this.allParams }
-        const { data: res } = await getAuthPermissionList(params)
+        const params = { queryStr: '', column: '', order: '' }
+        const { data: res } = await getPermissions(params)
         const { code, message, data } = res
         if (code !== 200 || message !== 'Success') {
           this.allAuthPermissionList = []

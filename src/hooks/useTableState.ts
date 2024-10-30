@@ -16,7 +16,7 @@ interface TableState<T> {
   selectVal: []
   data: T[]
   columns: ColumnItem<T>[]
-  column: string
+  column: keyof T
   order: string
   queryStr: string
   page: number
@@ -79,7 +79,7 @@ export function useTableState<T, K extends string>(key?: K): Return1<T> | Return
     queryStr: '',
 
     page: 1,
-    pageSize: 10,
+    pageSize: 30,
     total: 0,
   })
 

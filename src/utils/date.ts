@@ -5,7 +5,7 @@ import 'dayjs/locale/zh-cn'
 dayjs.extend(relativeTime)
 
 // 类型别名
-type dateType = number | Date
+type dateType = string | number | Date
 
 /**
  * 格式化时间的方法 YYYY-MM-DD

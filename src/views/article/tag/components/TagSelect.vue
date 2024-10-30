@@ -23,9 +23,11 @@ import { computed, onMounted, ref } from 'vue'
 import { TagData } from '../types'
 import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import { CodeEnum } from '@/constants'
+import { useUserInfo } from '@/stores/userInfo'
 
 const { addTag } = useTagApi()
 
+const userInfoStore = useUserInfo()
 const store = useArticleInfo()
 const articleStoreState = storeToRefs(store)
 
@@ -41,7 +43,7 @@ const options = ref<OptionItem[]>([])
 const getTagOptions = async (update: boolean = false) => {
   try {
     await store.getTagData(update)
-    options.value = articleStoreState.tagOption.value
+    options.value = articleStoreState.userTagOption.value
   } catch (e) {
     console.log('e', e)
   }
@@ -52,7 +54,11 @@ const newTag = ref<TagData>()
 // 添加权限标识
 const addNewTag = async (tagName): Promise<boolean> => {
   try {
-    const params = { tagName, icon: '' }
+    const params = {
+      icon: '',
+      tagName,
+      userId: userInfoStore.userInfos.id,
+    }
     const { data: res } = await addTag<TagData>(params)
     const { code, message, success, data } = res
     if (code !== CodeEnum.POST_SUCCESS || !success) return false

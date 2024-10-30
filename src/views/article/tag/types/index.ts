@@ -7,11 +7,13 @@ export interface TagData {
   createTime: string
   updateTime: string
   articles?: number
+  userId: number | null
+  userName: string | null
 }
 
 export type TagListData = ListApiBaseResponse<TagData>
 
-export type AddTagType = Partial<TagData>
+export type AddTagType = Pick<TagData, 'icon' | 'tagName'>
 
 export interface EditProps {
   editRow: TagData

@@ -30,6 +30,39 @@
             </el-icon>
             删 除
           </PengButton>
+
+          <UserSelect
+            ml10
+            v-model="userId"
+            @change="handleSearch"
+          />
+
+          <el-link
+            type="primary"
+            fz11
+            class="ml10"
+            @click="
+              () => {
+                userId = userInfoStore.userInfos.id
+                handleSearch()
+              }
+            "
+          >
+            只看我自己
+          </el-link>
+          <el-link
+            type="info"
+            fz11
+            class="ml10"
+            @click="
+              () => {
+                userId = 0
+                handleSearch()
+              }
+            "
+          >
+            重置
+          </el-link>
         </div>
 
         <PengSearch
@@ -45,11 +78,12 @@
         :columns="tableState.columns"
         :getData="getCategoryTableData"
         :total="tableState.total"
+        :default-sort="{ prop: tableState.column, order: 'descending' }"
+        v-model:order="tableState.order"
+        v-model:column="tableState.column"
         v-model:page="tableState.page"
         v-model:pageSize="tableState.pageSize"
         v-model:loading="tableState.loading"
-        v-model:order="tableState.order"
-        v-model:column="tableState.column"
         @editBtn="handleEditCategory"
         @deleteBtn="handleDelCategory"
         @selectionChange="value => (tableState.selectVal = value)"
@@ -89,9 +123,12 @@ import { useArticleInfo } from '@/stores/articleInfo'
 import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import { useTableState } from '@/hooks/useTableState'
 import { CodeEnum } from '@/constants'
+import { UserSelect } from '@/views/user/user'
+import { useUserInfo } from '@/stores/userInfo'
 
 const { getCategorys, deleteCategory, batchDelete } = useCategoryApi()
 
+const userInfoStore = useUserInfo()
 const articleInfoStore = useArticleInfo()
 
 const {
@@ -125,15 +162,28 @@ setColumns([
     minWidth: 300,
     align: 'center',
   },
+  {
+    label: '创建人',
+    prop: 'userName',
+    width: 130,
+    align: 'center',
+  },
   { label: '更新时间', prop: 'updateTime', minWidth: 200, sort: 'custom' },
   { label: '创建时间', prop: 'createTime', minWidth: 200, sort: 'custom' },
 ])
+
+tableState.column = 'createTime'
+tableState.order = 'DESC'
+const userId = ref<number>(0)
 
 // 获取分类表格数据
 const getCategoryTableData = async () => {
   try {
     startLoading()
-    const params = getCommonParams()
+    const params = {
+      userId: userId.value,
+      ...getCommonParams(),
+    }
     const { data: res } = await getCategorys<CategoryListDate>(params)
     const { code, data, success } = res
     if (code !== CodeEnum.GET_SUCCESS || !success) return

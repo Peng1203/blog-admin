@@ -10,7 +10,7 @@
   </PengButton>
 
   <!-- v-else -->
-  <Peng-Select
+  <PengSelect
     mr
     virtual
     width="200px"

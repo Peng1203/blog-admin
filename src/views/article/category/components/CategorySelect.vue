@@ -1,5 +1,5 @@
 <template>
-  <Peng-Select
+  <PengSelect
     width="100%"
     ref="selectRef"
     filterable
@@ -22,13 +22,14 @@ import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import { storeToRefs } from 'pinia'
 import { CategoryData } from '../types'
 import { CodeEnum } from '@/constants'
-
-// const { getCategoryData, categoryOption } = useArticleInfo();
-const store = useArticleInfo()
-
-const articleStoreState = storeToRefs(store)
+import { useUserInfo } from '@/stores/userInfo'
 
 const { addCategory } = useCategoryApi()
+
+const store = useArticleInfo()
+const userInfoStore = useUserInfo()
+
+const articleStoreState = storeToRefs(store)
 
 const model = defineModel<number | ''>({ required: true })
 
@@ -43,7 +44,7 @@ const options = ref<OptionItem[]>([])
 const getCategoryOptions = async (update: boolean = false) => {
   try {
     await store.getCategoryData(update)
-    options.value = articleStoreState.categoryOption.value
+    options.value = articleStoreState.userCategoryOption.value
   } catch (e) {
     console.log('e', e)
   }
@@ -68,7 +69,12 @@ const newCategory = ref<CategoryData>()
 // 添加分类
 const addNewCategory = async (categoryName: string): Promise<boolean> => {
   try {
-    const { data: res } = await addCategory<CategoryData>({ categoryName })
+    const params = {
+      categoryName,
+      description: '',
+      userId: userInfoStore.userInfos.id,
+    }
+    const { data: res } = await addCategory<CategoryData>(params)
     const { code, message, success, data } = res
     if (code !== CodeEnum.POST_SUCCESS || !success) return false
     useNotificationMsg('成功', message)
@@ -84,5 +90,3 @@ onMounted(() => {
   getCategoryOptions()
 })
 </script>
-
-<style scoped lang="scss"></style>

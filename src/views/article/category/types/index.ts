@@ -7,6 +7,8 @@ export interface CategoryData {
   createTime: string
   updateTime: string
   articles?: number
+  userId: number | null
+  userName: string | null
 }
 
 export type CategoryListDate = ListApiBaseResponse<CategoryData>

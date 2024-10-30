@@ -5,9 +5,13 @@ import { ref } from 'vue'
 import { TagData, TagListData } from '@/views/article/tag'
 import { CategoryData, CategoryListDate } from '@/views/article/category/types'
 import { CodeEnum } from '@/constants'
+import { useUserInfo } from './userInfo'
+import pinia from './index'
 
 const { getCategorys } = useCategoryApi()
 const { getTags } = useTagApi()
+
+const userStore = useUserInfo(pinia)
 
 export const useArticleInfo = defineStore('articleInfo', {
   state: () => ({
@@ -61,6 +65,24 @@ export const useArticleInfo = defineStore('articleInfo', {
       } catch (e) {
         console.log(e)
       }
+    },
+  },
+  getters: {
+    userCategoryOption(state) {
+      return state.categoryList
+        .filter(item => item.userId === userStore.userInfos.id)
+        .map(({ categoryName, id }) => ({
+          label: categoryName,
+          value: id,
+        })) as OptionItem[]
+    },
+    userTagOption(state) {
+      return state.tagList
+        .filter(item => item.userId === userStore.userInfos.id)
+        .map(({ tagName, id }) => ({
+          label: tagName,
+          value: id,
+        })) as OptionItem[]
     },
   },
 })

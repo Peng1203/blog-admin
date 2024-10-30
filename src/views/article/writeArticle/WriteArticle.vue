@@ -3,6 +3,7 @@
     <el-card
       shadow="hover"
       class="layout-padding-auto h100%"
+      v-loading="loadingStatus"
     >
       <template #header>
         <div class="card-header flex-sb-c">
@@ -27,49 +28,42 @@
         </div>
       </template>
       <!-- v-model="articleForm" -->
-      <Peng-Skeleton
-        height="30px"
-        :rows="15"
-        :throttle="1000"
-        :loading="loadingStatus"
+      <StepHeadend
+        size="default"
+        v-model:step="activeStep"
+        @click-save-draft-box="handleSaveToDraftBox"
+        @click-publish="handlePublish"
+        @click-save="handlePublish"
       >
-        <StepHeadend
-          size="default"
-          v-model:step="activeStep"
-          @click-save-draft-box="handleSaveToDraftBox"
-          @click-publish="handlePublish"
-          @click-save="handlePublish"
-        >
-          <!-- @click-next-step="handleNextStep" -->
-          <template #titleSlot>
-            <PengForm
-              ref="titleFormRef"
-              :formItems="formItemList"
-              v-model="articleForm"
-              v-show="activeStep === 1"
-            />
-          </template>
-        </StepHeadend>
-        <!-- {{ articleForm }} -->
+        <!-- @click-next-step="handleNextStep" -->
+        <template #titleSlot>
+          <PengForm
+            ref="titleFormRef"
+            :formItems="formItemList"
+            v-model="articleForm"
+            v-show="activeStep === 1"
+          />
+        </template>
+      </StepHeadend>
+      <!-- {{ articleForm }} -->
 
-        <!-- flex-1 -->
-        <!-- 动态切换 文章内容 编辑器 -->
-        <component
-          v-show="activeStep === 1"
-          v-model="articleForm.content"
-          height="calc(100vh - 333px)"
-          placeholder="请输入文章内容"
-          :is="editorMapping[articleForm.contentModel]"
-          @fastSave="handleFastSave"
-          @pasteUploadImg="handlePasteUploadImg"
-        />
-        <!-- 文章信息表单 -->
-        <InfoForm
-          ref="infoFormRef"
-          v-show="activeStep === 2"
-          v-model="articleForm"
-        />
-      </Peng-Skeleton>
+      <!-- flex-1 -->
+      <!-- 动态切换 文章内容 编辑器 -->
+      <component
+        v-show="activeStep === 1"
+        v-model="articleForm.content"
+        height="calc(100vh - 333px)"
+        placeholder="请输入文章内容"
+        :is="editorMapping[articleForm.contentModel]"
+        @fastSave="handleFastSave"
+        @pasteUploadImg="handlePasteUploadImg"
+      />
+      <!-- 文章信息表单 -->
+      <InfoForm
+        ref="infoFormRef"
+        v-show="activeStep === 2"
+        v-model="articleForm"
+      />
     </el-card>
   </div>
 </template>
@@ -110,7 +104,7 @@ const formItemList = ref<FormItem<AddArticleType>[]>([
   {
     span: 24,
     type: 'input',
-    label: '文章标题',
+    label: '标题',
     prop: 'title',
     placeholder: '请输入文章标题',
     rules: [{ required: true, trigger: 'blur', message: '文章标题不能为空' }],

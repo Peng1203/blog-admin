@@ -22,10 +22,13 @@ import { AddCategoryType, CategoryData } from '../types'
 import { useNotificationMsg } from '@/hooks/useNotificationMsg'
 import { CodeEnum } from '@/constants'
 import { useFormState } from '@/hooks'
+import { useUserInfo } from '@/stores/userInfo'
 
 const { addCategory } = useCategoryApi()
 
 const emits = defineEmits(['updateList'])
+
+const userInfoStore = useUserInfo()
 
 const addCategoryDialogStatus = ref<boolean>(false)
 
@@ -67,7 +70,11 @@ const handleAdd = async () => {
 // 添加分类
 const addNewCategory = async (): Promise<boolean> => {
   try {
-    const { data: res } = await addCategory<CategoryData>(form.value)
+    const params = {
+      ...form.value,
+      userId: userInfoStore.userInfos.id,
+    }
+    const { data: res } = await addCategory<CategoryData>(params)
     const { code, message, success } = res
     if (code !== CodeEnum.POST_SUCCESS || !success) return false
     useNotificationMsg('成功', message)

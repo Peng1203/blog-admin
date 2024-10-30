@@ -30,6 +30,7 @@ import Form, { FormItem } from '@/components/Form'
 import { AddTagType, TagData } from '../types'
 import { CodeEnum } from '@/constants'
 import { useNotificationMsg } from '@/hooks'
+import { useUserInfo } from '@/stores/userInfo'
 
 const IconSelector = defineAsyncComponent(() => import('@/components/iconSelector/index.vue'))
 
@@ -37,14 +38,12 @@ const { addTag } = useTagApi()
 
 const emits = defineEmits(['updateList'])
 
+const userInfoStore = useUserInfo()
 const addTagDialogStatus = ref<boolean>(false)
-
 const addTagState = reactive({
   data: ref<AddTagType>({
     tagName: '',
     icon: '',
-    createTime: '',
-    updateTime: '',
   }),
   formItemList: ref<FormItem<AddTagType>[]>([
     {
@@ -80,8 +79,10 @@ const handleAdd = async () => {
 // 添加权限标识
 const addNewTag = async (): Promise<boolean> => {
   try {
-    const { tagName, icon } = addTagState.data
-    const params = { tagName, icon }
+    const params = {
+      ...addTagState.data,
+      userId: userInfoStore.userInfos.id,
+    }
     const { data: res } = await addTag<TagData>(params)
     const { code, message, success } = res
     if (code !== CodeEnum.POST_SUCCESS || !success) return false

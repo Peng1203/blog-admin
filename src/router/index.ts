@@ -130,6 +130,7 @@ router.beforeEach(async (to, from, next) => {
        *  1. 刷新 并 获取 ac token
        *  2. 获取用户个人信息
        */
+      // http://localhost:8888/resource/list?lastFlag=true
       const lastVPage = Local.get(LAST_VISITED_PAGE_PATH_STORAGE_KEY)
       // 当页面首次进来时 则直接返回登录页
       if (!Local.getRFToken()) next()
@@ -137,7 +138,8 @@ router.beforeEach(async (to, from, next) => {
         const refreshStatus = await handleRefreshACToken()
         if (!refreshStatus) return next()
         await userInfoStore.getUserInfos()
-        next(lastVPage)
+        if (to.redirectedFrom.query?.lastFlag) next(to.redirectedFrom.path as string)
+        else next(lastVPage)
       }
     }
     NProgress.done()

@@ -4,47 +4,81 @@
       shadow="hover"
       class="layout-padding-auto"
     >
-      <div mb15>
-        <PengButton
-          size="default"
-          type="primary"
-          :disabled="!tableState.selectVal.length"
-          v-model:loading="tableState.loading"
-          @click="handleBatchDown"
-        >
-          <el-icon>
-            <Download />
-          </el-icon>
-          下 载
-        </PengButton>
+      <div
+        mb15
+        flex-sb-c
+      >
+        <div>
+          <PengButton
+            size="default"
+            type="primary"
+            :disabled="!tableState.selectVal.length"
+            v-model:loading="tableState.loading"
+            @click="handleBatchDown"
+          >
+            <el-icon>
+              <Download />
+            </el-icon>
+            下 载
+          </PengButton>
 
-        <PengButton
-          size="default"
-          type="danger"
-          :disabled="!tableState.selectVal.length"
-          v-model:loading="tableState.loading"
-          @click="handleBatchDel"
-        >
-          <el-icon>
-            <Delete />
-          </el-icon>
-          删 除
-        </PengButton>
+          <PengButton
+            size="default"
+            type="danger"
+            :disabled="!tableState.selectVal.length"
+            v-model:loading="tableState.loading"
+            @click="handleBatchDel"
+          >
+            <el-icon>
+              <Delete />
+            </el-icon>
+            删 除
+          </PengButton>
+        </div>
+
+        <div>
+          <el-tag
+            type="info"
+            size="small"
+            effect="light"
+          >
+            文件数量: {{ dataList.length }}
+          </el-tag>
+
+          <el-tag
+            type="success"
+            size="small"
+            effect="light"
+          >
+            选中文件数: {{ tableState.selectVal.length }}
+          </el-tag>
+
+          <el-tag
+            size="small"
+            effect="light"
+            type="primary"
+          >
+            总大小: {{ formatByteSize(filesTotalSize) }}
+          </el-tag>
+        </div>
       </div>
       <!-- :border="false" -->
 
+      <!-- :data="dataList" -->
       <PengTable
         selection
         row-key="url"
         operationColumn
         :operationColumnWidth="180"
         :operationColumnBtns="['delete']"
-        :pager="false"
-        :data="dataList"
+        :data="showDataList"
+        :total="dataList.length"
         :getData="getDataList"
         :columns="tableState.columns"
         :default-sort="{ prop: 'ctime', order: 'descending' }"
         v-model:loading="tableState.loading"
+        v-model:page="tableState.page"
+        v-model:pageSize="tableState.pageSize"
         @deleteBtn="handleDelete"
         @dbRowClick="handleRowDbClikc"
         @selectionChange="val => (tableState.selectVal = val)"
@@ -100,37 +134,11 @@
           />
         </template>
       </PengTable>
-
-      <div mt10>
-        <el-tag
-          type="info"
-          size="small"
-          effect="light"
-        >
-          文件数量: {{ dataList.length }}
-        </el-tag>
-
-        <el-tag
-          type="success"
-          size="small"
-          effect="light"
-        >
-          选中文件数: {{ tableState.selectVal.length }}
-        </el-tag>
-
-        <el-tag
-          size="small"
-          effect="light"
-          type="primary"
-        >
-          总大小: {{ formatByteSize(filesTotalSize) }}
-        </el-tag>
-      </div>
     </el-card>
   </div>
 </template>
 
-<script setup lang="ts" name="ResourceList">
+<script setup lang="tsx" name="ResourceList">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useResourceStore } from '@/stores/resource'
 import type { ResourceListItem } from './types'
@@ -209,6 +217,10 @@ setColumns([
     formatter: ({ size }) => formatByteSize(size),
   },
 ])
+
+const showDataList = computed(() =>
+  dataList.value.slice((tableState.page - 1) * tableState.page, tableState.page * tableState.pageSize)
+)
 
 // 取消请求的函数
 const cancelCbs = ref<Canceler[]>([])

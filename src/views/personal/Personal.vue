@@ -164,10 +164,10 @@
                 :gutter="35"
                 :labelW="80"
                 :labelP="'right'"
-                v-model="state.userInfoForm"
-                :formItems="state.userInfoFormItems"
+                :formItems="formItems"
+                v-model="form"
               >
-                <template #updata>
+                <template #updataBtnSlot>
                   <PengButton
                     type="primary"
                     @click="handleUpdatePersonalInfo"
@@ -259,19 +259,22 @@
 </template>
 
 <script setup lang="ts" name="personal">
-import { ref, reactive, computed, defineAsyncComponent } from 'vue'
+import { ref, computed, defineAsyncComponent, onMounted } from 'vue'
 import { formatAxis } from '@/utils/formatTime'
 import { useUserInfo } from '@/stores/userInfo'
 import { Local } from '@/utils/storage'
-import { FormItem } from '@/components/Form'
 import { ClientInfo } from '@/views/login'
-import { AddEditUserType } from '../user/user'
+import { useFormState } from '@/hooks'
+import { EditPersionType, Personal } from './types'
+import { usePersonalApi } from '@/api'
+import { CodeEnum } from '@/constants'
+
+const { getPersonalInfo, updatePersonalInfo } = usePersonalApi()
 
 const { userInfos } = useUserInfo()
 
 const defaultAvatar = 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
 
-//
 //
 const personalInfoItemMapping = [
   [
@@ -306,79 +309,47 @@ const ip = Local.get('ip')
 const locationInfo = Local.get('locationInfo')
 const loginTime = Local.get('loginTime')
 
-// 定义变量内容
-const state = reactive({
-  userInfoForm: <AddEditUserType>{
-    nickName: '',
-    roleIds: [],
-    state: 0,
-    email: '',
-    userEnabled: 1,
-  },
-  userInfoFormItems: ref<FormItem<AddEditUserType>[]>([
-    {
-      xs: 24,
-      sm: 12,
-      md: 8,
-      lg: 6,
-      xl: 4,
-      type: 'input',
-      label: '用户昵称',
-      prop: 'nickName',
-      placeholder: '请输入昵称',
-    },
-    {
-      xs: 24,
-      sm: 12,
-      md: 8,
-      lg: 6,
-      xl: 4,
-      type: 'select',
-      label: '角色',
-      prop: 'roleIds',
-      multiple: true,
-      options: [],
-      placeholder: '请选择角色',
-    },
-    {
-      xs: 24,
-      sm: 12,
-      md: 8,
-      lg: 6,
-      xl: 4,
-      type: 'input',
-      label: '邮箱',
-      prop: 'email',
-      placeholder: '请输入邮箱',
-    },
-    {
-      xs: 24,
-      sm: 12,
-      md: 8,
-      lg: 6,
-      xl: 4,
-      type: 'switch',
-      label: '用户状态',
-      prop: 'userEnabled',
-      tValue: 1,
-      fValue: 0,
-      tText: '启用',
-      fText: '锁定',
-      isInline: true,
-    },
-    {
-      xs: 24,
-      sm: 24,
-      md: 24,
-      lg: 24,
-      xl: 24,
-      type: 'slot',
-      slotName: 'updata',
-      prop: '',
-      label: '',
-    },
-  ]),
+const { form, formItems, setFormItems } = useFormState<EditPersionType>({
+  icp: '',
+  sign: '',
+  notice: '',
 })
+
+setFormItems([
+  {
+    type: 'input',
+    label: 'ICP',
+    prop: 'icp',
+    span: 5,
+    placeholder: '请输入备案ICP',
+  },
+  {
+    type: 'textarea',
+    label: '签名',
+    prop: 'sign',
+    span: 20,
+  },
+  {
+    type: 'slot',
+    label: '',
+    prop: '',
+    span: 20,
+    slotName: 'updataBtnSlot',
+  },
+])
+
+const getUserPersonal = async () => {
+  try {
+    const { data: res } = await getPersonalInfo<Personal>(userInfos.id)
+    const { code, data, success } = res
+    if (code !== CodeEnum.GET_SUCCESS || !success) return
+    form.value.icp = data.icp
+    form.value.sign = data.sign
+    form.value.notice = data.notice || ''
+  } catch (e) {
+    console.log('e', e)
+  }
+}
 
 const loading = ref<boolean>(false)
 
@@ -387,12 +358,14 @@ const currentTime = computed(() => {
   return formatAxis(new Date())
 })
 
-// 处理更新个人信息操作
+// 更新个人信息
 const handleUpdatePersonalInfo = () => {
-  saveEditUserInfo()
+  try {
+    const params = {}
+  } catch (e) {
+    console.log('e', e)
+  }
 }
-// 更新用户个人信息
-const saveEditUserInfo = async () => {}
 
 // 更新用户头像
 const UploadAvatarDialog = defineAsyncComponent(() => import('./components/UploadAvatarDialog.vue'))
@@ -407,6 +380,10 @@ const changePasswordDialogRef = ref<RefType>()
 const handleShowChangePasswordDialog = () => {
   changePasswordDialogRef.value.dialogState = true
 }
+
+onMounted(() => {
+  getUserPersonal()
+})
 </script>
 
 <style scoped lang="scss">

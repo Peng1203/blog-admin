@@ -100,8 +100,15 @@
 
       <!-- 营销推荐 -->
       <!-- <el-col :span="24">
-        <el-card shadow="hover" class="mt15" header="营销推荐">
-          <el-row :gutter="15" class="personal-recommend-row">
+        <el-card
+          shadow="hover"
+          class="mt15"
+          header="营销推荐"
+        >
+          <el-row
+            :gutter="15"
+            class="personal-recommend-row"
+          >
             <el-col
               :sm="6"
               v-for="(v, k) in state.recommendList"
@@ -264,7 +271,7 @@ import { formatAxis } from '@/utils/formatTime'
 import { useUserInfo } from '@/stores/userInfo'
 import { Local } from '@/utils/storage'
 import { ClientInfo } from '@/views/login'
-import { useFormState } from '@/hooks'
+import { useFormState, useNotificationMsg } from '@/hooks'
 import { EditPersionType, Personal } from './types'
 import { usePersonalApi } from '@/api'
 import { CodeEnum } from '@/constants'
@@ -320,7 +327,7 @@ setFormItems([
     type: 'input',
     label: 'ICP',
     prop: 'icp',
-    span: 5,
+    span: 10,
     placeholder: '请输入备案ICP',
   },
   {
@@ -358,12 +365,23 @@ const currentTime = computed(() => {
   return formatAxis(new Date())
 })
 
-// 更新个人信息
-const handleUpdatePersonalInfo = () => {
+// 处理更新个人信息
+const handleUpdatePersonalInfo = async () => {
+  const updateRes = await updateUserPersonal()
+  if (!updateRes) return
+  getUserPersonal()
+}
+
+const updateUserPersonal = async () => {
   try {
-    const params = {}
+    const { data: res } = await updatePersonalInfo(userInfos.id, form.value)
+    const { code, data, success } = res
+    if (code !== CodeEnum.UPDATE_SUCCESS || !success) return false
+    useNotificationMsg(data, '')
+    return true
   } catch (e) {
     console.log('e', e)
+    return false
   }
 }
 

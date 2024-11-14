@@ -12,10 +12,10 @@ export function usePersonalApi() {
       })
     },
     /** 更新个人信息 */
-    updatePersonalInfo<T>(id: number, data: any): TransformedResponse<T> {
+    updatePersonalInfo<T = string>(id: number, data: any): TransformedResponse<T> {
       return request({
         url: `/personal/${id}`,
-        method: Method.POST,
+        method: Method.PATCH,
         data: JSON.stringify(data),
       })
     },

@@ -98,7 +98,7 @@ const handleClickConfirm = () => emits('clickConfirm')
   }
   :deep(.el-dialog__header) {
     padding: 10px 20px;
-    margin-right: 0px !important;
+    margin: -16px;
     border-bottom: 1px solid rgb(180, 169, 169);
   }
   :deep(.el-dialog__body) {

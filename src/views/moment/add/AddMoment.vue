@@ -1,5 +1,8 @@
 <template>
-  <div class="layout-padding">
+  <div
+    ref="el"
+    class="layout-padding"
+  >
     <el-card
       shadow="hover"
       class="layout-padding-auto"
@@ -84,8 +87,8 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, useTemplateRef } from 'vue'
-import { useFormState, useNotificationMsg } from '@/hooks'
+import { onMounted, reactive, ref, useTemplateRef } from 'vue'
+import { useFormState, useImgPasteEvent, useNotificationMsg } from '@/hooks'
 import { useUserInfo } from '@/stores/userInfo'
 import type { AddMomentForm, MomentData } from '../types'
 import { ElUpload, type UploadUserFile, type UploadFile, type FormRules } from 'element-plus'
@@ -255,6 +258,25 @@ const publishMoment = async () => {
     return false
   }
 }
+
+const hadnlePasteImg = (event: ClipboardEvent) => {
+  const { files } = event.clipboardData
+  for (let i = 0; i < files.length; i++) {
+    const { name, size } = files[i]
+    const uid = Date.now()
+    fileList.value.push({
+      name,
+      size,
+      uid,
+      percentage: 0,
+      status: 'ready',
+      url: URL.createObjectURL(files[i]),
+      raw: Object.assign(files[i], { uid }),
+    })
+  }
+}
+// 粘贴图片 放入列表
+useImgPasteEvent('el', hadnlePasteImg)
 </script>
 
 <style scoped lang="scss">

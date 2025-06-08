@@ -9,7 +9,7 @@ export function useFormState<T>(formInit: T) {
 
   const initForm = JSON.parse(JSON.stringify(formInit))
 
-  const handleInitForm = () => (form.value = initForm)
+  const handleInitForm = () => (form.value = JSON.parse(JSON.stringify(initForm)))
 
   return {
     form,

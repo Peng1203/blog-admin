@@ -295,7 +295,7 @@ import { BroadcastChannelEnum, CodeEnum, MB } from '@/constants'
 import UploadLargeFile from './components/UploadLargeFile.vue'
 import { watch } from 'vue'
 import { useResourceStore } from '@/stores/resource'
-import { useTableState } from '@/hooks/useTableState'
+import { useTableState, useImgPasteEvent } from '@/hooks'
 
 const { uploadResource } = useResourceApi()
 
@@ -456,20 +456,7 @@ const handlePreView = async (fileItem: FileData) => {
   viewerApi({ images: [dateUrl] })
 }
 
-const PASTE_EVENT = 'paste'
-const el = ref<RefType<HTMLDivElement>>(null)
-
-// 粘贴文件快捷操作
-const handlePasteEvent = (event: ClipboardEvent) => {
-  const { files } = event.clipboardData
-
-  for (let i = 0; i < files.length; i++) {
-    handleFileChange(files[i])
-  }
-}
-
 // 是否是大文件
-
 const _isLargeFile = size => size > MAX_SIZE_VALUE
 const _handleUploadToggle = row => uploadLargeFileRef.value.handleUploadToggle(row)
 
@@ -493,12 +480,13 @@ watch(
   { deep: true }
 )
 
-onMounted(() => {
-  el.value && el.value.addEventListener(PASTE_EVENT, handlePasteEvent)
-})
+// 粘贴图片 放入列表
+useImgPasteEvent('el', (event: ClipboardEvent) => {
+  const { files } = event.clipboardData
 
-onUnmounted(() => {
-  el.value && el.value.removeEventListener(PASTE_EVENT, handlePasteEvent)
+  for (let i = 0; i < files.length; i++) {
+    handleFileChange(files[i])
+  }
 })
 </script>
 
